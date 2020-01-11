@@ -10,8 +10,8 @@ If you like anything here, Be sure to :star2: my repo!
 
   * A different take on designing a [Lovelace UI](https://www.home-assistant.io/lovelace/) using a [Picture Elements Card](https://www.home-assistant.io/lovelace/picture-elements/) in [panel mode](https://www.home-assistant.io/lovelace/views/#panel-mode).
   * Achieving a less cluttered interface by displaying [more information](https://github.com/thomasloven/hass-browser_mod#popup) on a [long press](https://www.home-assistant.io/lovelace/picture-elements/#hold_action). 
-  * Animations and loading wheel for slow responding entities such as booting a computer.
-  * [Applying sound](https://github.com/thomasloven/hass-browser_mod#media_player) to UI using automations listening for events.
+  * Fake on-state and loading wheel for slow responding entities such as booting a computer.
+  * Animations and [applying sound](https://github.com/thomasloven/hass-browser_mod#media_player) to UI using automations listening for events.
 
 ### The sidebar
 
