@@ -1,0 +1,68 @@
+- id: '1574796562965'
+  name: Hemma below horizon
+  entities:
+    light.tvlampa:
+      brightness: 254
+      color_temp: 329
+      effect: none
+      state: 'on'
+    light.golvlampa:
+      brightness: 115
+      color_temp: 387
+      effect: none
+      state: 'on'
+    light.fonsterlampa:
+      brightness: 94
+      color_temp: 392
+      state: 'on'
+    light.taklampa:
+      brightness: 83
+      color_temp: 454
+      state: 'on'
+    light.datorlampa:
+      brightness: 254
+      color_temp: 319
+      effect: none
+      state: 'on'
+    light.mattias:
+      brightness: 144
+      color_temp: 443
+      state: 'on'
+    light.sanja:
+      brightness: 144
+      color_temp: 443
+      state: 'on'
+- id: '1574866958027'
+  name: Hemma above horizon
+  entities:
+    light.tvlampa:
+      brightness: 254
+      color_temp: 329
+      effect: none
+      state: 'on'
+    light.golvlampa:
+      brightness: 115
+      color_temp: 387
+      effect: none
+      state: 'on'
+    light.fonsterlampa:
+      brightness: 94
+      color_temp: 392
+      state: 'on'
+    light.taklampa:
+      brightness: 83
+      color_temp: 454
+      state: 'on'
+    light.datorlampa:
+      brightness: 254
+      color_temp: 319
+      effect: none
+      state: 'on'
+    light.mattias:
+      brightness: 144
+      color_temp: 443
+      state: 'on'
+    light.sanja:
+      brightness: 144
+      color_temp: 443
+      state: 'on'

@@ -1,0 +1,15 @@
+mattias:
+  hide_if_away: false
+  icon:
+  mac: !secret devicetracker_mattias
+  name: Mattias
+  picture: /local/mattias.png
+  track: true
+
+sanja:
+  hide_if_away: false
+  icon:
+  mac: !secret devicetracker_sanja
+  name: Sanja
+  picture: /local/sanja.png
+  track: true

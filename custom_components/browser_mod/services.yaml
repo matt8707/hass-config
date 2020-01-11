@@ -1,0 +1,9 @@
+command:
+  description: Send a command to a browser
+  fields:
+    command:
+      description: Command to send
+      example: 'navigate'
+    deviceID:
+      description: List of receiving browsers
+      example: '["99980b13-dabc9563", "office_computer"]'

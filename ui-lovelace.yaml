@@ -1,0 +1,3442 @@
+cch:
+  kiosk_mode: true
+resources:
+  - type: js
+    url: /community_plugin/bar-card/bar-card.js
+  - type: module
+    url: /community_plugin/button-entity-row/button-entity-row.js
+  - type: module
+    url: /community_plugin/circle-sensor-card/circle-sensor-card.js
+  - type: js
+    url: /community_plugin/light-entity-card/light-entity-card.js
+  - type: module
+    url: /community_plugin/lovelace-card-mod/card-mod.js
+  - type: module
+    url: /community_plugin/lovelace-layout-card/layout-card.js
+  - type: module
+    url: /community_plugin/mini-graph-card/mini-graph-card-bundle.js
+  - type: module
+    url: /community_plugin/mini-media-player/mini-media-player-bundle.js
+  - type: js
+    url: /community_plugin/vertical-stack-in-card/vertical-stack-in-card.js
+  - type: css
+    url: 'https://sf.abarba.me/font.css'
+  - url: /community_plugin/compact-custom-header.js
+    type: module
+  - type: js
+    url: /community_plugin/light-slider-card.js
+  - type: module
+    url: /community_plugin/popup-backdrop-filter.js
+  - type: js
+    url: /community_plugin/upcoming-media-card.js
+title: Hemma
+views:
+  - badges: []
+    cards:
+      - elements:
+
+          #############################################################################################################################################
+          #                                                                                                                                           #
+          #                                                                  SIDEBAR                                                                  #
+          #                                                                                                                                           #
+          #############################################################################################################################################
+
+          #################################################################
+          #                                                               #
+          #                             CLOCK                             #
+          #                                                               #
+          #################################################################
+
+          - entity: sensor.time
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            style:
+              color: 'rgba(255, 255, 255, 0.7)'
+              font-family: SF Text
+              font-size: 5.41vw
+              font-weight: 200
+              left: 2.8%
+              letter-spacing: '-0.05vw'
+              max-width: 1px
+              top: 10.8%
+            type: state-label
+
+          #################################################################
+          #                                                               #
+          #                           MARKDOWN                            #
+          #                                                               #
+          #################################################################
+
+          - content: >
+              <font color='#5d6569'><b>{{ states('sensor.dag') }}</b><br>
+              <b>{{ states('sensor.datum') }}</b> </font><br> 
+
+
+              {% if now().hour < 5 %} <b>God natt {{'\U0001F634'}}</b>
+              {% elif now().hour < 12 %} <b>God morgon</b> {{'\u2615\uFE0F'}}
+              {% elif now().hour < 18 %} <b>God dag</b> {{'\U0001F44B\U0001F3FB'}}
+              {% else %} <b>God kväll</b> {{'\U0001F44B\U0001F3FB'}}
+              {% endif %}
+
+
+              {% set lights = [states.light.tvlampa, states.light.golvlampa, states.light.fonsterlampa, states.light.datorlampa, states.light.vask_hoger, states.light.vask_vanster, 
+               states.light.taklampa, states.light.kladkammare_2, states.light.hallampa_1, states.light.hallampa_2, states.light.hallampa_3, states.light.mattias, states.light.sanja, states.light.spot_1, states.light.spot_2] %}
+              {% set lights_on = lights | selectattr('state','eq','on') | list %}
+              {% set lights_name = lights | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
+
+              {% set switches = [states.switch.dator_template, states.switch.tv_template, states.switch.playstation_template, states.switch.wemo_monitorer, states.switch.wemo_flakt] %}
+              {% set switches_on = switches | selectattr('state','eq','on') | list %} 
+              {% set switches_name = switches | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
+
+              {% if (lights_on | length ==0 ) and (switches_on | length > 0) %} 
+              <b>{{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på</b>
+
+              {% elif (lights_on | length ==1) and (switches_on | length == 1) %}
+              <b>{{ lights_name }} och {{switches_name }} är på</b>
+
+              {% elif (lights_on | length ==1) and (switches_on | length > 1) %}
+              <b>{{ lights_name }}, {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på</b>
+
+              {% elif (lights_on | length > 1) and (switches_on | length == 1) %}
+              <b>{{ lights_on | length }} lampor och {{ switches_name }} är på</b>
+
+              {% elif (lights_on | length > 1 ) and (switches_on | length > 1) %}
+              <b>{{ lights_on | length }} lampor, {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på</b>
+
+              {% elif (lights_on | length ==1) and (switches_on | length ==0) %}
+              <b>{{ lights_name }} är på</b>
+
+              {% elif (lights_on | length >1 ) and (switches_on | length ==0) %}
+              <b>{{ lights_on | length}} lampor är på</b>
+
+              {% else %} 
+              <font color='#5d6569'><b>Allt är avstängt</b></font> 
+              {% endif %}
+
+
+              <font color='#5d6569'>
+              {% if states('sensor.dark_sky_temperature') | float <= 0.0 %}
+              Känns som {{ states('sensor.runda_darksky_temp') }} {{'\u2744\uFE0F'}} med {{ states('sensor.runda_darksky_prob') }} risk för snö 
+
+              {% elif states('sensor.dark_sky_temperature') | float > 0.0 %} 
+              Känns som {{ states('sensor.runda_darksky_temp') }} med {{ states('sensor.runda_darksky_prob') }} risk för regn {% if states('sensor.dark_sky_precip_probability') | float > 50.0 %} {{'\u2614\uFE0F' }} {% endif %}
+
+              {% elif states('sensor.dark_sky_temperature') | float > 19.0 and states('sensor.dark_sky_precip_probability') | float < 5.0 %}
+              Känns som {{ states('sensor.runda_darksky_temp') }} {{'\U0001F60E' }} med {{ states('sensor.runda_darksky_prob') }} risk för regn
+              {% endif %}
+
+
+              {% if is_state('device_tracker.mattias', 'home') and is_state('device_tracker.sanja', 'not_home') %} 
+              Sanja gick för {{ states('sensor.sanja_last_changed_h') }} sedan
+
+              {% elif is_state('device_tracker.mattias', 'not_home') and is_state('device_tracker.sanja', 'home') %} 
+              Mattias gick för {{ states('sensor.mattias_last_changed_h') }} sedan 
+              {% endif %}
+
+
+              {% if state_attr('calendar.tvatta', 'start_time') ==  null %} 
+              {% else %} {{ states('sensor.tvatta_countdown') }} {% endif %}
+
+
+              {% if states('sensor.imac_get_ip') == states('sensor.myip') %} {{ '\u26A0\uFE0F' }} <b>VPN</b> verkar vara nere på datorn!{% endif %}
+              </font>
+            style:
+              '--ha-card-background': 'rgba(255, 255, 255, 0)'
+              '--ha-card-box-shadow': 0vw
+              '--primary-text-color': 'rgba(255, 255, 255, 0.9)'
+              font-family: SF Display
+              font-size: 1.6vw
+              font-weight: 300
+              height: 1px
+              left: 11%
+              letter-spacing: 0.06vw
+              line-height: 2.05vw
+              max-width: 17vw
+              opacity: 0.65
+              position: absolute
+              top: 16%
+              width: 17.5vw
+            type: 'custom:hui-markdown-card'
+
+          #################################################################
+          #                                                               #
+          #                        REFRESH BUTTON                         #
+          #                                                               #
+          #################################################################
+
+          - icon: 'mdi:refresh'
+            style:
+              '--iron-icon-height': 3.5vw
+              '--iron-icon-width': 3.5vw
+              color: 'rgba(255, 255, 255, 0.10)'
+              left: 5%
+              top: 88.7%
+            tap_action:
+              action: call-service
+              service: shell_command.fullykiosk_load_start_url
+            title: null
+            type: icon
+
+          #################################################################
+          #                                                               #
+          #                          INFO BUTTON                          #
+          #                                                               #
+          #################################################################
+
+          - icon: 'mdi:information-outline'
+            style:
+              '--iron-icon-height': 3.2vw
+              '--iron-icon-width': 3.2vw
+              color: 'rgba(255, 255, 255, 0.10)'
+              left: 10.5%
+              top: 88.7%
+            tap_action:
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - cards:
+                        - entities:
+                            - entity: sensor.hass_version_installed
+                              icon: 'mdi:home-assistant'
+                              name: Installerad version
+                            - entity: sensor.hass_version_template
+                              icon: 'mdi:update'
+                              name: Senste versionen
+                            - entity: sensor.home_assistant_v2_db
+                              icon: 'mdi:database'
+                              name: Databas
+                            - entity: sensor.rpi_power_template
+                            - entity: sensor.last_boot
+                              name: Senaste omstart
+                            - background_style:
+                                background: >-
+                                  radial-gradient(circle, rgba(45,45,45,1) 0%,
+                                  rgba(0,0,0,1) 100%)
+                              card_style:
+                                background: '#FFFFFF00'
+                                box-shadow: none
+                              entity: sensor.processor_use
+                              height: 2.1em
+                              icon: 'mdi:chip'
+                              icon_position: left
+                              icon_style:
+                                color: '#9e9e9e'
+                                margin-left: '-0.35em'
+                              max: 100
+                              min: 0
+                              rounding: 0.3em
+                              severity:
+                                - color: '#303435'
+                                  value: 90
+                                - color: '#6d2525'
+                                  value: 100
+                              style: |
+                                ha-card {
+                                  background-color: #FFFFFF00;
+                                  margin-left: -0.4em;
+                                  margin-right: -0.5em;
+                                  margin-top: 0.1em;
+                                }
+                              title: Processor
+                              title_style:
+                                color: '#e0e1e1'
+                                margin-left: 0.95em
+                              type: 'custom:bar-card'
+                              value_style:
+                                color: '#e0e1e1'
+                                font-size: 0.95em
+                                font-weight: 400
+                              width: 50%
+                              tap_action: service
+                              service_options:
+                                domain: homeassistant
+                                service: update_entity
+                                data:
+                                  entity_id: sensor.processor_use
+                            - background_style:
+                                background: >-
+                                  radial-gradient(circle, rgba(45,45,45,1) 0%,
+                                  rgba(0,0,0,1) 100%)
+                              card_style:
+                                background: '#FFFFFF00'
+                                box-shadow: none
+                              entity: sensor.memory_use_percent
+                              height: 2.1em
+                              icon: 'mdi:memory'
+                              icon_position: left
+                              icon_style:
+                                color: '#9e9e9e'
+                                margin-left: '-0.35em'
+                              max: 100
+                              min: 0
+                              rounding: 0.3em
+                              severity:
+                                - color: '#303435'
+                                  value: 90
+                                - color: '#6d2525'
+                                  value: 100
+                              style: |
+                                ha-card {
+                                  background-color: #FFFFFF00;
+                                  margin-left: -0.4em;
+                                  margin-right: -0.5em;
+                                  margin-top: 0.1em;
+                                }
+                              title: Minne - 1GB
+                              title_style:
+                                color: '#e0e1e1'
+                                margin-left: 0.95em
+                              type: 'custom:bar-card'
+                              value_style:
+                                color: '#e0e1e1'
+                                font-size: 0.95em
+                                font-weight: 400
+                              width: 50%
+                              tap_action: service
+                              service_options:
+                                domain: homeassistant
+                                service: update_entity
+                                data:
+                                  entity_id: sensor.memory_use_percent
+                            - background_style:
+                                background: >-
+                                  radial-gradient(circle, rgba(45,45,45,1) 0%,
+                                  rgba(0,0,0,1) 100%)
+                              card_style:
+                                background: '#FFFFFF00'
+                                box-shadow: none
+                              entity: sensor.disk_use_percent_home
+                              height: 2.1em
+                              icon: 'mdi:sd'
+                              icon_position: left
+                              icon_style:
+                                color: '#9e9e9e'
+                                margin-left: '-0.35em'
+                              max: 100
+                              min: 0
+                              rounding: 0.3em
+                              severity:
+                                - color: '#303435'
+                                  value: 90
+                                - color: '#6d2525'
+                                  value: 100
+                              style: |
+                                ha-card {
+                                  background-color: #FFFFFF00;
+                                  margin-left: -0.4em;
+                                  margin-right: -0.5em;
+                                  margin-top: 0.1em;
+                                  margin-bottom: 1.5em;
+                                }
+                              title: Lagring
+                              title_style:
+                                color: '#e0e1e1'
+                                margin-left: 0.95em
+                              type: 'custom:bar-card'
+                              value_style:
+                                color: '#e0e1e1'
+                                font-size: 0.95em
+                                font-weight: 400
+                              width: 50%
+                              tap_action: service
+                              service_options:
+                                domain: homeassistant
+                                service: update_entity
+                                data:
+                                  entity_id: sensor.disk_use_percent_home
+                            - buttons:
+                                - entity: script.homeassistant_restart
+                                  icon: 'mdi:reload'
+                                  name: Home Assistant
+                                  style:
+                                    background: '#FFFFFF10'
+                                    border-radius: 0.6vw
+                                    font-weight: 500
+                                    padding: 1.2vw 1.5vw 1.2vw 1.2vw
+                                - entity: script.homekit_restart
+                                  icon: 'mdi:reload'
+                                  name: Homekit
+                                  style:
+                                    background: '#FFFFFF10'
+                                    border-radius: 0.6vw
+                                    font-weight: 500
+                                    padding: 1.2vw 1.5vw 1.2vw 1.2vw
+                                    margin-right: -0.7em
+                              type: 'custom:button-entity-row'
+                          show_header_toggle: false
+                          style: |
+                            ha-card {
+                              box-shadow: none;
+                              border-radius: 1vw;
+                              background: rgba(36, 42, 43, 0.88);
+                              padding-right: 0.7em;
+                            }
+                          title: Home Assistant
+                          type: entities
+                      type: 'custom:hui-vertical-stack-card'
+                    - break
+                    - cards:
+                        - entities:
+                            - entity: switch.fullykiosk_screen
+                              icon: 'mdi:tablet'
+                              name: Skärm av/på
+                            - entity: input_number.fullykiosk_brightness_slider
+                            - entity: sensor.fullykiosk_battery_level
+                            - entity: sensor.fullykiosk_plugged
+                            - entity: sensor.fullykiosk_motion_detector_state
+                            - entity: sensor.fullykiosk_device_name
+                            - background_style:
+                                background: >-
+                                  radial-gradient(circle, rgba(45,45,45,1) 0%,
+                                  rgba(0,0,0,1) 100%)
+                              card_style:
+                                background: '#FFFFFF00'
+                                box-shadow: none
+                              entity: sensor.fullykiosk_memory_percentage
+                              height: 2.1em
+                              icon: 'mdi:memory'
+                              icon_position: left
+                              icon_style:
+                                color: '#9e9e9e'
+                                margin-left: '-0.35em'
+                              max: 100
+                              min: 0
+                              rounding: 0.3em
+                              severity:
+                                - color: '#303435'
+                                  value: 90
+                                - color: '#6d2525'
+                                  value: 100
+                              style: |
+                                ha-card {
+                                  background-color: #FFFFFF00;
+                                  margin-left: -0.4em;
+                                  margin-right: -0.7em;
+                                  margin-top: 0.1em;
+                                }
+                              title: Minne - 2GB
+                              title_style:
+                                color: '#e0e1e1'
+                                margin-left: 0.95em
+                              type: 'custom:bar-card'
+                              value_style:
+                                color: '#e0e1e1'
+                                font-size: 0.95em
+                                font-weight: 400
+                              width: 50%
+                              tap_action: service
+                              service_options:
+                                domain: homeassistant
+                                service: update_entity
+                                data:
+                                  entity_id: sensor.fullykiosk
+                            - background_style:
+                                background: >-
+                                  radial-gradient(circle, rgba(45,45,45,1) 0%,
+                                  rgba(0,0,0,1) 100%)
+                              card_style:
+                                background: '#FFFFFF00'
+                                box-shadow: none
+                              entity: sensor.fullykiosk_storage_percentage
+                              height: 2.1em
+                              icon: 'mdi:sd'
+                              icon_position: left
+                              icon_style:
+                                color: '#9e9e9e'
+                                margin-left: '-0.35em'
+                              max: 100
+                              min: 0
+                              rounding: 0.3em
+                              severity:
+                                - color: '#303435'
+                                  value: 90
+                                - color: '#6d2525'
+                                  value: 100
+                              style: |
+                                ha-card {
+                                  background-color: #FFFFFF00;
+                                  margin-left: -0.4em;
+                                  margin-right: -0.7em;
+                                  margin-top: 0.1em;
+                                  margin-bottom: 1.5em;
+                                }
+                              title: Lagring - 32GB
+                              title_style:
+                                color: '#e0e1e1'
+                                margin-left: 0.95em
+                              type: 'custom:bar-card'
+                              value_style:
+                                color: '#e0e1e1'
+                                font-size: 0.95em
+                                font-weight: 400
+                              width: 50%
+                              tap_action: service
+                              service_options:
+                                domain: homeassistant
+                                service: update_entity
+                                data:
+                                  entity_id: sensor.fullykiosk
+                            - buttons:
+                                - icon: 'mdi:reload'
+                                  name: Startsidan
+                                  service: shell_command.fullykiosk_load_start_url
+                                  style:
+                                    background: '#FFFFFF10'
+                                    border-radius: 0.6vw
+                                    font-weight: 500
+                                    padding: 1.2vw 1.5vw 1.2vw 1.2vw
+                                - icon: 'mdi:reload'
+                                  name: Hela appen
+                                  service: shell_command.fullykiosk_restart_app
+                                  style:
+                                    background: '#FFFFFF10'
+                                    border-radius: 0.6vw
+                                    font-weight: 500
+                                    padding: 1.2vw 1.5vw 1.2vw 1.2vw
+                                    margin-right: -0.7em
+                              type: 'custom:button-entity-row'
+                          show_header_toggle: false
+                          style: |
+                            ha-card {
+                              box-shadow: none;
+                              border-radius: 1vw;
+                              background: rgba(36, 42, 43, 0.88);
+                              padding-right: 0.7em;
+                            }
+                          title: Väggplattan
+                          type: entities
+                      style: |
+                        ha-card {
+                          --paper-card-background-color: rgba(36, 42, 43, 0.88);
+                          box-shadow: none;
+                          border-radius: 1vw;
+                        }
+                      type: 'custom:vertical-stack-in-card'
+                    - break
+                    - cards:
+                        - entities:
+                            - entity: sensor.synology_dsm_status
+                            - entity: sensor.synology_dsm_temperature_sdb
+                              name: Disktemperatur
+                            - entity: sensor.drifttid
+                              icon: 'mdi:calendar-month'
+                            - background_style:
+                                background: >-
+                                  radial-gradient(circle, rgba(45,45,45,1) 0%,
+                                  rgba(0,0,0,1) 100%)
+                              card_style:
+                                background: '#FFFFFF00'
+                                box-shadow: none
+                              entity: sensor.synology_dsm_cpu_load_total
+                              height: 2.1em
+                              icon: 'mdi:chip'
+                              icon_position: left
+                              icon_style:
+                                color: '#9e9e9e'
+                                margin-left: '-0.35em'
+                              max: 100
+                              min: 0
+                              rounding: 0.3em
+                              severity:
+                                - color: '#303435'
+                                  value: 90
+                                - color: '#6d2525'
+                                  value: 100
+                              style: |
+                                ha-card {
+                                  background-color: #FFFFFF00;
+                                  margin-left: -0.4em;
+                                  margin-right: -0.7em;
+                                  margin-top: 0.1em;
+                                }
+                              title: Processor
+                              title_style:
+                                color: '#e0e1e1'
+                                margin-left: 0.95em
+                              type: 'custom:bar-card'
+                              value_style:
+                                color: '#e0e1e1'
+                                font-size: 0.95em
+                                font-weight: 400
+                              width: 50%
+                              tap_action: service
+                              service_options:
+                                domain: homeassistant
+                                service: update_entity
+                                data:
+                                  entity_id: sensor.synology_dsm_cpu_load_total
+                            - background_style:
+                                background: >-
+                                  radial-gradient(circle, rgba(45,45,45,1) 0%,
+                                  rgba(0,0,0,1) 100%)
+                              card_style:
+                                background: '#FFFFFF00'
+                                box-shadow: none
+                              entity: sensor.synology_dsm_memory_usage_real
+                              height: 2.1em
+                              icon: 'mdi:memory'
+                              icon_position: left
+                              icon_style:
+                                color: '#9e9e9e'
+                                margin-left: '-0.35em'
+                              max: 100
+                              min: 0
+                              rounding: 0.3em
+                              severity:
+                                - color: '#303435'
+                                  value: 90
+                                - color: '#6d2525'
+                                  value: 100
+                              style: |
+                                ha-card {
+                                  background-color: #FFFFFF00;
+                                  margin-left: -0.4em;
+                                  margin-right: -0.7em;
+                                  margin-top: 0.1em;
+                                }
+                              title: Minne - 4GB
+                              title_style:
+                                color: '#e0e1e1'
+                                margin-left: 0.95em
+                              type: 'custom:bar-card'
+                              value_style:
+                                color: '#e0e1e1'
+                                font-size: 0.95em
+                                font-weight: 400
+                              width: 50%
+                              tap_action: service
+                              service_options:
+                                domain: homeassistant
+                                service: update_entity
+                                data:
+                                  entity_id: sensor.synology_dsm_memory_usage_real
+                            - background_style:
+                                background: >-
+                                  radial-gradient(circle, rgba(45,45,45,1) 0%,
+                                  rgba(0,0,0,1) 100%)
+                              card_style:
+                                background: '#FFFFFF00'
+                                box-shadow: none
+                              entity: sensor.synology_dsm_volume_used_volume_1
+                              height: 2.1em
+                              icon: 'mdi:harddisk'
+                              icon_position: left
+                              icon_style:
+                                color: '#9e9e9e'
+                                margin-left: '-0.35em'
+                              max: 100
+                              min: 0
+                              rounding: 0.3em
+                              severity:
+                                - color: '#303435'
+                                  value: 90
+                                - color: '#6d2525'
+                                  value: 100
+                              style: |
+                                ha-card {
+                                  background-color: #FFFFFF00;
+                                  margin-left: -0.4em;
+                                  margin-right: -0.7em;
+                                  margin-top: 0.1em;
+                                }
+                              title: Lagring - 16TB
+                              title_style:
+                                color: '#e0e1e1'
+                                margin-left: 0.95em
+                              type: 'custom:bar-card'
+                              value_style:
+                                color: '#e0e1e1'
+                                font-size: 0.95em
+                                font-weight: 400
+                              width: 50%
+                              tap_action: service
+                              service_options:
+                                domain: homeassistant
+                                service: update_entity
+                                data:
+                                  entity_id: sensor.synology_dsm_volume_used_volume_1
+                          show_header_toggle: false
+                          style: |
+                            ha-card {
+                              box-shadow: none;
+                              border-radius: 1vw;
+                              background: rgba(36, 42, 43, 0.88);
+                              padding-right: 0.7em;
+                            }
+                          title: Synology NAS
+                          type: entities
+                        - align_state: left
+                          entities:
+                            - color: green
+                              entity: sensor.synology_dsm_network_down
+                              name: Nedladdning
+                            - color: '#6d252590'
+                              entity: sensor.synology_dsm_network_up
+                              name: Uppladdning
+                          group: false
+                          name: Nätverk
+                          show:
+                            fill: fade
+                            icon: false
+                            name: false
+                            name_adaptive_color: true
+                          style: |
+                            ha-card {
+                              box-shadow: none;
+                              margin-top: -0.48em;
+                              border-radius: 8vw;
+                              background: rgba(36, 42, 43, 0.88);
+                              padding-left: 1em;
+                            }
+                          tap_action:
+                            action: none
+                          type: 'custom:mini-graph-card'
+                      style: |
+                        ha-card {
+                          --paper-card-background-color: rgba(36, 42, 43, 0.88);
+                          box-shadow: none;
+                          border-radius: 1vw;
+                        }
+                      type: 'custom:vertical-stack-in-card'
+                  column_num: 3
+                  layout: vertical
+                  type: 'custom:layout-card'
+                deviceID:
+                  - this
+                large: true
+                style:
+                  background: 'rgba(255, 255, 255, 0)'
+                  border-radius: 0.8vw 0.8vw 0.8vw 0.8vw
+                  padding: 3vw 2.5vw 5vw 2.5vw
+                title: Stäng
+            title: null
+            type: icon
+
+          #################################################################
+          #                                                               #
+          #                         SCENES BUTTON                         #
+          #                                                               #
+          #################################################################
+
+          - icon: 'mdi:home-heart'
+            style:
+              '--iron-icon-height': 3.5vw
+              '--iron-icon-width': 3.5vw
+              color: 'rgba(255, 255, 255, 0.10)'
+              left: 15.8%
+              top: 88.7%
+            tap_action:
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: scene.hemma_above_horizon
+                          icon: 'mdi:weather-sunny'
+                          name: Hemma dag
+                        - entity: scene.hemma_below_horizon
+                          icon: 'mdi:weather-sunset'
+                          name: Hemma kväll
+                        - entity: scene.hemma_below_horizon
+                          icon: 'mdi:fire'
+                          name: Bemysa
+                        - entity: scene.hemma_below_horizon
+                          icon: 'mdi:popcorn'
+                          name: Filmdags
+                        - entity: scene.hemma_below_horizon
+                          icon: 'mdi:alarm'
+                          name: Vakna
+                        - entity: scene.hemma_below_horizon
+                          icon: 'mdi:power-sleep'
+                          name: Läggdags
+                        - entity: scene.hemma_below_horizon
+                          icon: 'mdi:party-popper'
+                          name: Fest
+                      type: entities
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Belysning
+            title: null
+            type: icon
+
+          #############################################################################################################################################
+          #                                                                                                                                           #
+          #                                                                VARDAGSRUM                                                                 #
+          #                                                                                                                                           #
+          #############################################################################################################################################
+
+          #################################################################
+          #                                                               #
+          #                           BELYSNING                           #
+          #                                                               #
+          #################################################################
+
+          - entity: light.belysning
+            state_image:
+              'off': /local/vardagsrum_belysning_off.png
+              'on': /local/vardagsrum_belysning_on.png
+              unavailable: /local/unknown.png
+            style:
+              left: 30.31%
+              top: 20.35%
+              width: 10%
+            type: image
+          - conditions:
+              - entity: light.belysning
+                state_not: unavailable
+            elements:
+              - entity: light.belysning
+                icon: 'bha:hue-bulb'
+                style:
+                  '--iron-icon-height': 1.87vw
+                  '--iron-icon-width': 1.87vw
+                  left: 27.40%
+                  top: 15.55%
+                type: state-icon
+            type: conditional
+          - conditions:
+              - entity: light.belysning
+                state: 'on'
+            elements:
+              - entity: sensor.belysning_percent
+                fill: '#FFFFFF10'
+                font_style:
+                  color: '#7d7e80'
+                  font-size: 1.0vw
+                  font-weight: 400
+                  margin-left: '-0.8%'
+                  margin-top: 1.9%
+                gradient: true
+                max: 100
+                min: 0
+                stroke_color: '#aaabad'
+                stroke_width: 6
+                style:
+                  height: 3.15vw
+                  left: 32.8%
+                  opacity: 0.7
+                  top: 16.3%
+                  width: 3.15vw
+                type: 'custom:circle-sensor-card'
+                units: '%'
+            type: conditional
+          - hold_action:
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: light.belysning
+                          secondary_info: last-changed
+                      style: |
+                        ha-card {
+                          z-index: 5
+                        }
+                      type: entities
+                    - entities:
+                        - color_temp: true
+                          entity: light.belysning
+                          header: false
+                          persist_features: true
+                          type: 'custom:light-slider-card'
+                      show_header_toggle: false
+                      style: |
+                        ha-card {
+                          z-index: 0;
+                        }
+                      type: entities
+                    - brightness: false
+                      color_picker: false
+                      color_temp: true
+                      effects_list: false
+                      entity: light.belysning
+                      full_width_sliders: false
+                      header: false
+                      persist_features: true
+                      show_slider_percent: false
+                      style: |
+                        ha-card {
+                          padding-bottom: 3em;
+                          margin-top: -1.5em;
+                          margin-left: -1.8em;
+                          opacity: 0.7;
+                          z-index: 5;
+                        }
+                      type: 'custom:light-entity-card'
+                    - entities:
+                        - buttons:
+                            - icon: 'mdi:'
+                              service: browser_mod.popup
+                              service_data:
+                                card:
+                                  cards:
+                                    - entities:
+                                        - entity: light.belysning
+                                          secondary_info: last-changed
+                                      type: entities
+                                    - brightness: false
+                                      color_temp: false
+                                      entity: light.belysning
+                                      full_width_sliders: true
+                                      header: false
+                                      persist_features: true
+                                      show_slider_percent: true
+                                      smooth_color_wheel: true
+                                      type: 'custom:light-entity-card'
+                                  type: 'custom:vertical-stack-in-card'
+                                deviceID:
+                                  - this
+                                style:
+                                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                                  border-radius: 0.8vw
+                                  opacity: 0.9
+                                title: Belysning
+                              style:
+                                background: >-
+                                  radial-gradient(circle at 50% 0,
+                                  rgba(255,0,0,.5), rgba(255,0,0,0) 70.71%),
+                                  radial-gradient(circle at 6.7% 75%,
+                                  rgba(0,0,255,.5), rgba(0,0,255,0) 70.71%),
+                                  radial-gradient(circle at 93.3% 75%,
+                                  rgba(0,255,0,.5), rgba(0,255,0,0) 70.71%)
+                                  beige
+                                border-radius: 50%
+                                font-weight: 500
+                                margin-bottom: 0.5em
+                                margin-top: 0.8em
+                                padding: 1.8em
+                          type: 'custom:button-entity-row'
+                      style: |
+                        ha-card {
+                          margin-top: -2.3em;
+                        }
+                      type: entities
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Belysning
+            image: /local/overlay.svg
+            style:
+              left: 30.31%
+              opacity: 0
+              top: 20.35%
+              width: 10%
+            tap_action:
+              action: call-service
+              service: light.toggle
+              service_data:
+                entity_id: light.belysning
+            title: null
+            type: image
+
+          #################################################################
+          #                                                               #
+          #                           SKRIVBORD                           #
+          #                                                               #
+          #################################################################
+
+          - entity: light.fonsterlampa
+            state_image:
+              'off': /local/vardagsrum_skrivbord_off.png
+              'on': /local/vardagsrum_skrivbord_on.png
+              unavailable: /local/unknown.png
+            style:
+              left: 41.31%
+              top: 20.35%
+              width: 10%
+            type: image
+          - conditions:
+              - entity: light.fonsterlampa
+                state_not: unavailable
+            elements:
+              - entity: light.fonsterlampa
+                icon: 'bha:skrivbord'
+                style:
+                  '--iron-icon-height': 2.5vw
+                  '--iron-icon-width': 2.5vw
+                  left: 38.45%
+                  top: 15.45%
+                type: state-icon
+            type: conditional
+          - conditions:
+              - entity: light.fonsterlampa
+                state: 'on'
+            elements:
+              - entity: sensor.fonsterlampa_percent
+                fill: '#FFFFFF10'
+                font_style:
+                  color: '#7d7e80'
+                  font-size: 1.0vw
+                  font-weight: 400
+                  margin-left: '-0.8%'
+                  margin-top: 1.9%
+                gradient: true
+                max: 100
+                min: 0
+                stroke_color: '#aaabad'
+                stroke_width: 6
+                style:
+                  height: 3.15vw
+                  left: 43.8%
+                  opacity: 0.7
+                  top: 16.3%
+                  width: 3.15vw
+                type: 'custom:circle-sensor-card'
+                units: '%'
+            type: conditional
+          - hold_action:
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: light.fonsterlampa
+                          secondary_info: last-changed
+                      style: |
+                        ha-card {
+                          z-index: 5;
+                        }
+                      type: entities
+                    - entities:
+                        - color_temp: true
+                          entity: light.fonsterlampa
+                          header: false
+                          persist_features: true
+                          type: 'custom:light-slider-card'
+                      show_header_toggle: false
+                      style: |
+                        ha-card {
+                          z-index: 0;
+                          padding-top: 0.5em;
+                        }
+                      type: entities
+                    - brightness: false
+                      color_picker: false
+                      color_temp: true
+                      effects_list: false
+                      entity: light.fonsterlampa
+                      full_width_sliders: false
+                      header: false
+                      persist_features: true
+                      show_slider_percent: false
+                      style: |
+                        ha-card {
+                          margin-top: -0.9em;
+                          opacity: 0.7;
+                          z-index: 5;
+                        }
+                      type: 'custom:light-entity-card'
+                  style: |
+                    ha-card {
+                      padding-bottom: 1.2em;
+                    }
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Skrivbordslampa
+            image: /local/overlay.svg
+            style:
+              left: 41.31%
+              opacity: 0
+              top: 20.35%
+              width: 10%
+            tap_action:
+              action: call-service
+              service: light.toggle
+              service_data:
+                entity_id: light.fonsterlampa
+            title: null
+            type: image
+
+          #################################################################
+          #                                                               #
+          #                              TV                               #
+          #                                                               #
+          #################################################################
+
+          - entity: switch.tv_template
+            hold_action:
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: switch.tv_template
+                          name: Sony Bravia
+                          secondary_info: last-changed
+                        - entity: input_select.hdmi
+                      style: |
+                        ha-card {
+                          margin-bottom: -1em;
+                        }
+                      type: entities
+                    - entities:
+                        - buttons:
+                            - icon: 'mdi:volume-mute'
+                              icon_style:
+                                '--iron-icon-height': 1.7em
+                                '--iron-icon-width': 1.7em
+                              service: script.turn_on
+                              service_data:
+                                entity_id: script.tv_mute_toggle
+                              style:
+                                background: '#2d3538'
+                                border-radius: 0.6vw
+                                font-size: 1.1em
+                                font-weight: 500
+                                padding: 1.2em 1.4em 1.2em 1.4em
+                            - icon: 'mdi:volume-minus'
+                              icon_style:
+                                '--iron-icon-height': 1.7em
+                                '--iron-icon-width': 1.7em
+                              service: media_player.volume_down
+                              service_data:
+                                entity_id: media_player.sony_bravia_tv
+                              style:
+                                background: '#2d3538'
+                                border-radius: 0.6vw
+                                font-size: 1.1em
+                                font-weight: 500
+                                padding: 1.2em 1.4em 1.2em 1.4em
+                            - icon: 'mdi:volume-plus'
+                              icon_style:
+                                '--iron-icon-height': 1.7em
+                                '--iron-icon-width': 1.7em
+                              service: media_player.volume_up
+                              service_data:
+                                entity_id: media_player.sony_bravia_tv
+                              style:
+                                background: '#2d3538'
+                                border-radius: 0.6vw
+                                font-size: 1.1em
+                                font-weight: 500
+                                padding: 1.2em 1.4em 1.2em 1.4em
+                          type: 'custom:button-entity-row'
+                      style: |
+                        ha-card {
+                          margin-top: -1.5em;
+                          padding-bottom: 0.4em;
+                        }
+                      type: entities
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Tv
+            state_image:
+              'off': /local/vardagsrum_tv_off.png
+              'on': /local/vardagsrum_tv_on.png
+            style:
+              left: 30.31%
+              top: 37.9%
+              width: 10%
+            tap_action:
+              action: toggle
+            title: null
+            type: image
+          - conditions:
+              - entity: input_boolean.loading_tv
+                state: 'on'
+            elements:
+              - image: /local/vardagsrum_tv_on.png
+                style:
+                  left: 30.31%
+                  pointer-events: none
+                  top: 37.9%
+                  width: 10%
+                type: image
+              - filter: opacity(50%)
+                image: /local/loader.gif
+                style:
+                  left: 33%
+                  pointer-events: none
+                  top: 33.6%
+                  width: 2%
+                type: image
+            type: conditional
+
+          #################################################################
+          #                                                               #
+          #                          PLAYSTATION                          #
+          #                                                               #
+          #################################################################
+
+          - entity: switch.playstation_template
+            hold_action:
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: switch.playstation_template
+                          icon: 'mdi:playstation'
+                          name: Playstation 4
+                        - entity: input_select.ps4_game
+                        - entity: media_player.playstation_4
+                      type: entities
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Playstation 4
+            state_image:
+              idle: /local/vardagsrum_playstation_on.gif
+              'off': /local/vardagsrum_playstation_off.gif
+              'on': /local/vardagsrum_playstation_on.gif
+              playing: /local/vardagsrum_playstation_on.gif
+              standby: /local/vardagsrum_playstation_off.gif
+              unavailable: /local/unknown.png
+              unknown: /local/unknown.png
+            style:
+              left: 41.31%
+              top: 37.9%
+              width: 10%
+            tap_action:
+              action: call-service
+              service: switch.toggle
+              service_data:
+                entity_id: switch.playstation_template
+            title: null
+            type: image
+          - conditions:
+              - entity: input_boolean.loading_playstation
+                state: 'on'
+            elements:
+              - filter: opacity(50%)
+                image: /local/loader.gif
+                style:
+                  left: 44%
+                  pointer-events: none
+                  top: 34.2%
+                  width: 2%
+                type: image
+            type: conditional
+          - conditions:
+              - entity: input_boolean.loading_playstation
+                state: 'on'
+            elements:
+              - entity: input_boolean.loading_playstation
+                state_image:
+                  'off': /local/vardagsrum_playstation_off.gif
+                  'on': /local/vardagsrum_playstation_on.gif
+                style:
+                  left: 41.31%
+                  pointer-events: none
+                  top: 37.9%
+                  width: 10%
+                type: image
+              - filter: opacity(50%)
+                image: /local/loader.gif
+                style:
+                  left: 44%
+                  pointer-events: none
+                  top: 33.6%
+                  width: 2%
+                type: image
+            type: conditional
+
+          #############################################################################################################################################
+          #                                                                                                                                           #
+          #                                                                  STUDIO                                                                   #
+          #                                                                                                                                           #
+          #############################################################################################################################################
+
+          #################################################################
+          #                                                               #
+          #                          DATORLAMPA                           #
+          #                                                               #
+          #################################################################
+
+          - entity: light.datorlampa
+            state_image:
+              'off': /local/studio_datorlampa_off.png
+              'on': /local/studio_datorlampa_on.png
+              unavailable: /local/unknown.png
+            style:
+              left: 55.18%
+              top: 20.35%
+              width: 10%
+            type: image
+          - conditions:
+              - entity: light.datorlampa
+                state_not: unavailable
+            elements:
+              - entity: light.datorlampa
+                icon: 'bha:hue-bulb'
+                style:
+                  '--iron-icon-height': 1.87vw
+                  '--iron-icon-width': 1.87vw
+                  left: 52.19%
+                  top: 15.55%
+                type: state-icon
+            type: conditional
+          - conditions:
+              - entity: light.datorlampa
+                state: 'on'
+            elements:
+              - entity: sensor.datorlampa_percent
+                fill: '#FFFFFF10'
+                font_style:
+                  color: '#7d7e80'
+                  font-size: 1.0vw
+                  font-weight: 400
+                  margin-left: '-0.8%'
+                  margin-top: 1.9%
+                gradient: true
+                max: 100
+                min: 0
+                stroke_color: '#aaabad'
+                stroke_width: 6
+                style:
+                  height: 3.15vw
+                  left: 57.65%
+                  opacity: 0.7
+                  top: 16.3%
+                  width: 3.15vw
+                type: 'custom:circle-sensor-card'
+                units: '%'
+            type: conditional
+          - hold_action:
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: light.datorlampa
+                          secondary_info: last-changed
+                      style: |
+                        ha-card {
+                          z-index: 5
+                        }
+                      type: entities
+                    - entities:
+                        - color_temp: true
+                          entity: light.datorlampa
+                          header: false
+                          persist_features: true
+                          type: 'custom:light-slider-card'
+                      show_header_toggle: false
+                      style: |
+                        ha-card {
+                          z-index: 0;
+                        }
+                      type: entities
+                    - brightness: false
+                      color_picker: false
+                      color_temp: true
+                      effects_list: false
+                      entity: light.datorlampa
+                      full_width_sliders: false
+                      header: false
+                      persist_features: true
+                      show_slider_percent: false
+                      style: |
+                        ha-card {
+                          padding-bottom: 3em;
+                          margin-top: -1.5em;
+                          margin-left: -1.8em;
+                          opacity: 0.7;
+                          z-index: 5;
+                        }
+                      type: 'custom:light-entity-card'
+                    - entities:
+                        - buttons:
+                            - icon: 'mdi:'
+                              service: browser_mod.popup
+                              service_data:
+                                card:
+                                  cards:
+                                    - entities:
+                                        - entity: light.datorlampa
+                                          secondary_info: last-changed
+                                      type: entities
+                                    - brightness: false
+                                      color_temp: false
+                                      entity: light.datorlampa
+                                      full_width_sliders: true
+                                      header: false
+                                      persist_features: true
+                                      show_slider_percent: true
+                                      smooth_color_wheel: true
+                                      type: 'custom:light-entity-card'
+                                  type: 'custom:vertical-stack-in-card'
+                                deviceID:
+                                  - this
+                                style:
+                                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                                  border-radius: 0.8vw
+                                  opacity: 0.9
+                                title: Datorlampa
+                              style:
+                                background: >-
+                                  radial-gradient(circle at 50% 0,
+                                  rgba(255,0,0,.5), rgba(255,0,0,0) 70.71%),
+                                  radial-gradient(circle at 6.7% 75%,
+                                  rgba(0,0,255,.5), rgba(0,0,255,0) 70.71%),
+                                  radial-gradient(circle at 93.3% 75%,
+                                  rgba(0,255,0,.5), rgba(0,255,0,0) 70.71%)
+                                  beige
+                                border-radius: 50%
+                                font-weight: 500
+                                margin-bottom: 0.5em
+                                margin-top: 0.8em
+                                padding: 1.8em
+                          type: 'custom:button-entity-row'
+                      style: |
+                        ha-card {
+                          margin-top: -2.3em;
+                        }
+                      type: entities
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Datorlampa
+            image: /local/overlay.svg
+            style:
+              left: 55.18%
+              opacity: 0
+              top: 20.35%
+              width: 10%
+            tap_action:
+              action: call-service
+              service: light.toggle
+              service_data:
+                entity_id: light.datorlampa
+            title: null
+            type: image
+
+          #################################################################
+          #                                                               #
+          #                          TAKLAMPOR                            #
+          #                                                               #
+          #################################################################
+
+          - entity: light.taklampor
+            state_image:
+              'off': /local/studio_taklampor_off.png
+              'on': /local/studio_taklampor_on.png
+              unavailable: /local/unknown.png
+            style:
+              left: 66.14%
+              top: 20.35%
+              width: 10%
+            type: image
+          - conditions:
+              - entity: light.taklampor
+                state_not: unavailable
+            elements:
+              - entity: light.taklampor
+                icon: 'bha:spot'
+                style:
+                  '--iron-icon-height': 2.4vw
+                  '--iron-icon-width': 2.4vw
+                  left: 63.51%
+                  top: 17.1%
+                type: state-icon
+            type: conditional
+          - conditions:
+              - entity: light.taklampor
+                state: 'on'
+            elements:
+              - entity: sensor.taklampor_percent
+                fill: '#FFFFFF10'
+                font_style:
+                  color: '#7d7e80'
+                  font-size: 1.0vw
+                  font-weight: 400
+                  margin-left: '-0.8%'
+                  margin-top: 1.9%
+                gradient: true
+                max: 100
+                min: 0
+                stroke_color: '#aaabad'
+                stroke_width: 6
+                style:
+                  height: 3.15vw
+                  left: 68.5%
+                  opacity: 0.7
+                  top: 16.3%
+                  width: 3.15vw
+                type: 'custom:circle-sensor-card'
+                units: '%'
+            type: conditional
+          - hold_action:
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: light.taklampor
+                          secondary_info: last-changed
+                      style: |
+                        ha-card {
+                          z-index: 5
+                        }
+                      type: entities
+                    - entities:
+                        - color_temp: true
+                          entity: light.taklampor
+                          header: false
+                          persist_features: true
+                          type: 'custom:light-slider-card'
+                      show_header_toggle: false
+                      style: |
+                        ha-card {
+                          z-index: 0;
+                        }
+                      type: entities
+                    - brightness: false
+                      color_picker: false
+                      color_temp: true
+                      effects_list: false
+                      entity: light.taklampor
+                      full_width_sliders: false
+                      header: false
+                      persist_features: true
+                      show_slider_percent: false
+                      style: |
+                        ha-card {
+                          padding-bottom: 3em;
+                          margin-top: -1.5em;
+                          margin-left: -1.8em;
+                          opacity: 0.7;
+                          z-index: 5;
+                        }
+                      type: 'custom:light-entity-card'
+                    - entities:
+                        - buttons:
+                            - icon: 'mdi:'
+                              service: browser_mod.popup
+                              service_data:
+                                card:
+                                  cards:
+                                    - entities:
+                                        - entity: light.taklampor
+                                          secondary_info: last-changed
+                                      type: entities
+                                    - brightness: false
+                                      color_temp: false
+                                      entity: light.taklampor
+                                      full_width_sliders: true
+                                      header: false
+                                      persist_features: true
+                                      show_slider_percent: true
+                                      smooth_color_wheel: true
+                                      type: 'custom:light-entity-card'
+                                  type: 'custom:vertical-stack-in-card'
+                                deviceID:
+                                  - this
+                                style:
+                                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                                  border-radius: 0.8vw
+                                  opacity: 0.9
+                                title: Taklampor
+                              style:
+                                background: >-
+                                  radial-gradient(circle at 50% 0,
+                                  rgba(255,0,0,.5), rgba(255,0,0,0) 70.71%),
+                                  radial-gradient(circle at 6.7% 75%,
+                                  rgba(0,0,255,.5), rgba(0,0,255,0) 70.71%),
+                                  radial-gradient(circle at 93.3% 75%,
+                                  rgba(0,255,0,.5), rgba(0,255,0,0) 70.71%)
+                                  beige
+                                border-radius: 50%
+                                font-weight: 500
+                                margin-bottom: 0.5em
+                                margin-top: 0.8em
+                                padding: 1.8em
+                          type: 'custom:button-entity-row'
+                      style: |
+                        ha-card {
+                          margin-top: -2.3em;
+                        }
+                      type: entities
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Taklampor
+            image: /local/overlay.svg
+            style:
+              left: 66.14%
+              opacity: 0
+              top: 20.35%
+              width: 10%
+            tap_action:
+              action: call-service
+              service: light.toggle
+              service_data:
+                entity_id: light.taklampor
+            title: null
+            type: image
+
+          #################################################################
+          #                                                               #
+          #                             DATOR                             #
+          #                                                               #
+          #################################################################
+
+          - entity: switch.dator_template
+            hold_action:
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - card:
+                        cards:
+                          - entities:
+                              - entity: switch.dator_template
+                                name: iMac
+                                secondary_info: last-changed
+                              - background_style:
+                                  background: >-
+                                    radial-gradient(circle, rgba(45,45,45,1) 0%,
+                                    rgba(0,0,0,1) 100%)
+                                card_style:
+                                  background: '#FFFFFF00'
+                                  box-shadow: none
+                                entity: sensor.imac_cpu_per
+                                height: 2.1em
+                                icon: 'mdi:chip'
+                                icon_position: left
+                                icon_style:
+                                  color: '#9e9e9e'
+                                  margin-left: '-0.35em'
+                                max: 100
+                                min: 0
+                                rounding: 0.3em
+                                severity:
+                                  - color: '#303435'
+                                    value: 90
+                                  - color: '#6d2525'
+                                    value: 100
+                                style: |
+                                  ha-card {
+                                    background-color: #FFFFFF00;
+                                    margin-left: -0.4em;
+                                    margin-right: -0.5em;
+                                    margin-top: 0.1em;
+                                  }
+                                title: Processor
+                                title_style:
+                                  color: '#e0e1e1'
+                                  margin-left: 0.95em
+                                type: 'custom:bar-card'
+                                value_style:
+                                  color: '#e0e1e1'
+                                  font-size: 0.95em
+                                  font-weight: 400
+                                width: 50%
+                                tap_action: service
+                                service_options:
+                                  domain: homeassistant
+                                  service: update_entity
+                                  data:
+                                    entity_id: sensor.imac_cpu_per
+                              - background_style:
+                                  background: >-
+                                    radial-gradient(circle, rgba(45,45,45,1) 0%,
+                                    rgba(0,0,0,1) 100%)
+                                card_style:
+                                  background: '#FFFFFF00'
+                                  box-shadow: none
+                                entity: sensor.imac_mem_per
+                                height: 2.1em
+                                icon: 'mdi:memory'
+                                icon_position: left
+                                icon_style:
+                                  color: '#9e9e9e'
+                                  margin-left: '-0.35em'
+                                max: 100
+                                min: 0
+                                rounding: 0.3em
+                                severity:
+                                  - color: '#303435'
+                                    value: 90
+                                  - color: '#6d2525'
+                                    value: 100
+                                style: |
+                                  ha-card {
+                                    background-color: #FFFFFF00;
+                                    margin-left: -0.4em;
+                                    margin-right: -0.5em;
+                                    margin-top: 0.1em;
+                                  }
+                                title: Minne
+                                title_style:
+                                  color: '#e0e1e1'
+                                  margin-left: 0.95em
+                                type: 'custom:bar-card'
+                                value_style:
+                                  color: '#e0e1e1'
+                                  font-size: 0.95em
+                                  font-weight: 400
+                                width: 50%
+                                tap_action: service
+                                service_options:
+                                  domain: homeassistant
+                                  service: update_entity
+                                  data:
+                                    entity_id: sensor.imac_mem_per
+                              - entity: automation.notification_motion_hall
+                                icon: 'mdi:bell'
+                                name: Mottag notiser
+                                style: |
+                                  :host {
+                                  --paper-item-icon-color: 
+                                   {% if is_state('automation.notification_motion_hall', 'on') %}
+                                      #3182b7
+                                   {% else %}
+                                     #9da0a2
+                                   {% endif %};
+                                   }
+                              - entity: sensor.macos_uptime_template
+                                name: Verklig drifttid
+                              - entity: sensor.vpn_imac
+                                name: VPN
+                                style: |
+                                  :host {
+                                  --paper-item-icon-color: 
+                                   {% if is_state('sensor.vpn_imac', 'Ansluten') %}
+                                     #9e9e9e
+                                   {% else %}
+                                     red
+                                   {% endif %};
+                                   }
+                              - background_style:
+                                  background: >-
+                                    radial-gradient(circle, rgba(45,45,45,1) 0%,
+                                    rgba(0,0,0,1) 100%)
+                                card_style:
+                                  background: '#FFFFFF00'
+                                  box-shadow: none
+                                entity: sensor.imac_system_ssd
+                                height: 2.1em
+                                icon: 'mdi:harddisk'
+                                icon_position: left
+                                icon_style:
+                                  color: '#9e9e9e'
+                                  margin-left: '-0.35em'
+                                max: 100
+                                min: 0
+                                rounding: 0.3em
+                                severity:
+                                  - color: '#303435'
+                                    value: 90
+                                  - color: '#6d2525'
+                                    value: 100
+                                style: |
+                                  ha-card {
+                                    background-color: #FFFFFF00;
+                                    margin-left: -0.4em;
+                                    margin-right: -0.5em;
+                                    margin-top: 0.1em;
+                                  }
+                                title: System SSD
+                                title_style:
+                                  color: '#e0e1e1'
+                                  margin-left: 0.95em
+                                type: 'custom:bar-card'
+                                value_style:
+                                  color: '#e0e1e1'
+                                  font-size: 0.95em
+                                  font-weight: 400
+                                width: 50%
+                                tap_action: service
+                                service_options:
+                                  domain: homeassistant
+                                  service: update_entity
+                                  data:
+                                    entity_id: sensor.imac_system_ssd
+                              - background_style:
+                                  background: >-
+                                    radial-gradient(circle, rgba(45,45,45,1) 0%,
+                                    rgba(0,0,0,1) 100%)
+                                card_style:
+                                  background: '#FFFFFF00'
+                                  box-shadow: none
+                                entity: sensor.imac_macintosh_hd
+                                height: 2.1em
+                                icon: 'mdi:harddisk'
+                                icon_position: left
+                                icon_style:
+                                  color: '#9e9e9e'
+                                  margin-left: '-0.35em'
+                                max: 100
+                                min: 0
+                                rounding: 0.3em
+                                severity:
+                                  - color: '#303435'
+                                    value: 90
+                                  - color: '#6d2525'
+                                    value: 100
+                                style: |
+                                  ha-card {
+                                    background-color: #FFFFFF00;
+                                    margin-left: -0.4em;
+                                    margin-right: -0.5em;
+                                    margin-top: 0.1em;
+                                  }
+                                title: Macintosh HD
+                                title_style:
+                                  color: '#e0e1e1'
+                                  margin-left: 0.95em
+                                type: 'custom:bar-card'
+                                value_style:
+                                  color: '#e0e1e1'
+                                  font-size: 0.95em
+                                  font-weight: 400
+                                width: 50%
+                                tap_action: service
+                                service_options:
+                                  domain: homeassistant
+                                  service: update_entity
+                                  data:
+                                    entity_id: sensor.imac_macintosh_hd
+                              - background_style:
+                                  background: >-
+                                    radial-gradient(circle, rgba(45,45,45,1) 0%,
+                                    rgba(0,0,0,1) 100%)
+                                card_style:
+                                  background: '#FFFFFF00'
+                                  box-shadow: none
+                                entity: sensor.imac_time_machine
+                                height: 2.1em
+                                icon: 'mdi:harddisk'
+                                icon_position: left
+                                icon_style:
+                                  color: '#9e9e9e'
+                                  margin-left: '-0.35em'
+                                max: 100
+                                min: 0
+                                rounding: 0.3em
+                                severity:
+                                  - color: '#303435'
+                                    value: 90
+                                  - color: '#6d2525'
+                                    value: 100
+                                style: |
+                                  ha-card {
+                                    background-color: #FFFFFF00;
+                                    margin-left: -0.4em;
+                                    margin-right: -0.5em;
+                                    margin-top: 0.1em;
+                                  }
+                                title: Time Machine
+                                title_style:
+                                  color: '#e0e1e1'
+                                  margin-left: 0.95em
+                                type: 'custom:bar-card'
+                                value_style:
+                                  color: '#e0e1e1'
+                                  font-size: 0.95em
+                                  font-weight: 400
+                                width: 50%
+                                tap_action: service
+                                service_options:
+                                  domain: homeassistant
+                                  service: update_entity
+                                  data:
+                                    entity_id: sensor.imac_time_machine
+                              - entity: script.imac_start_time_machine_backup
+                                icon: 'mdi:backup-restore'
+                                name: Säkerhetskopiera
+                            style: |
+                              ha-card {
+                                margin-bottom: -1em;
+                                margin-right: 0.55em;
+                              }
+                            type: entities
+                          - entities:
+                              - buttons:
+                                  - icon: 'mdi:power-sleep'
+                                    name: Försätt i vila
+                                    service: shell_command.imac_sleep
+                                    style:
+                                      background: '#FFFFFF10'
+                                      border-radius: 0.6vw
+                                      font-size: 1em
+                                      font-weight: 500
+                                      letter-spacing: 0.015em
+                                      padding: 1em
+                                  - icon: 'mdi:restart'
+                                    name: Starta om
+                                    service: shell_command.imac_restart
+                                    style:
+                                      background: '#FFFFFF10'
+                                      border-radius: 0.6vw
+                                      font-size: 1em
+                                      font-weight: 500
+                                      letter-spacing: 0.015em
+                                      padding: 1em
+                                type: 'custom:button-entity-row'
+                            style: |
+                              ha-card {
+                                margin-top: -1.5em;
+                                padding-bottom: 0.2em;
+                              }
+                            type: entities
+                        type: 'custom:vertical-stack-in-card'
+                      conditions:
+                        - entity: switch.dator_template
+                          state: 'on'
+                      type: conditional
+                    - card:
+                        cards:
+                          - entities:
+                              - entity: switch.dator_template
+                                name: iMac
+                                secondary_info: last-changed
+                            style: |
+                              ha-card {
+                                margin-bottom: -1em;
+                              }
+                            type: entities
+                          - entities:
+                              - entity: sensor.placeholder
+                                icon: 'mdi:'
+                                name: Historik
+                            style: |
+                              ha-card {
+                                margin-top: -9%;
+                                margin-left: -12.2%;
+                                background-color: #FFFFFF00;
+                                opacity: 0.9;
+                                font-weight: 500;
+                              }
+                            type: entities
+                          - entities:
+                              - entity: switch.dator_template
+                            hours_to_show: 24
+                            refresh_interval: 0
+                            style: |
+                              ha-card {
+                                margin-top: -10.5%;
+                                padding-left: 2.2%;
+                              }
+                            type: history-graph
+                        type: 'custom:vertical-stack-in-card'
+                      conditions:
+                        - entity: switch.dator_template
+                          state: 'off'
+                      type: conditional
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Dator
+            state_image:
+              'off': /local/studio_dator_off.gif
+              'on': /local/studio_dator_on.png
+              unavailable: /local/unknown.png
+            style:
+              left: 55.18%
+              top: 37.9%
+              width: 10%
+            tap_action:
+              action: toggle
+            title: null
+            type: image
+          - conditions:
+              - entity: input_boolean.loading_dator
+                state: 'on'
+            elements:
+              - image: /local/studio_dator_on.png
+                style:
+                  left: 55.18%
+                  pointer-events: none
+                  top: 37.9%
+                  width: 10%
+                type: image
+              - filter: opacity(50%)
+                image: /local/loader.gif
+                style:
+                  left: 57.8%
+                  pointer-events: none
+                  top: 33.6%
+                  width: 2%
+                type: image
+            type: conditional
+
+          #################################################################
+          #                                                               #
+          #                           MONITORER                           #
+          #                                                               #
+          #################################################################
+
+          - entity: switch.wemo_monitorer
+            hold_action:
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: switch.wemo_monitorer
+                          secondary_info: last-changed
+                        - entity: input_number.monitorer_volume
+                          style: |
+                            :host {
+                            --paper-item-icon-color: 
+                             {% if is_state('sensor.monitorer_mute_check', 'true') %}
+                               #FFFFFF20
+                             {% elif states('input_number.monitorer_volume') | int == 0 %}
+                               #9da0a2
+                             {% elif states('input_number.monitorer_volume') | int < 45 %}
+                               #3182b7
+                             {% else %}
+                               red
+                             {% endif %};
+                             }
+                        - entity: automation.turn_off_monitorer
+                          icon: 'mdi:speaker-off'
+                          name: Stäng av när dator stängs av
+                        - entity: group.automation_system_reference
+                      style: |
+                        ha-card {
+                          margin-bottom: -1em;
+                        }
+                      type: entities
+                    - entities:
+                        - buttons:
+                            - icon: 'mdi:volume-mute'
+                              icon_style:
+                                '--iron-icon-height': 1.7em
+                                '--iron-icon-width': 1.7em
+                              service: script.turn_on
+                              service_data:
+                                entity_id: script.monitorer_mute_toggle
+                              style:
+                                background: '#2d3538'
+                                border-radius: 0.6vw
+                                font-size: 1.1em
+                                font-weight: 500
+                                padding: 1.2em 1.4em 1.2em 1.4em
+                            - icon: 'mdi:volume-minus'
+                              icon_style:
+                                '--iron-icon-height': 1.7em
+                                '--iron-icon-width': 1.7em
+                              service: shell_command.monitorer_volume_down
+                              style:
+                                background: '#2d3538'
+                                border-radius: 0.6vw
+                                font-size: 1.1em
+                                font-weight: 500
+                                padding: 1.2em 1.4em 1.2em 1.4em
+                            - icon: 'mdi:volume-plus'
+                              icon_style:
+                                '--iron-icon-height': 1.7em
+                                '--iron-icon-width': 1.7em
+                              service: shell_command.monitorer_volume_up
+                              style:
+                                background: '#2d3538'
+                                border-radius: 0.6vw
+                                font-size: 1.1em
+                                font-weight: 500
+                                padding: 1.2em 1.4em 1.2em 1.4em
+                          type: 'custom:button-entity-row'
+                      style: |
+                        ha-card {
+                          margin-top: -1.5em;
+                          padding-bottom: 0.4em;
+                        }
+                      type: entities
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Monitorer
+            state_image:
+              'off': /local/studio_monitorer_off.gif
+              'on': /local/studio_monitorer_on.gif
+              unavailable: /local/unknown.png
+            style:
+              left: 66.14%
+              top: 37.9%
+              width: 10%
+            tap_action:
+              action: toggle
+            title: null
+            type: image
+
+          #############################################################################################################################################
+          #                                                                                                                                           #
+          #                                                                  SOVRUM                                                                   #
+          #                                                                                                                                           #
+          #############################################################################################################################################
+
+          #################################################################
+          #                                                               #
+          #                         MATTIAS LIGHT                         #
+          #                                                               #
+          #################################################################
+
+          - entity: light.mattias
+            state_image:
+              'off': /local/sovrum_mattias_off.png
+              'on': /local/sovrum_mattias_on.png
+              unavailable: /local/unknown.png
+            style:
+              left: 80.05%
+              top: 20.35%
+              width: 10%
+            type: image
+          - conditions:
+              - entity: light.mattias
+                state_not: unavailable
+            elements:
+              - entity: light.mattias
+                icon: 'bha:sovrum'
+                style:
+                  '--iron-icon-height': 1.9vw
+                  '--iron-icon-width': 1.9vw
+                  left: 76.95%
+                  top: 15.1%
+                type: state-icon
+            type: conditional
+          - conditions:
+              - entity: light.mattias
+                state: 'on'
+            elements:
+              - entity: sensor.mattias_percent
+                fill: '#FFFFFF10'
+                font_style:
+                  color: '#7d7e80'
+                  font-size: 1.0vw
+                  font-weight: 400
+                  margin-left: '-0.8%'
+                  margin-top: 1.9%
+                gradient: true
+                max: 100
+                min: 0
+                stroke_color: '#aaabad'
+                stroke_width: 6
+                style:
+                  height: 3.15vw
+                  left: 82.5%
+                  opacity: 0.7
+                  top: 16.3%
+                  width: 3.15vw
+                type: 'custom:circle-sensor-card'
+                units: '%'
+            type: conditional
+          - hold_action:
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: light.mattias
+                          secondary_info: last-changed
+                      style: |
+                        ha-card {
+                          z-index: 5;
+                        }
+                      type: entities
+                    - entities:
+                        - color_temp: true
+                          entity: light.mattias
+                          header: false
+                          persist_features: true
+                          type: 'custom:light-slider-card'
+                      show_header_toggle: false
+                      style: |
+                        ha-card {
+                          z-index: 0;
+                          padding-top: 0.5em;
+                        }
+                      type: entities
+                    - brightness: false
+                      color_picker: false
+                      color_temp: true
+                      effects_list: false
+                      entity: light.mattias
+                      full_width_sliders: false
+                      header: false
+                      persist_features: true
+                      show_slider_percent: false
+                      style: |
+                        ha-card {
+                          margin-top: -0.9em;
+                          opacity: 0.7;
+                          z-index: 5;
+                        }
+                      type: 'custom:light-entity-card'
+                  style: |
+                    ha-card {
+                      padding-bottom: 1.2em;
+                    }
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Mattias sänglampa
+            image: /local/overlay.svg
+            style:
+              left: 80.05%
+              opacity: 0
+              top: 20.35%
+              width: 10%
+            tap_action:
+              action: call-service
+              service: light.toggle
+              service_data:
+                entity_id: light.mattias
+            title: null
+            type: image
+
+          #################################################################
+          #                                                               #
+          #                          SANJA LIGHT                          #
+          #                                                               #
+          #################################################################
+
+          - entity: light.sanja
+            state_image:
+              'off': /local/sovrum_sanja_off.png
+              'on': /local/sovrum_sanja_on.png
+              unavailable: /local/unknown.png
+            style:
+              left: 91.05%
+              top: 20.35%
+              width: 10%
+            type: image
+          - conditions:
+              - entity: light.sanja
+                state_not: unavailable
+            elements:
+              - entity: light.sanja
+                icon: 'bha:sovrum'
+                style:
+                  '--iron-icon-height': 1.9vw
+                  '--iron-icon-width': 1.9vw
+                  left: 88%
+                  top: 15.1%
+                type: state-icon
+            type: conditional
+          - conditions:
+              - entity: light.sanja
+                state: 'on'
+            elements:
+              - entity: sensor.sanja_percent
+                fill: '#FFFFFF10'
+                font_style:
+                  color: '#7d7e80'
+                  font-size: 1.0vw
+                  font-weight: 400
+                  margin-left: '-0.8%'
+                  margin-top: 1.9%
+                gradient: true
+                max: 100
+                min: 0
+                stroke_color: '#aaabad'
+                stroke_width: 6
+                style:
+                  height: 3.15vw
+                  left: 93.5%
+                  opacity: 0.7
+                  top: 16.3%
+                  width: 3.15vw
+                type: 'custom:circle-sensor-card'
+                units: '%'
+            type: conditional
+          - hold_action:
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: light.sanja
+                          secondary_info: last-changed
+                      style: |
+                        ha-card {
+                          z-index: 5;
+                        }
+                      type: entities
+                    - entities:
+                        - color_temp: true
+                          entity: light.sanja
+                          header: false
+                          persist_features: true
+                          type: 'custom:light-slider-card'
+                      show_header_toggle: false
+                      style: |
+                        ha-card {
+                          z-index: 0;
+                          padding-top: 0.5em;
+                        }
+                      type: entities
+                    - brightness: false
+                      color_picker: false
+                      color_temp: true
+                      effects_list: false
+                      entity: light.sanja
+                      full_width_sliders: false
+                      header: false
+                      persist_features: true
+                      show_slider_percent: false
+                      style: |
+                        ha-card {
+                          margin-top: -0.9em;
+                          opacity: 0.7;
+                          z-index: 5;
+                        }
+                      type: 'custom:light-entity-card'
+                  style: |
+                    ha-card {
+                      padding-bottom: 1.2em;
+                    }
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Sanjas sänglampa
+            image: /local/overlay.svg
+            style:
+              left: 91.05%
+              opacity: 0
+              top: 20.35%
+              width: 10%
+            tap_action:
+              action: call-service
+              service: light.toggle
+              service_data:
+                entity_id: light.sanja
+            title: null
+            type: image
+
+          #################################################################
+          #                                                               #
+          #                              FAN                              #
+          #                                                               #
+          #################################################################
+
+          - entity: switch.wemo_flakt
+            hold_action:
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: switch.wemo_flakt
+                          secondary_info: last-changed
+                        - entity: automation.turn_on_flakt_temp
+                          icon: 'mdi:hotel'
+                          name: Slå på om temp är över 26 °C
+                        - entity: input_number.flakt_minuter
+                        - entity: sensor.flakt_timer_value
+                      type: entities
+                    - entities:
+                        - color: '#e74c3c'
+                          entity: sensor.sensor_hall_temperature
+                          name: Sovrum
+                      hours_to_show: 24
+                      name: ' '
+                      show:
+                        icon: false
+                      type: 'custom:mini-graph-card'
+                      style: |
+                        ha-card {
+                          margin-top: -3.5em;
+                        }
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Fläkt
+            state_image:
+              'off': /local/sovrum_flakt_off.gif
+              'on': /local/sovrum_flakt_on.gif
+              unavailable: /local/unknown.png
+            style:
+              left: 80.05%
+              top: 37.9%
+              width: 10%
+            tap_action:
+              action: toggle
+            title: null
+            type: image
+
+          #################################################################
+          #                                                               #
+          #                              TV2                              #
+          #                                                               #
+          #################################################################
+
+          - entity: switch.tv_template
+            hold_action:
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: switch.tv_template
+                          name: Sony Bravia
+                          secondary_info: last-changed
+                        - entity: input_select.hdmi
+                      style: |
+                        ha-card {
+                          margin-bottom: -1em;
+                        }
+                      type: entities
+                    - entities:
+                        - buttons:
+                            - icon: 'mdi:volume-mute'
+                              icon_style:
+                                '--iron-icon-height': 1.7em
+                                '--iron-icon-width': 1.7em
+                              service: script.turn_on
+                              service_data:
+                                entity_id: script.tv_mute_toggle
+                              style:
+                                background: '#2d3538'
+                                border-radius: 0.6vw
+                                font-size: 1.1em
+                                font-weight: 500
+                                padding: 1.2em 1.4em 1.2em 1.4em
+                            - icon: 'mdi:volume-minus'
+                              icon_style:
+                                '--iron-icon-height': 1.7em
+                                '--iron-icon-width': 1.7em
+                              service: media_player.volume_down
+                              service_data:
+                                entity_id: media_player.sony_bravia_tv
+                              style:
+                                background: '#2d3538'
+                                border-radius: 0.6vw
+                                font-size: 1.1em
+                                font-weight: 500
+                                padding: 1.2em 1.4em 1.2em 1.4em
+                            - icon: 'mdi:volume-plus'
+                              icon_style:
+                                '--iron-icon-height': 1.7em
+                                '--iron-icon-width': 1.7em
+                              service: media_player.volume_up
+                              service_data:
+                                entity_id: media_player.sony_bravia_tv
+                              style:
+                                background: '#2d3538'
+                                border-radius: 0.6vw
+                                font-size: 1.1em
+                                font-weight: 500
+                                padding: 1.2em 1.4em 1.2em 1.4em
+                          type: 'custom:button-entity-row'
+                      style: |
+                        ha-card {
+                          margin-top: -1.5em;
+                          padding-bottom: 0.4em;
+                        }
+                      type: entities
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Tv
+            state_image:
+              'off': /local/sovrum_tv2_off.png
+              'on': /local/sovrum_tv2_on.png
+            style:
+              left: 91.05%
+              top: 37.9%
+              width: 10%
+            tap_action:
+              action: toggle
+            title: null
+            type: image
+          - conditions:
+              - entity: input_boolean.loading_tv
+                state: 'on'
+            elements:
+              - image: /local/sovrum_tv2_on.png
+                style:
+                  left: 91.05%
+                  pointer-events: none
+                  top: 37.9%
+                  width: 10%
+                type: image
+              - filter: opacity(50%)
+                image: /local/loader.gif
+                style:
+                  left: 93.8%
+                  pointer-events: none
+                  top: 33.6%
+                  width: 2%
+                type: image
+            type: conditional
+
+          #############################################################################################################################################
+          #                                                                                                                                           #
+          #                                                                  MEDIA                                                                    #
+          #                                                                                                                                           #
+          #############################################################################################################################################
+
+          - conditions:
+              - entity: switch.playstation_template
+                state_not: 'test'
+            elements:
+              - entity: sensor.placeholder
+                hold_action:
+                  action: none
+                prefix: Senast nedladdat
+                style:
+                  color: '#FFFFFF20'
+                  font-family: SF Text
+                  font-size: 1.25vw
+                  left: 24.85%
+                  letter-spacing: 0.01vw
+                  max-width: 1px
+                  top: 89.1%
+                tap_action:
+                  action: none
+                type: state-label
+              - entity: sensor.plex_title_truncate
+                hold_action:
+                  action: none
+                style:
+                  color: '#FFFFFF60'
+                  font-family: SF Text
+                  font-size: 1.2vw
+                  font-weight: 500
+                  left: 24.85%
+                  max-width: 1px
+                  top: 86.75%
+                tap_action:
+                  action: none
+                type: state-label
+              - cards:
+                  - accent_color: 'rgba(0, 0, 0, 0)'
+                    all_shadows: false
+                    border_color: 'rgba(0, 0, 0, 0)'
+                    entity: sensor.plex_recently_added
+                    flag: false
+                    line1_text: $empty
+                    line2_text: $empty
+                    line3_text: $empty
+                    line4_text: $empty
+                    max: 1
+                    title_text: $empty
+                    type: 'custom:upcoming-media-card'
+                style:
+                  '--ha-card-background': 'rgba(255, 255, 255, 0)'
+                  '--ha-card-box-shadow': 0vw
+                  height: 1px
+                  left: 44.8%
+                  opacity: 0.9
+                  padding: 0
+                  top: 56.8%
+                  width: 38.8%
+                  z-index: 0
+                type: 'custom:vertical-stack-in-card'
+            type: conditional
+
+          #############################################################################################################################################
+          #                                                                                                                                           #
+          #                                                                 LAMPOR                                                                    #
+          #                                                                                                                                           #
+          #############################################################################################################################################
+
+          #################################################################
+          #                                                               #
+          #                            BADRUM                             #
+          #                                                               #
+          #################################################################
+
+          - entity: light.badrum
+            state_image:
+              'off': /local/lampor_badrum_off.gif
+              'on': /local/lampor_badrum_on.png
+              unavailable: /local/unknown.png
+            style:
+              left: 55.18%
+              top: 64.5%
+              width: 10%
+            type: image
+          - conditions:
+              - entity: light.badrum
+                state: 'on'
+            elements:
+              - entity: sensor.badrum_percent
+                fill: '#FFFFFF10'
+                font_style:
+                  color: '#7d7e80'
+                  font-size: 1.0vw
+                  font-weight: 400
+                  margin-left: '-0.8%'
+                  margin-top: 1.9%
+                gradient: true
+                max: 100
+                min: 0
+                stroke_color: '#aaabad'
+                stroke_width: 6
+                style:
+                  height: 3.15vw
+                  left: 57.65%
+                  opacity: 0.7
+                  top: 60.5%
+                  width: 3.15vw
+                type: 'custom:circle-sensor-card'
+                units: '%'
+            type: conditional
+          - hold_action:
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: light.badrum
+                          secondary_info: last-changed
+                      style: |
+                        ha-card {
+                          z-index: 5;
+                        }
+                      type: entities
+                    - entities:
+                        - color_temp: true
+                          entity: light.badrum
+                          header: false
+                          persist_features: true
+                          type: 'custom:light-slider-card'
+                      show_header_toggle: false
+                      style: |
+                        ha-card {
+                          z-index: 0;
+                          padding-top: 0.5em;
+                        }
+                      type: entities
+                    - brightness: false
+                      color_picker: false
+                      color_temp: true
+                      effects_list: false
+                      entity: light.badrum
+                      full_width_sliders: false
+                      header: false
+                      persist_features: true
+                      show_slider_percent: false
+                      style: |
+                        ha-card {
+                          margin-top: -0.9em;
+                          opacity: 0.7;
+                          z-index: 5;
+                        }
+                      type: 'custom:light-entity-card'
+                  style: |
+                    ha-card {
+                      padding-bottom: 1.2em;
+                    }
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Badrumsbelysning
+            image: /local/overlay.svg
+            style:
+              left: 55.18%
+              opacity: 0
+              top: 64.5%
+              width: 10%
+            tap_action:
+              action: call-service
+              service: light.toggle
+              service_data:
+                entity_id: light.badrum
+            title: null
+            type: image
+
+          #################################################################
+          #                                                               #
+          #                             KÖK                               #
+          #                                                               #
+          #################################################################
+
+          - entity: light.kok
+            state_image:
+              'off': /local/lampor_kok_off.gif
+              'on': /local/lampor_kok_on.png
+              unavailable: /local/unknown.png
+            style:
+              left: 66.14%
+              top: 64.5%
+              width: 10%
+            type: image
+          - conditions:
+              - entity: light.kok
+                state: 'on'
+            elements:
+              - entity: sensor.kok_percent
+                fill: '#FFFFFF10'
+                font_style:
+                  color: '#7d7e80'
+                  font-size: 1.0vw
+                  font-weight: 400
+                  margin-left: '-0.8%'
+                  margin-top: 1.9%
+                gradient: true
+                max: 100
+                min: 0
+                stroke_color: '#aaabad'
+                stroke_width: 6
+                style:
+                  height: 3.15vw
+                  left: 68.5%
+                  opacity: 0.7
+                  top: 60.9%
+                  width: 3.15vw
+                type: 'custom:circle-sensor-card'
+                units: '%'
+            type: conditional
+          - hold_action:
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: light.kok
+                          secondary_info: last-changed
+                      style: |
+                        ha-card {
+                          z-index: 5;
+                        }
+                      type: entities
+                    - entities:
+                        - color_temp: true
+                          entity: light.kok
+                          header: false
+                          persist_features: true
+                          type: 'custom:light-slider-card'
+                      show_header_toggle: false
+                      style: |
+                        ha-card {
+                          z-index: 0;
+                          padding-top: 0.5em;
+                        }
+                      type: entities
+                    - brightness: false
+                      color_picker: false
+                      color_temp: true
+                      effects_list: false
+                      entity: light.kok
+                      full_width_sliders: false
+                      header: false
+                      persist_features: true
+                      show_slider_percent: false
+                      style: |
+                        ha-card {
+                          margin-top: -0.9em;
+                          opacity: 0.7;
+                          z-index: 5;
+                        }
+                      type: 'custom:light-entity-card'
+                  style: |
+                    ha-card {
+                      padding-bottom: 1.2em;
+                    }
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Kökslampa
+            image: /local/overlay.svg
+            style:
+              left: 66.14%
+              opacity: 0
+              top: 64.5%
+              width: 10%
+            tap_action:
+              action: call-service
+              service: light.toggle
+              service_data:
+                entity_id: light.kok
+            title: null
+            type: image
+
+          #################################################################
+          #                                                               #
+          #                           GARDEROB                            #
+          #                                                               #
+          #################################################################
+
+          - entity: light.kladkammare_2
+            state_image:
+              'off': /local/lampor_garderob_off.gif
+              'on': /local/lampor_garderob_on.png
+              unavailable: /local/unknown.png
+            style:
+              left: 55.18%
+              top: 82.17%
+              width: 10%
+            type: image
+          - conditions:
+              - entity: light.kladkammare_2
+                state: 'on'
+            elements:
+              - entity: sensor.garderob_percent
+                fill: '#FFFFFF10'
+                font_style:
+                  color: '#7d7e80'
+                  font-size: 1.0vw
+                  font-weight: 400
+                  margin-left: '-0.8%'
+                  margin-top: 1.9%
+                gradient: true
+                max: 100
+                min: 0
+                stroke_color: '#aaabad'
+                stroke_width: 6
+                style:
+                  height: 3.15vw
+                  left: 57.7%
+                  opacity: 0.7
+                  top: 78%
+                  width: 3.15vw
+                type: 'custom:circle-sensor-card'
+                units: '%'
+            type: conditional
+          - hold_action:
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: light.kladkammare_2
+                          secondary_info: last-changed
+                      style: |
+                        ha-card {
+                          z-index: 5;
+                        }
+                      type: entities
+                    - entities:
+                        - color_temp: true
+                          entity: light.kladkammare_2
+                          header: false
+                          persist_features: true
+                          type: 'custom:light-slider-card'
+                      show_header_toggle: false
+                      style: |
+                        ha-card {
+                          z-index: 0;
+                          padding-top: 0.5em;
+                        }
+                      type: entities
+                    - brightness: false
+                      color_picker: false
+                      color_temp: true
+                      effects_list: false
+                      entity: light.kladkammare_2
+                      full_width_sliders: false
+                      header: false
+                      persist_features: true
+                      show_slider_percent: false
+                      style: |
+                        ha-card {
+                          margin-top: -0.9em;
+                          opacity: 0.7;
+                          z-index: 5;
+                        }
+                      type: 'custom:light-entity-card'
+                  style: |
+                    ha-card {
+                      padding-bottom: 1.2em;
+                    }
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Garderobslampa
+            image: /local/overlay.svg
+            style:
+              left: 55.18%
+              opacity: 0
+              top: 82.17%
+              width: 10%
+            tap_action:
+              action: call-service
+              service: light.toggle
+              service_data:
+                entity_id: light.kladkammare_2
+            title: null
+            type: image
+
+          #################################################################
+          #                                                               #
+          #                             HALL                              #
+          #                                                               #
+          #################################################################
+
+          - entity: light.hall
+            state_image:
+              'off': /local/lampor_hall_off.gif
+              'on': /local/lampor_hall_on.png
+              unavailable: /local/unknown.png
+            style:
+              left: 66.14%
+              top: 82.17%
+              width: 10%
+            type: image
+          - conditions:
+              - entity: light.hall
+                state: 'on'
+            elements:
+              - entity: sensor.hall_percent
+                fill: '#FFFFFF10'
+                font_style:
+                  color: '#7d7e80'
+                  font-size: 1.0vw
+                  font-weight: 400
+                  margin-left: '-0.8%'
+                  margin-top: 1.9%
+                gradient: true
+                max: 100
+                min: 0
+                stroke_color: '#aaabad'
+                stroke_width: 6
+                style:
+                  height: 3.15vw
+                  left: 68.5%
+                  opacity: 0.7
+                  top: 78%
+                  width: 3.15vw
+                type: 'custom:circle-sensor-card'
+                units: '%'
+            type: conditional
+          - hold_action:
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: light.hall
+                          secondary_info: last-changed
+                      style: |
+                        ha-card {
+                          z-index: 5;
+                        }
+                      type: entities
+                    - entities:
+                        - color_temp: true
+                          entity: light.hall
+                          header: false
+                          persist_features: true
+                          type: 'custom:light-slider-card'
+                      show_header_toggle: false
+                      style: |
+                        ha-card {
+                          z-index: 0;
+                          padding-top: 0.5em;
+                        }
+                      type: entities
+                    - brightness: false
+                      color_picker: false
+                      color_temp: true
+                      effects_list: false
+                      entity: light.hall
+                      full_width_sliders: false
+                      header: false
+                      persist_features: true
+                      show_slider_percent: false
+                      style: |
+                        ha-card {
+                          margin-top: -0.9em;
+                          opacity: 0.7;
+                          z-index: 5;
+                        }
+                      type: 'custom:light-entity-card'
+                  style: |
+                    ha-card {
+                      padding-bottom: 1.2em;
+                    }
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Hallampor
+            image: /local/overlay.svg
+            style:
+              left: 66.14%
+              opacity: 0
+              top: 82.17%
+              width: 10%
+            tap_action:
+              action: call-service
+              service: light.toggle
+              service_data:
+                entity_id: light.hall
+            title: null
+            type: image
+
+          #############################################################################################################################################
+          #                                                                                                                                           #
+          #                                                                 HEMMA                                                                     #
+          #                                                                                                                                           #
+          #############################################################################################################################################
+
+          #################################################################
+          #                                                               #
+          #                           MATTIAS                             #
+          #                                                               #
+          #################################################################
+
+          - entity: device_tracker.mattias
+            state_image:
+              home: /local/hemma_mattias_on.png
+              not_home: /local/hemma_mattias_off.png
+            style:
+              left: 80.05%
+              top: 64.5%
+              width: 10%
+            type: image
+          - conditions:
+              - entity: device_tracker.mattias
+                state: home
+            elements:
+              - entity: sensor.mattias_last_changed
+                fill: '#FFFFFF10'
+                font_style:
+                  color: '#7d7e80'
+                  font-size: 1.0vw
+                  font-weight: 400
+                  margin-left: '-0.8%'
+                  margin-top: 1.9%
+                gradient: true
+                max: 100
+                min: 0
+                stroke_color: '#aaabad'
+                stroke_width: 6
+                style:
+                  height: 3.15vw
+                  left: 82.35%
+                  opacity: 0.7
+                  top: 60.8%
+                  width: 3.15vw
+                type: 'custom:circle-sensor-card'
+            type: conditional
+          - conditions:
+              - entity: device_tracker.mattias
+                state: not_home
+            elements:
+              - entity: sensor.mattias_last_changed
+                fill: '#FFFFFF08'
+                font_style:
+                  color: '#7d7e80'
+                  font-size: 1.0vw
+                  font-weight: 400
+                  margin-left: '-0.8%'
+                  margin-top: 1.9%
+                gradient: true
+                max: 100
+                min: 0
+                stroke_color: '#313638'
+                stroke_width: 6
+                style:
+                  height: 3.15vw
+                  left: 82.35%
+                  opacity: 0.7
+                  top: 60.8%
+                  width: 3.15vw
+                type: 'custom:circle-sensor-card'
+            type: conditional
+          - hold_action:
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: device_tracker.mattias
+                          secondary_info: last-changed
+                        - entity: binary_sensor.iphone_x
+                          icon: 'mdi:cellphone'
+                        - entity: sensor.mattias_battery_level
+                      style: |
+                        ha-card {
+                          border-radius: 0px !important;
+                          margin-bottom: -1vw;
+                        }
+                      type: entities
+                    - entities:
+                        - entity: sensor.placeholder
+                          icon: 'mdi:'
+                          name: Historik
+                      style: |
+                        ha-card {
+                          margin-top: -9%;
+                          margin-left: -12.2%;
+                          background-color: #FFFFFF00;
+                          opacity: 0.9;
+                          font-weight: 500;
+                        }
+                      type: entities
+                    - entities:
+                        - entity: device_tracker.mattias
+                      hours_to_show: 24
+                      refresh_interval: 0
+                      style: |
+                        ha-card {
+
+                          margin-top: -10.5%;
+                          padding-left: 2.2%;
+                        }
+                      type: history-graph
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Mattias
+            image: /local/overlay.svg
+            style:
+              left: 80.05%
+              opacity: 0
+              top: 64.5%
+              width: 10%
+            tap_action:
+              action: none
+            title: null
+            type: image
+
+          #################################################################
+          #                                                               #
+          #                            SANJA                              #
+          #                                                               #
+          #################################################################
+
+          - entity: device_tracker.sanja
+            state_image:
+              home: /local/hemma_sanja_on.png
+              not_home: /local/hemma_sanja_off.png
+            style:
+              left: 91.05%
+              top: 64.5%
+              width: 10%
+            type: image
+          - conditions:
+              - entity: device_tracker.sanja
+                state: home
+            elements:
+              - entity: sensor.sanja_last_changed
+                fill: '#FFFFFF10'
+                font_style:
+                  color: '#7d7e80'
+                  font-size: 1.0vw
+                  font-weight: 400
+                  margin-left: '-0.8%'
+                  margin-top: 1.9%
+                gradient: true
+                max: 100
+                min: 0
+                stroke_color: '#aaabad'
+                stroke_width: 6
+                style:
+                  height: 3.15vw
+                  left: 93.35%
+                  opacity: 0.7
+                  top: 60.8%
+                  width: 3.15vw
+                type: 'custom:circle-sensor-card'
+            type: conditional
+          - conditions:
+              - entity: device_tracker.sanja
+                state: not_home
+            elements:
+              - entity: sensor.sanja_last_changed
+                fill: '#FFFFFF08'
+                font_style:
+                  color: '#7d7e80'
+                  font-size: 1.0vw
+                  font-weight: 400
+                  margin-left: '-0.8%'
+                  margin-top: 1.9%
+                gradient: true
+                max: 100
+                min: 0
+                stroke_color: '#313638'
+                stroke_width: 6
+                style:
+                  height: 3.15vw
+                  left: 93.35%
+                  opacity: 0.7
+                  top: 60.8%
+                  width: 3.15vw
+                type: 'custom:circle-sensor-card'
+            type: conditional
+          - hold_action:
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: device_tracker.sanja
+                          secondary_info: last-changed
+                        - entity: binary_sensor.iphone_xr
+                          icon: 'mdi:cellphone'
+                        - entity: binary_sensor.macbook_pro
+                          icon: 'mdi:laptop'
+                        - entity: sensor.printer_status_template
+                          name: Skrivare
+                          icon: 'mdi:printer'
+                        - background_style:
+                            background: >-
+                              radial-gradient(circle, rgba(45,45,45,1) 0%,
+                              rgba(0,0,0,1) 100%)
+                          card_style:
+                            background: '#FFFFFF00'
+                            box-shadow: none
+                          entity: sensor.printer_black
+                          height: 2.1em
+                          icon: 'mdi:water-outline'
+                          icon_position: left
+                          unit_of_measurement: '%'
+                          icon_style:
+                            color: '#9e9e9e'
+                            margin-left: '-0.35em'
+                          max: 100
+                          min: 0
+                          rounding: 0.3em
+                          severity:
+                            - color: '#303435'
+                              value: 90
+                            - color: '#6d2525'
+                              value: 100
+                          style: |
+                            ha-card {
+                              background-color: #FFFFFF00;
+                              margin-left: -0.4em;
+                              margin-right: -0.5em;
+                              margin-top: 0.1em;
+                            }
+                          title: Svart
+                          title_style:
+                            color: '#e0e1e1'
+                            margin-left: 0.95em
+                          type: 'custom:bar-card'
+                          value_style:
+                            color: '#e0e1e1'
+                            font-size: 0.95em
+                            font-weight: 400
+                          width: 50%
+                          tap_action: service
+                          service_options:
+                            domain: homeassistant
+                            service: update_entity
+                            data:
+                              entity_id: sensor.printer_black
+                        - background_style:
+                            background: >-
+                              radial-gradient(circle, rgba(45,45,45,1) 0%,
+                              rgba(0,0,0,1) 100%)
+                          card_style:
+                            background: '#FFFFFF00'
+                            box-shadow: none
+                          entity: sensor.printer_color
+                          height: 2.1em
+                          icon: 'mdi:water'
+                          icon_position: left
+                          unit_of_measurement: '%'
+                          icon_style:
+                            color: '#9e9e9e'
+                            margin-left: '-0.35em'
+                          max: 100
+                          min: 0
+                          rounding: 0.3em
+                          severity:
+                            - color: '#303435'
+                              value: 90
+                            - color: '#6d2525'
+                              value: 100
+                          style: |
+                            ha-card {
+                              background-color: #FFFFFF00;
+                              margin-left: -0.4em;
+                              margin-right: -0.5em;
+                              margin-top: 0.1em;
+                            }
+                          title: Färg
+                          title_style:
+                            color: '#e0e1e1'
+                            margin-left: 0.95em
+                          type: 'custom:bar-card'
+                          value_style:
+                            color: '#e0e1e1'
+                            font-size: 0.95em
+                            font-weight: 400
+                          width: 50%
+                          tap_action: service
+                          service_options:
+                            domain: homeassistant
+                            service: update_entity
+                            data:
+                              entity_id: sensor.printer_color
+                      style: |
+                        ha-card {
+                          border-radius: 0px !important;
+                          margin-bottom: -1vw;
+                        }
+                      type: entities
+                    - entities:
+                        - entity: sensor.placeholder
+                          icon: 'mdi:'
+                          name: Historik
+                      style: |
+                        ha-card {
+                          margin-top: -9%;
+                          margin-left: -12.2%;
+                          background-color: #FFFFFF00;
+                          opacity: 0.9;
+                          font-weight: 500;
+                        }
+                      type: entities
+                    - entities:
+                        - entity: device_tracker.sanja
+                      hours_to_show: 24
+                      refresh_interval: 0
+                      style: |
+                        ha-card {
+                          margin-top: -10.5%;
+                          padding-left: 2.2%;
+                        }
+                      type: history-graph
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Sanja
+            image: /local/overlay.svg
+            style:
+              left: 91.05%
+              opacity: 0
+              top: 64.5%
+              width: 10%
+            tap_action:
+              action: none
+            title: null
+            type: image
+
+          #################################################################
+          #                                                               #
+          #                         STÄNG ALLT                            #
+          #                                                               #
+          #################################################################
+
+          - entity: switch.auto_stangallt_template
+            hold_action:
+              action: none
+            state_image:
+              'off': /local/auto_stang_allt_off.png
+              'on': /local/auto_stang_allt_on.gif
+            style:
+              left: 80.05%
+              top: 82.17%
+              width: 10%
+            tap_action:
+              action: toggle
+            title: null
+            type: image
+
+          #################################################################
+          #                                                               #
+          #                             HEMMA                             #
+          #                                                               #
+          #################################################################
+
+          - entity: switch.auto_hemma_template
+            hold_action:
+              action: none
+            state_image:
+              'off': /local/auto_hemma_off.png
+              'on': /local/auto_hemma_on.gif
+            style:
+              left: 91.05%
+              top: 82.17%
+              width: 10%
+            tap_action:
+              action: toggle
+            title: null
+            type: image
+
+        image: /local/uibg0.png
+        type: picture-elements
+
+    panel: true
+    path: default_view
+    title: Home

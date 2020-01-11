@@ -1,0 +1,24 @@
+{
+    "codeowners": [
+        "@ludeeus"
+    ],
+    "config_flow": true,
+    "dependencies": [
+        "websocket_api",
+        "frontend",
+        "persistent_notification",
+        "lovelace"
+    ],
+    "documentation": "https://hacs.xyz",
+    "domain": "hacs",
+    "homeassistant": "0.98.0",
+    "name": "HACS (Home Assistant Community Store)",
+    "requirements": [
+        "aiofiles==0.4.0",
+        "aiogithubapi==0.4.3",
+        "backoff==1.10.0",
+        "hacs_frontend==20200104192235",
+        "integrationhelper==0.2.2",
+        "semantic_version==2.8.4"
+    ]
+}

@@ -1,0 +1,8 @@
+{
+  "domain": "browser_mod",
+  "name": "Browser mod",
+  "documentation": "",
+  "dependencies": ["websocket_api", "http"],
+  "codeowners": [],
+  "requirements": []
+}

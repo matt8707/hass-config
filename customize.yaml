@@ -1,0 +1,53 @@
+
+  media_player.sony_bravia_tv: 
+    device_class: tv
+    source_list: ['HDMI 1', 'HDMI 2/MHL', 'HDMI 3', 'HDMI 4']
+
+  light.fonsterlampa: 
+    friendly_name: Skrivbordslampa
+    icon: mdi:lamp
+
+  light.badrum: 
+    icon: mdi:toilet
+
+  light.taklampa: 
+    friendly_name: Kök
+    icon: mdi:silverware-fork-knife
+
+  light.kladkammare_2: 
+    friendly_name: Garderob
+    icon: mdi:door
+
+  light.hall: 
+    icon: mdi:track-light
+
+  light.taklampor: 
+    icon: mdi:track-light
+
+  light.mattias: 
+    icon: mdi:floor-lamp
+
+  light.sanja: 
+    icon: mdi:floor-lamp
+
+  switch.dator_template: 
+    friendly_name: Dator
+    icon: mdi:desktop-mac
+
+  switch.tv_template: 
+    friendly_name: Tv
+    icon: mdi:television
+
+  switch.wemo_monitorer: 
+    friendly_name: Monitorer
+    icon: mdi:speaker
+
+  switch.wemo_flakt: 
+    friendly_name: Fläkt
+    icon: mdi:fan
+
+  light.spot_1: 
+    friendly_name: Taklampa 1
+
+  light.spot_2: 
+    friendly_name: Taklampa 2
