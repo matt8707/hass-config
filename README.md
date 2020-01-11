@@ -10,12 +10,12 @@ If you like anything here, Be sure to :star2: my repo!
 
   * A different take on designing a [Lovelace UI](https://www.home-assistant.io/lovelace/) using a [Picture Elements Card](https://www.home-assistant.io/lovelace/picture-elements/) in [panel mode](https://www.home-assistant.io/lovelace/views/#panel-mode).
   * Achieving a less cluttered interface by displaying [more information](https://github.com/thomasloven/hass-browser_mod#popup) on a [long press](https://www.home-assistant.io/lovelace/picture-elements/#hold_action). 
-  * Fake on-state with loading wheel for slow responding entities such as booting a computer.
+  * Animations and loading wheel for slow responding entities such as booting a computer.
   * [Applying sound](https://github.com/thomasloven/hass-browser_mod#media_player) to UI using automations listening for events.
 
 ### The sidebar
 
-Is a [Markdown Card](https://www.home-assistant.io/lovelace/markdown/) inside a [Picture Elements Card](https://www.home-assistant.io/lovelace/picture-elements/) to create dynamic [templates](https://www.home-assistant.io/docs/configuration/templating/). Features such as:
+[Markdown Card](https://www.home-assistant.io/lovelace/markdown/) inside a [Picture Elements Card](https://www.home-assistant.io/lovelace/picture-elements/) to create dynamic [templates](https://www.home-assistant.io/docs/configuration/templating/).
 
   * Time and date with greeting based on time of day.
   * Lights and switches that are on, using natural language.
@@ -51,4 +51,4 @@ All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.m
 
 ### Media
 
-The idea is to conditionally display media player controls based on last active device such as [Apple TV](https://www.home-assistant.io/integrations/apple_tv/), [Playstation 4](https://www.home-assistant.io/integrations/ps4/), [Spotify](https://www.home-assistant.io/integrations/spotify/) or [Plex](https://www.home-assistant.io/integrations/plex/). If nothing is active then a poster of last downloaded movie/episode is shown ([Radarr](https://github.com/Radarr/Radarr)/[Sonarr](https://github.com/Sonarr/Sonarr)). But since tvOS 13 integration is broken atm im putting this as a **TODO**.
+The idea is to conditionally display media player controls based on last active device such as [Apple TV](https://www.home-assistant.io/integrations/apple_tv/), [Playstation 4](https://www.home-assistant.io/integrations/ps4/), [Spotify](https://www.home-assistant.io/integrations/spotify/) or [Plex](https://www.home-assistant.io/integrations/plex/). If nothing is active then a poster of last downloaded movie/episode is shown ([Radarr](https://github.com/Radarr/Radarr)/[Sonarr](https://github.com/Sonarr/Sonarr)). But since tvOS 13 integration is broken atm I'm putting this as a **TODO**.
