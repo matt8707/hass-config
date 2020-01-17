@@ -51,7 +51,7 @@
         "bg_task": "Akcja jest wyłączona podczas wykonywania zadań w tle.",
         "cancel": "Anuluj",
         "continue": "Na pewno chcesz kontynuować?",
-        "delete": "Na pewno chcesz usunąć \"{item}\"?",
+        "delete": "Na pewno chcesz usunąć '{item}'?",
         "delete_installed": "'{item}' jest zainstalowany, musisz go odinstalować zanim będziesz mógł go usunąć.",
         "exist": "{item} już istnieje",
         "generic": "Jesteś pewny?",
@@ -62,7 +62,7 @@
         "overwrite": "Spowoduje to zastąpienie istniejącej kopii.",
         "reload_data": "To przeładowuje dane wszystkich repozytoriów, o których wie HACS, może to trochę potrwać.",
         "restart_home_assistant": "Na pewno chcesz ponownie uruchomić Home Assistant'a?",
-        "uninstall": "Na pewno chcesz odinstalować \"{item}\"?",
+        "uninstall": "Na pewno chcesz odinstalować '{item}'?",
         "upgrade_all": "To uaktualni wszystkie te repozytoria, upewnij się, że przeczytałeś uwagi do wydania dla wszystkich z nich przed kontynuacją.",
         "yes": "Tak"
     },
@@ -79,7 +79,9 @@
         }
     },
     "repository_banner": {
+        "config_flow": "Ta integracja obsługuje config_flow, co oznacza, że możesz teraz przejść do sekcji integracji w interfejsie użytkownika, aby ją skonfigurować.",
         "integration_not_loaded": "Ta integracja nie jest załadowana do Home Assistant'a.",
+        "no_restart_required": "Ponowne uruchomienie nie jest wymagane",
         "not_loaded": "Nie załadowano",
         "plugin_not_loaded": "Ta wtyczka nie jest dodana do zasobów Lovelace.",
         "restart": "Musisz ponownie uruchomić Home Assistant'a.",
@@ -91,10 +93,11 @@
         "available": "Dostępna",
         "back_to": "Wróć do",
         "changelog": "Lista zmian",
-        "downloads": "Pliki do pobrania",
+        "downloads": "Ilość pobrań",
         "flag_this": "Oflaguj",
         "frontend_version": "Wersja frontendu",
         "github_stars": "Gwiazdki GitHub",
+        "goto_integrations": "Przejdź do integracji",
         "hide": "Ukryj",
         "hide_beta": "Ukryj wydania beta",
         "install": "Zainstaluj",
@@ -133,6 +136,7 @@
         "missing_category": "Musisz wybrać kategorię",
         "open_repository": "Otwórz repozytorium",
         "reload_data": "Wczytaj ponownie dane",
+        "reload_window": "Załaduj ponownie okno",
         "repository_configuration": "Konfiguracja repozytorium",
         "save": "Zapisz",
         "table": "tabela",
@@ -150,7 +154,7 @@
         "pending_upgrades": "Oczekujące aktualizacje",
         "placeholder_search": "Wprowadź wyszukiwane hasło...",
         "sort": "sortowanie",
-        "stars": "Gwiazdy",
+        "stars": "Gwiazdki",
         "status": "Status"
     },
     "time": {

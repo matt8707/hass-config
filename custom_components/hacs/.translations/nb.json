@@ -51,7 +51,7 @@
         "bg_task": "Handlingen er deaktivert mens bakgrunnsoppgaver kjører.",
         "cancel": "Avbryt",
         "continue": "Er du sikker på at du vil fortsette?",
-        "delete": "Er du sikker på at du vil fjerne \"{item}\"?",
+        "delete": "Er du sikker på at du vil fjerne '{item}'?",
         "delete_installed": "'{item}' er installert, du må avinstallere det før du kan slette det.",
         "exist": "{item} eksisterer allerede",
         "generic": "Er du sikker?",
@@ -62,7 +62,7 @@
         "overwrite": "Å gjøre dette vil overskrive det.",
         "reload_data": "Dette laster inn dataene til alle repositories HACS vet om, dette vil ta litt tid å fullføre.",
         "restart_home_assistant": "Er du sikker på at du vil starte Home Assistant på nytt?",
-        "uninstall": "Er du sikker på at du vil avinstallere \"{item}\"?",
+        "uninstall": "Er du sikker på at du vil avinstallere '{item}'?",
         "upgrade_all": "Dette vil oppgradere alle disse repositorene, sørg for at du har lest utgivelses notatene for dem alle før du fortsetter.",
         "yes": "Ja"
     },

@@ -3,6 +3,10 @@
     device_class: tv
     source_list: ['HDMI 1', 'HDMI 2/MHL', 'HDMI 3', 'HDMI 4']
 
+  media_player.samsung_tv_remote:
+    device_class: tv
+    source_list: ['TV', 'HDMI']
+
   light.fonsterlampa: 
     friendly_name: Skrivbordslampa
     icon: mdi:lamp
@@ -36,6 +40,10 @@
 
   switch.tv_template: 
     friendly_name: Tv
+    icon: mdi:television
+
+  switch.tv2_template: 
+    friendly_name: Samsung Tv
     icon: mdi:television
 
   switch.wemo_monitorer: 

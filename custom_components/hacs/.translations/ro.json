@@ -1,8 +1,13 @@
 {
     "common": {
+        "about": "Despre",
         "appdaemon": "AppDaemon",
         "appdaemon_apps": "Aplicații AppDaemon",
         "background_task": "Activitatea de fundal se execută, această pagină se va reîncărca atunci când este gata.",
+        "continue": "Continua",
+        "disabled": "Dezactivat",
+        "documentation": "Documentație",
+        "hacs_is_disabled": "HACS este dezactivat",
         "installed": "instalat",
         "integration": "Integrare",
         "integrations": "Integrări",
@@ -40,7 +45,12 @@
         "title": "HACS (Home Assistant Community Store)"
     },
     "confirm": {
-        "delete": "Sigur doriți să ștergeți „{item}”?"
+        "cancel": "Anulare",
+        "delete": "Sigur doriți să ștergeți '{item}'?",
+        "exist": "{item} există deja",
+        "no": "Nu",
+        "ok": "OK",
+        "yes": "Da"
     },
     "options": {
         "step": {
@@ -58,7 +68,9 @@
         "available": "Disponibil",
         "back_to": "Înapoi la",
         "changelog": "Jurnal modificari",
+        "downloads": "Descărcări",
         "flag_this": "Semnalizează",
+        "frontend_version": "Versiune frontend",
         "hide": "Ascunde",
         "hide_beta": "Ascundere beta",
         "install": "Instalează",
@@ -82,18 +94,57 @@
     },
     "settings": {
         "add_custom_repository": "ADĂUGARE DEPOZIT PERSONALIZAT",
+        "adding_new_repo_category": "Cu categoria '{categoria}'.",
         "category": "Categorie",
+        "compact_mode": "Modul compact",
         "custom_repositories": "DEPOZITE PERSONALIZATE",
         "delete": "Șterge",
         "display": "Afişeaza",
         "grid": "Grilă",
         "hacs_repo": "HACS repo",
         "reload_data": "Reîncărcați datele",
+        "reload_window": "Reîncărcați fereastra",
         "save": "Salveaza",
         "table": "Tabel",
+        "table_view": "Vizualizare tabel",
+        "unhide": "Unhide",
         "upgrade_all": "Actualizați toate"
     },
     "store": {
-        "placeholder_search": "Vă rugăm să introduceți un termen de căutare ..."
+        "ascending": "ascendent",
+        "descending": "descendent",
+        "last_updated": "Ultima actualizare",
+        "name": "Nume",
+        "placeholder_search": "Vă rugăm să introduceți un termen de căutare ...",
+        "sort": "fel",
+        "stars": "Stele"
+    },
+    "time": {
+        "ago": "în urmă",
+        "day": "zi",
+        "days": "zi",
+        "hour": "oră",
+        "hours": "ore",
+        "minute": "minut",
+        "minutes": "minute",
+        "month": "lună",
+        "months": "luni",
+        "one": "Unu",
+        "one_day_ago": "acum o zi",
+        "one_hour_ago": "acum o oră",
+        "one_minute_ago": "acum un minut",
+        "one_month_ago": "acum o luna",
+        "one_second_ago": "acum o secunda",
+        "one_year_ago": "acum un an",
+        "second": "al doilea",
+        "seconds": "secunde",
+        "x_days_ago": "{x} zile în urmă",
+        "x_hours_ago": "{x} ore în urmă",
+        "x_minutes_ago": "{x} minute în urmă",
+        "x_months_ago": "{x} luni în urmă",
+        "x_seconds_ago": "{x} secunde în urmă",
+        "x_years_ago": "{x} ani în urmă",
+        "year": "an",
+        "years": "ani"
     }
 }

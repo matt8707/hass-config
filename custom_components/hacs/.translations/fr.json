@@ -51,7 +51,7 @@
         "bg_task": "L'action est désactivée pendant l'exécution de tâches en arrière-plan.",
         "cancel": "Annuler",
         "continue": "Es-tu sur de vouloir continuer?",
-        "delete": "Êtes-vous sûr de vouloir supprimer \"{item}\"?",
+        "delete": "Êtes-vous sûr de vouloir supprimer '{item}'?",
         "delete_installed": "'{item}' est installé, vous devez le désinstaller avant de pouvoir le supprimer.",
         "exist": "{item} existe déjà",
         "generic": "Êtes-vous sûr?",
@@ -62,7 +62,7 @@
         "overwrite": "En faisant cela, cela l'écrasera.",
         "reload_data": "Cela recharge les données de tous les dépôts dont HACS a connaissance, cela prendra un certain temps à terminer.",
         "restart_home_assistant": "Voulez-vous vraiment redémarrer Home Assistant ?",
-        "uninstall": "Êtes-vous sûr de vouloir désinstaller \"{item}\"?",
+        "uninstall": "Êtes-vous sûr de vouloir désinstaller '{item}'?",
         "upgrade_all": "Cela mettra à niveau tous ces dépôts, assurez-vous d'avoir lu les notes de publication pour chacun d'entre eux avant de continuer.",
         "yes": "Oui"
     },

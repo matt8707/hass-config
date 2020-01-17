@@ -86,7 +86,7 @@ views:
               {% set lights_on = lights | selectattr('state','eq','on') | list %}
               {% set lights_name = lights | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
 
-              {% set switches = [states.switch.dator_template, states.switch.tv_template, states.switch.playstation_template, states.switch.wemo_monitorer, states.switch.wemo_flakt] %}
+              {% set switches = [states.switch.dator_template, states.switch.tv_template, states.switch.tv2_template, states.switch.playstation_template, states.switch.wemo_monitorer, states.switch.wemo_flakt] %}
               {% set switches_on = switches | selectattr('state','eq','on') | list %} 
               {% set switches_name = switches | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
 
@@ -136,7 +136,7 @@ views:
               {% endif %}
 
 
-              {% if state_attr('calendar.tvatta', 'start_time') ==  null %} 
+              {% if state_attr('calendar.tvatta', 'start_time') ==  null or state_attr('calendar.tvatta', 'start_time') == None %} 
               {% else %} {{ states('sensor.tvatta_countdown') }} {% endif %}
 
 
@@ -148,7 +148,7 @@ views:
               '--primary-text-color': 'rgba(255, 255, 255, 0.9)'
               font-family: SF Display
               font-size: 1.6vw
-              font-weight: 300
+              font-weight: 400
               height: 1px
               left: 11%
               letter-spacing: 0.06vw
@@ -1159,7 +1159,7 @@ views:
             title: null
             type: image
           - conditions:
-              - entity: input_boolean.loading_tv
+              - entity: input_boolean.loading_braviatv
                 state: 'on'
             elements:
               - image: /local/vardagsrum_tv_on.png
@@ -2419,7 +2419,7 @@ views:
           #                                                               #
           #################################################################
 
-          - entity: switch.tv_template
+          - entity: switch.tv2_template
             hold_action:
               action: call-service
               service: browser_mod.popup
@@ -2427,10 +2427,10 @@ views:
                 card:
                   cards:
                     - entities:
-                        - entity: switch.tv_template
-                          name: Sony Bravia
+                        - entity: switch.tv2_template
+                          name: Samsung TV
                           secondary_info: last-changed
-                        - entity: input_select.hdmi
+                        - entity: input_select.hdmi2
                       style: |
                         ha-card {
                           margin-bottom: -1em;
@@ -2444,7 +2444,7 @@ views:
                                 '--iron-icon-width': 1.7em
                               service: script.turn_on
                               service_data:
-                                entity_id: script.tv_mute_toggle
+                                entity_id: script.tv2_mute_toggle
                               style:
                                 background: '#2d3538'
                                 border-radius: 0.6vw
@@ -2457,7 +2457,7 @@ views:
                                 '--iron-icon-width': 1.7em
                               service: media_player.volume_down
                               service_data:
-                                entity_id: media_player.sony_bravia_tv
+                                entity_id: media_player.samsung_tv_remote
                               style:
                                 background: '#2d3538'
                                 border-radius: 0.6vw
@@ -2470,7 +2470,7 @@ views:
                                 '--iron-icon-width': 1.7em
                               service: media_player.volume_up
                               service_data:
-                                entity_id: media_player.sony_bravia_tv
+                                entity_id: media_player.samsung_tv_remote
                               style:
                                 background: '#2d3538'
                                 border-radius: 0.6vw
@@ -2504,7 +2504,7 @@ views:
             title: null
             type: image
           - conditions:
-              - entity: input_boolean.loading_tv
+              - entity: input_boolean.loading_samsungtv
                 state: 'on'
             elements:
               - image: /local/sovrum_tv2_on.png
@@ -2556,7 +2556,7 @@ views:
                   color: '#FFFFFF60'
                   font-family: SF Text
                   font-size: 1.2vw
-                  font-weight: 500
+                  font-weight: 400
                   left: 24.85%
                   max-width: 1px
                   top: 86.75%

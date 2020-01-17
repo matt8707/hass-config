@@ -8,12 +8,12 @@ homeassistant:
   customize: !include customize.yaml
   whitelist_external_dirs:
     - '/config/'
-  auth_providers:
-    - type: trusted_networks
-      trusted_networks:
-        - 192.168.0.0/24
-        - 192.168.0.10
-      allow_bypass_login: true
+#  auth_providers:
+#    - type: trusted_networks
+#      trusted_networks:
+#        - 192.168.0.0/24
+#        - 192.168.0.10
+#      allow_bypass_login: true
 
 default_config:
 
@@ -45,7 +45,7 @@ recorder:
   purge_keep_days: 7
   include:
     entities: 
-      ['light.belysning', 'light.taklampor', 'light.fonsterlampa', 'media_player.sony_bravia_tv', 'media_player.playstation_4', 'media_player.vardagsrum_2', 'light.datorlampa', 'switch.dator_template', 'switch.wemo_monitorer', 
+      ['light.belysning', 'light.taklampor', 'light.fonsterlampa', 'media_player.sony_bravia_tv', 'media_player.samsung_tv_remote', 'media_player.playstation_4', 'media_player.vardagsrum_2', 'light.datorlampa', 'switch.dator_template', 'switch.wemo_monitorer', 
       'light.badrum', 'light.taklampa', 'light.kladkammare_2', 'light.hall', 'light.mattias', 'light.sanja', 'switch.wemo_flakt', 'sensor.hall_temperature', 'device_tracker.mattias', 'device_tracker.sanja', 
       'binary_sensor.sensor_hall_motion', 'binary_sensor.sensor_badrum_motion', 'binary_sensor.sensor_kladkammare_motion', 'binary_sensor.wemo_motion', 'sensor.sensor_hall_temperature', 'sensor.tvatta_countdown',
       'sensor.imac_cpu_per', 'sensor.imac_macintosh_hd', 'sensor.imac_mem_per', 'sensor.imac_system_ssd', 'sensor.imac_time_machine', 'sensor.synology_dsm_network_up', 'sensor.synology_dsm_network_down', 'sensor.printer_color', 'sensor.printer_black']
@@ -65,7 +65,7 @@ homekit:
   auto_start: false
   filter:
     include_entities:
-      ['switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 'media_player.sony_bravia_tv', 'switch.playstation_template', 'input_boolean.motion_hall', 'input_boolean.motion_garderob', 'input_boolean.motion_badrum']
+      ['switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 'media_player.sony_bravia_tv', 'media_player.samsung_tv_remote', 'switch.playstation_template', 'input_boolean.motion_hall', 'input_boolean.motion_garderob', 'input_boolean.motion_badrum']
   entity_config:
     switch.wemo_flakt:
       name: Fläkt
@@ -78,6 +78,10 @@ homekit:
       name: Tv
       feature_list:
         - feature: on_off
+    media_player.samsung_tv_remote:
+      name: Samsung Tv
+      feature_list:
+        - feature: on_off
     media_player.playstation_4:
       name: Playstation
       feature_list:
@@ -85,7 +89,8 @@ homekit:
 
 input_boolean:
   loading_dator:
-  loading_tv:
+  loading_braviatv:
+  loading_samsungtv:
   loading_playstation:
 
   appletv_notitle:
@@ -131,6 +136,13 @@ input_select:
     initial: HDMI 1
     icon: mdi:video-input-hdmi
 
+  hdmi2:
+    name: Källa
+    options:
+      ['TV', 'HDMI']
+    initial: HDMI
+    icon: mdi:video-input-hdmi
+
   ps4_game:
     name: Senast spelat
     options:
@@ -165,6 +177,13 @@ switch:
           service: script.tv_on
         turn_off:
           service: script.tv_off
+
+      tv2_template:
+        value_template: "{{ is_state('switch.samsung_6_series_50', 'on') }}"
+        turn_on:
+          service: script.tv2_on
+        turn_off:
+          service: script.tv2_off
 
       playstation_template:
         friendly_name: Playstation
@@ -261,6 +280,12 @@ light:
 media_player:
   - platform: braviatv
     host: !secret braviatv_host
+
+  - platform: samsungtv_custom
+    host: !secret samsungtv_host
+    mac: !secret samsungtv_mac
+    port: !secret samsungtv_port
+    protocol: ws
 
   - platform: spotify
     client_id: !secret spotify_client_id

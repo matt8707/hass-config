@@ -249,14 +249,34 @@
       from: 'on'
       to: 'off'
     - platform: state
-      entity_id: input_boolean.loading_tv
+      entity_id: input_boolean.loading_braviatv
       from: 'off'
       to: 'on'
       for:
         minutes: 1
   action:
     - service: input_boolean.turn_off
-      entity_id: input_boolean.loading_tv
+      entity_id: input_boolean.loading_braviatv
+
+- alias: turn_off_tv2_loading
+  trigger:
+    - platform: state
+      entity_id: switch.samsung_6_series_50
+      from: 'off'
+      to: 'on'
+    - platform: state
+      entity_id: switch.samsung_6_series_50
+      from: 'on'
+      to: 'off'
+    - platform: state
+      entity_id: input_boolean.loading_samsungtv
+      from: 'off'
+      to: 'on'
+      for:
+        minutes: 1
+  action:
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.loading_samsungtv
 
 - alias: turn_off_dator_loading
   trigger:
@@ -355,6 +375,39 @@
           HDMI 1
         {% endif %}
 
+- alias: hdmi2_input_select
+  trigger:
+  - platform: state
+    entity_id: input_select.hdmi2
+  action:
+  - service: media_player.select_source
+    data_template:
+      entity_id: media_player.samsung_tv_remote
+      source: >-
+        {% if is_state('input_select.hdmi2', 'HDMI') %}
+          HDMI
+        {% elif is_state('input_select.hdmi2', 'TV') %}
+          TV
+        {% else %}
+          HDMI
+        {% endif %}
+
+- alias: hdmi2_input_select_update
+  trigger:
+  - platform: state
+    entity_id: media_player.samsung_tv_remote
+  action:
+  - service: input_select.select_option
+    data_template:
+      entity_id: input_select.hdmi2
+      option: >-
+        {% set source = states('sensor.samsung_6_series_50_media_input_source') %}
+        {% if source == 'HDMI3' %}
+          HDMI
+        {% else %}
+          TV
+        {% endif %}
+
 - alias: turn_off_motion_hall
   trigger:
   - platform: state
@@ -426,7 +479,7 @@
   - platform: state
     entity_id:
       ['light.belysning', 'light.fonsterlampa', 'light.datorlampa', 'light.taklampor', 'light.mattias', 'light.sanja', 'light.badrum', 'light.taklampa', 'light.kladkammare_2', 
-      'light.hall', 'switch.wemo_flakt', 'switch.wemo_monitorer', 'input_boolean.loading_dator', 'input_boolean.loading_playstation', 'input_boolean.loading_tv']
+      'light.hall', 'switch.wemo_flakt', 'switch.wemo_monitorer', 'input_boolean.loading_dator', 'input_boolean.loading_playstation', 'input_boolean.loading_braviatv', 'input_boolean.loading_samsungtv']
     from: 'off'
     to: 'on'
   condition:
@@ -445,7 +498,7 @@
   - platform: state
     entity_id:
       ['light.belysning', 'light.fonsterlampa', 'light.datorlampa', 'light.taklampor', 'light.mattias', 'light.sanja', 'light.badrum', 'light.taklampa', 'light.kladkammare_2', 
-      'light.hall', 'switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 'switch.playstation_template', 'switch.tv_template']
+      'light.hall', 'switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 'switch.playstation_template', 'switch.tv_template', 'switch.tv2_template']
     from: 'on'
     to: 'off'
   condition:

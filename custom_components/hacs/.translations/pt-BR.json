@@ -1,11 +1,17 @@
 {
     "common": {
+        "about": "Sobre",
         "appdaemon": "AppDaemon",
         "appdaemon_apps": "AppDaemon Apps",
         "background_task": "Tarefa em segundo plano em execução, esta página será recarregada quando terminar.",
+        "continue": "Continuar",
+        "disabled": "Desativado",
+        "documentation": "Documentação",
+        "hacs_is_disabled": "HACS está desativado",
         "installed": "instalado",
         "integration": "Integração",
         "integrations": "Integrações",
+        "manage": "gerenciar",
         "plugin": "Plugin",
         "plugins": "Plugins",
         "python_script": "Python Script",
@@ -39,6 +45,15 @@
         },
         "title": "HACS (Home Assistant Community Store)"
     },
+    "confirm": {
+        "cancel": "Cancelar",
+        "delete": "Tem certeza de que deseja excluir '{item}'?",
+        "exist": "{item} já existe",
+        "no": "Não",
+        "ok": "OK",
+        "uninstall": "Tem certeza de que deseja desinstalar '{item}'?",
+        "yes": "Sim"
+    },
     "options": {
         "step": {
             "user": {
@@ -50,12 +65,19 @@
             }
         }
     },
+    "repository_banner": {
+        "no_restart_required": "Não é necessário reiniciar",
+        "not_loaded": "Não carregado"
+    },
     "repository": {
         "authors": "Autores",
         "available": "Disponível",
         "back_to": "Voltar para",
         "changelog": "Changelog",
         "flag_this": "Sinalizar isso",
+        "frontend_version": "Versão Frontend",
+        "github_stars": "Estrelas de GitHub",
+        "goto_integrations": "Ir para integrações",
         "hide": "Esconder",
         "hide_beta": "Esconder beta",
         "install": "Instalar",
@@ -79,18 +101,59 @@
     },
     "settings": {
         "add_custom_repository": "ADICIONAR REPOSITÓRIO PERSONALIZADO",
+        "adding_new_repo": "Adicionando novo repositório '{repo}'",
+        "adding_new_repo_category": "Com a categoria '{category}'.",
         "category": "Categoria",
+        "compact_mode": "Modo compacto",
         "custom_repositories": "REPOSITÓRIOS PERSONALIZADOS",
         "delete": "Deletar",
         "display": "Display",
         "grid": "Grade",
         "hacs_repo": "HACS repo",
+        "hidden_repositories": "repositórios ocultos",
         "reload_data": "Recarregar dados",
+        "reload_window": "Recarregar janela",
+        "repository_configuration": "Configuração do Repositório",
         "save": "Salvar",
         "table": "Tabela",
+        "unhide": "reexibir",
         "upgrade_all": "Atualizar tudo"
     },
     "store": {
-        "placeholder_search": "Por favor insira um termo de pesquisa..."
+        "ascending": "ascendente",
+        "descending": "descendente",
+        "last_updated": "Última atualização",
+        "name": "Nome",
+        "new_repositories": "Novos Repositórios",
+        "pending_upgrades": "Atualizações pendentes",
+        "placeholder_search": "Por favor insira um termo de pesquisa...",
+        "stars": "Estrelas"
+    },
+    "time": {
+        "ago": "atrás",
+        "day": "dia",
+        "days": "dias",
+        "hour": "hora",
+        "hours": "horas",
+        "minute": "minuto",
+        "minutes": "minutos",
+        "month": "mês",
+        "months": "meses",
+        "one": "Um",
+        "one_day_ago": "um dia atrás",
+        "one_hour_ago": "uma hora atrás",
+        "one_minute_ago": "um minuto atrás",
+        "one_month_ago": "um mês atrás",
+        "one_second_ago": "um segundo atrás",
+        "second": "segundo",
+        "seconds": "segundos",
+        "x_days_ago": "{x} dias atrás",
+        "x_hours_ago": "{x} horas atrás",
+        "x_minutes_ago": "{x} minutos atrás",
+        "x_months_ago": "{x} meses atrás",
+        "x_seconds_ago": "{x} segundos atrás",
+        "x_years_ago": "{x} anos atrás",
+        "year": "ano",
+        "years": "anos"
     }
 }

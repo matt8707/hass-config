@@ -15,16 +15,30 @@ dator_off:
 tv_on:
   sequence:
     - service: input_boolean.turn_on
-      entity_id: input_boolean.loading_tv
+      entity_id: input_boolean.loading_braviatv
     - service: media_player.turn_on
       entity_id: media_player.sony_bravia_tv
 
 tv_off:
   sequence:
     - service: input_boolean.turn_on
-      entity_id: input_boolean.loading_tv
+      entity_id: input_boolean.loading_braviatv
     - service: media_player.turn_off
       entity_id: media_player.sony_bravia_tv
+
+tv2_on:
+  sequence:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.loading_samsungtv
+    - service: switch.turn_on
+      entity_id: switch.samsung_6_series_50
+
+tv2_off:
+  sequence:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.loading_samsungtv
+    - service: switch.turn_off
+      entity_id: switch.samsung_6_series_50
 
 playstation_on:
   sequence:
@@ -101,6 +115,10 @@ auto_stang_allt:
         {% if is_state('switch.tv_template', 'on') %}
           script.tv_off
         {% endif %}
+    - service_template: >-
+        {% if is_state('switch.tv2_template', 'on') %}
+          script.tv2_off
+        {% endif %}
     - delay: '00:00:03'
     - service: automation.turn_on
       entity_id:
@@ -141,6 +159,18 @@ tv_mute_toggle:
         entity_id: media_player.sony_bravia_tv
         is_volume_muted: >-
           {% if state_attr('media_player.sony_bravia_tv', 'is_volume_muted') == false %}
+          true
+          {% else %}
+          false
+          {% endif %}
+
+tv2_mute_toggle:
+  sequence:
+    - service: media_player.volume_mute
+      data_template:
+        entity_id: media_player.samsung_tv_remote
+        is_volume_muted: >-
+          {% if state_attr('media_player.samsung_tv_remote', 'is_volume_muted') == false %}
           true
           {% else %}
           false
