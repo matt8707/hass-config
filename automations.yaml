@@ -195,25 +195,6 @@
         entity_id: input_number.fullykiosk_brightness_slider
         value: "{{ (state_attr('sensor.fullykiosk', 'screenBrightness') | int / 2.55) | round(0) }}"
 
-- alias: fullykiosk_automatic_brightness
-  trigger:
-    - platform: state
-      entity_id: sun.sun
-      to: above_horizon
-    - platform: state
-      entity_id: sun.sun
-      to: below_horizon
-  action:
-    - service_template: input_number.set_value
-      data_template:
-        entity_id: input_number.fullykiosk_brightness_slider
-        value: >
-          {% if is_state('sun.sun', 'above_horizon') %}
-            200
-          {% else %}
-            100
-          {% endif %}
-
 - alias: update_imac_sensors
   trigger:
     - platform: state
@@ -531,7 +512,6 @@
       media_content_type: music
 
 - alias: turn_on_fullykiosk_screen
-  initial_state: 'false'
   trigger:
   - platform: state
     entity_id: input_boolean.motion_hall
@@ -545,6 +525,20 @@
     - service: switch.turn_on
       entity_id: switch.fullykiosk_screen
 
+- alias: turn_off_fullykiosk_screen
+  trigger:
+  - platform: state
+    entity_id: light.hall
+    from: 'on'
+    to: 'off'
+  condition:
+    - condition: state
+      entity_id: sensor.fullykiosk_plugged
+      state: 'Ja'
+  action:
+    - service: switch.turn_off
+      entity_id: switch.fullykiosk_screen
+
 - alias: clear_log_filesize
   trigger:
   - platform: numeric_state
@@ -552,3 +546,27 @@
     above: 50
   action:
   - service: shell_command.clear_logs
+
+- alias: clear_plex_poster
+  trigger:
+    platform: time_pattern
+    minutes: "/15"
+  action:
+  - service: shell_command.clear_plex_poster
+
+- alias: fullykiosk_automatic_brightness
+  trigger:
+    - platform: state
+      entity_id: switch.fullykiosk_screen
+      from: 'off'
+      to: 'on'
+  action:
+    - service_template: input_number.set_value
+      data_template:
+        entity_id: input_number.fullykiosk_brightness_slider
+        value: >
+          {% if is_state('sun.sun', 'above_horizon') %}
+            60
+          {% else %}
+            20
+          {% endif %}

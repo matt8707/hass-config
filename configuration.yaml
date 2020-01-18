@@ -238,6 +238,7 @@ shell_command:
 
   ssh_motion_hall_notify: !secret ssh_motion_hall_notify
   clear_logs: truncate -s 0 /config/home-assistant.log
+  clear_plex_poster: rm -r /config/www/plex/*
   imac_start_time_machine_backup: !secret imac_start_time_machine_backup
 
   monitorer_volume_slider: !secret monitorer_volume_slider
@@ -663,25 +664,28 @@ sensor:
         entity_id: sensor.time
         friendly_name: Tvätta
         value_template: >-
-          {% set calendar_tvattid = state_attr('calendar.tvatta', 'start_time') %}
-          {% set nu_tid = now() %}
+          {% if state_attr('calendar.tvatta', 'start_time') ==  null or state_attr('calendar.tvatta', 'start_time') == None %} 
+          {% else %} 
+            {% set calendar_tvattid = state_attr('calendar.tvatta', 'start_time') %}
+            {% set nu_tid = now() %}
 
-          {% set dag = strptime(calendar_tvattid, "%Y-%m-%d %H:%M:%S").strftime("%A") | replace('Monday', 'Måndag') | replace('Tuesday', 'Tisdag') | replace('Wednesday', 'Onsdag') | replace('Thursday', 'Torsdag') | replace('Friday', 'Fredag') | replace('Saturday', 'Lördag') | replace('Sunday', 'Söndag') %}
-          {% set tid = as_timestamp(calendar_tvattid) | timestamp_custom('%H:%M') %}
+            {% set dag = strptime(calendar_tvattid, "%Y-%m-%d %H:%M:%S").strftime("%A") | replace('Monday', 'Måndag') | replace('Tuesday', 'Tisdag') | replace('Wednesday', 'Onsdag') | replace('Thursday', 'Torsdag') | replace('Friday', 'Fredag') | replace('Saturday', 'Lördag') | replace('Sunday', 'Söndag') %}
+            {% set tid = as_timestamp(calendar_tvattid) | timestamp_custom('%H:%M') %}
 
-          {% set sub_timmar = as_timestamp(calendar_tvattid) | timestamp_custom('%H') | int / 24 %}
-          {% set count = (as_timestamp(calendar_tvattid) - as_timestamp(nu_tid)) / 86400 - sub_timmar %}
+            {% set sub_timmar = as_timestamp(calendar_tvattid) | timestamp_custom('%H') | int / 24 %}
+            {% set count = (as_timestamp(calendar_tvattid) - as_timestamp(nu_tid)) / 86400 - sub_timmar %}
 
-          {% if count <= -1.0 %}
-            Sätt ny tvättid...
-          {% elif count <= 0.0 %}
-            {{'\U0001F4A6'}} Tvätt idag klockan {{ tid }}
-          {% elif count <= 1.0 %}
-            Tvätt imorgon klockan {{ tid }}
-          {% elif count <= 2.0 %}
-            Tvätt i övermorgon klockan {{ tid }}
-          {% else %}
-            Tvätt om {{ (count + sub_timmar) | round }} dagar på {{ dag }} kl {{ tid }}
+            {% if count <= -1.0 %}
+              Sätt ny tvättid...
+            {% elif count <= 0.0 %}
+              {{'\U0001F4A6'}} Tvätt idag klockan {{ tid }}
+            {% elif count <= 1.0 %}
+              Tvätt imorgon klockan {{ tid }}
+            {% elif count <= 2.0 %}
+              Tvätt i övermorgon klockan {{ tid }}
+            {% else %}
+              Tvätt om {{ (count + sub_timmar) | round }} dagar på {{ dag }} kl {{ tid }}
+            {% endif %}
           {% endif %}
 
       mattias_last_changed:

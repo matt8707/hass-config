@@ -136,8 +136,7 @@ views:
               {% endif %}
 
 
-              {% if state_attr('calendar.tvatta', 'start_time') ==  null or state_attr('calendar.tvatta', 'start_time') == None %} 
-              {% else %} {{ states('sensor.tvatta_countdown') }} {% endif %}
+              {{ states('sensor.tvatta_countdown') }}
 
 
               {% if states('sensor.imac_get_ip') == states('sensor.myip') %} {{ '\u26A0\uFE0F' }} <b>VPN</b> verkar vara nere på datorn!{% endif %}

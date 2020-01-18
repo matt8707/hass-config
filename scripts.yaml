@@ -106,18 +106,26 @@ auto_stang_allt:
     - service_template: >-
         {% if is_state('switch.dator_template', 'on') %}
           script.dator_off
+        {% else %}
+          script.dummy
         {% endif %}
     - service_template: >-
         {% if is_state('switch.playstation_template', 'on') %}
           script.playstation_off
+        {% else %}
+          script.dummy
         {% endif %}
     - service_template: >-
         {% if is_state('switch.tv_template', 'on') %}
           script.tv_off
+        {% else %}
+          script.dummy
         {% endif %}
     - service_template: >-
         {% if is_state('switch.tv2_template', 'on') %}
           script.tv2_off
+        {% else %}
+          script.dummy
         {% endif %}
     - delay: '00:00:03'
     - service: automation.turn_on
