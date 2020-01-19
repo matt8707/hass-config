@@ -104,7 +104,9 @@ auto_stang_allt:
     - service: switch.turn_off
       entity_id: switch.wemo_monitorer
     - service_template: >-
-        {% if is_state('switch.dator_template', 'on') %}
+        {% if is_state('input_boolean.ignore_auto_stang_allt', 'on') %}
+          script.toast_dator_locked
+        {% elif is_state('switch.dator_template', 'on') %}
           script.dator_off
         {% else %}
           script.dummy
@@ -143,6 +145,13 @@ reference_headphones:
     - service: shell_command.reference_click
     - service: shell_command.reference_kill
     - service: shell_command.reference_headphones
+
+toast_dator_locked:
+  sequence:
+    - service: browser_mod.toast
+      data:
+        duration: 8000
+        message: 'Dator är låst från att stängas av...'
 
 homeassistant_restart:
   sequence:
