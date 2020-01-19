@@ -214,6 +214,12 @@
       to: 'off'
       for:
         seconds: 30
+    - platform: state
+      entity_id: switch.fullykiosk_screensaver
+      from: 'off'
+      to: 'on'
+      for:
+        seconds: 30
   action:
     - service: browser_mod.close_popup
       data:
@@ -467,6 +473,9 @@
     - condition: state
       entity_id: switch.fullykiosk_screen
       state: 'on'
+    - condition: state
+      entity_id: switch.fullykiosk_screensaver
+      state: 'off'
   action:
   - service: media_player.play_media
     data:
@@ -486,6 +495,9 @@
     - condition: state
       entity_id: switch.fullykiosk_screen
       state: 'on'
+    - condition: state
+      entity_id: switch.fullykiosk_screensaver
+      state: 'off'
   action:
   - service: media_player.play_media
     data:
@@ -504,6 +516,9 @@
     - condition: state
       entity_id: switch.fullykiosk_screen
       state: 'on'
+    - condition: state
+      entity_id: switch.fullykiosk_screensaver
+      state: 'off'
   action:
   - service: media_player.play_media
     data:
@@ -524,6 +539,8 @@
   action:
     - service: switch.turn_on
       entity_id: switch.fullykiosk_screen
+    - service: switch.turn_off
+      entity_id: switch.fullykiosk_screensaver
 
 - alias: turn_off_fullykiosk_screen
   trigger:
@@ -536,8 +553,8 @@
       entity_id: sensor.fullykiosk_plugged
       state: 'Ja'
   action:
-    - service: switch.turn_off
-      entity_id: switch.fullykiosk_screen
+    - service: switch.turn_on
+      entity_id: switch.fullykiosk_screensaver
 
 - alias: clear_log_filesize
   trigger:
@@ -560,6 +577,10 @@
       entity_id: switch.fullykiosk_screen
       from: 'off'
       to: 'on'
+    - platform: state
+      entity_id: switch.fullykiosk_screensaver
+      from: 'on'
+      to: 'off'
   action:
     - service_template: input_number.set_value
       data_template:
@@ -570,3 +591,94 @@
           {% else %}
             20
           {% endif %}
+
+############################   TEST   ############################
+
+- alias: timer_not_home_mattias
+  trigger:
+  - platform: state 
+    entity_id: device_tracker.mattias
+    from: 'home'
+    to: 'not_home'
+    for:
+      minutes: 30
+  action:
+    service: input_boolean.turn_on
+    entity_id: input_boolean.timer_not_home_mattias
+
+- alias: timer_not_home_sanja
+  trigger:
+    platform: state 
+    entity_id: device_tracker.sanja
+    from: 'home'
+    to: 'not_home'
+    for:
+      minutes: 30
+  action:
+    service: input_boolean.turn_on
+    entity_id: input_boolean.timer_not_home_sanja
+
+- alias: timer_welcome_home
+  trigger:
+  - platform: state
+    entity_id: input_boolean.motion_hall
+    from: 'off'
+    to: 'on'
+  condition: 
+    condition: and
+    conditions: 
+      - condition: state
+        entity_id: input_boolean.timer_not_home_mattias
+        state: 'on'
+      - condition: state
+        entity_id: input_boolean.timer_not_home_sanja
+        state: 'on'
+  action:
+    - delay:
+        seconds: 3
+    - service: script.turn_on
+      entity_id: script.auto_hemma
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.timer_not_home_mattias
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.timer_not_home_sanja
+
+- alias: timer_home_mattias
+  trigger:
+  - platform: state 
+    entity_id: device_tracker.mattias
+    from: 'not_home'
+    to: 'home'
+    for:
+      minutes: 3
+  action:
+    service: input_boolean.turn_off
+    entity_id: input_boolean.timer_not_home_mattias
+
+- alias: timer_home_sanja
+  trigger:
+    platform: state 
+    entity_id: device_tracker.sanja
+    from: 'not_home'
+    to: 'home'
+    for:
+      minutes: 3
+  action:
+    service: input_boolean.turn_off
+    entity_id: input_boolean.timer_not_home_sanja
+
+############################   TEST   ############################
+
+- alias: fullykiosk_update_screensaver_status
+  trigger:
+    - platform: state
+      entity_id: switch.fullykiosk_screensaver
+      from: 'off'
+      to: 'on'
+    - platform: state
+      entity_id: switch.fullykiosk_screensaver
+      from: 'on'
+      to: 'off'
+  action:
+    - service: homeassistant.update_entity
+      entity_id: sensor.fullykiosk
