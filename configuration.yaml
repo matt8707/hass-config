@@ -58,7 +58,7 @@ browser_mod:
   devices:
     a64202bc-052dc584:
       name: imac_chrome
-    c1f5f9e5-9091b0b6:
+    0642b2db-c56caa9a:
       name: tablet
 
 homekit:
@@ -94,6 +94,9 @@ input_boolean:
   loading_playstation:
 
   appletv_notitle:
+  ignore_auto_stang_allt:
+  timer_not_home_mattias:
+  timer_not_home_sanja:
 
   motion_hall:
   motion_garderob:
@@ -209,6 +212,18 @@ switch:
         turn_off:
           service: script.auto_hemma
 
+      fullykiosk_screensaver:
+        value_template: >-
+          {% if state_attr('sensor.fullykiosk', 'currentFragment') == 'screensaver' %}
+            on
+          {% else %}
+            off
+          {% endif %}
+        turn_on:
+          service: shell_command.fullykiosk_screensaver_on
+        turn_off:
+          service: shell_command.fullykiosk_screensaver_off
+
   - platform: wake_on_lan
     mac: !secret wake_on_lan_mac_address
     name: iMac
@@ -230,6 +245,8 @@ shell_command:
   fullykiosk_brightness_slider: !secret fullykiosk_brightness_slider
   fullykiosk_load_start_url: !secret fullykiosk_load_start_url
   fullykiosk_restart_app: !secret fullykiosk_restart_app
+  fullykiosk_screensaver_on: !secret fullykiosk_screensaver_on
+  fullykiosk_screensaver_off: !secret fullykiosk_screensaver_off
 
   reference_click: !secret reference_click
   reference_kill: !secret reference_kill
@@ -431,7 +448,7 @@ sensor:
   - platform: rest
     name: fullykiosk
     json_attributes:
-      ['batteryLevel', 'screenBrightness', 'motionDetectorState', 'plugged', 'deviceName', 'deviceModel', 'lastAppStart', 'internalStorageFreeSpace', 'internalStorageTotalSpace', 'ramFreeMemory', 'ramTotalMemory']
+      ['batteryLevel', 'screenBrightness', 'motionDetectorState', 'plugged', 'deviceName', 'deviceModel', 'lastAppStart', 'internalStorageFreeSpace', 'internalStorageTotalSpace', 'ramFreeMemory', 'ramTotalMemory', 'currentFragment']
     resource: !secret fullykiosk_rest_resource
     value_template: '{{ value_json.isScreenOn }}'
 
