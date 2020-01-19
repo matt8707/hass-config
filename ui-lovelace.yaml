@@ -1875,9 +1875,21 @@ views:
                                   service: update_entity
                                   data:
                                     entity_id: sensor.imac_time_machine
-                              - entity: script.imac_start_time_machine_backup
-                                icon: 'mdi:backup-restore'
-                                name: Säkerhetskopiera
+#                              - entity: script.imac_start_time_machine_backup
+#                                icon: 'mdi:backup-restore'
+#                                name: Säkerhetskopiera
+                              - entity: input_boolean.ignore_auto_stang_allt
+                                icon: 'mdi:lock-alert'
+                                name: 'Ignorera "Stäng allt"'
+                                style: |
+                                  :host {
+                                  --paper-item-icon-color: 
+                                   {% if is_state('input_boolean.ignore_auto_stang_allt', 'on') %}
+                                      #3182b7
+                                   {% else %}
+                                     #9da0a2
+                                   {% endif %};
+                                   }
                             style: |
                               ha-card {
                                 margin-bottom: -1em;
