@@ -65,7 +65,8 @@ homekit:
   auto_start: false
   filter:
     include_entities:
-      ['switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 'media_player.sony_bravia_tv', 'media_player.samsung_tv_remote', 'switch.playstation_template', 'input_boolean.motion_hall', 'input_boolean.motion_garderob', 'input_boolean.motion_badrum']
+      ['switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 'media_player.sony_bravia_tv', 'media_player.samsung_tv_remote', 'switch.playstation_template', 'input_boolean.motion_hall', 
+      'input_boolean.motion_garderob', 'input_boolean.motion_badrum', 'switch.samsung_6_series_50', 'switch.fullykiosk_screen', 'switch.fullykiosk_screensaver', 'script.auto_hemma', 'script.auto_stang_allt']
   entity_config:
     switch.wemo_flakt:
       name: Fläkt
@@ -82,10 +83,59 @@ homekit:
       name: Samsung Tv
       feature_list:
         - feature: on_off
-    media_player.playstation_4:
+    switch.playstation_template:
       name: Playstation
-      feature_list:
-        - feature: on_off
+    script.auto_hemma:
+      name: Hemma
+    script.auto_stang_allt:
+      name: Stäng allt
+
+cloud:
+  google_actions:
+    filter:
+      include_entities:
+        ['switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 'media_player.sony_bravia_tv', 'media_player.samsung_tv_remote', 'switch.playstation_template', 
+        'media_player.playstation_4', 'switch.fullykiosk_screen', 'switch.fullykiosk_screensaver', 'script.auto_hemma', 'script.auto_stang_allt']
+    entity_config:
+      switch.wemo_flakt:
+        name: Fläkt
+        aliases:
+          ['Fläkt', 'Fläkten']
+        room: Sovrum
+      switch.wemo_monitorer:
+        name: Monitorer
+        room: Studio
+      switch.dator_template:
+        name: Dator
+        aliases:
+          ['Dator', 'Datorn', 'Datan', 'iMac']
+        room: Studio
+      media_player.sony_bravia_tv:
+        name: Tv
+        aliases:
+          ['Tv', 'Sony Tv', 'Sony Bravia Tv', 'Bravia Tv', 'Vardagsrums Tv', 'Vardagsrums Teven', 'Tv Vardagsrum']
+        room: Vardagsrum
+      media_player.samsung_tv_remote:
+        name: Samsung Tv
+        aliases:
+          ['Samsung Tv', 'Sovrums Tv', 'Sovrums Teven', 'Tv Sovrum']
+        room: Sovrum
+      switch.playstation_template:
+        name: Playstation
+        aliases:
+          ['Playstation', 'PS4', 'Playstation 4']
+        room: Vardagsrum
+      script.auto_hemma:
+        name: Hemma
+        aliases:
+          ['Hemma', 'Auto hemma', 'Jag är hemma']
+        room: Hall
+      script.auto_stang_allt:
+        name: Stäng allt
+        aliases:
+          ['Stäng allt', 'Auto Stäng allt']
+        room: Hall
+
 
 input_boolean:
   loading_dator:
