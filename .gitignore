@@ -1,6 +1,5 @@
 
 .google.token
-.HA_VERSION
 .homekit.state
 .ps4-games.json
 .spotify-token-cache
@@ -21,3 +20,10 @@ www/trash
 home-assistant_v2.db-wal
 home-assistant_v2.db-shm
 .cloud
+custom_components/apple_tv/*
+custom_components/browser_mod/*
+custom_components/hacs/*
+custom_components/iphonedetect/*
+custom_components/plex_recently_added/*
+custom_components/rpi_power/*
+custom_components/samsungtv_custom/*
