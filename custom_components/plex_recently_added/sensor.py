@@ -309,7 +309,7 @@ def image_url(url_elements, cert_check, img):
                                                                    img,
                                                                    token),
                                                                    safe='')
-    url = ('http{0}://{1}:{2}/photo/:/transcode?width=200&height=200'
+    url = ('http{0}://{1}:{2}/photo/:/transcode?width=700&height=700'
            '&minSize=1&url={3}&X-Plex-Token={4}').format(ssl, host, port,
                                                          encoded, token)
     """Check if image exists"""

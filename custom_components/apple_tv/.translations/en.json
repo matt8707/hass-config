@@ -4,11 +4,15 @@
     "flow_title": "Apple TV: {name}",
     "step": {
       "user": {
-        "title": "Connect to the device",
-        "description": "Enter a device name, IP-address or unique identifier.{devices}",
+        "title": "Add new device",
+        "description": "Enter a device name, IP-address or unique identifier. In case your device is not shown, try using its IP-address.\n\nIf any devices were automatically discovered on your network, they are shown below.\n\n{devices}",
         "data": {
-          "device_id": "Device ID"
+          "device_id": "Device"
         }
+      },
+      "reconfigure": {
+        "title": "Device Reconfiguration",
+        "description": "This Apple TV is experiencing connection problems and must be reconfigured. Please continue to finish the process."
       },
       "pair_with_pin": {
         "title": "Pair with device",
@@ -22,12 +26,12 @@
         "description": "Pairing is required for protocol `{protocol}`. Please enter PIN {pin} on device to continue."
       },
       "service_problem": {
-        "description": "A problem occurred while pairing protocol `{protocol}`. It will be ignored.",
-        "title": "Failed to add protocol"
+        "title": "Failed to add protocol",
+        "description": "A problem occurred while pairing protocol `{protocol}`. It will be ignored."
       },
       "confirm": {
-        "description": "Do you want to setup the Apple TV named `{name}` in Home Assistant?",
-        "title": "Discovered Apple TV"
+        "title": "Discovered Apple TV",
+        "description": "Do you want to setup the Apple TV named `{name}` in Home Assistant?"
       },
       "zeroconf": {
         "lookup_id_failed": "Failed to look up device id for device."
@@ -35,12 +39,14 @@
     },
     "error": {
       "device_not_found": "Device could not be found on network.",
+      "device_already_configured": "This device has already been configured. Please choose another device.",
       "no_usable_service": "A device was found but could not identify any way to establish a connection.",
       "unknown": "Unexpected error",
       "auth": "Authentication error (invalid PIN?)"
     },
     "abort": {
-      "already_configured": "Device is already configured",
+      "already_configured": "Device is already configured!",
+      "updated_configuration": "Updated existing configuration!",
       "no_credentials": "No credentials available for device",
       "unrecoverable_error": "An unrecoverable occurred",
       "device_did_not_pair": "No attempt to finish pairing process was made from the device.",

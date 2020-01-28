@@ -31,7 +31,7 @@ from homeassistant.const import (
 )
 import homeassistant.util.dt as dt_util
 
-from .const import DOMAIN, KEY_MANAGER, CONF_IDENTIFIER
+from .const import DOMAIN, CONF_IDENTIFIER
 
 _LOGGER = logging.getLogger(__name__)
 

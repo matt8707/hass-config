@@ -4,7 +4,7 @@ from homeassistant.core import callback
 from homeassistant.const import CONF_NAME
 from homeassistant.components import remote
 
-from .const import DOMAIN, KEY_MANAGER, CONF_IDENTIFIER
+from .const import DOMAIN, CONF_IDENTIFIER
 
 
 PARALLEL_UPDATES = 0
