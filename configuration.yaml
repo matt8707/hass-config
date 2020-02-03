@@ -8,19 +8,13 @@ homeassistant:
   customize: !include customize.yaml
   whitelist_external_dirs:
     - '/config/'
-#  auth_providers:
-#    - type: trusted_networks
-#      trusted_networks:
-#        - 192.168.0.0/24
-#        - 192.168.0.10
-#      allow_bypass_login: true
 
 default_config:
 
 frontend:
   themes: !include themes.yaml
   extra_html_url:
-    - /local/custom-icons.html
+    - /local/custom-icons_v01.html
 
 lovelace:
   mode: yaml
@@ -33,40 +27,49 @@ logger:
   default: warning
   logs:
     braviarc.braviarc: fatal
-    homeassistant.components.sensor: fatal
-    homeassistant.components.rest.sensor: fatal
-    homeassistant.components.command_line.sensor: fatal
-    homeassistant.components.braviatv.media_player: fatal
     homeassistant.components.websocket_api: fatal
-    homeassistant.components.input_number: fatal
-    homeassistant.components.template.sensor: fatal
+    homeassistant.components.command_line.sensor: fatal
+#    homeassistant.components.sensor: fatal
+#    homeassistant.components.rest.sensor: fatal
+#    homeassistant.components.braviatv.media_player: fatal
+#    homeassistant.components.input_number: fatal
+#    homeassistant.components.template.sensor: fatal
+#    pyatv: debug
+#    custom_components.apple_tv: debug
 
 recorder:
   purge_keep_days: 7
   include:
     entities: 
-      ['light.belysning', 'light.taklampor', 'light.fonsterlampa', 'media_player.sony_bravia_tv', 'media_player.samsung_tv_remote', 'media_player.playstation_4', 'media_player.vardagsrum_2', 'light.datorlampa', 'switch.dator_template', 'switch.wemo_monitorer', 
-      'light.badrum', 'light.taklampa', 'light.kladkammare_2', 'light.hall', 'light.mattias', 'light.sanja', 'switch.wemo_flakt', 'sensor.hall_temperature', 'device_tracker.mattias', 'device_tracker.sanja', 
-      'binary_sensor.sensor_hall_motion', 'binary_sensor.sensor_badrum_motion', 'binary_sensor.sensor_kladkammare_motion', 'binary_sensor.wemo_motion', 'sensor.sensor_hall_temperature', 'sensor.tvatta_countdown',
-      'sensor.imac_cpu_per', 'sensor.imac_macintosh_hd', 'sensor.imac_mem_per', 'sensor.imac_system_ssd', 'sensor.imac_time_machine', 'sensor.synology_dsm_network_up', 'sensor.synology_dsm_network_down', 'sensor.printer_color', 'sensor.printer_black']
+      ['light.belysning', 'light.taklampor', 'light.fonsterlampa', 'media_player.sony_bravia_tv', 'media_player.samsung_tv_remote', 
+      'media_player.playstation_4', 'media_player.vardagsrum', 'light.datorlampa', 'switch.dator_template', 'switch.wemo_monitorer', 
+      'light.badrum', 'light.taklampa', 'light.kladkammare_2', 'light.hall', 'light.mattias', 'light.sanja', 'switch.wemo_flakt', 
+      'sensor.hall_temperature', 'device_tracker.mattias', 'device_tracker.sanja', 'binary_sensor.sensor_hall_motion', 
+      'binary_sensor.sensor_badrum_motion', 'binary_sensor.sensor_kladkammare_motion', 'binary_sensor.wemo_motion', 
+      'sensor.sensor_hall_temperature', 'sensor.tvatta_countdown', 'sensor.imac_cpu_per', 'sensor.imac_macintosh_hd', 
+      'sensor.imac_mem_per', 'sensor.imac_system_ssd', 'sensor.imac_time_machine', 'sensor.synology_dsm_network_up', 
+      'sensor.synology_dsm_network_down', 'sensor.printer_color', 'sensor.printer_black']
 
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
+sensor: !include sensor.yaml
 
 browser_mod:
   devices:
-    a64202bc-052dc584:
+    918296e3-e2a54976:
       name: imac_chrome
-    0642b2db-c56caa9a:
+    c2080cea-6627150a:
       name: tablet
 
 homekit:
   auto_start: false
   filter:
     include_entities:
-      ['switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 'media_player.sony_bravia_tv', 'media_player.samsung_tv_remote', 'switch.playstation_template', 'input_boolean.motion_hall', 
-      'input_boolean.motion_garderob', 'input_boolean.motion_badrum', 'switch.samsung_6_series_50', 'switch.fullykiosk_screen', 'switch.fullykiosk_screensaver', 'script.auto_hemma', 'script.auto_stang_allt']
+      ['switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 'media_player.sony_bravia_tv', 
+      'media_player.samsung_tv_remote', 'switch.playstation_template', 'input_boolean.motion_hall', 
+      'input_boolean.motion_garderob', 'input_boolean.motion_badrum', 'switch.samsung_6_series_50', 
+      'switch.fullykiosk_screen', 'switch.fullykiosk_screensaver', 'script.auto_hemma', 'script.auto_stang_allt']
   entity_config:
     switch.wemo_flakt:
       name: Fläkt
@@ -94,8 +97,9 @@ cloud:
   google_actions:
     filter:
       include_entities:
-        ['switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 'media_player.sony_bravia_tv', 'media_player.samsung_tv_remote', 'switch.playstation_template', 
-        'media_player.playstation_4', 'switch.fullykiosk_screen', 'switch.fullykiosk_screensaver', 'script.auto_hemma', 'script.auto_stang_allt']
+        ['switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 'media_player.sony_bravia_tv', 
+        'media_player.samsung_tv_remote', 'switch.playstation_template', 'media_player.playstation_4', 
+        'switch.fullykiosk_screen', 'switch.fullykiosk_screensaver', 'script.auto_hemma', 'script.auto_stang_allt']
     entity_config:
       switch.wemo_flakt:
         name: Fläkt
@@ -136,6 +140,10 @@ cloud:
           ['Stäng allt', 'Auto Stäng allt']
         room: Hall
 
+timer:
+  laundry:
+    duration: '01:00:00'
+    icon: 'mdi:washing-machine'
 
 input_boolean:
   loading_dator:
@@ -143,15 +151,19 @@ input_boolean:
   loading_samsungtv:
   loading_playstation:
 
-  appletv_notitle:
   ignore_auto_stang_allt:
-  timer_not_home_mattias:
-  timer_not_home_sanja:
+  scenes_tip_visibility:
+  laundry_timer_visibility:
 
   motion_hall:
   motion_garderob:
   motion_badrum:
   motion_vardagsrum:
+
+  active_media_appletv_var:
+  active_media_appletv_sov:
+  active_media_playstation:
+  active_media_google_nest:
 
 input_number:
   monitorer_volume:
@@ -159,8 +171,8 @@ input_number:
     icon: 'mdi:volume-high'
     initial: 20
     min: 7
-    max: 50
-    step: 1
+    max: 75
+    step: 2
     unit_of_measurement: "%"
 
   fullykiosk_brightness_slider:
@@ -201,6 +213,12 @@ input_select:
     options:
       - Inte igång...
     icon: mdi:gamepad
+
+  roborock_fan_speed:
+    name: Rengöringsläge
+    options:
+      ['Tyst', 'Standard','Medium', 'Turbo']
+    icon: mdi:fan
 
 switch:
   - platform: switchbot
@@ -274,13 +292,52 @@ switch:
         turn_off:
           service: shell_command.fullykiosk_screensaver_off
 
+      media_play_pause_vardagsrum:
+        value_template: "{% if is_state('media_player.vardagsrum', 'playing') %}on{% else %}off{% endif %}"
+        turn_on:
+          service: media_player.media_play
+          entity_id: media_player.vardagsrum
+        turn_off:
+          service: media_player.media_pause
+          entity_id: media_player.vardagsrum
+
+      media_play_pause_sovrum:
+        value_template: "{% if is_state('media_player.sovrum', 'playing') %}on{% else %}off{% endif %}"
+        turn_on:
+          service: media_player.media_play
+          entity_id: media_player.sovrum
+        turn_off:
+          service: media_player.media_pause
+          entity_id: media_player.sovrum
+
+      media_play_pause_playstation_4:
+        value_template: "{% if is_state('media_player.playstation_4', 'playing') %}on{% else %}off{% endif %}"
+        turn_on:
+          service: ps4.send_command
+          data:
+            entity_id: media_player.playstation_4
+            command: ps
+        turn_off:
+          service: ps4.send_command
+          data:
+            entity_id: media_player.playstation_4
+            command: ps
+
+      media_play_pause_google_nest_mini:
+        value_template: "{% if is_state('media_player.google_nest_mini', 'playing') %}on{% else %}off{% endif %}"
+        turn_on:
+          service: media_player.media_play
+          entity_id: media_player.google_nest_mini
+        turn_off:
+          service: media_player.media_pause
+          entity_id: media_player.google_nest_mini
+
   - platform: wake_on_lan
     mac: !secret wake_on_lan_mac_address
     name: iMac
     host: !secret wake_on_lan_host
 
 shell_command:
-
   # Setup on macos
   # System Preferences > Sharing > Remote Login
   # ssh root@hassio.local
@@ -291,6 +348,12 @@ shell_command:
   imac_turn_off: !secret imac_turn_off
   imac_sleep: !secret imac_sleep
   imac_restart: !secret imac_restart
+  notify_motion_hall: !secret notify_motion_hall
+  notify_laundry: !secret notify_laundry
+
+  monitorer_volume_slider: !secret monitorer_volume_slider
+  monitorer_mute_off: !secret monitorer_mute_off
+  monitorer_mute_on: !secret monitorer_mute_on
 
   fullykiosk_brightness_slider: !secret fullykiosk_brightness_slider
   fullykiosk_load_start_url: !secret fullykiosk_load_start_url
@@ -303,18 +366,8 @@ shell_command:
   reference_monitors: !secret reference_monitors
   reference_headphones: !secret reference_headphones
 
-  ssh_motion_hall_notify: !secret ssh_motion_hall_notify
   clear_logs: truncate -s 0 /config/home-assistant.log
   clear_plex_poster: rm -r /config/www/plex/*
-  imac_start_time_machine_backup: !secret imac_start_time_machine_backup
-
-  monitorer_volume_slider: !secret monitorer_volume_slider
-
-  monitorer_volume_up: !secret monitorer_volume_up
-  monitorer_volume_down: !secret monitorer_volume_down
-
-  monitorer_mute_off: !secret monitorer_mute_off
-  monitorer_mute_on: !secret monitorer_mute_on
 
 group:
   automation_system_reference:
@@ -323,10 +376,47 @@ group:
     entities:
       ['automation.reference_monitors', 'automation.reference_headphones']
 
+  active_media_plex_recent:
+    entities:
+      ['input_boolean.active_media_appletv_var', 'input_boolean.active_media_appletv_sov', 
+      'input_boolean.active_media_playstation', 'input_boolean.active_media_google_nest']
+
+  active_media_appletv_var:
+    entities:
+      ['input_boolean.active_media_appletv_sov', 'input_boolean.active_media_playstation', 
+      'input_boolean.active_media_google_nest']
+
+  active_media_appletv_sov:
+    entities:
+      ['input_boolean.active_media_appletv_var', 'input_boolean.active_media_playstation', 
+      'input_boolean.active_media_google_nest']
+
+  active_media_playstation:
+    entities:
+      ['input_boolean.active_media_appletv_var', 'input_boolean.active_media_appletv_sov', 
+      'input_boolean.active_media_google_nest']
+
+  active_media_google_nest:
+    entities:
+      ['input_boolean.active_media_appletv_var', 'input_boolean.active_media_appletv_sov', 
+      'input_boolean.active_media_playstation']
+
+  active_media_automations:
+    entities:
+      ['automation.active_media_appletv_var_playing', 'automation.active_media_appletv_var_idle', 
+      'automation.active_media_appletv_sov_playing', 'automation.active_media_appletv_sov_idle', 
+      'automation.active_media_playstation_playing', 'automation.active_media_playstation_standby', 
+      'automation.active_media_google_nest_playing', 'automation.active_media_google_nest_off']
+
 hacs:
   token: !secret hacs_token
 
 wemo:
+
+vacuum:
+  - platform: xiaomi_miio
+    host: !secret roborock_host
+    token: !secret roborock_token
 
 light:
   - platform: group
@@ -342,8 +432,9 @@ light:
   - platform: group
     name: alla_lampor_utom_hall
     entities:
-      ['light.fonsterlampa', 'light.tvlampa', 'light.golvlampa', 'light.datorlampa', 'light.vask_hoger', 'light.vask_vanster', 
-      'light.kladkammare_2', 'light.taklampa', 'light.mattias', 'light.sanja', 'light.spot_1', 'light.spot_2']
+      ['light.fonsterlampa', 'light.tvlampa', 'light.golvlampa', 'light.datorlampa', 
+      'light.vask_hoger', 'light.vask_vanster', 'light.kladkammare_2', 'light.taklampa', 
+      'light.mattias', 'light.sanja', 'light.spot_1', 'light.spot_2']
 
 media_player:
   - platform: braviatv
@@ -385,561 +476,3 @@ binary_sensor:
   - platform: ping
     host: secret ping_iphone_x
     name: iPhone X
-
-sensor:
-  - platform: snmp
-    host: !secret synologydsm_host
-    community: public
-    name: Drifttid
-    baseoid: !secret synologydsm_baseoid
-    value_template: >
-      {% set uptime = value %}
-      {% set days = ((uptime | int) / 8640000) | int %}
-      {% set hours = ((uptime | int) / 360000) | int %}
-      {% set minutes = ((uptime | int) / 6000) | int %}
-      {% if days >= 2 %}{{ days }} dagar
-      {% elif days >= 1 %}{{ days }} dag
-      {% elif minutes < 1 %}Mindre än 1 minut
-      {% elif minutes <= 1 %}{{ minutes }} minut
-      {% elif minutes < 60 %}{{ minutes }} minuter
-      {% elif hours <= 1 %}{{ hours }} timme
-      {% elif hours < 24 %}{{ hours }} timmar
-      {% endif %}
-
-  - platform: plex_recently_added
-    token: !secret plex_recently_added_token
-    host: !secret plex_recently_added_host
-    port: !secret plex_recently_added_port
-    img_dir: '/plex/'
-    max: 1
-
-  - platform: command_line
-    name: imac_get_ip
-    scan_interval: 900
-    command: !secret imac_get_ip
-
-  - platform: command_line
-    name: imac_system_ssd
-    scan_interval: 900
-    unit_of_measurement: "%"
-    command: !secret imac_system_ssd
-
-  - platform: command_line
-    name: imac_macintosh_hd
-    scan_interval: 900
-    unit_of_measurement: "%"
-    command: !secret imac_macintosh_hd
-
-  - platform: command_line
-    name: imac_time_machine
-    scan_interval: 900
-    unit_of_measurement: "%"
-    command: !secret imac_time_machine
-
-  - platform: command_line
-    name: imac_cpu_per
-    scan_interval: 900
-    unit_of_measurement: "%"
-    command: !secret imac_cpu_per
-
-  - platform: command_line
-    name: imac_mem_per
-    scan_interval: 900
-    unit_of_measurement: "%"
-    command: !secret imac_mem_per
-
-  - platform: command_line
-    name: getvolume
-    scan_interval: 900
-    command: !secret monitorer_update_volume
-
-  - platform: command_line
-    name: monitorer_mute_check
-    scan_interval: 900
-    command: !secret monitorer_mute_check
-
-  - platform: command_line
-    name: printer_color
-    scan_interval: 21600
-    command: !secret printer_color
-
-  - platform: command_line
-    name: printer_black
-    scan_interval: 21600
-    command: !secret printer_black
-
-  - platform: command_line
-    name: printer_status
-    scan_interval: 10
-    command: !secret printer_status
-
-  - platform: command_line
-    name: macos_uptime
-    scan_interval: 120
-    command: !secret macos_uptime
-
-  - platform: version
-    name: hass_version_installed
-
-  - platform: version
-    name: hass_version_latest
-    beta: false
-    image: raspberrypi3
-    source: hassio
-
-  - platform: filesize
-    file_paths:
-      - /config/home-assistant_v2.db
-
-  - platform: filesize
-    file_paths:
-      - /config/home-assistant.log
-
-  - platform: rest
-    name: fullykiosk
-    json_attributes:
-      ['batteryLevel', 'screenBrightness', 'motionDetectorState', 'plugged', 'deviceName', 'deviceModel', 'lastAppStart', 'internalStorageFreeSpace', 'internalStorageTotalSpace', 'ramFreeMemory', 'ramTotalMemory', 'currentFragment']
-    resource: !secret fullykiosk_rest_resource
-    value_template: '{{ value_json.isScreenOn }}'
-
-  - platform: systemmonitor
-    resources:
-      - type: disk_use_percent
-        arg: /home
-      - type: memory_use_percent
-      - type: processor_use
-      - type: last_boot
-
-  - platform: dnsip
-
-  - platform: synologydsm
-    host: !secret synologydsm_host
-    port: !secret synologydsm_port
-    ssl: false
-    username: !secret synologydsm_username
-    password: !secret synologydsm_password
-    monitored_conditions:
-      ['cpu_total_load', 'memory_real_usage', 'volume_status', 'volume_percentage_used', 'network_up', 'network_down', 'disk_temp']
-
-  - platform: rpi_power
-    text_state: true
-
-  - platform: time_date
-    display_options:
-      ['time', 'date']
-
-  - platform: darksky
-    api_key: !secret darksky_api_key
-    language: sv
-    monitored_conditions:
-      ['precip_probability', 'temperature', 'apparent_temperature', 'icon']
-
-  - platform: template
-    sensors:
-      fullykiosk_device_name:
-        friendly_name: Modell
-        icon_template: 'mdi:tablet'
-        value_template: "{{ state_attr('sensor.fullykiosk', 'deviceName') }} ({{ state_attr('sensor.fullykiosk', 'deviceModel') }})"
-
-      flakt_timer_value:
-        friendly_name: Stäng av fläkt efter timer
-        icon_template: 'mdi:fan-off'
-        unit_of_measurement: h
-        value_template: "{{ states('input_number.flakt_minuter') | int }}"
-
-      fullykiosk_battery_level:
-        friendly_name: Batteri
-        unit_of_measurement: '%'
-        value_template: "{{ state_attr('sensor.fullykiosk', 'batteryLevel') }}"
-        icon_template: >-
-          {% set battery_level = state_attr('sensor.fullykiosk', 'batteryLevel')|int('unknown') %}
-          {% set battery_round = (battery_level|int / 10)|int * 10 %}
-          {% if battery_level == 'unknown' %}
-            mdi:battery-unknown
-          {% else %}
-            {% if battery_round >= 100 %}
-              mdi:battery
-            {% elif battery_round > 0 %}
-              mdi:battery-{{ battery_round }}
-            {% else %}
-              mdi:battery-alert
-            {% endif %}
-          {% endif %}
-
-      fullykiosk_plugged:
-        friendly_name: Strömsladd ansluten
-        value_template: >-
-          {% if state_attr('sensor.fullykiosk', 'plugged') == true %} Ja {% else %} Nej {% endif %}
-        icon_template: >-
-          {% if state_attr('sensor.fullykiosk', 'plugged') == true %} mdi:power-plug {% else %} mdi:power-plug-off {% endif %}
-
-      fullykiosk_motion_detector_state:
-        friendly_name: Rörelsedetektor
-        icon_template: 'mdi:camera-front-variant'
-        value_template: >-
-          {% if state_attr('sensor.fullykiosk', 'motionDetectorState') == 0 %}
-          Inte igång
-          {% else %}
-          På
-          {% endif %}
-
-      fullykiosk_storage_percentage:
-        friendly_name: Lagring
-        icon_template: 'mdi:sd'
-        unit_of_measurement: '%'
-        value_template: "{{ 100 - ( state_attr('sensor.fullykiosk', 'internalStorageFreeSpace') / state_attr('sensor.fullykiosk', 'internalStorageTotalSpace') * 100 ) | int }}"
-
-      fullykiosk_memory_percentage:
-        friendly_name: Minne
-        icon_template: 'mdi:memory'
-        unit_of_measurement: '%'
-        value_template: "{{ 100 - ( state_attr('sensor.fullykiosk', 'ramFreeMemory') / state_attr('sensor.fullykiosk', 'ramTotalMemory') * 100 ) | int }}"
-
-      macos_uptime_template:
-        entity_id: sensor.time
-        friendly_name: Drifttid
-        icon_template: 'mdi:clock'
-        value_template: >
-          {% set uptime = (as_timestamp(now()) - as_timestamp(states('sensor.macos_uptime') | int | timestamp_local | default(0))) %}
-          {% if uptime | timestamp_custom("%d") | int-1 == 1 %}{{ uptime | timestamp_custom("%d") | int-1}} dag
-          {% elif uptime | timestamp_custom("%d") | int-1 >= 2 %}{{ uptime | timestamp_custom("%d") | int-1}} dagar
-          {% elif uptime | timestamp_custom("%H") | int-1 == 1 %}{{ uptime | timestamp_custom("%H") | int-1}} timme
-          {% elif uptime | timestamp_custom("%H") | int-1 >= 2 %}{{ uptime | timestamp_custom("%H") | int-1}} timmar
-          {% elif uptime | timestamp_custom("%M") | int == 1 %}{{ uptime | timestamp_custom("%M") | int}} minut
-          {% elif uptime | timestamp_custom("%M") | int >= 2 %}{{ uptime | timestamp_custom("%M") | int}} minuter
-          {% else %}Minde än 1 minut
-          {% endif %}
-
-      fullykiosk_last_app_start:
-        entity_id: sensor.time
-        friendly_name: Senaste omstart av app
-        icon_template: 'mdi:restart'
-        value_template: >
-          {% set lastAppStart = (as_timestamp(now()) - as_timestamp(state_attr('sensor.fullykiosk', 'lastAppStart') | default(0))) %}
-          {% if lastAppStart | timestamp_custom("%d") | int-1 == 1 %}{{ lastAppStart | timestamp_custom("%d") | int-1}} dag sedan
-          {% elif lastAppStart | timestamp_custom("%d") | int-1 >= 2 %}{{ lastAppStart | timestamp_custom("%d") | int-1}} dagar sedan
-          {% elif lastAppStart | timestamp_custom("%H") | int-1 == 1 %}{{ lastAppStart | timestamp_custom("%H") | int-1}} timme sedan
-          {% elif lastAppStart | timestamp_custom("%H") | int-1 >= 2 %}{{ lastAppStart | timestamp_custom("%H") | int-1}} timmar sedan
-          {% elif lastAppStart | timestamp_custom("%M")|int == 1 %}{{ lastAppStart | timestamp_custom("%M") | int}} minut sedan
-          {% elif lastAppStart | timestamp_custom("%M")|int >= 2 %}{{ lastAppStart | timestamp_custom("%M") | int}} minuter sedan
-          {% else %}Minde än 1 minut sedan
-          {% endif %}
-
-      dag:
-        entity_id: sensor.date
-        value_template: >
-          {% set days = ["Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag", "Söndag"] %}
-          {{ days[now().weekday()] }}
-
-      datum:
-        value_template: >
-          {% set months = ["Januari", "Februari", "Mars", "April", "Maj", "Juni", "Juli", "Augusti", "September", "Oktober", "November", "December"] %}
-          {{ strptime(states('sensor.date'), '%Y-%m-%d').day }}
-          {{ months[now().month-1] }}
-
-      hall_temperature: 
-        unit_of_measurement: "°C"
-        friendly_name: Temperatur Hall
-        value_template: "{{ (states('sensor.sensor_hall_temperature')|float)|round(1) }}"
-
-      runda_darksky_prob: 
-        value_template: >
-          {{ states('sensor.dark_sky_precip_probability') | round }}%
-
-      runda_darksky_temp: 
-        value_template: >
-          {{ states('sensor.dark_sky_apparent_temperature') | round }}°
-
-      hass_version_template:
-        value_template: >-
-          {% if states('sensor.hass_version_installed') == states('sensor.hass_version_latest') %}
-            Ja
-          {% else %}
-            Nej - {{ states('sensor.hass_version_latest') }}
-          {% endif %}
-
-      vpn_imac:
-        value_template: >-
-          {% if states('sensor.imac_get_ip') == states('sensor.myip') %}
-            Ej Ansluten
-          {% else %}
-            Ansluten
-          {% endif %}
-        icon_template: >-
-          {% if states('sensor.imac_get_ip') == states('sensor.myip') %}
-            mdi:shield-alert
-          {% else %}
-            mdi:shield-check
-          {% endif %}
-
-      rpi_power_template:
-        friendly_name: Strömförsörjning
-        icon_template: 'mdi:raspberry-pi'
-        value_template: >-
-          {% if states('sensor.rpi_power_status') == 'Everything is working as intended' %}
-            Fungerar bra
-          {% else %}
-            {{ states('sensor.rpi_power_status') }}
-          {% endif %}
-
-      mattias_battery_level:
-        friendly_name: Batteri
-        unit_of_measurement: '%'
-        value_template: "{{ states('sensor.battery_level') }}"
-        icon_template: >-
-          {% set battery_level = states('sensor.battery_level')|int('unknown') %}
-          {% set battery_round = (battery_level|int / 10)|int * 10 %}
-          {% if battery_level == 'unknown' %}
-            mdi:battery-unknown
-          {% else %}
-            {% if battery_round >= 100 %}
-              mdi:battery
-            {% elif battery_round > 0 %}
-              mdi:battery-{{ battery_round }}
-            {% else %}
-              mdi:battery-alert
-            {% endif %}
-          {% endif %}
-
-      printer_status_template:
-        friendly_name: Skrivare
-        icon_template: 'mdi:printer'
-        value_template: >-
-          {% if is_state("sensor.printer_status", "ready") %}
-            På
-          {% elif is_state("sensor.printer_status", "inPowerSave") %}
-            Viloläge
-          {% elif is_state("sensor.printer_status", "processing") %}
-            Skriver ut
-          {% elif is_state("sensor.printer_status", "") %}
-            Av
-          {% else %}
-            {{ states('sensor.printer_status') }}
-          {% endif %}
-
-      synology_dsm_status:
-        friendly_name: Systemhälsa
-        icon_template: 'mdi:nas'
-        value_template: >-
-          {% if is_state("sensor.synology_dsm_status_volume_1", "normal") %}
-            Bra
-          {% else %}
-            {{ states('sensor.synology_dsm_status_volume_1') }}
-          {% endif %}
-
-      tvatta_countdown:
-        entity_id: sensor.time
-        friendly_name: Tvätta
-        value_template: >-
-          {% if state_attr('calendar.tvatta', 'start_time') ==  null or state_attr('calendar.tvatta', 'start_time') == None %} 
-          {% else %} 
-            {% set calendar_tvattid = state_attr('calendar.tvatta', 'start_time') %}
-            {% set nu_tid = now() %}
-
-            {% set dag = strptime(calendar_tvattid, "%Y-%m-%d %H:%M:%S").strftime("%A") | replace('Monday', 'Måndag') | replace('Tuesday', 'Tisdag') | replace('Wednesday', 'Onsdag') | replace('Thursday', 'Torsdag') | replace('Friday', 'Fredag') | replace('Saturday', 'Lördag') | replace('Sunday', 'Söndag') %}
-            {% set tid = as_timestamp(calendar_tvattid) | timestamp_custom('%H:%M') %}
-
-            {% set sub_timmar = as_timestamp(calendar_tvattid) | timestamp_custom('%H') | int / 24 %}
-            {% set count = (as_timestamp(calendar_tvattid) - as_timestamp(nu_tid)) / 86400 - sub_timmar %}
-
-            {% if count <= -1.0 %}
-              Sätt ny tvättid...
-            {% elif count <= 0.0 %}
-              {{'\U0001F4A6'}} Tvätt idag klockan {{ tid }}
-            {% elif count <= 1.0 %}
-              Tvätt imorgon klockan {{ tid }}
-            {% elif count <= 2.0 %}
-              Tvätt i övermorgon klockan {{ tid }}
-            {% else %}
-              Tvätt om {{ (count + sub_timmar) | round }} dagar på {{ dag }} kl {{ tid }}
-            {% endif %}
-          {% endif %}
-
-      mattias_last_changed:
-        entity_id: sensor.time
-        value_template: >-
-          {%- set time = (as_timestamp(now()) - as_timestamp(states.device_tracker.mattias.last_changed)) | int %}
-          {%- set minutes = ((time % 3600) // 60) %}
-          {%- set hours = ((time % 86400) // 3600) %}
-          {%- set days = (time // 86400) %}
-          {% if time <= 60 %}
-          {# mindre eller = 59 sekunder #}
-            0m
-          {% elif time <= 3600 %}
-          {# mindre eller = 59 minuter #}
-           {{ minutes }}m
-          {% elif time <= 86400 %}
-          {# mindre eller = 23h och 59 minuter #}
-           {{ hours }}h
-          {% elif time > 86400 %}
-          {# mer eller = 1 dag #}
-           {{ days }}d 
-          {% else %}
-          {% endif %}
-
-      sanja_last_changed:
-        entity_id: sensor.time
-        value_template: >-
-          {%- set time = (as_timestamp(now()) - as_timestamp(states.device_tracker.sanja.last_changed)) | int %}
-          {%- set minutes = ((time % 3600) // 60) %}
-          {%- set hours = ((time % 86400) // 3600) %}
-          {%- set days = (time // 86400) %}
-          {% if time <= 60 %}
-          {# mindre eller = 60 sekunder #}
-            0m
-          {% elif time <= 3600 %}
-          {# mindre eller = 60 minuter #}
-           {{ minutes }}m
-          {% elif time <= 86400 %}
-          {# mindre eller = 24h #}
-           {{ hours }}h
-          {% elif time > 86400 %}
-          {# mer eller = 1 dag #}
-           {{ days }}d 
-          {% else %}
-          {% endif %}
-
-      mattias_last_changed_h:
-        entity_id: sensor.time
-        value_template: >-
-          {%- set time = (as_timestamp(now()) - as_timestamp(states.device_tracker.mattias.last_changed)) | int %}
-          {%- set minutes = ((time % 3600) // 60) %}
-          {%- set hours = ((time % 86400) // 3600) %}
-          {%- set days = (time // 86400) %}
-          {% if time <= 60 %}
-          {# mindre eller = 59 sekunder #}
-            mindre än 1m
-          {% elif time <= 3600 %}
-          {# mindre eller = 59 minuter #}
-           {{ minutes }}m
-          {% elif time <= 86400 and minutes == 0 %}
-          {# spec #}
-           {{ hours }}h
-          {% elif time <= 86400 %}
-          {# mindre eller = 23h och 59 minuter #}
-           {{ hours }}h och {{ minutes }}m
-          {% elif time > 86400 %}
-          {# mer eller = 1 dag #}
-           {{ days }}d 
-          {% else %}
-          {% endif %}
-
-      sanja_last_changed_h:
-        entity_id: sensor.time
-        value_template: >-
-          {%- set time = (as_timestamp(now()) - as_timestamp(states.device_tracker.sanja.last_changed)) | int %}
-          {%- set minutes = ((time % 3600) // 60) %}
-          {%- set hours = ((time % 86400) // 3600) %}
-          {%- set days = (time // 86400) %}
-          {% if time <= 60 %}
-          {# mindre eller = 59 sekunder #}
-            mindre än 1m
-          {% elif time <= 3600 %}
-          {# mindre eller = 59 minuter #}
-           {{ minutes }}m
-          {% elif time <= 86400 and minutes == 0 %}
-          {# spec #}
-           {{ hours }}h
-          {% elif time <= 86400 %}
-          {# mindre eller = 23h och 59 minuter #}
-           {{ hours }}h och {{ minutes }}m
-          {% elif time > 86400 %}
-          {# mer eller = 1 dag #}
-           {{ days }}d 
-          {% else %}
-          {% endif %}
-
-      belysning_percent:
-        value_template: >-
-          {% if is_state('light.belysning', 'on') %} {{ (state_attr('light.belysning', 'brightness') / 2.54) | round }}{% endif %}
-
-      taklampor_percent:
-        value_template: >-
-          {% if is_state('light.taklampor', 'on') %} {{ (state_attr('light.taklampor', 'brightness') / 2.54) | round }}{% endif %}
-
-      fonsterlampa_percent:
-        value_template: >-
-          {% if is_state('light.fonsterlampa', 'on') %} {{ (state_attr('light.fonsterlampa', 'brightness') / 2.54) | round }}{% endif %}
-
-      datorlampa_percent:
-        value_template: >-
-          {% if is_state('light.datorlampa', 'on') %} {{ (state_attr('light.datorlampa', 'brightness') / 2.54) | round }}{% endif %}
-
-      mattias_percent:
-        value_template: >-
-          {% if is_state('light.mattias', 'on') %} {{ (state_attr('light.mattias', 'brightness') / 2.54) | round }}{% endif %}
-
-      sanja_percent:
-        value_template: >-
-          {% if is_state('light.sanja', 'on') %} {{ (state_attr('light.sanja', 'brightness') / 2.54) | round }}{% endif %}
-
-      badrum_percent:
-        value_template: >-
-          {% if is_state('light.badrum', 'on') %} {{ (state_attr('light.badrum', 'brightness') / 2.54) | round }}{% endif %}
-
-      kok_percent:
-        value_template: >-
-          {% if is_state('light.kok', 'on') %} {{ (state_attr('light.kok', 'brightness') / 2.54) | round }}{% endif %}
-          
-      garderob_percent:
-        value_template: >-
-          {% if is_state('light.kladkammare_2', 'on') %} {{ (state_attr('light.kladkammare_2', 'brightness') / 2.54) | round }}{% endif %}
-
-      hall_percent:
-        value_template: >-
-          {% if is_state('light.hall', 'on') %} {{ (state_attr('light.hall', 'brightness') / 2.54) | round }}{% endif %}
-
-      placeholder:
-        value_template: " "
-
-      plex_title:
-        value_template: |
-          {% set data = state_attr('sensor.plex_recently_added', 'data') %}
-          {% if data | regex_findall_index('(?:"aired": ")(.*?)(?:,)') == '"' %}
-            {{ data | regex_findall_index('(?:"title": ")(.*?)(?:")') }} {{ data | regex_findall_index('(?:"number": ")(.*?)(?:")') }}
-          {% else %}
-            {{ data | regex_findall_index('(?:"title": ")(.*?)(?:")') }} ({{ data | regex_findall_index('(?:"aired": ")(.*?)(?:-)') }})
-          {% endif %}
-
-      darksky_emoji:
-        value_template: >-
-          {% if is_state("sensor.dark_sky_icon","clear-day") %} {{ '\u2600\uFE0F' }}
-          {% elif is_state("sensor.dark_sky_icon","clear-night") %} {{ '\U0001F319' }}
-          {% elif is_state("sensor.dark_sky_icon","rain") %} {{ '\U0001F327' }}
-          {% elif is_state("sensor.dark_sky_icon","snow") %} {{ '\U0001F328' }}
-          {% elif is_state("sensor.dark_sky_icon","fog") %} {{ '\u2601\uFE0F' }}
-          {% elif is_state("sensor.dark_sky_icon","sleet") %} {{ '\U0001F328' }}
-          {% elif is_state("sensor.dark_sky_icon","wind") %} {{ '\U0001F32C' }}
-          {% elif is_state("sensor.dark_sky_icon","cloudy") %} {{ '\u2601\uFE0F' }}
-          {% elif is_state("sensor.dark_sky_icon","partly-cloudy-day") %} {{ '\u26C5\uFE0F' }}
-          {% elif is_state("sensor.dark_sky_icon","partly-cloudy-night") %} {{ '\u2601\uFE0F' }}
-          {% elif is_state("sensor.dark_sky_icon","hail") %} {{ '\U0001F328' }}
-          {% elif is_state("sensor.dark_sky_icon","lightning") %} {{ '\U0001F329' }}
-          {% elif is_state("sensor.dark_sky_icon","thunderstorm") %} {{ '\u26C8' }}
-          {% elif is_state("sensor.dark_sky_icon","tornado") %} {{ '\U0001F32A' }}
-          {% endif %}
-
-      last_motion_sensor_triggered:
-        value_template: >-
-          {% set sensors = [states.input_boolean.motion_hall, states.input_boolean.motion_badrum, states.input_boolean.motion_garderob, states.input_boolean.motion_vardagsrum] %}
-          {% for sensor in sensors %}
-            {% if as_timestamp(sensor.last_changed) == as_timestamp(sensors | map(attribute='last_changed') | max) %}
-              {{ sensor.entity_id }}
-            {% endif %}
-          {% endfor %}
-
-      appletv_title_truncate:
-        value_template: >
-          {{ state_attr('media_player.vardagsrum_2', 'media_title') | truncate (32,true) }}
-
-      plex_title_truncate:
-        value_template: >
-          {{ states('sensor.plex_title') | truncate (32,true) }}
-
-      ps4_state:
-        value_template: >-
-          {% if is_state('media_player.playstation_4', 'off') or is_state('media_player.playstation_4', 'standby') or is_state('media_player.playstation_4', 'unknown') %}
-            off
-          {% else %}
-            on
-          {% endif %}
