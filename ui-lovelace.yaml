@@ -4,6 +4,8 @@ resources:
   - type: js
     url: /community_plugin/bar-card/bar-card.js
   - type: module
+    url: /community_plugin/button-card/button-card.js
+  - type: module
     url: /community_plugin/button-entity-row/button-entity-row.js
   - type: module
     url: /community_plugin/circle-sensor-card/circle-sensor-card.js
@@ -16,19 +18,22 @@ resources:
   - type: module
     url: /community_plugin/mini-graph-card/mini-graph-card-bundle.js
   - type: module
-    url: /community_plugin/mini-media-player/mini-media-player-bundle.js
+    url: /community_plugin/swipe-card/swipe-card.js
+  - type: js
+    url: /community_plugin/upcoming-media-card/upcoming-media-card.js
   - type: js
     url: /community_plugin/vertical-stack-in-card/vertical-stack-in-card.js
   - type: css
     url: 'https://sf.abarba.me/font.css'
-  - url: /community_plugin/compact-custom-header.js
-    type: module
+  - type: module
+    url: /community_plugin/compact-custom-header.js
   - type: js
     url: /community_plugin/light-slider-card.js
   - type: module
+    url: /community_plugin/mini-media-player-bundle.js
+  - type: module
     url: /community_plugin/popup-backdrop-filter.js
-  - type: js
-    url: /community_plugin/upcoming-media-card.js
+
 title: Hemma
 views:
   - badges: []
@@ -61,6 +66,7 @@ views:
               letter-spacing: '-0.05vw'
               max-width: 1px
               top: 10.8%
+              pointer-events: none
             type: state-label
 
           #################################################################
@@ -115,18 +121,19 @@ views:
               <font color='#5d6569'><b>Allt är avstängt</b></font> 
               {% endif %}
 
-
               <font color='#5d6569'>
-              {% if states('sensor.dark_sky_temperature') | float <= 0.0 %}
-              Känns som {{ states('sensor.runda_darksky_temp') }} {{'\u2744\uFE0F'}} med {{ states('sensor.runda_darksky_prob') }} risk för snö 
+              {% if is_state('sensor.dark_sky_temperature', 'unknown') or is_state('sensor.dark_sky_precip_probability', 'unknown') %}
+              {% else %}
+                {% if states('sensor.dark_sky_temperature') | float <= 0.0 %}
+                Känns som {{ states('sensor.runda_darksky_temp') }} {{'\u2744\uFE0F'}} med {{ states('sensor.runda_darksky_prob') }} risk för snö 
 
-              {% elif states('sensor.dark_sky_temperature') | float > 0.0 %} 
-              Känns som {{ states('sensor.runda_darksky_temp') }} med {{ states('sensor.runda_darksky_prob') }} risk för regn {% if states('sensor.dark_sky_precip_probability') | float > 50.0 %} {{'\u2614\uFE0F' }} {% endif %}
+                {% elif states('sensor.dark_sky_temperature') | float > 0.0 %} 
+                Känns som {{ states('sensor.runda_darksky_temp') }} med {{ states('sensor.runda_darksky_prob') }} risk för regn {% if states('sensor.dark_sky_precip_probability') | float > 50.0 %} {{'\u2614\uFE0F' }} {% endif %}
 
-              {% elif states('sensor.dark_sky_temperature') | float > 19.0 and states('sensor.dark_sky_precip_probability') | float < 5.0 %}
-              Känns som {{ states('sensor.runda_darksky_temp') }} {{'\U0001F60E' }} med {{ states('sensor.runda_darksky_prob') }} risk för regn
+                {% elif states('sensor.dark_sky_temperature') | float > 19.0 and states('sensor.dark_sky_precip_probability') | float < 5.0 %}
+                Känns som {{ states('sensor.runda_darksky_temp') }} {{'\U0001F60E' }} med {{ states('sensor.runda_darksky_prob') }} risk för regn
+                {% endif %}
               {% endif %}
-
 
               {% if is_state('device_tracker.mattias', 'home') and is_state('device_tracker.sanja', 'not_home') %} 
               Sanja gick för {{ states('sensor.sanja_last_changed_h') }} sedan
@@ -140,14 +147,16 @@ views:
 
 
               {% if states('sensor.imac_get_ip') == states('sensor.myip') %} {{ '\u26A0\uFE0F' }} <b>VPN</b> verkar vara nere på datorn!{% endif %}
+              
+
               </font>
             style:
-              '--ha-card-background': 'rgba(255, 255, 255, 0)'
-              '--ha-card-box-shadow': 0vw
+              '--ha-card-background': none
+              '--ha-card-box-shadow': none
               '--primary-text-color': 'rgba(255, 255, 255, 0.9)'
               font-family: SF Display
               font-size: 1.6vw
-              font-weight: 400
+              font-weight: 300
               height: 1px
               left: 11%
               letter-spacing: 0.06vw
@@ -159,22 +168,283 @@ views:
               width: 17.5vw
             type: 'custom:hui-markdown-card'
 
+          - type: conditional
+            conditions:
+              - entity: input_boolean.laundry_timer_visibility
+                state: 'on'
+            elements:
+              - type: "custom:button-card"
+                entity: timer.laundry
+                show_icon: false
+                show_name: false
+                show_state: true
+                tap_action:
+                  action: call-service
+                  service: script.turn_on
+                  service_data:
+                    entity_id: script.restart_laundry_timer
+                hold_action:
+                  action: none
+                double_tap_action:
+                  action: none
+                styles:
+                  card:
+                    - background: '#202a2f30'
+                    - border-radius: 0.7vw
+                    - box-shadow: none
+                    - border: '0.1vw solid #292c2e'
+                  state:
+                    - font-size: 2.5vw
+                    - font-weight: 500
+                    - letter-spacing: 0.09vw
+                    - opacity: 0.65
+                    - padding: 0.5vw 1vw 0.5vw 1vw
+                style:
+                  left: 10.8%
+                  top: 78%
+                  font-size: 1.6vw
+
           #################################################################
           #                                                               #
-          #                        REFRESH BUTTON                         #
+          #                        VACUUM BUTTON                          #
           #                                                               #
           #################################################################
 
-          - icon: 'mdi:refresh'
+          - icon: 'bha:roborock'
             style:
-              '--iron-icon-height': 3.5vw
-              '--iron-icon-width': 3.5vw
+              '--iron-icon-height': 3.2vw
+              '--iron-icon-width': 3.2vw
               color: 'rgba(255, 255, 255, 0.10)'
-              left: 5%
+              left: 4.8%
               top: 88.7%
             tap_action:
               action: call-service
-              service: shell_command.fullykiosk_load_start_url
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: sensor.roborock_state
+                          secondary_info: last-changed
+                        - entity: sensor.roborock_status
+                        - entity: sensor.roborock_battery_level
+                        - entity: sensor.roborock_last_clean
+                        - background_style:
+                            background: >-
+                              radial-gradient(circle, rgba(45,45,45,1) 0%,
+                              rgba(0,0,0,1) 100%)
+                          card_style:
+                            background: '#FFFFFF00'
+                            box-shadow: none
+                          entity: sensor.roborock_filter
+                          height: 2.1em
+                          icon: 'mdi:filter-variant'
+                          icon_position: left
+                          icon_style:
+                            color: '#9e9e9e'
+                            margin-left: '-0.38em'
+                            filter: none
+                          max: 100
+                          min: 0
+                          rounding: 0.3em
+                          severity:
+                            - color: '#303435'
+                              value: 100
+                            - color: '#6d2525'
+                              value: 10
+                          style: |
+                            ha-card {
+                              background-color: #FFFFFF00;
+                              margin-left: -0.4em;
+                              margin-right: -0.5em;
+                              margin-top: 0.1em;
+                            }
+                          title: Filter
+                          title_style:
+                            color: '#e0e1e1'
+                            margin-left: 0.95em
+                          type: 'custom:bar-card'
+                          value_style:
+                            color: '#e0e1e1'
+                            font-size: 0.95em
+                            font-weight: 400
+                          width: 50%
+                        - background_style:
+                            background: >-
+                              radial-gradient(circle, rgba(45,45,45,1) 0%,
+                              rgba(0,0,0,1) 100%)
+                          card_style:
+                            background: '#FFFFFF00'
+                            box-shadow: none
+                          entity: sensor.roborock_huvudborste
+                          height: 2.1em
+                          icon: 'mdi:broom'
+                          icon_position: left
+                          icon_style:
+                            color: '#9e9e9e'
+                            margin-left: '-0.45em'
+                            filter: none
+                          max: 100
+                          min: 0
+                          rounding: 0.3em
+                          severity:
+                            - color: '#303435'
+                              value: 100
+                            - color: '#6d2525'
+                              value: 10
+                          style: |
+                            ha-card {
+                              background-color: #FFFFFF00;
+                              margin-left: -0.4em;
+                              margin-right: -0.5em;
+                              margin-top: 0.1em;
+                            }
+                          title: Huvudborste
+                          title_style:
+                            color: '#e0e1e1'
+                            margin-left: 0.95em
+                          type: 'custom:bar-card'
+                          value_style:
+                            color: '#e0e1e1'
+                            font-size: 0.95em
+                            font-weight: 400
+                          width: 50%
+                        - background_style:
+                            background: >-
+                              radial-gradient(circle, rgba(45,45,45,1) 0%,
+                              rgba(0,0,0,1) 100%)
+                          card_style:
+                            background: '#FFFFFF00'
+                            box-shadow: none
+                          entity: sensor.roborock_sidoborste
+                          height: 2.1em
+                          icon: 'mdi:tools'
+                          icon_position: left
+                          icon_style:
+                            color: '#9e9e9e'
+                            margin-left: '-0.45em'
+                            filter: none
+                          max: 100
+                          min: 0
+                          rounding: 0.3em
+                          severity:
+                            - color: '#303435'
+                              value: 100
+                            - color: '#6d2525'
+                              value: 10
+                          style: |
+                            ha-card {
+                              background-color: #FFFFFF00;
+                              margin-left: -0.4em;
+                              margin-right: -0.5em;
+                              margin-top: 0.1em;
+                            }
+                          title: Sidoborste
+                          title_style:
+                            color: '#e0e1e1'
+                            margin-left: 0.95em
+                          type: 'custom:bar-card'
+                          value_style:
+                            color: '#e0e1e1'
+                            font-size: 0.95em
+                            font-weight: 400
+                          width: 50%
+                        - background_style:
+                            background: >-
+                              radial-gradient(circle, rgba(45,45,45,1) 0%,
+                              rgba(0,0,0,1) 100%)
+                          card_style:
+                            background: '#FFFFFF00'
+                            box-shadow: none
+                          entity: sensor.roborock_sensorer
+                          height: 2.1em
+                          icon: 'mdi:spray-bottle'
+                          icon_position: left
+                          icon_style:
+                            color: '#9e9e9e'
+                            margin-left: '-0.45em'
+                            filter: none
+                          max: 100
+                          min: 0
+                          rounding: 0.3em
+                          severity:
+                            - color: '#303435'
+                              value: 100
+                            - color: '#6d2525'
+                              value: 10
+                          style: |
+                            ha-card {
+                              background-color: #FFFFFF00;
+                              margin-left: -0.4em;
+                              margin-right: -0.5em;
+                              margin-top: 0.1em;
+                            }
+                          title: Sensorer
+                          title_style:
+                            color: '#e0e1e1'
+                            margin-left: 0.95em
+                          type: 'custom:bar-card'
+                          value_style:
+                            color: '#e0e1e1'
+                            font-size: 0.95em
+                            font-weight: 400
+                          width: 50%
+                        - entity: input_select.roborock_fan_speed
+                      type: entities
+                    - entities:
+                        - buttons:
+                            - icon: 'mdi:play-pause'
+                              icon_style:
+                                '--iron-icon-height': 1.7em
+                                '--iron-icon-width': 4em
+                              service: script.vacuum_start_pause
+                              style:
+                                background: '#2d3538'
+                                border-radius: 0.6vw
+                                font-size: 1.1em
+                                font-weight: 500
+                                padding: 1.2em 1.4em 1.2em 1.4em
+                            - icon: 'mdi:home-map-marker'
+                              icon_style:
+                                '--iron-icon-height': 2em
+                                '--iron-icon-width': 2em
+                              service: vacuum.return_to_base
+                              service_data:
+                                entity_id: vacuum.xiaomi_vacuum_cleaner
+                              style:
+                                background: '#2d3538'
+                                border-radius: 0.6vw
+                                font-size: 1.1em
+                                font-weight: 500
+                                padding: 1.2em 1.4em 1.2em 1.4em
+                            - icon: 'mdi:map-marker-question'
+                              icon_style:
+                                '--iron-icon-height': 1.9em
+                                '--iron-icon-width': 1.9em
+                              service: vacuum.locate
+                              service_data:
+                                entity_id: vacuum.xiaomi_vacuum_cleaner
+                              style:
+                                background: '#2d3538'
+                                border-radius: 0.6vw
+                                font-size: 1.1em
+                                font-weight: 500
+                                padding: 1.2em 1.4em 1.2em 1.4em
+                          type: 'custom:button-entity-row'
+                      style: |
+                        ha-card {
+                          margin-top: -1.5em;
+                          padding-bottom: 0.4em;
+                        }
+                      type: entities
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Dammsugare
             title: null
             type: icon
 
@@ -189,7 +459,7 @@ views:
               '--iron-icon-height': 3.2vw
               '--iron-icon-width': 3.2vw
               color: 'rgba(255, 255, 255, 0.10)'
-              left: 10.5%
+              left: 10.7%
               top: 88.7%
             tap_action:
               action: call-service
@@ -224,7 +494,8 @@ views:
                               icon_position: left
                               icon_style:
                                 color: '#9e9e9e'
-                                margin-left: '-0.35em'
+                                margin-left: '-0.45em'
+                                filter: none
                               max: 100
                               min: 0
                               rounding: 0.3em
@@ -269,7 +540,8 @@ views:
                               icon_position: left
                               icon_style:
                                 color: '#9e9e9e'
-                                margin-left: '-0.35em'
+                                margin-left: '-0.45em'
+                                filter: none
                               max: 100
                               min: 0
                               rounding: 0.3em
@@ -314,7 +586,8 @@ views:
                               icon_position: left
                               icon_style:
                                 color: '#9e9e9e'
-                                margin-left: '-0.35em'
+                                margin-left: '-0.45em'
+                                filter: none
                               max: 100
                               min: 0
                               rounding: 0.3em
@@ -353,17 +626,17 @@ views:
                                   name: Home Assistant
                                   style:
                                     background: '#FFFFFF10'
-                                    border-radius: 0.6vw
+                                    border-radius: 0.6em
                                     font-weight: 500
-                                    padding: 1.2vw 1.5vw 1.2vw 1.2vw
+                                    padding: 1.2em 1.5em 1.2em 1.2em
                                 - entity: script.homekit_restart
                                   icon: 'mdi:reload'
                                   name: Homekit
                                   style:
                                     background: '#FFFFFF10'
-                                    border-radius: 0.6vw
+                                    border-radius: 0.6em
                                     font-weight: 500
-                                    padding: 1.2vw 1.5vw 1.2vw 1.2vw
+                                    padding: 1.2em 1.5em 1.2em 1.2em
                                     margin-right: -0.7em
                               type: 'custom:button-entity-row'
                           show_header_toggle: false
@@ -384,9 +657,11 @@ views:
                               icon: 'mdi:tablet'
                               name: Skärm av/på
                             - entity: input_number.fullykiosk_brightness_slider
+                            - entity: switch.fullykiosk_screensaver
+                              icon: 'mdi:power-sleep'
+                              name: Skärmsläckare
                             - entity: sensor.fullykiosk_battery_level
                             - entity: sensor.fullykiosk_plugged
-                            - entity: sensor.fullykiosk_motion_detector_state
                             - entity: sensor.fullykiosk_device_name
                             - background_style:
                                 background: >-
@@ -401,7 +676,8 @@ views:
                               icon_position: left
                               icon_style:
                                 color: '#9e9e9e'
-                                margin-left: '-0.35em'
+                                margin-left: '-0.45em'
+                                filter: none
                               max: 100
                               min: 0
                               rounding: 0.3em
@@ -446,7 +722,8 @@ views:
                               icon_position: left
                               icon_style:
                                 color: '#9e9e9e'
-                                margin-left: '-0.35em'
+                                margin-left: '-0.45em'
+                                filter: none
                               max: 100
                               min: 0
                               rounding: 0.3em
@@ -485,17 +762,17 @@ views:
                                   service: shell_command.fullykiosk_load_start_url
                                   style:
                                     background: '#FFFFFF10'
-                                    border-radius: 0.6vw
+                                    border-radius: 0.6em
                                     font-weight: 500
-                                    padding: 1.2vw 1.5vw 1.2vw 1.2vw
+                                    padding: 1.2em 1.5em 1.2em 1.2em
                                 - icon: 'mdi:reload'
                                   name: Hela appen
                                   service: shell_command.fullykiosk_restart_app
                                   style:
                                     background: '#FFFFFF10'
-                                    border-radius: 0.6vw
+                                    border-radius: 0.6em
                                     font-weight: 500
-                                    padding: 1.2vw 1.5vw 1.2vw 1.2vw
+                                    padding: 1.2em 1.5em 1.2em 1.2em
                                     margin-right: -0.7em
                               type: 'custom:button-entity-row'
                           show_header_toggle: false
@@ -514,7 +791,7 @@ views:
                           box-shadow: none;
                           border-radius: 1vw;
                         }
-                      type: 'custom:vertical-stack-in-card'
+                      type: 'custom:hui-vertical-stack-card'
                     - break
                     - cards:
                         - entities:
@@ -536,7 +813,8 @@ views:
                               icon_position: left
                               icon_style:
                                 color: '#9e9e9e'
-                                margin-left: '-0.35em'
+                                margin-left: '-0.45em'
+                                filter: none
                               max: 100
                               min: 0
                               rounding: 0.3em
@@ -581,7 +859,8 @@ views:
                               icon_position: left
                               icon_style:
                                 color: '#9e9e9e'
-                                margin-left: '-0.35em'
+                                margin-left: '-0.45em'
+                                filter: none
                               max: 100
                               min: 0
                               rounding: 0.3em
@@ -626,7 +905,8 @@ views:
                               icon_position: left
                               icon_style:
                                 color: '#9e9e9e'
-                                margin-left: '-0.35em'
+                                margin-left: '-0.45em'
+                                filter: none
                               max: 100
                               min: 0
                               rounding: 0.3em
@@ -686,7 +966,7 @@ views:
                           style: |
                             ha-card {
                               box-shadow: none;
-                              margin-top: -0.48em;
+                              margin-top: -1.58em;
                               border-radius: 8vw;
                               background: rgba(36, 42, 43, 0.88);
                               padding-left: 1em;
@@ -708,7 +988,7 @@ views:
                   - this
                 large: true
                 style:
-                  background: 'rgba(255, 255, 255, 0)'
+                  background: none
                   border-radius: 0.8vw 0.8vw 0.8vw 0.8vw
                   padding: 3vw 2.5vw 5vw 2.5vw
                 title: Stäng
@@ -723,40 +1003,168 @@ views:
 
           - icon: 'mdi:home-heart'
             style:
-              '--iron-icon-height': 3.5vw
-              '--iron-icon-width': 3.5vw
+              '--iron-icon-height': 3.8vw
+              '--iron-icon-width': 3.8vw
               color: 'rgba(255, 255, 255, 0.10)'
-              left: 15.8%
-              top: 88.7%
+              left: 16.55%
+              top: 88.79%
             tap_action:
               action: call-service
               service: browser_mod.popup
               service_data:
                 card:
                   cards:
-                    - entities:
-                        - entity: scene.hemma_above_horizon
-                          icon: 'mdi:weather-sunny'
-                          name: Hemma dag
-                        - entity: scene.hemma_below_horizon
-                          icon: 'mdi:weather-sunset'
-                          name: Hemma kväll
-                        - entity: scene.hemma_below_horizon
-                          icon: 'mdi:fire'
-                          name: Bemysa
-                        - entity: scene.hemma_below_horizon
-                          icon: 'mdi:popcorn'
-                          name: Filmdags
-                        - entity: scene.hemma_below_horizon
-                          icon: 'mdi:alarm'
-                          name: Vakna
-                        - entity: scene.hemma_below_horizon
-                          icon: 'mdi:power-sleep'
-                          name: Läggdags
-                        - entity: scene.hemma_below_horizon
-                          icon: 'mdi:party-popper'
-                          name: Fest
-                      type: entities
+                    - type: 'custom:button-entity-row'
+                      buttons:
+                        - - entity: script.auto_hemma
+                            name: "\U0001F3E0 Hemma"
+                            style:
+                              background: '#FFFFFF10'
+                              color: '#d2d3d3'
+                              border-radius: 0.6em
+                              font-weight: 400
+                              font-size: 1.1em
+                              padding: 1.2em 1.5em 1.2em 1.2em
+                              margin-top: 1.5em
+                              margin-bottom: 1.1em
+                              font-family: SF Text
+                              word-spacing: 0.4em
+                              width: 6.62em
+                              height: 1.9em
+                              justify-content: center
+                              margin-left: 0.8em
+                          - entity: script.auto_stang_allt
+                            name: "\U0001F44B\U0001F3FB Lämna"
+                            style:
+                              background: '#FFFFFF10'
+                              color: '#d2d3d3'
+                              border-radius: 0.6em
+                              font-weight: 400
+                              font-size: 1.1em
+                              padding: 1.2em 1.5em 1.2em 1.2em
+                              margin-top: 1.5em
+                              margin-bottom: 1.1em
+                              font-family: SF Text
+                              word-spacing: 0.4em
+                              width: 6.62em
+                              height: 1.9em
+                              justify-content: center
+                              margin-right: 0.7em
+                        - - entity: scene.filmdags
+                            name: "\U0001F37F Filmdags"
+                            style:
+                              background: '#FFFFFF10'
+                              color: '#d2d3d3'
+                              border-radius: 0.6em
+                              font-weight: 400
+                              font-size: 1.1em
+                              padding: 1.2em 1.5em 1.2em 1.2em
+                              margin-bottom: 1.1em
+                              font-family: SF Text
+                              word-spacing: 0.4em
+                              width: 6.62em
+                              height: 1.9em
+                              justify-content: center
+                              margin-left: 0.8em
+                          - entity: scene.party
+                            name: "\U0001F389 Party"
+                            style:
+                              background: '#FFFFFF10'
+                              color: '#d2d3d3'
+                              border-radius: 0.6em
+                              font-weight: 400
+                              font-size: 1.1em
+                              padding: 1.2em 1.5em 1.2em 1.2em
+                              margin-bottom: 1.1em
+                              font-family: SF Text
+                              word-spacing: 0.4em
+                              width: 6.62em
+                              height: 1.9em
+                              justify-content: center
+                              margin-right: 0.7em
+                        - - entity: scene.x
+                            name: "\U0001F525 Bemysa"
+                            style:
+                              background: '#FFFFFF10'
+                              color: '#d2d3d3'
+                              border-radius: 0.6em
+                              font-weight: 400
+                              font-size: 1.1em
+                              padding: 1.2em 1.5em 1.2em 1.2em
+                              margin-bottom: 0em
+                              font-family: SF Text
+                              word-spacing: 0.4em
+                              width: 6.62em
+                              height: 1.9em
+                              justify-content: center
+                              margin-left: 0.8em
+                          - entity: scene.laggdags
+                            name: "\U0001F6CC Läggdags"
+                            style:
+                              background: '#FFFFFF10'
+                              color: '#d2d3d3'
+                              border-radius: 0.6em
+                              font-weight: 400
+                              font-size: 1.1em
+                              padding: 1.2em 1.5em 1.2em 1.2em
+                              margin-bottom: 0em
+                              font-family: SF Text
+                              word-spacing: 0.4em
+                              width: 6.62em
+                              height: 1.9em
+                              justify-content: center
+                              margin-right: 0.7em
+                    - type: entities
+                      style: |
+                        ha-card {
+                          opacity: 0.9;
+                          color: #606364;
+                          font-size: 1.1em;
+                          font-weight: 500;
+                          --paper-item-icon-color: #515354;
+                          margin-left: 0.7em;
+                          margin-right: 0.9em;
+                          margin-top: -0.3em;
+                        }
+                      entities:
+                        - entity: input_boolean.scenes_tip_visibility
+                          name: Visa beskrivning
+                          icon: 'mdi:comment-question'
+                          tap_action:
+                            action: toggle
+                    - type: conditional
+                      conditions:
+                        - entity: input_boolean.scenes_tip_visibility
+                          state: "on"
+                      card:
+                        content: >
+                          <font size="3em" color="#abadad">{{'\U0001F3E0'}} {{'\U000e0020'}} **Hemma** </font><br>
+                          <font color="#595c5d">Standardbelysning baserat på klockslag.</font><br>
+
+                          <font size="3em" color="#abadad">{{'\U0001F44B\U0001F3FB'}} {{'\U000e0020'}} **Lämna** </font><br>
+                          <font color="#595c5d">Stäng alla lampor och alla enheter.</font><br>
+
+                          <font size="3em" color="#abadad">{{'\U0001F37F'}} {{'\U000e0020'}}**Filmdags** </font><br>
+                          <font color="#595c5d">Dimma lampor i vardagsrummet och starta Tv.</font><br>
+
+                          <font size="3em" color="#abadad">{{'\U0001F389'}} {{'\U000e0020'}} **Party** </font><br>
+                          <font color="#595c5d">Dimma lampor och gör slumpmässiga färger.</font><br>
+
+                          <font size="3em" color="#abadad">{{'\U0001F525'}} {{'\U000e0020'}}**Bemysa** </font><br>
+                          <font color="#595c5d">Mysbelysning i hela lägenheten.</font><br>
+
+                          <font size="3em" color="#abadad">{{'\U0001F6CC'}} {{'\U000e0020'}} **Läggdags** </font><br>
+                          <font color="#595c5d">Dimma sänglampor till 20% och stäng allt annat.</font><br>
+                        style: |
+                          ha-card {
+                            line-height: 1.5em;
+                            font-size: 0.95em;
+                            margin-left: 1.5em;
+                            margin-top: -1.5em;
+                            box-shadow: none;
+                            padding-bottom: 1.2em;
+                          }
+                        type: 'custom:hui-markdown-card'
                   type: 'custom:vertical-stack-in-card'
                 deviceID:
                   - this
@@ -764,7 +1172,7 @@ views:
                   '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
                   border-radius: 0.8vw
                   opacity: 0.9
-                title: Belysning
+                title: Scenarier
             title: null
             type: icon
 
@@ -1168,14 +1576,15 @@ views:
                   top: 37.9%
                   width: 10%
                 type: image
-              - filter: opacity(50%)
-                image: /local/loader.gif
+              - filter: opacity(45%)
+                image: /local/loader.svg
                 style:
                   left: 33%
                   pointer-events: none
                   top: 33.6%
-                  width: 2%
+                  width: 3.5%
                 type: image
+
             type: conditional
 
           #################################################################
@@ -1195,8 +1604,21 @@ views:
                         - entity: switch.playstation_template
                           icon: 'mdi:playstation'
                           name: Playstation 4
-                        - entity: input_select.ps4_game
                         - entity: media_player.playstation_4
+                          type: 'custom:mini-media-player'
+                          artwork: none
+                          icon: 'mdi:gamepad'
+                          name: Spel
+                          source: full
+                          group: true
+                          scale: 0.99
+                          hide:
+                            volume: true
+                            controls: true
+                            power: true
+                            info: true
+                          style:
+                            --paper-item-icon-color: red
                       type: entities
                   type: 'custom:vertical-stack-in-card'
                 deviceID:
@@ -1207,7 +1629,6 @@ views:
                   opacity: 0.9
                 title: Playstation 4
             state_image:
-              idle: /local/vardagsrum_playstation_on.gif
               'off': /local/vardagsrum_playstation_off.gif
               'on': /local/vardagsrum_playstation_on.gif
               playing: /local/vardagsrum_playstation_on.gif
@@ -1229,13 +1650,13 @@ views:
               - entity: input_boolean.loading_playstation
                 state: 'on'
             elements:
-              - filter: opacity(50%)
-                image: /local/loader.gif
+              - filter: opacity(45%)
+                image: /local/loader.svg
                 style:
                   left: 44%
                   pointer-events: none
                   top: 34.2%
-                  width: 2%
+                  width: 3.5%
                 type: image
             type: conditional
           - conditions:
@@ -1252,13 +1673,13 @@ views:
                   top: 37.9%
                   width: 10%
                 type: image
-              - filter: opacity(50%)
-                image: /local/loader.gif
+              - filter: opacity(45%)
+                image: /local/loader.svg
                 style:
                   left: 44%
                   pointer-events: none
                   top: 33.6%
-                  width: 2%
+                  width: 3.5%
                 type: image
             type: conditional
 
@@ -1638,7 +2059,8 @@ views:
                                 icon_position: left
                                 icon_style:
                                   color: '#9e9e9e'
-                                  margin-left: '-0.35em'
+                                  margin-left: '-0.45em'
+                                  filter: none
                                 max: 100
                                 min: 0
                                 rounding: 0.3em
@@ -1683,7 +2105,8 @@ views:
                                 icon_position: left
                                 icon_style:
                                   color: '#9e9e9e'
-                                  margin-left: '-0.35em'
+                                  margin-left: '-0.45em'
+                                  filter: none
                                 max: 100
                                 min: 0
                                 rounding: 0.3em
@@ -1753,7 +2176,8 @@ views:
                                 icon_position: left
                                 icon_style:
                                   color: '#9e9e9e'
-                                  margin-left: '-0.35em'
+                                  margin-left: '-0.38em'
+                                  filter: none
                                 max: 100
                                 min: 0
                                 rounding: 0.3em
@@ -1798,7 +2222,8 @@ views:
                                 icon_position: left
                                 icon_style:
                                   color: '#9e9e9e'
-                                  margin-left: '-0.35em'
+                                  margin-left: '-0.45em'
+                                  filter: none
                                 max: 100
                                 min: 0
                                 rounding: 0.3em
@@ -1843,7 +2268,8 @@ views:
                                 icon_position: left
                                 icon_style:
                                   color: '#9e9e9e'
-                                  margin-left: '-0.35em'
+                                  margin-left: '-0.45em'
+                                  filter: none
                                 max: 100
                                 min: 0
                                 rounding: 0.3em
@@ -1875,9 +2301,6 @@ views:
                                   service: update_entity
                                   data:
                                     entity_id: sensor.imac_time_machine
-#                              - entity: script.imac_start_time_machine_backup
-#                                icon: 'mdi:backup-restore'
-#                                name: Säkerhetskopiera
                               - entity: input_boolean.ignore_auto_stang_allt
                                 icon: 'mdi:lock-alert'
                                 name: 'Ignorera "Stäng allt"'
@@ -2000,13 +2423,13 @@ views:
                   top: 37.9%
                   width: 10%
                 type: image
-              - filter: opacity(50%)
-                image: /local/loader.gif
+              - filter: opacity(45%)
+                image: /local/loader.svg
                 style:
                   left: 57.8%
                   pointer-events: none
                   top: 33.6%
-                  width: 2%
+                  width: 3.5%
                 type: image
             type: conditional
 
@@ -2034,7 +2457,7 @@ views:
                                #FFFFFF20
                              {% elif states('input_number.monitorer_volume') | int == 0 %}
                                #9da0a2
-                             {% elif states('input_number.monitorer_volume') | int < 45 %}
+                             {% elif states('input_number.monitorer_volume') | int < 60 %}
                                #3182b7
                              {% else %}
                                red
@@ -2068,7 +2491,9 @@ views:
                               icon_style:
                                 '--iron-icon-height': 1.7em
                                 '--iron-icon-width': 1.7em
-                              service: shell_command.monitorer_volume_down
+                              service: input_number.decrement
+                              service_data:
+                                entity_id: input_number.monitorer_volume
                               style:
                                 background: '#2d3538'
                                 border-radius: 0.6vw
@@ -2079,7 +2504,9 @@ views:
                               icon_style:
                                 '--iron-icon-height': 1.7em
                                 '--iron-icon-width': 1.7em
-                              service: shell_command.monitorer_volume_up
+                              service: input_number.increment
+                              service_data:
+                                entity_id: input_number.monitorer_volume
                               style:
                                 background: '#2d3538'
                                 border-radius: 0.6vw
@@ -2525,13 +2952,13 @@ views:
                   top: 37.9%
                   width: 10%
                 type: image
-              - filter: opacity(50%)
-                image: /local/loader.gif
+              - filter: opacity(45%)
+                image: /local/loader.svg
                 style:
                   left: 93.8%
                   pointer-events: none
                   top: 33.6%
-                  width: 2%
+                  width: 3.5%
                 type: image
             type: conditional
 
@@ -2541,64 +2968,1144 @@ views:
           #                                                                                                                                           #
           #############################################################################################################################################
 
-          - conditions:
-              - entity: switch.playstation_template
-                state_not: 'test'
-            elements:
-              - entity: sensor.placeholder
-                hold_action:
-                  action: none
-                prefix: Senast nedladdat
-                style:
-                  color: '#FFFFFF20'
-                  font-family: SF Text
-                  font-size: 1.25vw
-                  left: 24.85%
-                  letter-spacing: 0.01vw
-                  max-width: 1px
-                  top: 89.1%
-                tap_action:
-                  action: none
-                type: state-label
-              - entity: sensor.plex_title_truncate
-                hold_action:
-                  action: none
-                style:
-                  color: '#FFFFFF60'
-                  font-family: SF Text
-                  font-size: 1.2vw
-                  font-weight: 400
-                  left: 24.85%
-                  max-width: 1px
-                  top: 86.75%
-                tap_action:
-                  action: none
-                type: state-label
-              - cards:
-                  - accent_color: 'rgba(0, 0, 0, 0)'
-                    all_shadows: false
-                    border_color: 'rgba(0, 0, 0, 0)'
-                    entity: sensor.plex_recently_added
-                    flag: false
-                    line1_text: $empty
-                    line2_text: $empty
-                    line3_text: $empty
-                    line4_text: $empty
-                    max: 1
-                    title_text: $empty
-                    type: 'custom:upcoming-media-card'
-                style:
-                  '--ha-card-background': 'rgba(255, 255, 255, 0)'
-                  '--ha-card-box-shadow': 0vw
-                  height: 1px
-                  left: 44.8%
-                  opacity: 0.9
-                  padding: 0
-                  top: 56.8%
-                  width: 38.8%
-                  z-index: 0
-                type: 'custom:vertical-stack-in-card'
-            type: conditional
+          - image: /local/overlay.svg
+            style:
+              left: 27%
+              top: 54%
+              width: 3.5%
+            tap_action:
+              action: toggle
+            title: null
+            type: image
+          - cards:
+              - type: picture-elements
+                image: /local/overlay.svg
+                style: |
+                  ha-card {
+                    {% set text_off = '#6a6d6e' %}
+                    {% set text_on = '#e1e1e1' %}
+                    {% set shadow_off = '1px 1px 1px rgba(0,0,0,0.05)' %}
+                    {% set shadow_on = '1px 1px 5px rgba(18,22,23,0.9)' %}
+                    {% set overlay_off = '0' %}
+                    {% set overlay_on = '1.0' %}
+                    {% set icon_off = '0.1' %}
+                    {% set icon_on = '1.0' %}
+                    --plexrecent-active-text: {{text_on}};
+                    --plexrecent-active-shadow: {{shadow_on}};
+                    --plexrecent-text-overlay: {{overlay_on}};
+                    --plexrecent-icon-opacity: {{icon_on}};
+                    --vardagsrum-active-text: {% if is_state('sensor.apple_tv_vardagsrum_status', 'Av') %}{{text_off}}{% else %}{{text_on}}{% endif %};
+                    --vardagsrum-active-shadow: {% if is_state('sensor.apple_tv_vardagsrum_status', 'Av') %}{{shadow_off}}{% else %}{{shadow_on}}{% endif %};
+                    --vardagsrum-text-overlay: {% if is_state('sensor.apple_tv_vardagsrum_status', 'Av') %}{{overlay_off}}{% else %}{{overlay_on}}{% endif %};
+                    --vardagsrum-icon-opacity: {% if is_state('sensor.apple_tv_vardagsrum_status', 'Av') %}{{icon_off}}{% else %}{{icon_on}}{% endif %};
+                    --sovrum-active-text: {% if is_state('sensor.apple_tv_sovrum_status', 'Av') %}{{text_off}}{% else %}{{text_on}}{% endif %};
+                    --sovrum-active-shadow: {% if is_state('sensor.apple_tv_sovrum_status', 'Av') %}{{shadow_off}}{% else %}{{shadow_on}}{% endif %};
+                    --sovrum-text-overlay: {% if is_state('sensor.apple_tv_sovrum_status', 'Av') %}{{overlay_off}}{% else %}{{overlay_on}}{% endif %};
+                    --sovrum-icon-opacity: {% if is_state('sensor.apple_tv_sovrum_status', 'Av') %}{{icon_off}}{% else %}{{icon_on}}{% endif %};
+                    --playstation-active-text: {% if is_state('media_player.playstation_4', 'standby') %}{{text_off}}{% else %}{{text_on}}{% endif %};
+                    --playstation-active-shadow: {% if is_state('media_player.playstation_4', 'standby') %}{{shadow_off}}{% else %}{{shadow_on}}{% endif %};
+                    --playstation-text-overlay: {% if is_state('media_player.playstation_4', 'standby') %}{{overlay_off}}{% else %}{{overlay_on}}{% endif %};
+                    --playstation-icon-opacity: {% if is_state('media_player.playstation_4', 'standby') %}{{icon_off}}{% else %}{{icon_on}}{% endif %};
+                    --googlenest-active-text: {% if is_state('media_player.google_nest_mini', 'off') %}{{text_off}}{% else %}{{text_on}}{% endif %};
+                    --googlenest-active-shadow: {% if is_state('media_player.google_nest_mini', 'off') %}{{shadow_off}}{% else %}{{shadow_on}}{% endif %};
+                    --googlenest-text-overlay: {% if is_state('media_player.google_nest_mini', 'off') %}{{overlay_off}}{% else %}{{overlay_on}}{% endif %};
+                    --googlenest-icon-opacity: {% if is_state('media_player.google_nest_mini', 'off') %}{{icon_off}}{% else %}{{icon_on}}{% endif %};
+                  }
+                elements:
+
+                  #################################################################
+                  #                                                               #
+                  #                   RECENTLY DOWNLOADED PLEX                    #
+                  #                                                               #
+                  #################################################################
+
+                  - conditions:
+                      - entity: group.active_media_plex_recent
+                        state: 'off'
+                    elements:
+                      - accent_color: none
+                        all_shadows: false
+                        border_color: none
+                        entity: sensor.plex_recently_added
+                        image_style: fanart
+                        flag: false
+                        line1_text: $empty
+                        line2_text: $empty
+                        line3_text: $empty
+                        line4_text: $empty
+                        max: 1
+                        title_text: $empty
+                        style:
+                          '--ha-card-background': none
+                          '--ha-card-box-shadow': none
+                          height: 1px
+                          left: -36%
+                          padding: 0
+                          top: -3%
+                          width: 360%
+                        type: 'custom:upcoming-media-card'
+                      - image: /local/media_plex.svg
+                        style:
+                          left: 13.3%
+                          top: 12.85%
+                          width: 15%
+                          shape-rendering: optimizeSpeed
+                          opacity: 'var(--plexrecent-icon-opacity)'
+                        tap_action:
+                          action: none
+                        hold_action:
+                          action: none
+                        title: null
+                        type: image
+                      - image: /local/media_overlay_large.svg
+                        style:
+                          left: 50%
+                          top: 50%
+                          width: 100%
+                          opacity: 'var(--plexrecent-text-overlay)'
+                        tap_action:
+                          action: none
+                        type: image
+                      - entity: sensor.placeholder
+                        hold_action:
+                          action: none
+                        prefix: Senast Nedladdat
+                        style:
+                          color: 'var(--plexrecent-active-text)'
+                          font-family: Roboto
+                          font-size: 1.29vw
+                          font-weight: 400
+                          left: 2%
+                          max-width: 1px
+                          letter-spacing: 0.031vw
+                          top: 84.8%
+                          text-shadow: 'var(--plexrecent-active-shadow)'
+                          text-rendering: optimizeLegibility
+                          font-smoothing: none
+                          pointer-events: none
+                        tap_action:
+                          action: none
+                        type: state-label
+                      - entity: sensor.plex_title_truncate
+                        hold_action:
+                          action: none
+                        style:
+                          color: 'var(--plexrecent-active-text)'
+                          font-family: Roboto
+                          font-size: 1.29vw
+                          font-weight: 400
+                          left: 2%
+                          max-width: 1px
+                          top: 92.5%
+                          letter-spacing: 0.031vw
+                          text-rendering: optimizeLegibility
+                          font-smoothing: none
+                          pointer-events: none
+                          text-shadow: 'var(--plexrecent-active-shadow)'
+                        tap_action:
+                          action: none
+                        type: state-label
+                    type: conditional
+                  - conditions:
+                      - entity: group.active_media_plex_recent
+                        state_not: 'off'
+                    elements:
+                      - image: /local/media_background_large.svg
+                        style:
+                          top: 50%
+                          left: 50%
+                          width: 100%
+                          z-index: -3
+                        tap_action:
+                          action: none
+                        hold_action:
+                          action: none
+                        title: null
+                        type: image
+                    type: conditional
+
+                  #################################################################
+                  #                                                               #
+                  #              MEDIA PLAYER // APPLE TV VARDAGSRUM              #
+                  #                                                               #
+                  #################################################################
+                  - conditions:
+                      - entity: input_boolean.active_media_appletv_var
+                        state: 'on'
+                    elements:
+                      - artwork: full-cover-fit
+                        entity: media_player.vardagsrum
+                        hide:
+                          controls: true
+                          power: true
+                          volume: true
+                          icon: true
+                          name: true
+                          info: true
+                          progress: true
+                        tap_action: none
+                        style:
+                          '--ha-card-background': none
+                          '--ha-card-border-radius': 0.75vw
+                          '--ha-card-box-shadow': none
+                          height: 1px
+                          left: 50%
+                          padding: 0
+                          top: 0%
+                          width: 100%
+                          z-index: -2
+                        type: 'custom:mini-media-player'
+                      - image: /local/media_appletv1.svg
+                        style:
+                          left: 13.3%
+                          top: 12.85%
+                          width: 15%
+                          shape-rendering: optimizeSpeed
+                          opacity: 'var(--vardagsrum-icon-opacity)'
+                        tap_action:
+                          action: none
+                        hold_action:
+                          action: none
+                        title: null
+                        type: image
+                      - image: /local/media_overlay_large.svg
+                        style:
+                          left: 50%
+                          top: 50%
+                          width: 100%
+                          opacity: 'var(--vardagsrum-text-overlay)'
+                        tap_action:
+                          action: none
+                        type: image
+                      - entity: sensor.placeholder
+                        hold_action:
+                          action: none
+                        prefix: Apple Tv - Vardagsrum
+                        style:
+                          color: 'var(--vardagsrum-active-text)'
+                          font-family: Roboto
+                          font-size: 1.29vw
+                          font-weight: 400
+                          left: 2%
+                          max-width: 1px
+                          letter-spacing: 0.031vw
+                          top: 84.8%
+                          text-shadow: 'var(--vardagsrum-active-shadow)'
+                          text-rendering: optimizeLegibility
+                          font-smoothing: none
+                          pointer-events: none
+                        tap_action:
+                          action: none
+                        type: state-label
+                      - entity: sensor.apple_tv_vardagsrum_title_truncate
+                        hold_action:
+                          action: none
+                        style:
+                          color: 'var(--vardagsrum-active-text)'
+                          font-family: Roboto
+                          font-size: 1.29vw
+                          font-weight: 400
+                          left: 2%
+                          max-width: 1px
+                          top: 92.5%
+                          letter-spacing: 0.031vw
+                          text-rendering: optimizeLegibility
+                          font-smoothing: none
+                          pointer-events: none
+                          text-shadow: 'var(--vardagsrum-active-shadow)'
+                        tap_action:
+                          action: none
+                        type: state-label
+                      - conditions:
+                          - entity: sensor.apple_tv_vardagsrum_status
+                            state_not: 'Av'
+                        elements:
+                          - entity: switch.media_play_pause_vardagsrum
+                            hold_action:
+                              action: none
+                            state_image:
+                              'off': /local/mediaplay.gif
+                              'on': /local/mediapause.gif
+                            style:
+                              left: 50%
+                              top: 50%
+                              width: 20%
+                              filter: 'drop-shadow(0px 0px 10px #11151790)'
+                            tap_action:
+                              action: toggle
+                            title: null
+                            type: image
+                        type: conditional
+                    type: conditional
+
+                  #################################################################
+                  #                                                               #
+                  #                MEDIA PLAYER // APPLE TV SOVRUM                #
+                  #                                                               #
+                  #################################################################
+
+                  - conditions:
+                      - entity: input_boolean.active_media_appletv_sov
+                        state: 'on'
+                    elements:
+                      - artwork: full-cover-fit
+                        entity: media_player.sovrum
+                        hide:
+                          controls: true
+                          power: true
+                          volume: true
+                          icon: true
+                          name: true
+                          info: true
+                          progress: true
+                        tap_action: none
+                        style:
+                          '--ha-card-background': none
+                          '--ha-card-border-radius': 0.75vw
+                          '--ha-card-box-shadow': none
+                          height: 1px
+                          left: 50%
+                          padding: 0
+                          top: 0%
+                          width: 100%
+                          z-index: -2
+                        type: 'custom:mini-media-player'
+                      - image: /local/media_appletv1.svg
+                        style:
+                          left: 13.3%
+                          top: 12.85%
+                          width: 15%
+                          shape-rendering: optimizeSpeed
+                          opacity: 'var(--sovrum-icon-opacity)'
+                        tap_action:
+                          action: none
+                        hold_action:
+                          action: none
+                        title: null
+                        type: image
+                      - image: /local/media_overlay_large.svg
+                        style:
+                          left: 50%
+                          top: 50%
+                          width: 100%
+                          opacity: 'var(--sovrum-text-overlay)'
+                        tap_action:
+                          action: none
+                        type: image
+                      - entity: sensor.placeholder
+                        hold_action:
+                          action: none
+                        prefix: Apple Tv - Sovrum
+                        style:
+                          color: 'var(--sovrum-active-text)'
+                          font-family: Roboto
+                          font-size: 1.29vw
+                          font-weight: 400
+                          left: 2%
+                          max-width: 1px
+                          letter-spacing: 0.031vw
+                          top: 84.8%
+                          text-shadow: 'var(--sovrum-active-shadow)'
+                          text-rendering: optimizeLegibility
+                          font-smoothing: none
+                          pointer-events: none
+                        tap_action:
+                          action: none
+                        type: state-label
+                      - entity: sensor.apple_tv_sovrum_title_truncate
+                        hold_action:
+                          action: none
+                        style:
+                          color: 'var(--sovrum-active-text)'
+                          font-family: Roboto
+                          font-size: 1.29vw
+                          font-weight: 400
+                          left: 2%
+                          max-width: 1px
+                          top: 92.5%
+                          letter-spacing: 0.031vw
+                          text-rendering: optimizeLegibility
+                          font-smoothing: none
+                          pointer-events: none
+                          text-shadow: 'var(--sovrum-active-shadow)'
+                        tap_action:
+                          action: none
+                        type: state-label
+                      - conditions:
+                          - entity: sensor.apple_tv_sovrum_status
+                            state_not: 'Av'
+                        elements:
+                          - entity: switch.media_play_pause_sovrum
+                            hold_action:
+                              action: none
+                            state_image:
+                              'off': /local/mediaplay.gif
+                              'on': /local/mediapause.gif
+                            style:
+                              left: 50%
+                              top: 50%
+                              width: 20%
+                              filter: 'drop-shadow(0px 0px 10px #11151790)'
+                            tap_action:
+                              action: toggle
+                            title: null
+                            type: image
+                        type: conditional
+                    type: conditional
+
+                  #################################################################
+                  #                                                               #
+                  #                 MEDIA PLAYER // PLAYSTATION 4                 #
+                  #                                                               #
+                  #################################################################
+
+                  - conditions:
+                      - entity: input_boolean.active_media_playstation
+                        state: 'on'
+                    elements:
+                      - artwork: full-cover-fit
+                        entity: media_player.playstation_4
+                        hide:
+                          controls: true
+                          power: true
+                          volume: true
+                          icon: true
+                          name: true
+                          info: true
+                          progress: true
+                          source: true
+                        tap_action: none
+                        style:
+                          '--ha-card-background': none
+                          '--ha-card-border-radius': 0.75vw
+                          '--ha-card-box-shadow': none
+                          height: 1px
+                          left: 50%
+                          padding: 0
+                          top: 0%
+                          width: 100%
+                          z-index: -2
+                        type: 'custom:mini-media-player'
+                      - image: /local/media_playstation.svg
+                        style:
+                          left: 13.3%
+                          top: 12.85%
+                          width: 15%
+                          shape-rendering: optimizeSpeed
+                          opacity: 'var(--playstation-icon-opacity)'
+                        tap_action:
+                          action: none
+                        hold_action:
+                          action: none
+                        title: null
+                        type: image
+                      - image: /local/media_overlay_large.svg
+                        style:
+                          left: 50%
+                          top: 50%
+                          width: 100%
+                          opacity: 'var(--playstation-text-overlay)'
+                        tap_action:
+                          action: none
+                        type: image
+                      - entity: sensor.placeholder
+                        hold_action:
+                          action: none
+                        prefix: Playstation 4
+                        style:
+                          color: 'var(--playstation-active-text)'
+                          font-family: Roboto
+                          font-size: 1.29vw
+                          font-weight: 400
+                          left: 2%
+                          max-width: 1px
+                          letter-spacing: 0.031vw
+                          top: 84.8%
+                          text-shadow: 'var(--playstation-active-shadow)'
+                          text-rendering: optimizeLegibility
+                          font-smoothing: none
+                          pointer-events: none
+                        tap_action:
+                          action: none
+                        type: state-label
+                      - entity: sensor.playstation_title_truncate
+                        hold_action:
+                          action: none
+                        style:
+                          color: 'var(--playstation-active-text)'
+                          font-family: Roboto
+                          font-size: 1.29vw
+                          font-weight: 400
+                          left: 2%
+                          max-width: 1px
+                          top: 92.5%
+                          letter-spacing: 0.031vw
+                          text-rendering: optimizeLegibility
+                          font-smoothing: none
+                          pointer-events: none
+                          text-shadow: 'var(--playstation-active-shadow)'
+                        tap_action:
+                          action: none
+                        type: state-label
+                      - conditions:
+                          - entity: media_player.playstation_4
+                            state_not: 'standby'
+                        elements:
+                          - entity: switch.media_play_pause_playstation_4
+                            hold_action:
+                              action: none
+                            state_image:
+                              'off': /local/mediaplay.gif
+                              'on': /local/mediapause.gif
+                            style:
+                              left: 50%
+                              top: 50%
+                              width: 20%
+                              filter: 'drop-shadow(0px 0px 10px #11151790)'
+                            tap_action:
+                              action: toggle
+                            title: null
+                            type: image
+                        type: conditional
+                    type: conditional
+
+                  #################################################################
+                  #                                                               #
+                  #               MEDIA PLAYER // GOOGLE NEST MINI                #
+                  #                                                               #
+                  #################################################################
+
+                  - conditions:
+                      - entity: input_boolean.active_media_google_nest
+                        state: 'on'
+                    elements:
+                      - artwork: full-cover-fit
+                        entity: media_player.google_nest_mini
+                        hide:
+                          controls: true
+                          power: true
+                          volume: true
+                          icon: true
+                          name: true
+                          info: true
+                          progress: true
+                        tap_action: none
+                        style:
+                          '--ha-card-background': none
+                          '--ha-card-border-radius': 0.75vw
+                          '--ha-card-box-shadow': none
+                          height: 1px
+                          left: 50%
+                          padding: 0
+                          top: 0%
+                          width: 100%
+                          z-index: -2
+                        type: 'custom:mini-media-player'
+                      - image: /local/media_googlenest.svg
+                        style:
+                          left: 13.3%
+                          top: 12.85%
+                          width: 15%
+                          shape-rendering: optimizeSpeed
+                          opacity: 'var(--googlenest-icon-opacity)'
+                        tap_action:
+                          action: none
+                        hold_action:
+                          action: none
+                        title: null
+                        type: image
+                      - image: /local/media_overlay_large.svg
+                        style:
+                          left: 50%
+                          top: 50%
+                          width: 100%
+                          opacity: 'var(--googlenest-text-overlay)'
+                        tap_action:
+                          action: none
+                        type: image
+                      - entity: sensor.placeholder
+                        hold_action:
+                          action: none
+                        prefix: Google Nest Mini
+                        style:
+                          color: 'var(--googlenest-active-text)'
+                          font-family: Roboto
+                          font-size: 1.29vw
+                          font-weight: 400
+                          left: 2%
+                          max-width: 1px
+                          letter-spacing: 0.031vw
+                          top: 84.8%
+                          text-shadow: 'var(--googlenest-active-shadow)'
+                          text-rendering: optimizeLegibility
+                          font-smoothing: none
+                          pointer-events: none
+                        tap_action:
+                          action: none
+                        type: state-label
+                      - entity: sensor.google_nest_mini_title_truncate
+                        hold_action:
+                          action: none
+                        style:
+                          color: 'var(--googlenest-active-text)'
+                          font-family: Roboto
+                          font-size: 1.29vw
+                          font-weight: 400
+                          left: 2%
+                          max-width: 1px
+                          top: 92.5%
+                          letter-spacing: 0.031vw
+                          text-rendering: optimizeLegibility
+                          font-smoothing: none
+                          pointer-events: none
+                          text-shadow: 'var(--googlenest-active-shadow)'
+                        tap_action:
+                          action: none
+                        type: state-label
+                      - conditions:
+                          - entity: media_player.google_nest_mini
+                            state_not: 'off'
+                        elements:
+                          - entity: switch.media_play_pause_google_nest_mini
+                            hold_action:
+                              action: none
+                            state_image:
+                              'off': /local/mediaplay.gif
+                              'on': /local/mediapause.gif
+                            style:
+                              left: 50%
+                              top: 50%
+                              width: 20%
+                              filter: 'drop-shadow(0px 0px 10px #11151790)'
+                            tap_action:
+                              action: toggle
+                            title: null
+                            type: image
+                        type: conditional
+                    type: conditional
+
+          #################################################################
+          #                                                               #
+          #                      SMALL MEDIA CONTROLS                     #
+          #                                                               #
+          #################################################################
+
+              - type: picture-elements
+                image: /local/overlay.svg
+                style: |
+                  ha-card {
+                    {% set text_off = '#6a6d6e' %}
+                    {% set text_on = '#e1e1e1' %}
+                    {% set shadow_off = '1px 1px 1px rgba(0,0,0,0.05)' %}
+                    {% set shadow_on = '1px 1px 5px rgba(18,22,23,0.9)' %}
+                    {% set overlay_off = '0' %}
+                    {% set overlay_on = '1.0' %}
+                    {% set icon_off = '0.1' %}
+                    {% set icon_on = '1.0' %}
+                    --vardagsrum-active-text: {% if is_state('sensor.apple_tv_vardagsrum_status', 'Av') %}{{text_off}}{% else %}{{text_on}}{% endif %};
+                    --vardagsrum-active-shadow: {% if is_state('sensor.apple_tv_vardagsrum_status', 'Av') %}{{shadow_off}}{% else %}{{shadow_on}}{% endif %};
+                    --vardagsrum-text-overlay: {% if is_state('sensor.apple_tv_vardagsrum_status', 'Av') %}{{overlay_off}}{% else %}{{overlay_on}}{% endif %};
+                    --vardagsrum-icon-opacity: {% if is_state('sensor.apple_tv_vardagsrum_status', 'Av') %}{{icon_off}}{% else %}{{icon_on}}{% endif %};
+                    --sovrum-active-text: {% if is_state('sensor.apple_tv_sovrum_status', 'Av') %}{{text_off}}{% else %}{{text_on}}{% endif %};
+                    --sovrum-active-shadow: {% if is_state('sensor.apple_tv_sovrum_status', 'Av') %}{{shadow_off}}{% else %}{{shadow_on}}{% endif %};
+                    --sovrum-text-overlay: {% if is_state('sensor.apple_tv_sovrum_status', 'Av') %}{{overlay_off}}{% else %}{{overlay_on}}{% endif %};
+                    --sovrum-icon-opacity: {% if is_state('sensor.apple_tv_sovrum_status', 'Av') %}{{icon_off}}{% else %}{{icon_on}}{% endif %};
+                    --playstation-active-text: {% if is_state('media_player.playstation_4', 'standby') %}{{text_off}}{% else %}{{text_on}}{% endif %};
+                    --playstation-active-shadow: {% if is_state('media_player.playstation_4', 'standby') %}{{shadow_off}}{% else %}{{shadow_on}}{% endif %};
+                    --playstation-text-overlay: {% if is_state('media_player.playstation_4', 'standby') %}{{overlay_off}}{% else %}{{overlay_on}}{% endif %};
+                    --playstation-icon-opacity: {% if is_state('media_player.playstation_4', 'standby') %}{{icon_off}}{% else %}{{icon_on}}{% endif %};
+                    --googlenest-active-text: {% if is_state('media_player.google_nest_mini', 'off') %}{{text_off}}{% else %}{{text_on}}{% endif %};
+                    --googlenest-active-shadow: {% if is_state('media_player.google_nest_mini', 'off') %}{{shadow_off}}{% else %}{{shadow_on}}{% endif %};
+                    --googlenest-text-overlay: {% if is_state('media_player.google_nest_mini', 'off') %}{{overlay_off}}{% else %}{{overlay_on}}{% endif %};
+                    --googlenest-icon-opacity: {% if is_state('media_player.google_nest_mini', 'off') %}{{icon_off}}{% else %}{{icon_on}}{% endif %};
+                  }
+                elements:
+                  - image: /local/media_background_s.svg
+                    style:
+                      top: 50%
+                      left: 50%
+                      width: 100%
+                      z-index: -3
+                    tap_action:
+                      action: none
+                    hold_action:
+                      action: none
+                    title: null
+                    type: image
+
+          #################################################################
+          #                                                               #
+          #                   SMALL APPLE TV VARDAGSRUM                   #
+          #                                                               #
+          #################################################################
+
+                  - image: /local/media_appletv1.svg
+                    style:
+                      left: 11%
+                      top: 11%
+                      width: 12.5%
+                      shape-rendering: optimizeSpeed
+                      opacity: 'var(--vardagsrum-icon-opacity)'
+                      z-index: -2
+                    tap_action:
+                      action: none
+                    hold_action:
+                      action: none
+                    title: null
+                    type: image
+                  - artwork: full-cover-fit
+                    entity: media_player.vardagsrum
+                    hide:
+                      controls: true
+                      power: true
+                      volume: true
+                      icon: true
+                      name: true
+                      info: true
+                      progress: true
+                    tap_action: none
+                    style:
+                      '--ha-card-background': none
+                      '--ha-card-border-radius': 0.75vw
+                      '--ha-card-box-shadow': none
+                      height: 1px
+                      left: 23.85%
+                      padding: 0
+                      top: 0%
+                      width: 47.4%
+                      z-index: -1
+                    type: 'custom:mini-media-player'
+                  - image: /local/media_overlay_small.svg
+                    hold_action:
+                      action: none
+                    style:
+                      left: 23.7%
+                      top: 23.7%
+                      width: 100%
+                      opacity: 'var(--vardagsrum-text-overlay)'
+                    tap_action:
+                      action: none
+                    type: image
+                  - entity: sensor.placeholder
+                    hold_action:
+                      action: none
+                    prefix: Vardagsrum
+                    style:
+                      color: 'var(--vardagsrum-active-text)'
+                      font-family: Roboto
+                      font-size: 1.29vw
+                      font-weight: 400
+                      left: 2%
+                      max-width: 1px
+                      top: 31.95%
+                      letter-spacing: 0.031vw
+                      text-shadow: 'var(--vardagsrum-active-shadow)'
+                      text-rendering: optimizeLegibility
+                      font-smoothing: none
+                      pointer-events: none
+                    tap_action:
+                      action: none
+                    type: state-label
+                  - entity: sensor.apple_tv_vardagsrum_status
+                    hold_action:
+                      action: none
+                    style:
+                      color: 'var(--vardagsrum-active-text)'
+                      font-family: Roboto
+                      font-size: 1.29vw
+                      font-weight: 400
+                      left: 2%
+                      max-width: 1px
+                      top: 39.8%
+                      letter-spacing: 0.031vw
+                      text-shadow: 'var(--vardagsrum-active-shadow)'
+                      text-rendering: optimizeLegibility
+                      font-smoothing: none
+                      pointer-events: none
+                    tap_action:
+                      action: none
+                    type: state-label
+
+          #################################################################
+          #                                                               #
+          #                     SMALL APPLE TV SOVRUM                     #
+          #                                                               #
+          #################################################################
+
+                  - image: /local/media_appletv1.svg
+                    style:
+                      left: 63%
+                      top: 11%
+                      width: 12.5%
+                      shape-rendering: optimizeSpeed
+                      opacity: 'var(--sovrum-icon-opacity)'
+                      z-index: -2
+                    tap_action:
+                      action: none
+                    hold_action:
+                      action: none
+                    title: null
+                    type: image
+                  - artwork: full-cover-fit
+                    entity: media_player.sovrum
+                    hide:
+                      controls: true
+                      power: true
+                      volume: true
+                      icon: true
+                      name: true
+                      info: true
+                      progress: true
+                    tap_action: none
+                    style:
+                      '--ha-card-background': none
+                      '--ha-card-border-radius': 0.75vw
+                      '--ha-card-box-shadow': none
+                      height: 1px
+                      left: 76.3%
+                      padding: 0
+                      top: 0%
+                      width: 47.4%
+                      z-index: -1
+                    type: 'custom:mini-media-player'
+                  - image: /local/media_overlay_small.svg
+                    hold_action:
+                      action: none
+                    style:
+                      left: 76.2%
+                      top: 23.7%
+                      width: 100%
+                      opacity: 'var(--sovrum-text-overlay)'
+                    tap_action:
+                      action: none
+                    type: image
+                  - entity: sensor.placeholder
+                    hold_action:
+                      action: none
+                    prefix: Sovrum
+                    style:
+                      color: 'var(--sovrum-active-text)'
+                      font-family: Roboto
+                      font-size: 1.29vw
+                      font-weight: 400
+                      left: 54.5%
+                      max-width: 1px
+                      top: 31.95%
+                      letter-spacing: 0.031vw
+                      text-shadow: 'var(--sovrum-active-shadow)'
+                      text-rendering: optimizeLegibility
+                      font-smoothing: none
+                      pointer-events: none
+                    tap_action:
+                      action: none
+                    type: state-label
+                  - entity: sensor.apple_tv_sovrum_status
+                    hold_action:
+                      action: none
+                    style:
+                      color: 'var(--sovrum-active-text)'
+                      font-family: Roboto
+                      font-size: 1.29vw
+                      font-weight: 400
+                      left: 54.5%
+                      max-width: 1px
+                      top: 39.8%
+                      letter-spacing: 0.031vw
+                      text-shadow: 'var(--sovrum-active-shadow)'
+                      text-rendering: optimizeLegibility
+                      font-smoothing: none
+                      pointer-events: none
+                    tap_action:
+                      action: none
+                    type: state-label
+
+          #################################################################
+          #                                                               #
+          #                     SMALL PLAYSTATION 4                       #
+          #                                                               #
+          #################################################################
+
+                  - image: /local/media_playstation.svg
+                    style:
+                      left: 11%
+                      top: 64%
+                      width: 12.5%
+                      shape-rendering: optimizeSpeed
+                      opacity: 'var(--playstation-icon-opacity)'
+                      z-index: -2
+                    tap_action:
+                      action: none
+                    hold_action:
+                      action: none
+                    title: null
+                    type: image
+                  - artwork: full-cover-fit
+                    entity: media_player.playstation_4
+                    hide:
+                      controls: true
+                      power: true
+                      volume: true
+                      icon: true
+                      name: true
+                      info: true
+                      source: true
+                      progress: true
+                    tap_action: none
+                    style:
+                      '--ha-card-background': none
+                      '--ha-card-border-radius': 0.75vw
+                      '--ha-card-box-shadow': none
+                      height: 1px
+                      left: 23.85%
+                      padding: 0
+                      top: 52.8%
+                      width: 47.4%
+                      z-index: -1
+                    type: 'custom:mini-media-player'
+                  - image: /local/media_overlay_small.svg
+                    hold_action:
+                      action: none
+                    style:
+                      left: 23.7%
+                      top: 76.5%
+                      width: 100%
+                      opacity: 'var(--playstation-text-overlay)'
+                    tap_action:
+                      action: none
+                    type: image
+                  - entity: sensor.placeholder
+                    hold_action:
+                      action: none
+                    prefix: Playstation
+                    style:
+                      color: 'var(--playstation-active-text)'
+                      font-family: Roboto
+                      font-size: 1.29vw
+                      font-weight: 400
+                      left: 2%
+                      max-width: 1px
+                      top: 84.8%
+                      letter-spacing: 0.031vw
+                      text-shadow: 'var(--playstation-active-shadow)'
+                      text-rendering: optimizeLegibility
+                      font-smoothing: none
+                      pointer-events: none
+                    tap_action:
+                      action: none
+                    type: state-label
+                  - entity: sensor.playstation_status
+                    hold_action:
+                      action: none
+                    style:
+                      color: 'var(--playstation-active-text)'
+                      font-family: Roboto
+                      font-size: 1.29vw
+                      font-weight: 400
+                      left: 2%
+                      max-width: 1px
+                      top: 92.5%
+                      letter-spacing: 0.031vw
+                      text-shadow: 'var(--playstation-active-shadow)'
+                      text-rendering: optimizeLegibility
+                      font-smoothing: none
+                      pointer-events: none
+                    tap_action:
+                      action: none
+                    type: state-label
+
+          #################################################################
+          #                                                               #
+          #                     SMALL GOOGLE NEST MINI                    #
+          #                                                               #
+          #################################################################
+
+                  - image: /local/media_googlenest.svg
+                    style:
+                      left: 63%
+                      top: 64%
+                      width: 12.5%
+                      shape-rendering: optimizeSpeed
+                      opacity: 'var(--googlenest-icon-opacity)'
+                      z-index: -2
+                    tap_action:
+                      action: none
+                    hold_action:
+                      action: none
+                    title: null
+                    type: image
+                  - artwork: full-cover-fit
+                    entity: media_player.google_nest_mini
+                    hide:
+                      controls: true
+                      power: true
+                      volume: true
+                      icon: true
+                      name: true
+                      info: true
+                      progress: true
+                    tap_action: none
+                    style:
+                      '--ha-card-background': none
+                      '--ha-card-border-radius': 0.75vw
+                      '--ha-card-box-shadow': none
+                      height: 1px
+                      left: 76.3%
+                      padding: 0
+                      top: 52.8%
+                      width: 47.4%
+                      z-index: -1
+                    type: 'custom:mini-media-player'
+                  - image: /local/media_overlay_small.svg
+                    hold_action:
+                      action: none
+                    style:
+                      left: 76.2%
+                      top: 76.5%
+                      width: 100%
+                      opacity: 'var(--googlenest-text-overlay)'
+                    tap_action:
+                      action: none
+                    type: image
+                  - entity: sensor.placeholder
+                    hold_action:
+                      action: none
+                    prefix: Google Nest
+                    style:
+                      color: 'var(--googlenest-active-text)'
+                      font-family: Roboto
+                      font-size: 1.29vw
+                      font-weight: 400
+                      left: 54.5%
+                      max-width: 1px
+                      top: 84.8%
+                      letter-spacing: 0.031vw
+                      text-shadow: 'var(--googlenest-active-shadow)'
+                      text-rendering: optimizeLegibility
+                      font-smoothing: none
+                      pointer-events: none
+                    tap_action:
+                      action: none
+                    type: state-label
+                  - entity: sensor.google_nest_mini_status
+                    hold_action:
+                      action: none
+                    style:
+                      color: 'var(--googlenest-active-text)'
+                      font-family: Roboto
+                      font-size: 1.29vw
+                      font-weight: 400
+                      left: 54.5%
+                      max-width: 1px
+                      top: 92.5%
+                      letter-spacing: 0.031vw
+                      text-shadow: 'var(--googlenest-active-shadow)'
+                      text-rendering: optimizeLegibility
+                      font-smoothing: none
+                      pointer-events: none
+                    tap_action:
+                      action: none
+                    type: state-label
+                  - conditions:
+                      - entity: sensor.apple_tv_vardagsrum_status
+                        state_not: 'Av'
+                    elements:
+                      - image: /local/overlay.svg
+                        hold_action:
+                          action: none
+                        style:
+                          left: 23.7%
+                          top: 23.8%
+                          width: 47.5%
+                        tap_action:
+                          action: call-service
+                          service: media_player.media_play_pause
+                          service_data:
+                            entity_id: media_player.vardagsrum
+                        title: null
+                        type: image
+                    type: conditional
+                  - conditions:
+                      - entity: sensor.apple_tv_sovrum_status
+                        state_not: 'Av'
+                    elements:
+                      - image: /local/overlay.svg
+                        hold_action:
+                          action: none
+                        style:
+                          left: 76.3%
+                          top: 23.8%
+                          width: 47.5%
+                        tap_action:
+                          action: call-service
+                          service: media_player.media_play_pause
+                          service_data:
+                            entity_id: media_player.sovrum
+                        title: null
+                        type: image
+                    type: conditional
+                  - conditions:
+                      - entity: media_player.playstation_4
+                        state_not: 'standby'
+                    elements:
+                      - image: /local/overlay.svg
+                        hold_action:
+                          action: none
+                        style:
+                          left: 23.7%
+                          top: 76.5%
+                          width: 47.5%
+                        tap_action:
+                          action: call-service
+                          service: script.turn_on
+                          service_data:
+                            entity_id: script.media_ps4_ps_button
+                        title: null
+                        type: image
+                    type: conditional
+                  - conditions:
+                      - entity: media_player.google_nest_mini
+                        state_not: 'off'
+                    elements:
+                      - image: /local/overlay.svg
+                        hold_action:
+                          action: none
+                        style:
+                          left: 76.2%
+                          top: 76.5%
+                          width: 47.5%
+                        tap_action:
+                          action: call-service
+                          service: media_player.media_play_pause
+                          service_data:
+                            entity_id: media_player.google_nest_mini
+                        title: null
+                        type: image
+                    type: conditional
+
+            start_card: 1
+            parameters:
+              effect: 'coverflow'
+              speed: 450
+              spaceBetween: 10
+              threshold: 30
+              coverflowEffect:
+                rotate: 70
+                stretch: 0
+                depth: 300
+                modifier: 1
+                slideShadows : true
+            style:
+              '--ha-card-background': none
+              '--ha-card-border-radius': 0.75vw
+              '--ha-card-box-shadow': none
+              height: 1px
+              left: 35.8%
+              padding: 0
+              top: 56.6%
+              width: 20.95%
+              text-rendering: optimizeLegibility
+              font-smoothing: none
+            type: 'custom:swipe-card'
 
           #############################################################################################################################################
           #                                                                                                                                           #
@@ -3277,7 +4784,8 @@ views:
                           unit_of_measurement: '%'
                           icon_style:
                             color: '#9e9e9e'
-                            margin-left: '-0.35em'
+                            margin-left: '-0.45em'
+                            filter: none
                           max: 100
                           min: 0
                           rounding: 0.3em
@@ -3323,7 +4831,8 @@ views:
                           unit_of_measurement: '%'
                           icon_style:
                             color: '#9e9e9e'
-                            margin-left: '-0.35em'
+                            margin-left: '-0.45em'
+                            filter: none
                           max: 100
                           min: 0
                           rounding: 0.3em
@@ -3447,7 +4956,6 @@ views:
 
         image: /local/uibg0.png
         type: picture-elements
-
     panel: true
     path: default_view
     title: Home
