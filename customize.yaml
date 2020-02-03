@@ -43,7 +43,7 @@
     icon: mdi:television
 
   switch.tv2_template: 
-    friendly_name: Samsung Tv
+    friendly_name: "Tv\u00B2"
     icon: mdi:television
 
   switch.wemo_monitorer: 
