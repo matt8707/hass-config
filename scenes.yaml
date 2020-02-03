@@ -1,37 +1,76 @@
 - id: '1574796562965'
   name: Hemma below horizon
   entities:
-    light.tvlampa:
+    light.datorlampa:
       brightness: 254
-      color_temp: 329
+      color_temp: 414
       effect: none
+      effect_list:
+      - colorloop
+      - random
+      friendly_name: Datorlampa
+      max_mireds: 500
+      min_mireds: 153
       state: 'on'
+      supported_features: 63
+    light.fonsterlampa:
+      friendly_name: Skrivbordslampa
+      icon: mdi:lamp
+      max_mireds: 500
+      min_mireds: 153
+      state: unavailable
+      supported_features: 43
     light.golvlampa:
       brightness: 115
       color_temp: 387
       effect: none
+      effect_list:
+      - colorloop
+      - random
+      friendly_name: Golvlampa
+      max_mireds: 500
+      min_mireds: 153
       state: 'on'
-    light.fonsterlampa:
-      brightness: 94
-      color_temp: 392
-      state: 'on'
-    light.taklampa:
-      brightness: 83
-      color_temp: 454
-      state: 'on'
-    light.datorlampa:
-      brightness: 254
-      color_temp: 319
-      effect: none
-      state: 'on'
+      supported_features: 63
     light.mattias:
       brightness: 144
       color_temp: 443
+      friendly_name: Mattias
+      icon: mdi:floor-lamp
+      max_mireds: 500
+      min_mireds: 153
       state: 'on'
+      supported_features: 43
     light.sanja:
       brightness: 144
       color_temp: 443
+      friendly_name: Sanja
+      icon: mdi:floor-lamp
+      max_mireds: 500
+      min_mireds: 153
       state: 'on'
+      supported_features: 43
+    light.taklampa:
+      brightness: 83
+      color_temp: 454
+      friendly_name: Kök
+      icon: mdi:silverware-fork-knife
+      max_mireds: 500
+      min_mireds: 153
+      state: 'on'
+      supported_features: 43
+    light.tvlampa:
+      brightness: 254
+      color_temp: 329
+      effect: none
+      effect_list:
+      - colorloop
+      - random
+      friendly_name: Tvlampa
+      max_mireds: 500
+      min_mireds: 153
+      state: 'on'
+      supported_features: 63
 - id: '1574866958027'
   name: Hemma above horizon
   entities:
@@ -65,4 +104,308 @@
     light.sanja:
       brightness: 144
       color_temp: 443
+      state: 'on'
+- id: '1580745872107'
+  name: Läggdags
+  entities:
+    light.badrum:
+      effect_list:
+      - colorloop
+      - random
+      friendly_name: Badrum
+      icon: mdi:toilet
+      is_hue_group: true
+      max_mireds: 500
+      min_mireds: 153
+      state: 'off'
+      supported_features: 63
+    light.belysning:
+      effect_list:
+      - colorloop
+      - random
+      friendly_name: Belysning
+      max_mireds: 500
+      min_mireds: 153
+      state: 'off'
+      supported_features: 63
+    light.datorlampa:
+      effect_list:
+      - colorloop
+      - random
+      friendly_name: Datorlampa
+      max_mireds: 500
+      min_mireds: 153
+      state: 'off'
+      supported_features: 63
+    light.fonsterlampa:
+      friendly_name: Skrivbordslampa
+      icon: mdi:lamp
+      max_mireds: 500
+      min_mireds: 153
+      state: unavailable
+      supported_features: 43
+    light.hall:
+      effect_list:
+      - colorloop
+      - random
+      friendly_name: Hall
+      icon: mdi:track-light
+      is_hue_group: true
+      max_mireds: 500
+      min_mireds: 153
+      state: 'off'
+      supported_features: 63
+    light.kladkammare:
+      friendly_name: Klädkammare
+      max_mireds: 500
+      min_mireds: 153
+      state: 'off'
+      supported_features: 43
+    light.kok:
+      effect_list:
+      - colorloop
+      - random
+      friendly_name: Kök
+      is_hue_group: true
+      max_mireds: 500
+      min_mireds: 153
+      state: 'off'
+      supported_features: 63
+    light.mattias:
+      brightness: 51
+      color_temp: 443
+      friendly_name: Mattias
+      icon: mdi:floor-lamp
+      max_mireds: 500
+      min_mireds: 153
+      state: 'on'
+      supported_features: 43
+    light.sanja:
+      brightness: 51
+      color_temp: 443
+      friendly_name: Sanja
+      icon: mdi:floor-lamp
+      max_mireds: 500
+      min_mireds: 153
+      state: 'on'
+      supported_features: 43
+    light.taklampor:
+      effect_list:
+      - colorloop
+      - random
+      friendly_name: Taklampor
+      icon: mdi:track-light
+      max_mireds: 500
+      min_mireds: 153
+      state: 'off'
+      supported_features: 63
+- id: '1580746000987'
+  name: Party
+  entities:
+    light.datorlampa:
+      brightness: 254
+      effect: colorloop
+      effect_list:
+      - colorloop
+      - random
+      friendly_name: Datorlampa
+      hs_color:
+      - 39.779
+      - 70.98
+      max_mireds: 500
+      min_mireds: 153
+      rgb_color:
+      - 255
+      - 194
+      - 74
+      state: 'on'
+      supported_features: 63
+      xy_color:
+      - 0.501
+      - 0.428
+    light.golvlampa:
+      brightness: 254
+      effect: colorloop
+      effect_list:
+      - colorloop
+      - random
+      friendly_name: Golvlampa
+      hs_color:
+      - 12.281
+      - 67.059
+      max_mireds: 500
+      min_mireds: 153
+      rgb_color:
+      - 255
+      - 119
+      - 83
+      state: 'on'
+      supported_features: 63
+      xy_color:
+      - 0.581
+      - 0.338
+    light.hall:
+      brightness: 254
+      color_temp: 367
+      effect_list:
+      - colorloop
+      - random
+      friendly_name: Hall
+      icon: mdi:track-light
+      is_hue_group: true
+      max_mireds: 500
+      min_mireds: 153
+      state: 'on'
+      supported_features: 63
+    light.kok:
+      brightness: 12
+      color_temp: 454
+      effect_list:
+      - colorloop
+      - random
+      friendly_name: Kök
+      is_hue_group: true
+      max_mireds: 500
+      min_mireds: 153
+      state: 'on'
+      supported_features: 63
+    light.mattias:
+      brightness: 76
+      color_temp: 443
+      friendly_name: Mattias
+      icon: mdi:floor-lamp
+      max_mireds: 500
+      min_mireds: 153
+      state: 'on'
+      supported_features: 43
+    light.sanja:
+      brightness: 76
+      color_temp: 443
+      friendly_name: Sanja
+      icon: mdi:floor-lamp
+      max_mireds: 500
+      min_mireds: 153
+      state: 'on'
+      supported_features: 43
+    light.spot_1:
+      brightness: 30
+      effect: colorloop
+      effect_list:
+      - colorloop
+      - random
+      friendly_name: Taklampa 1
+      hs_color:
+      - 34.648
+      - 83.529
+      max_mireds: 500
+      min_mireds: 153
+      rgb_color:
+      - 255
+      - 165
+      - 42
+      state: 'on'
+      supported_features: 63
+      xy_color:
+      - 0.553
+      - 0.409
+    light.spot_2:
+      brightness: 30
+      effect: colorloop
+      effect_list:
+      - colorloop
+      - random
+      friendly_name: Taklampa 2
+      hs_color:
+      - 34.921
+      - 74.118
+      max_mireds: 500
+      min_mireds: 153
+      rgb_color:
+      - 255
+      - 176
+      - 65
+      state: 'on'
+      supported_features: 63
+      xy_color:
+      - 0.529
+      - 0.412
+    light.tvlampa:
+      brightness: 254
+      effect: colorloop
+      effect_list:
+      - colorloop
+      - random
+      friendly_name: Tvlampa
+      hs_color:
+      - 335.349
+      - 50.588
+      max_mireds: 500
+      min_mireds: 153
+      rgb_color:
+      - 255
+      - 126
+      - 179
+      state: 'on'
+      supported_features: 63
+      xy_color:
+      - 0.46
+      - 0.266
+- id: '1580746572051'
+  name: Filmdags
+  entities:
+    light.datorlampa:
+      brightness: 123
+      color_temp: 500
+      effect: none
+      effect_list:
+      - colorloop
+      - random
+      friendly_name: Datorlampa
+      max_mireds: 500
+      min_mireds: 153
+      state: 'on'
+      supported_features: 63
+    light.golvlampa:
+      effect_list:
+      - colorloop
+      - random
+      friendly_name: Golvlampa
+      max_mireds: 500
+      min_mireds: 153
+      state: 'off'
+      supported_features: 63
+    light.taklampor:
+      effect_list:
+      - colorloop
+      - random
+      friendly_name: Taklampor
+      icon: mdi:track-light
+      max_mireds: 500
+      min_mireds: 153
+      state: 'off'
+      supported_features: 63
+    light.tvlampa:
+      brightness: 153
+      effect: none
+      effect_list:
+      - colorloop
+      - random
+      friendly_name: Tvlampa
+      hs_color:
+      - 30.667
+      - 35.294
+      max_mireds: 500
+      min_mireds: 153
+      rgb_color:
+      - 255
+      - 211
+      - 165
+      state: 'on'
+      supported_features: 63
+      xy_color:
+      - 0.417
+      - 0.372
+    switch.tv_template:
+      friendly_name: Tv
+      icon: mdi:television
       state: 'on'
