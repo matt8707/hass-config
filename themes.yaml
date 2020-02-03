@@ -82,15 +82,15 @@ slate:
   # fix for device configuration screen
   card-background-color: "var(--paper-card-background-color)"
   # mini-media-player
-  mini-media-player-base-color: '#d7d7d6'                             # The color of base text & buttons
-  mini-media-player-accent-color: '#d7d7d6'                                                     # The accent color of UI elements
-  mini-media-player-icon-color: '#d7d7d6'                             #The color for icons
-  mini-media-player-overlay-color: 'rgba(0,0,0,0)'                                                        # The color of the background overlay
-  mini-media-player-overlay-color-stop: '100%'                                                               # The gradient stop of the background overlay
-  mini-media-player-overlay-base-color: '#d7d7d6'                                                              # The color of base text, icons & buttons while artwork cover is present
-  mini-media-player-overlay-accent-color: '#d7d7d6'                                                            # The accent color of UI elements while artwork cover is present
-  mini-media-player-media-cover-info-color: '#d7d7d6'                                                          # Color of the media information text while artwork cover is present
-  mini-media-player-background-opacity: '0'                                                                 # Opacity of the background
-  mini-media-player-artwork-opacity: '1'                                                                    # Opacity of cover artwork
-  mini-media-player-progress-height: '5px'                                                                  # Progressbar height
-  mini-media-player-scale: '1.14'                                                                              # Scale of the card
+  mini-media-player-base-color: '#d7d7d6'
+  mini-media-player-accent-color: '#d7d7d6'
+  mini-media-player-icon-color: '#d7d7d6'
+  mini-media-player-overlay-color: 'rgba(0,0,0,0)'
+  mini-media-player-overlay-color-stop: '100%'
+  mini-media-player-overlay-base-color: '#d7d7d6'
+  mini-media-player-overlay-accent-color: '#d7d7d6'
+  mini-media-player-media-cover-info-color: '#d7d7d6'
+  mini-media-player-background-opacity: '0'
+  mini-media-player-artwork-opacity: '1'
+  mini-media-player-progress-height: '5px'
+  mini-media-player-scale: '1.14'
