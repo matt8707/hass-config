@@ -40,7 +40,7 @@
                     "theme": "Habilitar el descubrimiento y seguimiento de temas",
                     "token": "Token de acceso personal de GitHub"
                 },
-                "description": "Si necesitas ayuda con la configuración dirigete a: https:\/\/hacs.xyz\/docs\/configuration\/start",
+                "description": "Si necesitas ayuda con la configuración, visita la siguiente pagina: https:\/\/hacs.xyz\/docs\/configuration\/start",
                 "title": "HACS (Home Assistant Community Store)"
             }
         },
@@ -123,7 +123,7 @@
     "settings": {
         "add_custom_repository": "AGREGAR CUSTOM REPOSITORY",
         "adding_new_repo": "Añadiendo un nuevo repositorio '{repo}'.",
-        "adding_new_repo_category": "Con la categoría '{categoría}'.",
+        "adding_new_repo_category": "Con la categoría '{category}'.",
         "bg_task_custom": "Los repositorios personalizados están ocultos mientras se ejecutan las tareas en segundo plano.",
         "category": "Categoría",
         "compact_mode": "Modo compacto",

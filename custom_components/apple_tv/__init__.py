@@ -19,9 +19,16 @@ from homeassistant.const import (
 )
 
 from .const import (
-    DOMAIN, CONF_ADDRESS, CONF_IDENTIFIER, CONF_PROTOCOL,
-    CONF_CREDENTIALS, CONF_CREDENTIALS_MRP, CONF_CREDENTIALS_DMAP,
-    CONF_CREDENTIALS_AIRPLAY, CONF_START_OFF, SOURCE_INVALID_CREDENTIALS
+    DOMAIN,
+    CONF_ADDRESS,
+    CONF_IDENTIFIER,
+    CONF_PROTOCOL,
+    CONF_CREDENTIALS,
+    CONF_CREDENTIALS_MRP,
+    CONF_CREDENTIALS_DMAP,
+    CONF_CREDENTIALS_AIRPLAY,
+    CONF_START_OFF,
+    SOURCE_INVALID_CREDENTIALS,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -61,7 +68,7 @@ CONFIG_SCHEMA = vol.Schema(
                     {
                         vol.Required(CONF_HOST): cv.string,
                         vol.Required(CONF_IDENTIFIER): cv.string,
-                        vol.Required(CONF_PROTOCOL): vol.In(['DMAP', 'MRP']),
+                        vol.Required(CONF_PROTOCOL): vol.In(["DMAP", "MRP"]),
                         vol.Required(CONF_CREDENTIALS): CREDENTIALS_SCHEMA,
                         vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
                         vol.Optional(CONF_START_OFF, default=False): cv.boolean,
@@ -82,9 +89,7 @@ async def async_setup(hass, config):
     for conf in config[DOMAIN]:
         hass.async_create_task(
             hass.config_entries.flow.async_init(
-                DOMAIN,
-                context={"source": config_entries.SOURCE_IMPORT},
-                data=conf,
+                DOMAIN, context={"source": config_entries.SOURCE_IMPORT}, data=conf,
             )
         )
 
@@ -144,7 +149,7 @@ class AppleTVManager:
         self.listeners = []
         self.message = None
         self.atv = None
-        self._is_on = config_entry.options.get(CONF_START_OFF, True)
+        self._is_on = not config_entry.options.get(CONF_START_OFF, False)
         self._connection_attempts = 0
         self._connection_was_lost = False
         self._task = None
@@ -156,8 +161,7 @@ class AppleTVManager:
 
     def connection_lost(self, exception):
         """Device was unexpectedly disconnected."""
-        _LOGGER.warning('Connection lost to Apple TV "%s"',
-                        self.atv.service.name)
+        _LOGGER.warning('Connection lost to Apple TV "%s"', self.atv.service.name)
 
         self.atv = None
         self._connection_was_lost = True
@@ -179,6 +183,8 @@ class AppleTVManager:
         self._is_on = False
         try:
             if self.atv:
+                self.atv.push_updater.listener = None
+                self.atv.push_updater.stop()
                 await self.atv.close()
                 self.atv = None
             if self._task:
@@ -190,7 +196,8 @@ class AppleTVManager:
     def _start_connect_loop(self):
         if not self._task and self.atv is None and self._is_on:
             self._task = asyncio.ensure_future(
-                self._connect_loop(), loop=self.hass.loop)
+                self._connect_loop(), loop=self.hass.loop
+            )
 
     async def _connect_loop(self):
         from pyatv import exceptions
@@ -215,8 +222,9 @@ class AppleTVManager:
 
             if self.atv is None:
                 self._connection_attempts += 1
-                backoff = min(randrange(2**self._connection_attempts),
-                              BACKOFF_TIME_UPPER_LIMIT)
+                backoff = min(
+                    randrange(2 ** self._connection_attempts), BACKOFF_TIME_UPPER_LIMIT
+                )
 
                 _LOGGER.debug("Reconnecting in %d seconds", backoff)
                 await asyncio.sleep(backoff)
@@ -232,8 +240,7 @@ class AppleTVManager:
 
         self.hass.components.persistent_notification.create(
             "An irrecoverable connection occurred when connecting to "
-            "`{0}`. Please go to the Integrations page and reconfigure it".format(
-                name),
+            "`{0}`. Please go to the Integrations page and reconfigure it".format(name),
             title=NOTIFICATION_TITLE,
             notification_id=NOTIFICATION_ID,
         )
@@ -247,7 +254,8 @@ class AppleTVManager:
                 DOMAIN,
                 context={"source": SOURCE_INVALID_CREDENTIALS},
                 data={CONF_NAME: name, CONF_IDENTIFIER: identifier},
-            ))
+            )
+        )
 
     async def _scan(self):
         from pyatv import const, scan
@@ -257,19 +265,19 @@ class AppleTVManager:
         protocol = const.Protocol(self.config_entry.data[CONF_PROTOCOL])
 
         self._update_state(message="Discovering device...")
-        atvs = await scan(self.hass.loop,
-                          identifier=identifier,
-                          protocol=protocol,
-                          hosts=[address])
+        atvs = await scan(
+            self.hass.loop, identifier=identifier, protocol=protocol, hosts=[address]
+        )
         if atvs:
             return atvs[0]
 
-        _LOGGER.debug("Failed to find device %s with address %s, trying to scan",
-                      identifier, address)
+        _LOGGER.debug(
+            "Failed to find device %s with address %s, trying to scan",
+            identifier,
+            address,
+        )
 
-        atvs = await scan(self.hass.loop,
-                          identifier=identifier,
-                          protocol=protocol)
+        atvs = await scan(self.hass.loop, identifier=identifier, protocol=protocol)
         if atvs:
             return atvs[0]
 
@@ -298,8 +306,9 @@ class AppleTVManager:
 
         self._connection_attempts = 0
         if self._connection_was_lost:
-            _LOGGER.info('Connection was re-established to Apple TV "%s"',
-                         self.atv.service.name)
+            _LOGGER.info(
+                'Connection was re-established to Apple TV "%s"', self.atv.service.name
+            )
             self._connection_was_lost = False
 
     @property

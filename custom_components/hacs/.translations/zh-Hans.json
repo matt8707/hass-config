@@ -61,6 +61,7 @@
         "ok": "确定",
         "overwrite": "这样做会覆盖它。",
         "reload_data": "这将重新加载HACS知道的所有仓库的数据，这需要一些时间才能完成。",
+        "restart_home_assistant": "您确定要重新启动Home Assistant吗？",
         "uninstall": "您确定要卸载“ {item} ”吗？",
         "upgrade_all": "这将升级所有这些仓库，请确保在继续之前已阅读所有仓库的发行说明。",
         "yes": "是"

@@ -1,11 +1,14 @@
 """Remote control support for Apple TV."""
 
+import logging
+
 from homeassistant.core import callback
 from homeassistant.const import CONF_NAME
 from homeassistant.components import remote
 
 from .const import DOMAIN, CONF_IDENTIFIER
 
+_LOGGER = logging.getLogger(__name__)
 
 PARALLEL_UPDATES = 0
 
@@ -96,6 +99,12 @@ class AppleTVRemote(remote.RemoteDevice):
         """
         # Send commands in specified order but schedule only one coroutine
         async def _send_commands():
+            if not self.is_on:
+                _LOGGER.error(
+                    "Unable to send commands, not connected to %s", self._name
+                )
+                return
+
             for single_command in command:
                 if not hasattr(self.atv.remote_control, single_command):
                     continue

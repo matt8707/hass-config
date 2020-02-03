@@ -127,11 +127,7 @@ class AppleTvDevice(MediaPlayerDevice):
                 return STATE_IDLE
             if state == DeviceState.Playing:
                 return STATE_PLAYING
-            if state in (
-                DeviceState.Paused,
-                DeviceState.Seeking,
-                DeviceState.Stopped
-            ):
+            if state in (DeviceState.Paused, DeviceState.Seeking, DeviceState.Stopped):
                 # Catch fast forward/backward here so "play" is default action
                 return STATE_PAUSED
             return STATE_STANDBY  # Bad or unknown state?
@@ -178,18 +174,18 @@ class AppleTvDevice(MediaPlayerDevice):
     def media_position_updated_at(self):
         """Last valid time of media position."""
         if self.state in (STATE_PLAYING, STATE_PAUSED):
-           return dt_util.utcnow()
+            return dt_util.utcnow()
 
     async def async_play_media(self, media_type, media_id, **kwargs):
         """Send the play_media command to the media player."""
-        await self.atv.airplay.play_url(media_id)
+        await self.atv.stream.play_url(media_id)
 
     @property
     def media_image_hash(self):
         """Hash value for media image."""
         state = self.state
         if self._playing and state not in [STATE_OFF, STATE_IDLE]:
-            return self._playing.hash
+            return self.atv.metadata.artwork_id
 
     async def async_get_media_image(self):
         """Fetch media image of current playing image."""

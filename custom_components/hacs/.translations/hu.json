@@ -79,7 +79,7 @@
         }
     },
     "repository_banner": {
-        "config_flow": "Ez az integráció támogatja a config_flow-t, vagyis a felhasználó felületen az integrációk menüben lehet konfigurálni.",
+        "config_flow": "Ez az integráció támogatja a config_flow-t, vagyis a felhasználói felületen az integrációk menüben lehet konfigurálni.",
         "integration_not_loaded": "Ez az integráció nincs betöltve a Home Assistantban.",
         "no_restart_required": "Nincs szükség újraindításra",
         "not_loaded": "Nincs betöltve",

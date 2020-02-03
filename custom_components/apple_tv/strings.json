@@ -4,10 +4,10 @@
     "flow_title": "Apple TV: {name}",
     "step": {
       "user": {
-        "title": "Add new device",
-        "description": "Enter a device name, IP-address or unique identifier. In case your device is not shown, try using its IP-address.\n\nIf any devices were automatically discovered on your network, they are shown below.\n\n{devices}",
+        "title": "Add new Apple TV",
+        "description": "Enter a device name, IP-address or unique identifier. If you have problems, try using its IP-address.\n\nIf any devices were automatically found on your network, they are shown below.\n\n{devices}",
         "data": {
-          "device_id": "Device"
+          "identifier": "Device"
         }
       },
       "reconfigure": {
@@ -16,13 +16,13 @@
       },
       "pair_with_pin": {
         "title": "Pair with device",
-        "description": "Pairing is required for protocol `{protocol}`. Please input PIN code displayed on screen.",
+        "description": "Pairing is required for protocol `{protocol}`. Please input PIN code displayed on screen. Leading zeros shall not be entered, i.e. enter 123 if the displayed code is 0123.",
         "data": {
           "pin": "PIN Code"
         }
       },
       "pair_no_pin": {
-        "title": "Pair with device",
+        "title": "Pair With Device",
         "description": "Pairing is required for protocol `{protocol}`. Please enter PIN {pin} on device to continue."
       },
       "service_problem": {
@@ -38,26 +38,25 @@
       }
     },
     "error": {
-      "device_not_found": "Device could not be found on network.",
+      "device_not_found": "Device could not be found on network, please try again.",
       "device_already_configured": "This device has already been configured. Please choose another device.",
-      "no_usable_service": "A device was found but could not identify any way to establish a connection.",
+      "no_usable_service": "A device was found but could not identify any way to establish a connection. If you keep seeing this message, try restarting your Apple TV.",
       "unknown": "Unexpected error",
-      "auth": "Authentication error (invalid PIN?)"
+      "auth": "Authentication error (you might have entered an invalid PIN code)"
     },
     "abort": {
+      "device_not_found": "Device could not be found on network, please try again.",
       "already_configured": "Device is already configured!",
       "updated_configuration": "Updated existing configuration!",
-      "no_credentials": "No credentials available for device",
       "unrecoverable_error": "An unrecoverable occurred",
       "device_did_not_pair": "No attempt to finish pairing process was made from the device.",
-      "backoff": "Device does not accept pairing reqests at this stage, try again later.",
-      "timeout": "Timed out while waiting for device"
+      "backoff": "Device does not accept pairing reqests at this stage, try again later."
     }
   },
   "options": {
     "step": {
       "device_options": {
-        "description": "Configure general device settings",
+        "description": "Configure General Device Settings",
         "data": {
           "start_off": "Do not turn on device when starting Home Assistant"
         }

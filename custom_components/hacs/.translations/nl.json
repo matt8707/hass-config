@@ -5,6 +5,7 @@
         "appdaemon_apps": "AppDaemon Apps",
         "background_task": "Achtergrond taak is draaiende, de pagina herhaalt zichzelf wanneer dit klaar is.",
         "check_log_file": "Controleer het logbestand voor meer details.",
+        "continue": "Doorgaan",
         "disabled": "Uitgeschakeld",
         "documentation": "Documentatie",
         "hacs_is_disabled": "HACS is uitgeschakeld",
@@ -54,6 +55,7 @@
         "delete_installed": "'{item}' is geïnstalleerd, je dient het eerst te deïnstalleren voordat je het kan verwijderen.",
         "exist": "{item} bestaat al.",
         "generic": "Weet je het zeker?",
+        "home_assistant_is_restarting": "Een moment alstublieft, Home Assistant is aan het herstarten.",
         "no": "Nee",
         "no_upgrades": "Geen upgrades in afwachting.",
         "ok": "Oké",
@@ -77,7 +79,9 @@
         }
     },
     "repository_banner": {
+        "config_flow": "Deze integratie ondersteunt config_flow, wat betekent dat u via uw \"Instellingen\" naar \"Integraties\" kunt gaan om het te configureren.",
         "integration_not_loaded": "Deze integratie wordt niet geladen in Home Assistant.",
+        "no_restart_required": "Geen herstart vereist",
         "not_loaded": "Niet geladen",
         "plugin_not_loaded": "Deze plugin wordt niet toegevoegd aan je Lovelace resources.",
         "restart": "U moet Home Assistant opnieuw starten.",
@@ -132,6 +136,7 @@
         "missing_category": "Je moet een categorie selecteren.",
         "open_repository": "Open repository",
         "reload_data": "Herlaad data",
+        "reload_window": "Herlaad venster",
         "repository_configuration": "Repository configuratie",
         "save": "Opslaan",
         "table": "Tabel",
