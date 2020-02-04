@@ -13,6 +13,12 @@ If you like anything here, Be sure to :star2: my repo!
 * Fake on-state and loading wheel for slow responding entities such as booting a computer.
 * Animations and [applying sound](https://github.com/thomasloven/hass-browser_mod#media_player) to UI using automations listening for events.
 
+### Media
+
+Conditionally display media player controls based on last active device such as [Apple TV](https://www.home-assistant.io/integrations/apple_tv/), [Playstation 4](https://www.home-assistant.io/integrations/ps4/), [Google Nest Mini](https://www.home-assistant.io/integrations/cast/). If nothing is active for 15 minutes then a poster of last downloaded movie/episode is shown ([Radarr](https://github.com/Radarr/Radarr)/[Sonarr](https://github.com/Sonarr/Sonarr)). But what if I want to control the second last active device? Swipe to reveal...
+
+![lights_switches.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/con_media.gif)
+
 ### The sidebar
 
 [Markdown Card](https://www.home-assistant.io/lovelace/markdown/) inside a [Picture Elements Card](https://www.home-assistant.io/lovelace/picture-elements/) to create dynamic [templates](https://www.home-assistant.io/docs/configuration/templating/).
@@ -51,9 +57,3 @@ All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.m
 * Control a pedestal fan, using [Belkin WeMo Switch](https://www.belkin.com/) and hue motion sensor temperature data to automate on summer nights.
 
 ![lights_switches.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/lights_switches.png)
-
-### Media
-
-Conditionally display media player controls based on last active device such as [Apple TV](https://www.home-assistant.io/integrations/apple_tv/), [Playstation 4](https://www.home-assistant.io/integrations/ps4/), [Google Nest Mini](https://www.home-assistant.io/integrations/cast/). If nothing is active for 15 minutes then a poster of last downloaded movie/episode is shown ([Radarr](https://github.com/Radarr/Radarr)/[Sonarr](https://github.com/Sonarr/Sonarr)). But what if I want to control the second last active device? Swipe to reveal...
-
-![lights_switches.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/con_media.gif)
