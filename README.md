@@ -4,7 +4,7 @@
 
 If you like anything here, Be sure to :star2: my repo!
 
-![screen.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/screen.png)
+![screen.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/screen1.png)
 
 ## Features
 
@@ -27,9 +27,9 @@ If you like anything here, Be sure to :star2: my repo!
 
 The three icons at the bottom in order
 
-* Reload hassio.local in [Fully Kiosk Browser](https://www.ozerov.de/fully-kiosk-browser/).
+* Card to control [robot vacuum](https://www.mi-store.se/en/smart-homes/robot-vacuum-cleaners/xiaomi-robot-vacuum-2-roborock).
 * Monitor [Home Assistant](https://home-assistant.io/), [tablet](https://www.samsung.com/us/mobile/tablets/galaxy-tab-a/galaxy-tab-a-10-1-2019-32gb-black-wi-fi-sm-t510nzkaxar/) and [Network Attached Storage](https://www.synology.com/products/DS918+).
-* A list of [scenes](https://www.home-assistant.io/integrations/scene/) **TODO**.
+* A list of [scenes](https://www.home-assistant.io/integrations/scene/) with a legend.
 
 ![info.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/info.png)
 
@@ -39,7 +39,7 @@ All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.m
 
 * Modified (CSS+JS) vertical [Light Entity Card](https://github.com/ljmerza/light-entity-card) for easier touch control.
 * If applicable, show a Light Entity Card color wheel.
-* [Custom SVG](https://github.com/matt8707/hass-config/blob/master/www/custom-icons.html) icons to reflect current color.
+* [Custom SVG](https://github.com/matt8707/hass-config/blob/master/www/custom-icons_v01.html) icons to reflect current color.
 * Brightness percentage in a [Circle sensor](https://github.com/custom-cards/circle-sensor-card).
 
 ***
@@ -54,4 +54,6 @@ All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.m
 
 ### Media
 
-The idea is to conditionally display media player controls based on last active device such as [Apple TV](https://www.home-assistant.io/integrations/apple_tv/), [Playstation 4](https://www.home-assistant.io/integrations/ps4/), [Spotify](https://www.home-assistant.io/integrations/spotify/) or [Plex](https://www.home-assistant.io/integrations/plex/). If nothing is active then a poster of last downloaded movie/episode is shown ([Radarr](https://github.com/Radarr/Radarr)/[Sonarr](https://github.com/Sonarr/Sonarr)). But since tvOS 13 integration is broken atm I'm putting this as a **TODO**.
+Conditionally display media player controls based on last active device such as [Apple TV](https://www.home-assistant.io/integrations/apple_tv/), [Playstation 4](https://www.home-assistant.io/integrations/ps4/), [Google Nest Mini](https://www.home-assistant.io/integrations/cast/). If nothing is active for 15 minutes then a poster of last downloaded movie/episode is shown ([Radarr](https://github.com/Radarr/Radarr)/[Sonarr](https://github.com/Sonarr/Sonarr)). But what if I want to control the second last active device? Swipe to reveal...
+
+![lights_switches.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/con_media.gif)
