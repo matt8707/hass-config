@@ -594,7 +594,7 @@
           {% elif is_state('media_player.vardagsrum', 'idle') %}
           Viloläge
           {% else %}
-          {{ state_attr('media_player.vardagsrum', 'media_title') | truncate(28, True, '...', 0) }}
+          {{ state_attr('media_player.vardagsrum', 'media_title') | truncate(29, True, '...', 0) }}
           {% endif %}
 
       apple_tv_sovrum_title_truncate:
@@ -604,7 +604,7 @@
           {% elif is_state('media_player.sovrum', 'idle') %}
           Viloläge
           {% else %}
-          {{ state_attr('media_player.sovrum', 'media_title') | truncate(28, True, '...', 0) }}
+          {{ state_attr('media_player.sovrum', 'media_title') | truncate(29, True, '...', 0) }}
           {% endif %}
 
       playstation_title_truncate:
@@ -614,7 +614,7 @@
           {% elif state_attr('media_player.playstation_4', 'media_title') == None %}
           Inget spelas
           {% else %}
-          {{ state_attr('media_player.playstation_4', 'media_title') | truncate(28, True, '...', 0) }}
+          {{ state_attr('media_player.playstation_4', 'media_title') | truncate(29, True, '...', 0) }}
           {% endif %} 
 
       google_nest_mini_title_truncate:
@@ -625,12 +625,12 @@
           Ingen titel
           {% else %}
           {% set artist_title = state_attr('media_player.google_nest_mini', 'media_artist') + ' - ' + state_attr('media_player.google_nest_mini', 'media_title') %}
-          {{ artist_title | truncate(28, True, '...', 0) }}
+          {{ artist_title | truncate(29, True, '...', 0) }}
           {% endif %}
 
       plex_title_truncate:
         value_template: >
-          {{ states('sensor.plex_title') | truncate (28,true) }}
+          {{ states('sensor.plex_title') | truncate(29, True, '...', 0) }}
 
       ps4_state:
         value_template: >-
