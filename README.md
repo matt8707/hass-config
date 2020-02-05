@@ -4,7 +4,7 @@
 
 If you like anything here, Be sure to :star2: my repo!
 
-![screen.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/screen1.png)
+![screen.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/screen2.png)
 
 ## Features
 
