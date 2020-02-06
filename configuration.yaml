@@ -446,16 +446,11 @@ media_player:
     port: !secret samsungtv_port
     protocol: ws
 
-  - platform: spotify
-    client_id: !secret spotify_client_id
-    client_secret: !secret spotify_client_secret
-
 device_tracker:
   - platform: iphonedetect
     consider_home: 180
     new_device_defaults:
       track_new_devices: false
-      hide_if_away: false
     hosts:
       Mattias: !secret iphonedetect_mattias
       Sanja: !secret iphonedetect_sanja
