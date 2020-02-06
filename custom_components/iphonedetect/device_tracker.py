@@ -27,7 +27,7 @@ from homeassistant import const
 
 import socket
 
-__version__ = '1.2.1'
+__version__ = '1.0.0'
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -56,19 +56,21 @@ class Host:
         aSocket.sendto(message, addr)
     
         try:
-            output = subprocess.check_output('ip n|grep '+self.ip_address, shell=True)
-            output = output.decode('utf-8').split(' ')
-            if len(output[4].split(':')) == 6:
-                return True
+            output = subprocess.check_output('arp -na', shell=True)
+            output = output.decode('utf-8').split('\n')
+            for entry in output:
+                mac = entry.split(' ')
+                if mac[0] != '':
+                    rcvd_ip = mac[1]
+                    rcvd_ip = rcvd_ip[:-1]  # remove last Klammer
+                    rcvd_ip = rcvd_ip[1:]  # remove first Klammer
+                    mac = mac[3]
+                    mac = mac.split(':')
+                    if rcvd_ip == self.ip_address:
+                        if len(mac) == 6:
+                            return True
         except subprocess.CalledProcessError:
-            try:
-                output = subprocess.check_output('arp -na|grep '+self.ip_address, shell=True)
-                output = output.decode('utf-8').split(' ')
-                if len(output[3].split(':')) == 6:
-                    return True
-            except subprocess.CalledProcessError as error:
-                _LOGGER.fatal("Could not send command, got %s", error)
-                return False
+            return False
 
     def update(self, see):
         """Update device state by sending one or more ping messages."""

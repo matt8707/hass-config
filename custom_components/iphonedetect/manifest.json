@@ -3,7 +3,7 @@
   "name": "iPhone Device Tracker",
   "documentation": "https://github.com/mudape/iphonedetect",
   "dependencies": [],
-  "codeowners": ["@mudape"],
+  "codeowners": [],
   "requirements": [],
   "homeassistant":"0.94.0"
 } 
