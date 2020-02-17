@@ -1069,14 +1069,14 @@ views:
                               background: '#FFFFFF10'
                               color: '#d2d3d3'
                               border-radius: 0.6em
-                              font-weight: 400
+                              font-weight: 500
                               font-size: 1.1em
                               padding: 1.2em 1.5em 1.2em 1.2em
-                              margin-top: 1.5em
+                              margin-top: 1.8em
                               margin-bottom: 1.1em
                               font-family: SF Text
                               word-spacing: 0.4em
-                              width: 6.62em
+                              width: 6.72em
                               height: 1.9em
                               justify-content: center
                               margin-left: 0.8em
@@ -1086,14 +1086,14 @@ views:
                               background: '#FFFFFF10'
                               color: '#d2d3d3'
                               border-radius: 0.6em
-                              font-weight: 400
+                              font-weight: 500
                               font-size: 1.1em
                               padding: 1.2em 1.5em 1.2em 1.2em
-                              margin-top: 1.5em
+                              margin-top: 1.8em
                               margin-bottom: 1.1em
                               font-family: SF Text
                               word-spacing: 0.4em
-                              width: 6.62em
+                              width: 6.72em
                               height: 1.9em
                               justify-content: center
                               margin-right: 0.7em
@@ -1103,13 +1103,13 @@ views:
                               background: '#FFFFFF10'
                               color: '#d2d3d3'
                               border-radius: 0.6em
-                              font-weight: 400
+                              font-weight: 500
                               font-size: 1.1em
                               padding: 1.2em 1.5em 1.2em 1.2em
                               margin-bottom: 1.1em
                               font-family: SF Text
                               word-spacing: 0.4em
-                              width: 6.62em
+                              width: 6.72em
                               height: 1.9em
                               justify-content: center
                               margin-left: 0.8em
@@ -1119,13 +1119,13 @@ views:
                               background: '#FFFFFF10'
                               color: '#d2d3d3'
                               border-radius: 0.6em
-                              font-weight: 400
+                              font-weight: 500
                               font-size: 1.1em
                               padding: 1.2em 1.5em 1.2em 1.2em
                               margin-bottom: 1.1em
                               font-family: SF Text
                               word-spacing: 0.4em
-                              width: 6.62em
+                              width: 6.72em
                               height: 1.9em
                               justify-content: center
                               margin-right: 0.7em
@@ -1135,13 +1135,13 @@ views:
                               background: '#FFFFFF10'
                               color: '#d2d3d3'
                               border-radius: 0.6em
-                              font-weight: 400
+                              font-weight: 500
                               font-size: 1.1em
                               padding: 1.2em 1.5em 1.2em 1.2em
                               margin-bottom: 0em
                               font-family: SF Text
                               word-spacing: 0.4em
-                              width: 6.62em
+                              width: 6.72em
                               height: 1.9em
                               justify-content: center
                               margin-left: 0.8em
@@ -1151,67 +1151,45 @@ views:
                               background: '#FFFFFF10'
                               color: '#d2d3d3'
                               border-radius: 0.6em
-                              font-weight: 400
+                              font-weight: 500
                               font-size: 1.1em
                               padding: 1.2em 1.5em 1.2em 1.2em
                               margin-bottom: 0em
                               font-family: SF Text
                               word-spacing: 0.4em
-                              width: 6.62em
+                              width: 6.72em
                               height: 1.9em
                               justify-content: center
                               margin-right: 0.7em
-                    - type: entities
+                    - content: >
+                        <font size="3em" color="#abadad">{{'\U0001F3E0'}} {{'\U000e0020'}} **Hemma** </font><br>
+                        <font color="#595c5d">Standardbelysning baserat på klockslag.</font><br>
+
+                        <font size="3em" color="#abadad">{{'\U0001F44B\U0001F3FB'}} {{'\U000e0020'}} **Lämna** </font><br>
+                        <font color="#595c5d">Stäng alla enheter och släck lampor.</font><br>
+
+                        <font size="3em" color="#abadad">{{'\U0001F37F'}} {{'\U000e0020'}}**Filmdags** </font><br>
+                        <font color="#595c5d">Dimma lampor i vardagsrummet och starta Tv.</font><br>
+
+                        <font size="3em" color="#abadad">{{'\U0001F389'}} {{'\U000e0020'}} **Party** </font><br>
+                        <font color="#595c5d">Dimma lampor och gör slumpmässiga färger.</font><br>
+
+                        <font size="3em" color="#abadad">{{'\U0001F525'}} {{'\U000e0020'}}**Bemysa** </font><br>
+                        <font color="#595c5d">Mysbelysning i hela lägenheten.</font><br>
+
+                        <font size="3em" color="#abadad">{{'\U0001F6CC'}} {{'\U000e0020'}} **Läggdags** </font><br>
+                        <font color="#595c5d">Dimma sänglampor till 20% och stäng allt annat.</font><br>
                       style: |
                         ha-card {
-                          opacity: 0.9;
-                          color: #606364;
-                          font-size: 1.1em;
-                          font-weight: 500;
-                          --paper-item-icon-color: #515354;
-                          margin-left: 0.7em;
-                          margin-right: 0.9em;
-                          margin-top: -0.3em;
+                          line-height: 1.6em;
+                          font-size: 1em;
+                          background: none;
+                          margin-left: 1.1em;
+                          margin-top: 1.1em;
+                          box-shadow: none;
+                          height: 29.9em;
                         }
-                      entities:
-                        - entity: input_boolean.scenes_tip_visibility
-                          name: Visa beskrivning
-                          icon: 'mdi:comment-question'
-                          tap_action:
-                            action: toggle
-                    - type: conditional
-                      conditions:
-                        - entity: input_boolean.scenes_tip_visibility
-                          state: "on"
-                      card:
-                        content: >
-                          <font size="3em" color="#abadad">{{'\U0001F3E0'}} {{'\U000e0020'}} **Hemma** </font><br>
-                          <font color="#595c5d">Standardbelysning baserat på klockslag.</font><br>
-
-                          <font size="3em" color="#abadad">{{'\U0001F44B\U0001F3FB'}} {{'\U000e0020'}} **Lämna** </font><br>
-                          <font color="#595c5d">Stäng alla lampor och alla enheter.</font><br>
-
-                          <font size="3em" color="#abadad">{{'\U0001F37F'}} {{'\U000e0020'}}**Filmdags** </font><br>
-                          <font color="#595c5d">Dimma lampor i vardagsrummet och starta Tv.</font><br>
-
-                          <font size="3em" color="#abadad">{{'\U0001F389'}} {{'\U000e0020'}} **Party** </font><br>
-                          <font color="#595c5d">Dimma lampor och gör slumpmässiga färger.</font><br>
-
-                          <font size="3em" color="#abadad">{{'\U0001F525'}} {{'\U000e0020'}}**Bemysa** </font><br>
-                          <font color="#595c5d">Mysbelysning i hela lägenheten.</font><br>
-
-                          <font size="3em" color="#abadad">{{'\U0001F6CC'}} {{'\U000e0020'}} **Läggdags** </font><br>
-                          <font color="#595c5d">Dimma sänglampor till 20% och stäng allt annat.</font><br>
-                        style: |
-                          ha-card {
-                            line-height: 1.5em;
-                            font-size: 0.95em;
-                            margin-left: 1.5em;
-                            margin-top: -1.5em;
-                            box-shadow: none;
-                            padding-bottom: 1.2em;
-                          }
-                        type: 'custom:hui-markdown-card'
+                      type: 'custom:hui-markdown-card'
                   type: 'custom:vertical-stack-in-card'
                 deviceID:
                   - this
