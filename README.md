@@ -1,6 +1,6 @@
 # Home Assistant Configuration
 
-[Hass.io](https://home-assistant.io/) installed on a [Raspberry Pi 3 Model B+](https://www.raspberrypi.org/products/raspberry-pi-3-model-b-plus/) and my use case is a [wall mounted](https://www.durable.eu/information-and-presentation/tablet-holder/wall-mounted-tablet-holder/tablet-holder-wall.html) tablet [[Samsung 10.1"]](https://www.samsung.com/us/mobile/tablets/galaxy-tab-a/galaxy-tab-a-10-1-2019-32gb-black-wi-fi-sm-t510nzkaxar/) displaying Home Assistant in [Fully Kiosk Browser](https://www.ozerov.de/fully-kiosk-browser/) and on desktop [applicationize](https://applicationize.me/) (chrome). I've opted for local control only but I expose my configuration to homekit with Apple Tv acting as a hub for remote connection.
+[Home Assistant Core](https://home-assistant.io/) in [docker](https://www.docker.com/) on a  [Synology DiskStation DS918+](https://www.synology.com/products/DS918+). My use case is a [wall mounted](https://www.durable.eu/information-and-presentation/tablet-holder/wall-mounted-tablet-holder/tablet-holder-wall.html) tablet [[Samsung 10.1"](https://www.samsung.com/us/mobile/tablets/galaxy-tab-a/galaxy-tab-a-10-1-2019-32gb-black-wi-fi-sm-t510nzkaxar/)] displaying Home Assistant in [Fully Kiosk Browser](https://www.ozerov.de/fully-kiosk-browser/) and on desktop using [applicationize](https://applicationize.me/) (chrome). My configuration is exposed to HomeKit with Apple Tv acting as a hub for remote connection. I also support [Nabu Casa](https://www.nabucasa.com/).
 
 If you like anything here, Be sure to :star2: my repo!
 
@@ -52,7 +52,7 @@ All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.m
 
 ### Switches
 
-* [SwitchBot](https://www.switch-bot.com/bot) to cold boot computer. Numerous shell commands to monitor and control macOS.
+* [SwitchBot](https://www.switch-bot.com/bot) to cold boot computer (with [usb bluetooth adapter](https://plugable.com/products/usb-bt4le) in NAS). Numerous shell commands to monitor and control macOS.
 * [Belkin WeMo Switch](https://www.belkin.com/) to control studio monitors (speakers) with automations to apply [EQ calibration](https://www.sonarworks.com/reference) and volume control through AppleScript.
 * Control a pedestal fan, using [Belkin WeMo Switch](https://www.belkin.com/) and hue motion sensor temperature data to automate on summer nights.
 

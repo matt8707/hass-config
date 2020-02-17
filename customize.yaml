@@ -7,6 +7,12 @@
     device_class: tv
     source_list: ['TV', 'HDMI']
 
+  person.mattias:
+    entity_picture: "/local/mattias.png"
+
+  person.sanja:
+    entity_picture: "/local/sanja.png"
+
   light.fonsterlampa: 
     friendly_name: Skrivbordslampa
     icon: mdi:lamp

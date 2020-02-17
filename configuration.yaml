@@ -19,9 +19,32 @@ frontend:
 lovelace:
   mode: yaml
 
+person:
+  - name: Mattias
+    id: 1b8e4036264b484ba6c360555c9a0547
+    device_trackers:
+      ['device_tracker.mattias', 'device_tracker.iphone', 'device_tracker.mattias_bluetooth']
+
+  - name: Sanja
+    id: sanja4543958678435345345345345
+    device_trackers:
+      ['device_tracker.sanja', 'device_tracker.sanja_bluetooth']
+
 tts:
   - platform: google_translate
     language: 'sv'
+    base_url: !secret tts_base_url
+
+docker_monitor:
+  hosts:
+    - url: unix://var/run/docker.sock
+      name: Docker
+      event: true
+      containers:
+        home-assistant:
+          switch: false
+          sensors:
+            ['status', 'uptime', 'cpu_percentage_usage', 'memory_percentage_usage']
 
 logger:
   default: warning
@@ -29,26 +52,44 @@ logger:
     braviarc.braviarc: fatal
     homeassistant.components.websocket_api: fatal
     homeassistant.components.command_line.sensor: fatal
-#    homeassistant.components.sensor: fatal
-#    homeassistant.components.rest.sensor: fatal
-#    homeassistant.components.braviatv.media_player: fatal
-#    homeassistant.components.input_number: fatal
-#    homeassistant.components.template.sensor: fatal
-#    pyatv: debug
-#    custom_components.apple_tv: debug
+    homeassistant.components.homekit.type_media_players: fatal
+    homeassistant.components.shell_command: fatal
+    switchbot: fatal
+    # homeassistant.components.sensor: fatal
+    # homeassistant.components.rest.sensor: fatal
+    # homeassistant.components.braviatv.media_player: fatal
+    # homeassistant.components.input_number: fatal
+    # homeassistant.components.template.sensor: fatal
+    # pyatv: debug
+    # custom_components.apple_tv: debug
 
 recorder:
   purge_keep_days: 7
   include:
     entities: 
-      ['light.belysning', 'light.taklampor', 'light.fonsterlampa', 'media_player.sony_bravia_tv', 'media_player.samsung_tv_remote', 
-      'media_player.playstation_4', 'media_player.vardagsrum', 'light.datorlampa', 'switch.dator_template', 'switch.wemo_monitorer', 
-      'light.badrum', 'light.taklampa', 'light.kladkammare_2', 'light.hall', 'light.mattias', 'light.sanja', 'switch.wemo_flakt', 
-      'sensor.hall_temperature', 'device_tracker.mattias', 'device_tracker.sanja', 'binary_sensor.sensor_hall_motion', 
-      'binary_sensor.sensor_badrum_motion', 'binary_sensor.sensor_kladkammare_motion', 'binary_sensor.wemo_motion', 
-      'sensor.sensor_hall_temperature', 'sensor.tvatta_countdown', 'sensor.imac_cpu_per', 'sensor.imac_macintosh_hd', 
-      'sensor.imac_mem_per', 'sensor.imac_system_ssd', 'sensor.imac_time_machine', 'sensor.synology_dsm_network_up', 
-      'sensor.synology_dsm_network_down', 'sensor.printer_color', 'sensor.printer_black']
+      ['light.belysning', 'light.fonsterlampa', 'media_player.sony_bravia_tv', 'media_player.playstation_4',
+
+       'light.datorlampa', 'light.taklampor', 'switch.dator_template', 'switch.wemo_monitorer',
+
+       'light.mattias', 'light.sanja', 'switch.wemo_flakt', 'media_player.samsung_tv_remote',
+
+       'media_player.vardagsrum', 'media_player.sovrum', 'media_player.google_nest_mini',
+
+       'light.badrum', 'light.taklampa', 'light.kladkammare_2', 'light.hall',
+
+       'person.mattias', 'person.sanja',
+
+       'vacuum.xiaomi_vacuum_cleaner', 'sensor.roborock_battery_level', 'sensor.roborock_fan_speed',
+
+       'sensor.hall_temperature', 'binary_sensor.hall_motion', 'binary_sensor.badrum_motion', 
+       'binary_sensor.garderob_motion', 'binary_sensor.wemo_motion',
+
+       'sensor.tvatta_countdown',
+       
+       'sensor.imac_cpu_per', 'sensor.imac_mem_per', 'sensor.imac_system_ssd',
+       'sensor.imac_macintosh_hd', 'sensor.imac_time_machine',
+
+       'sensor.synology_dsm_network_up', 'sensor.synology_dsm_network_down']
 
 automation: !include automations.yaml
 script: !include scripts.yaml
@@ -63,13 +104,14 @@ browser_mod:
       name: tablet
 
 homekit:
+  ip_address: !secret homekit_ip_address
   auto_start: false
   filter:
     include_entities:
       ['switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 'media_player.sony_bravia_tv', 
       'media_player.samsung_tv_remote', 'switch.playstation_template', 'input_boolean.motion_hall', 
-      'input_boolean.motion_garderob', 'input_boolean.motion_badrum', 'switch.samsung_6_series_50', 
-      'switch.fullykiosk_screen', 'switch.fullykiosk_screensaver', 'script.auto_hemma', 'script.auto_stang_allt']
+      'input_boolean.motion_garderob', 'input_boolean.motion_badrum', 
+      'script.auto_hemma', 'script.auto_stang_allt']
   entity_config:
     switch.wemo_flakt:
       name: Fläkt
@@ -151,7 +193,7 @@ input_boolean:
   loading_samsungtv:
   loading_playstation:
 
-  ignore_auto_stang_allt:
+  lock_computer:
   scenes_tip_visibility:
   laundry_timer_visibility:
 
@@ -184,7 +226,7 @@ input_number:
     step: 1
     unit_of_measurement: "%"
 
-  flakt_minuter:
+  fan_timer:
     name: Timer
     icon: 'mdi:timer'
     initial: 6
@@ -366,8 +408,9 @@ shell_command:
   reference_monitors: !secret reference_monitors
   reference_headphones: !secret reference_headphones
 
+  restart_hass_docker: !secret restart_hass_docker
   clear_logs: truncate -s 0 /config/home-assistant.log
-  clear_plex_poster: rm -r /config/www/plex/*
+  # clear_plex_poster: rm -r /config/www/plex/*
 
 group:
   automation_system_reference:
@@ -440,20 +483,22 @@ media_player:
   - platform: braviatv
     host: !secret braviatv_host
 
-  - platform: samsungtv_custom
-    host: !secret samsungtv_host
-    mac: !secret samsungtv_mac
-    port: !secret samsungtv_port
-    protocol: ws
+  # - platform: samsungtv_custom
+  #   host: !secret samsungtv_host
+  #   mac: !secret samsungtv_mac
+  #   port: !secret samsungtv_port
+  #   protocol: ws
 
 device_tracker:
   - platform: iphonedetect
-    consider_home: 180
+    consider_home: 120
     new_device_defaults:
       track_new_devices: false
     hosts:
       Mattias: !secret iphonedetect_mattias
       Sanja: !secret iphonedetect_sanja
+
+  - platform: bluetooth_tracker
 
 google:
   client_id: !secret google_client_id
@@ -471,3 +516,10 @@ binary_sensor:
   - platform: ping
     host: secret ping_iphone_x
     name: iPhone X
+
+  - platform: command_line
+    name: check_plex
+    command: !secret check_plex
+    scan_interval: 300
+    payload_on: "on"
+    payload_off: "off"

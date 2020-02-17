@@ -1,38 +1,46 @@
-cch:
+custom_header:
   kiosk_mode: true
+  exceptions:
+    - conditions:
+        user_agent: Mobile
+      config:
+        kiosk_mode: false
+
 resources:
-  - type: js
-    url: /community_plugin/bar-card/bar-card.js
-  - type: module
-    url: /community_plugin/button-card/button-card.js
-  - type: module
-    url: /community_plugin/button-entity-row/button-entity-row.js
-  - type: module
-    url: /community_plugin/circle-sensor-card/circle-sensor-card.js
-  - type: js
-    url: /community_plugin/light-entity-card/light-entity-card.js
-  - type: module
-    url: /community_plugin/lovelace-card-mod/card-mod.js
-  - type: module
-    url: /community_plugin/lovelace-layout-card/layout-card.js
-  - type: module
-    url: /community_plugin/mini-graph-card/mini-graph-card-bundle.js
-  - type: module
-    url: /community_plugin/swipe-card/swipe-card.js
-  - type: js
-    url: /community_plugin/upcoming-media-card/upcoming-media-card.js
-  - type: js
-    url: /community_plugin/vertical-stack-in-card/vertical-stack-in-card.js
-  - type: css
-    url: 'https://sf.abarba.me/font.css'
-  - type: module
-    url: /community_plugin/compact-custom-header.js
-  - type: js
-    url: /community_plugin/light-slider-card.js
-  - type: module
-    url: /community_plugin/mini-media-player-bundle.js
-  - type: module
-    url: /community_plugin/popup-backdrop-filter.js
+  - url: /community_plugin/bar-card/bar-card.js
+    type: js
+  - url: /community_plugin/button-card/button-card.js
+    type: module
+  - url: /community_plugin/button-entity-row/button-entity-row.js
+    type: module
+  - url: /community_plugin/circle-sensor-card/circle-sensor-card.js
+    type: module
+  - url: /community_plugin/custom-header/custom-header.js
+    type: module
+  - url: /community_plugin/light-entity-card/light-entity-card.js
+    type: js
+  - url: /community_plugin/lovelace-card-mod/card-mod.js
+    type: module
+  - url: /community_plugin/lovelace-layout-card/layout-card.js
+    type: module
+  - url: /community_plugin/lovelace-valetudo-map-card/valetudo-map-card.js
+    type: js
+  - url: /community_plugin/mini-graph-card/mini-graph-card-bundle.js
+    type: module
+  - url: /community_plugin/swipe-card/swipe-card.js
+    type: module
+  - url: /community_plugin/upcoming-media-card/upcoming-media-card.js
+    type: js
+  - url: /community_plugin/vertical-stack-in-card/vertical-stack-in-card.js
+    type: js
+  - url: 'https://sf.abarba.me/font.css'
+    type: css
+  - url: /community_plugin/light-slider-card.js
+    type: js
+  - url: /community_plugin/mini-media-player-bundle.js
+    type: module
+  - url: /community_plugin/popup-backdrop-filter.js
+    type: module
 
 title: Hemma
 views:
@@ -79,13 +87,21 @@ views:
               <font color='#5d6569'><b>{{ states('sensor.dag') }}</b><br>
               <b>{{ states('sensor.datum') }}</b> </font><br> 
 
-
-              {% if now().hour < 5 %} <b>God natt {{'\U0001F634'}}</b>
-              {% elif now().hour < 12 %} <b>God morgon</b> {{'\u2615\uFE0F'}}
-              {% elif now().hour < 18 %} <b>God dag</b> {{'\U0001F44B\U0001F3FB'}}
-              {% else %} <b>God kväll</b> {{'\U0001F44B\U0001F3FB'}}
+              {% set t = now().hour %}
+              {% if t <= 1 %} <b>God natt</b> {{'\U0001F611'}}
+              {% elif t <= 3 %} <b>God natt</b> {{'\U0001F62A'}}
+              {% elif t <= 5 %} <b>God natt</b> {{'\U0001F634'}}
+              {% elif t <= 7 %} <b>God morgon</b> {{'\U0001F4A9'}}
+              {% elif t <= 9 %} <b>God morgon</b> {{'\u2615\uFE0F'}}
+              {% elif t <= 10.5 %} <b>God morgon</b> {{'\U0001F642'}}
+              {% elif t <= 13 %} <b>God dag</b> {{'\U0001F60A'}}
+              {% elif t <= 15 %} <b>God dag</b> {{'\U0001F60E'}}
+              {% elif t <= 17 %} <b>God dag</b> {{'\U0001F44B\U0001F3FB'}}
+              {% elif t <= 19 %} <b>God kväll</b> {{'\U0001F44B\U0001F3FB'}}
+              {% elif t <= 22 %} <b>God kväll</b> {{'\U0001F60C'}}
+              {% elif t <= 23 %} <b>God kväll</b> {{'\U0001F974'}}
+              {% else %} <b>God kväll</b> {{'\U0001F974'}}
               {% endif %}
-
 
               {% set lights = [states.light.tvlampa, states.light.golvlampa, states.light.fonsterlampa, states.light.datorlampa, states.light.vask_hoger, states.light.vask_vanster, 
                states.light.taklampa, states.light.kladkammare_2, states.light.hallampa_1, states.light.hallampa_2, states.light.hallampa_3, states.light.mattias, states.light.sanja, states.light.spot_1, states.light.spot_2] %}
@@ -122,32 +138,38 @@ views:
               {% endif %}
 
               <font color='#5d6569'>
+
+              {% if is_state('vacuum.xiaomi_vacuum_cleaner', 'cleaning') %}
+              <b>Morty dammsuger</b>
+              {% elif is_state('vacuum.xiaomi_vacuum_cleaner', 'returning') %}
+              <b>Morty är färdig</b>
+              {% endif %}
+
               {% if is_state('sensor.dark_sky_temperature', 'unknown') or is_state('sensor.dark_sky_precip_probability', 'unknown') %}
               {% else %}
                 {% if states('sensor.dark_sky_temperature') | float <= 0.0 %}
                 Känns som {{ states('sensor.runda_darksky_temp') }} {{'\u2744\uFE0F'}} med {{ states('sensor.runda_darksky_prob') }} risk för snö 
 
                 {% elif states('sensor.dark_sky_temperature') | float > 0.0 %} 
-                Känns som {{ states('sensor.runda_darksky_temp') }} med {{ states('sensor.runda_darksky_prob') }} risk för regn {% if states('sensor.dark_sky_precip_probability') | float > 50.0 %} {{'\u2614\uFE0F' }} {% endif %}
+                Känns som {{ states('sensor.runda_darksky_temp') }} med {{ states('sensor.runda_darksky_prob') }} risk för regn {% if states('sensor.dark_sky_precip_probability') | float > 30.0 %} {{'\u2614\uFE0F' }} {% endif %}
 
                 {% elif states('sensor.dark_sky_temperature') | float > 19.0 and states('sensor.dark_sky_precip_probability') | float < 5.0 %}
                 Känns som {{ states('sensor.runda_darksky_temp') }} {{'\U0001F60E' }} med {{ states('sensor.runda_darksky_prob') }} risk för regn
                 {% endif %}
               {% endif %}
 
-              {% if is_state('device_tracker.mattias', 'home') and is_state('device_tracker.sanja', 'not_home') %} 
+              {% if is_state('person.mattias', 'home') and is_state('person.sanja', 'not_home') %} 
               Sanja gick för {{ states('sensor.sanja_last_changed_h') }} sedan
 
-              {% elif is_state('device_tracker.mattias', 'not_home') and is_state('device_tracker.sanja', 'home') %} 
+              {% elif is_state('person.mattias', 'not_home') and is_state('person.sanja', 'home') %} 
               Mattias gick för {{ states('sensor.mattias_last_changed_h') }} sedan 
               {% endif %}
 
-
               {{ states('sensor.tvatta_countdown') }}
 
-
-              {% if states('sensor.imac_get_ip') == states('sensor.myip') %} {{ '\u26A0\uFE0F' }} <b>VPN</b> verkar vara nere på datorn!{% endif %}
+              {% if states('sensor.imac_get_ip') == states('sensor.myip') %} {{'\u26A0\uFE0F'}} VPN är nere...{% endif %}
               
+              {% if is_state('binary_sensor.check_plex', 'off') %}{{'\u26A0\uFE0F'}} Plex är nere...{% endif %}
 
               </font>
             style:
@@ -223,228 +245,281 @@ views:
               service_data:
                 card:
                   cards:
-                    - entities:
-                        - entity: sensor.roborock_state
-                          secondary_info: last-changed
-                        - entity: sensor.roborock_status
-                        - entity: sensor.roborock_battery_level
-                        - entity: sensor.roborock_last_clean
-                        - background_style:
-                            background: >-
-                              radial-gradient(circle, rgba(45,45,45,1) 0%,
-                              rgba(0,0,0,1) 100%)
-                          card_style:
-                            background: '#FFFFFF00'
-                            box-shadow: none
-                          entity: sensor.roborock_filter
-                          height: 2.1em
-                          icon: 'mdi:filter-variant'
-                          icon_position: left
-                          icon_style:
-                            color: '#9e9e9e'
-                            margin-left: '-0.38em'
-                            filter: none
-                          max: 100
-                          min: 0
-                          rounding: 0.3em
-                          severity:
-                            - color: '#303435'
-                              value: 100
-                            - color: '#6d2525'
-                              value: 10
+                    - cards:
+                        - entities:
+                          - entity: sensor.roborock_state
+                          - entity: sensor.roborock_battery_level
+                          - entity: sensor.roborock_last_clean
+                          - background_style:
+                              background: >-
+                                radial-gradient(circle, rgba(45,45,45,1) 0%,
+                                rgba(0,0,0,1) 100%)
+                            card_style:
+                              background: '#FFFFFF00'
+                              box-shadow: none
+                            entity: sensor.roborock_filter
+                            height: 2.1em
+                            icon: 'mdi:filter-variant'
+                            icon_position: left
+                            icon_style:
+                              color: '#9e9e9e'
+                              margin-left: '-0.38em'
+                              filter: none
+                            max: 100
+                            min: 0
+                            rounding: 0.3em
+                            severity:
+                              - color: '#303435'
+                                value: 100
+                              - color: '#6d2525'
+                                value: 10
+                            style: |
+                              ha-card {
+                                background-color: #FFFFFF00;
+                                margin-left: -0.4em;
+                                margin-right: -0.5em;
+                                margin-top: 0.1em;
+                              }
+                            title: Filter
+                            title_style:
+                              color: '#e0e1e1'
+                              margin-left: 0.95em
+                            type: 'custom:bar-card'
+                            value_style:
+                              color: '#e0e1e1'
+                              font-size: 0.95em
+                              font-weight: 400
+                            width: 50%
+                          - background_style:
+                              background: >-
+                                radial-gradient(circle, rgba(45,45,45,1) 0%,
+                                rgba(0,0,0,1) 100%)
+                            card_style:
+                              background: '#FFFFFF00'
+                              box-shadow: none
+                            entity: sensor.roborock_huvudborste
+                            height: 2.1em
+                            icon: 'mdi:broom'
+                            icon_position: left
+                            icon_style:
+                              color: '#9e9e9e'
+                              margin-left: '-0.45em'
+                              filter: none
+                            max: 100
+                            min: 0
+                            rounding: 0.3em
+                            severity:
+                              - color: '#303435'
+                                value: 100
+                              - color: '#6d2525'
+                                value: 10
+                            style: |
+                              ha-card {
+                                background-color: #FFFFFF00;
+                                margin-left: -0.4em;
+                                margin-right: -0.5em;
+                                margin-top: 0.1em;
+                              }
+                            title: Huvudborste
+                            title_style:
+                              color: '#e0e1e1'
+                              margin-left: 0.95em
+                            type: 'custom:bar-card'
+                            value_style:
+                              color: '#e0e1e1'
+                              font-size: 0.95em
+                              font-weight: 400
+                            width: 50%
+                          - background_style:
+                              background: >-
+                                radial-gradient(circle, rgba(45,45,45,1) 0%,
+                                rgba(0,0,0,1) 100%)
+                            card_style:
+                              background: '#FFFFFF00'
+                              box-shadow: none
+                            entity: sensor.roborock_sidoborste
+                            height: 2.1em
+                            icon: 'mdi:tools'
+                            icon_position: left
+                            icon_style:
+                              color: '#9e9e9e'
+                              margin-left: '-0.45em'
+                              filter: none
+                            max: 100
+                            min: 0
+                            rounding: 0.3em
+                            severity:
+                              - color: '#303435'
+                                value: 100
+                              - color: '#6d2525'
+                                value: 10
+                            style: |
+                              ha-card {
+                                background-color: #FFFFFF00;
+                                margin-left: -0.4em;
+                                margin-right: -0.5em;
+                                margin-top: 0.1em;
+                              }
+                            title: Sidoborste
+                            title_style:
+                              color: '#e0e1e1'
+                              margin-left: 0.95em
+                            type: 'custom:bar-card'
+                            value_style:
+                              color: '#e0e1e1'
+                              font-size: 0.95em
+                              font-weight: 400
+                            width: 50%
+                          - background_style:
+                              background: >-
+                                radial-gradient(circle, rgba(45,45,45,1) 0%,
+                                rgba(0,0,0,1) 100%)
+                            card_style:
+                              background: '#FFFFFF00'
+                              box-shadow: none
+                            entity: sensor.roborock_sensorer
+                            height: 2.1em
+                            icon: 'mdi:spray-bottle'
+                            icon_position: left
+                            icon_style:
+                              color: '#9e9e9e'
+                              margin-left: '-0.45em'
+                              filter: none
+                            max: 100
+                            min: 0
+                            rounding: 0.3em
+                            severity:
+                              - color: '#303435'
+                                value: 100
+                              - color: '#6d2525'
+                                value: 10
+                            style: |
+                              ha-card {
+                                background-color: #FFFFFF00;
+                                margin-left: -0.4em;
+                                margin-right: -0.5em;
+                                margin-top: 0.1em;
+                              }
+                            title: Sensorer
+                            title_style:
+                              color: '#e0e1e1'
+                              margin-left: 0.95em
+                            type: 'custom:bar-card'
+                            value_style:
+                              color: '#e0e1e1'
+                              font-size: 0.95em
+                              font-weight: 400
+                            width: 50%
+                          - entity: input_select.roborock_fan_speed
+                          - buttons:
+                              - icon: 'mdi:play-pause'
+                                icon_style:
+                                  '--iron-icon-height': 1.7em
+                                  '--iron-icon-width': 4em
+                                service: script.vacuum_start_pause
+                                style:
+                                  background: '#2d3538'
+                                  border-radius: 0.6vw
+                                  font-size: 1.1em
+                                  font-weight: 500
+                                  padding: 1.2em 1.4em 1.2em 1.4em
+                                  margin-top: 0.7em
+                              - icon: 'mdi:home-map-marker'
+                                icon_style:
+                                  '--iron-icon-height': 2em
+                                  '--iron-icon-width': 2em
+                                service: vacuum.return_to_base
+                                service_data:
+                                  entity_id: vacuum.xiaomi_vacuum_cleaner
+                                style:
+                                  background: '#2d3538'
+                                  border-radius: 0.6vw
+                                  font-size: 1.1em
+                                  font-weight: 500
+                                  padding: 1.2em 1.4em 1.2em 1.4em
+                                  margin-top: 0.7em
+                              - icon: 'mdi:map-marker-question'
+                                icon_style:
+                                  '--iron-icon-height': 1.9em
+                                  '--iron-icon-width': 1.9em
+                                service: vacuum.locate
+                                service_data:
+                                  entity_id: vacuum.xiaomi_vacuum_cleaner
+                                style:
+                                  background: '#2d3538'
+                                  border-radius: 0.6vw
+                                  font-size: 1.1em
+                                  font-weight: 500
+                                  padding: 1.2em 1.4em 1.2em 1.4em
+                                  margin-top: 0.7em
+                            type: 'custom:button-entity-row'
+                          show_header_toggle: false
                           style: |
                             ha-card {
-                              background-color: #FFFFFF00;
-                              margin-left: -0.4em;
-                              margin-right: -0.5em;
-                              margin-top: 0.1em;
+                              box-shadow: none;
+                              border-radius: 1em;
+                              background: rgba(36, 42, 43, 0.88);
+                              padding-right: 0.7em;
                             }
-                          title: Filter
-                          title_style:
-                            color: '#e0e1e1'
-                            margin-left: 0.95em
-                          type: 'custom:bar-card'
-                          value_style:
-                            color: '#e0e1e1'
-                            font-size: 0.95em
-                            font-weight: 400
-                          width: 50%
-                        - background_style:
-                            background: >-
-                              radial-gradient(circle, rgba(45,45,45,1) 0%,
-                              rgba(0,0,0,1) 100%)
-                          card_style:
-                            background: '#FFFFFF00'
-                            box-shadow: none
-                          entity: sensor.roborock_huvudborste
-                          height: 2.1em
-                          icon: 'mdi:broom'
-                          icon_position: left
-                          icon_style:
-                            color: '#9e9e9e'
-                            margin-left: '-0.45em'
-                            filter: none
-                          max: 100
-                          min: 0
-                          rounding: 0.3em
-                          severity:
-                            - color: '#303435'
-                              value: 100
-                            - color: '#6d2525'
-                              value: 10
+                          title: "\U000e0020 \U000e0020 Dammsugare"
+                          type: entities
+                      type: 'custom:hui-vertical-stack-card'
+                    - break
+                    - cards:
+                        - entities:
+                            - type: 'custom:valetudo-map-card'
+                              entity: sensor.xiaomi_map
+                              rotate: 0
+                              crop:
+                                top: 160
+                                bottom: 88
+                                left: 205
+                                right: 0
+                              min_height: 0
+                              map_scale: 2
+                              floor_color: '#303535'
+                              obstacle_weak_color: '#1b1f10'
+                              obstacle_strong_color: '#1b1f20'
+                              no_go_area_color: '#ff000030'
+                              virtual_wall_color: '#ff000030'
+                              virtual_wall_width: 5
+                              path_color: '#4a5155'
+                              path_width: 0.5
+                              vacuum_icon: 'bha:roborock'
+                              vacuum_color: '#e0e0e0'
+                              style: |
+                                ha-card {
+                                  box-shadow: none;
+                                  background: none;
+                                }
+                          show_header_toggle: false
                           style: |
                             ha-card {
-                              background-color: #FFFFFF00;
-                              margin-left: -0.4em;
-                              margin-right: -0.5em;
-                              margin-top: 0.1em;
+                              box-shadow: none;
+                              border-radius: 1em;
+                              background: rgba(36, 42, 43, 0.88);
+                              padding-right: 0.7em;
                             }
-                          title: Huvudborste
-                          title_style:
-                            color: '#e0e1e1'
-                            margin-left: 0.95em
-                          type: 'custom:bar-card'
-                          value_style:
-                            color: '#e0e1e1'
-                            font-size: 0.95em
-                            font-weight: 400
-                          width: 50%
-                        - background_style:
-                            background: >-
-                              radial-gradient(circle, rgba(45,45,45,1) 0%,
-                              rgba(0,0,0,1) 100%)
-                          card_style:
-                            background: '#FFFFFF00'
-                            box-shadow: none
-                          entity: sensor.roborock_sidoborste
-                          height: 2.1em
-                          icon: 'mdi:tools'
-                          icon_position: left
-                          icon_style:
-                            color: '#9e9e9e'
-                            margin-left: '-0.45em'
-                            filter: none
-                          max: 100
-                          min: 0
-                          rounding: 0.3em
-                          severity:
-                            - color: '#303435'
-                              value: 100
-                            - color: '#6d2525'
-                              value: 10
-                          style: |
-                            ha-card {
-                              background-color: #FFFFFF00;
-                              margin-left: -0.4em;
-                              margin-right: -0.5em;
-                              margin-top: 0.1em;
-                            }
-                          title: Sidoborste
-                          title_style:
-                            color: '#e0e1e1'
-                            margin-left: 0.95em
-                          type: 'custom:bar-card'
-                          value_style:
-                            color: '#e0e1e1'
-                            font-size: 0.95em
-                            font-weight: 400
-                          width: 50%
-                        - background_style:
-                            background: >-
-                              radial-gradient(circle, rgba(45,45,45,1) 0%,
-                              rgba(0,0,0,1) 100%)
-                          card_style:
-                            background: '#FFFFFF00'
-                            box-shadow: none
-                          entity: sensor.roborock_sensorer
-                          height: 2.1em
-                          icon: 'mdi:spray-bottle'
-                          icon_position: left
-                          icon_style:
-                            color: '#9e9e9e'
-                            margin-left: '-0.45em'
-                            filter: none
-                          max: 100
-                          min: 0
-                          rounding: 0.3em
-                          severity:
-                            - color: '#303435'
-                              value: 100
-                            - color: '#6d2525'
-                              value: 10
-                          style: |
-                            ha-card {
-                              background-color: #FFFFFF00;
-                              margin-left: -0.4em;
-                              margin-right: -0.5em;
-                              margin-top: 0.1em;
-                            }
-                          title: Sensorer
-                          title_style:
-                            color: '#e0e1e1'
-                            margin-left: 0.95em
-                          type: 'custom:bar-card'
-                          value_style:
-                            color: '#e0e1e1'
-                            font-size: 0.95em
-                            font-weight: 400
-                          width: 50%
-                        - entity: input_select.roborock_fan_speed
-                      type: entities
-                    - entities:
-                        - buttons:
-                            - icon: 'mdi:play-pause'
-                              icon_style:
-                                '--iron-icon-height': 1.7em
-                                '--iron-icon-width': 4em
-                              service: script.vacuum_start_pause
-                              style:
-                                background: '#2d3538'
-                                border-radius: 0.6vw
-                                font-size: 1.1em
-                                font-weight: 500
-                                padding: 1.2em 1.4em 1.2em 1.4em
-                            - icon: 'mdi:home-map-marker'
-                              icon_style:
-                                '--iron-icon-height': 2em
-                                '--iron-icon-width': 2em
-                              service: vacuum.return_to_base
-                              service_data:
-                                entity_id: vacuum.xiaomi_vacuum_cleaner
-                              style:
-                                background: '#2d3538'
-                                border-radius: 0.6vw
-                                font-size: 1.1em
-                                font-weight: 500
-                                padding: 1.2em 1.4em 1.2em 1.4em
-                            - icon: 'mdi:map-marker-question'
-                              icon_style:
-                                '--iron-icon-height': 1.9em
-                                '--iron-icon-width': 1.9em
-                              service: vacuum.locate
-                              service_data:
-                                entity_id: vacuum.xiaomi_vacuum_cleaner
-                              style:
-                                background: '#2d3538'
-                                border-radius: 0.6vw
-                                font-size: 1.1em
-                                font-weight: 500
-                                padding: 1.2em 1.4em 1.2em 1.4em
-                          type: 'custom:button-entity-row'
+                          title: "\U000e0020 \U000e0020 Kartläggning"
+                          type: entities
                       style: |
                         ha-card {
-                          margin-top: -1.5em;
-                          padding-bottom: 0.4em;
+                          --paper-card-background-color: rgba(36, 42, 43, 0.88);
+                          box-shadow: none;
+                          border-radius: 1em;
                         }
-                      type: entities
-                  type: 'custom:vertical-stack-in-card'
+                      type: 'custom:hui-vertical-stack-card'
+                  column_num: 2
+                  column_width: [390, 555]
+                  layout: vertical
+                  type: 'custom:layout-card'
                 deviceID:
                   - this
                 style:
-                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
-                  border-radius: 0.8vw
-                  opacity: 0.9
-                title: Dammsugare
+                  background: none
+                  box-shadow: none
+                  width: auto
+                title: Stäng
             title: null
             type: icon
 
@@ -478,8 +553,12 @@ views:
                             - entity: sensor.home_assistant_v2_db
                               icon: 'mdi:database'
                               name: Databas
-                            - entity: sensor.rpi_power_template
-                            - entity: sensor.last_boot
+                            - entity: sensor.home_assistant_log
+                              icon: 'mdi:file-document'
+                              name: Loggfil
+                            - entity: sensor.docker_container_status
+                              icon: 'mdi:docker'
+                            - entity: sensor.docker_home_assistant_up_time
                               name: Senaste omstart
                             - background_style:
                                 background: >-
@@ -488,7 +567,7 @@ views:
                               card_style:
                                 background: '#FFFFFF00'
                                 box-shadow: none
-                              entity: sensor.processor_use
+                              entity: sensor.docker_home_assistant_cpu_use
                               height: 2.1em
                               icon: 'mdi:chip'
                               icon_position: left
@@ -526,7 +605,7 @@ views:
                                 domain: homeassistant
                                 service: update_entity
                                 data:
-                                  entity_id: sensor.processor_use
+                                  entity_id: sensor.docker_home_assistant_cpu_use
                             - background_style:
                                 background: >-
                                   radial-gradient(circle, rgba(45,45,45,1) 0%,
@@ -534,7 +613,7 @@ views:
                               card_style:
                                 background: '#FFFFFF00'
                                 box-shadow: none
-                              entity: sensor.memory_use_percent
+                              entity: sensor.docker_home_assistant_memory_use_percent
                               height: 2.1em
                               icon: 'mdi:memory'
                               icon_position: left
@@ -556,55 +635,9 @@ views:
                                   margin-left: -0.4em;
                                   margin-right: -0.5em;
                                   margin-top: 0.1em;
-                                }
-                              title: Minne - 1GB
-                              title_style:
-                                color: '#e0e1e1'
-                                margin-left: 0.95em
-                              type: 'custom:bar-card'
-                              value_style:
-                                color: '#e0e1e1'
-                                font-size: 0.95em
-                                font-weight: 400
-                              width: 50%
-                              tap_action: service
-                              service_options:
-                                domain: homeassistant
-                                service: update_entity
-                                data:
-                                  entity_id: sensor.memory_use_percent
-                            - background_style:
-                                background: >-
-                                  radial-gradient(circle, rgba(45,45,45,1) 0%,
-                                  rgba(0,0,0,1) 100%)
-                              card_style:
-                                background: '#FFFFFF00'
-                                box-shadow: none
-                              entity: sensor.disk_use_percent_home
-                              height: 2.1em
-                              icon: 'mdi:sd'
-                              icon_position: left
-                              icon_style:
-                                color: '#9e9e9e'
-                                margin-left: '-0.45em'
-                                filter: none
-                              max: 100
-                              min: 0
-                              rounding: 0.3em
-                              severity:
-                                - color: '#303435'
-                                  value: 90
-                                - color: '#6d2525'
-                                  value: 100
-                              style: |
-                                ha-card {
-                                  background-color: #FFFFFF00;
-                                  margin-left: -0.4em;
-                                  margin-right: -0.5em;
-                                  margin-top: 0.1em;
                                   margin-bottom: 1.5em;
                                 }
-                              title: Lagring
+                              title: Minne
                               title_style:
                                 color: '#e0e1e1'
                                 margin-left: 0.95em
@@ -619,11 +652,13 @@ views:
                                 domain: homeassistant
                                 service: update_entity
                                 data:
-                                  entity_id: sensor.disk_use_percent_home
+                                  entity_id: sensor.docker_home_assistant_memory_use_percent
                             - buttons:
-                                - entity: script.homeassistant_restart
-                                  icon: 'mdi:reload'
+                                - icon: 'mdi:reload'
                                   name: Home Assistant
+                                  service: script.turn_on
+                                  service_data:
+                                    entity_id: script.homeassistant_restart
                                   style:
                                     background: '#FFFFFF10'
                                     border-radius: 0.6em
@@ -643,11 +678,11 @@ views:
                           style: |
                             ha-card {
                               box-shadow: none;
-                              border-radius: 1vw;
+                              border-radius: 1em;
                               background: rgba(36, 42, 43, 0.88);
                               padding-right: 0.7em;
                             }
-                          title: Home Assistant
+                          title: "\U000e0020 \U000e0020 Home Assistant Core"
                           type: entities
                       type: 'custom:hui-vertical-stack-card'
                     - break
@@ -662,7 +697,7 @@ views:
                               name: Skärmsläckare
                             - entity: sensor.fullykiosk_battery_level
                             - entity: sensor.fullykiosk_plugged
-                            - entity: sensor.fullykiosk_device_name
+                            - entity: sensor.fullykiosk_motion_detector_state
                             - background_style:
                                 background: >-
                                   radial-gradient(circle, rgba(45,45,45,1) 0%,
@@ -779,25 +814,24 @@ views:
                           style: |
                             ha-card {
                               box-shadow: none;
-                              border-radius: 1vw;
+                              border-radius: 1em;
                               background: rgba(36, 42, 43, 0.88);
                               padding-right: 0.7em;
                             }
-                          title: Väggplattan
+                          title: "\U000e0020 \U000e0020 Väggplattan"
                           type: entities
                       style: |
                         ha-card {
                           --paper-card-background-color: rgba(36, 42, 43, 0.88);
                           box-shadow: none;
-                          border-radius: 1vw;
+                          border-radius: 1em;
                         }
                       type: 'custom:hui-vertical-stack-card'
                     - break
                     - cards:
                         - entities:
                             - entity: sensor.synology_dsm_status
-                            - entity: sensor.synology_dsm_temperature_sdb
-                              name: Disktemperatur
+                            - entity: sensor.nas_disk_temp
                             - entity: sensor.drifttid
                               icon: 'mdi:calendar-month'
                             - background_style:
@@ -807,7 +841,7 @@ views:
                               card_style:
                                 background: '#FFFFFF00'
                                 box-shadow: none
-                              entity: sensor.synology_dsm_cpu_load_total
+                              entity: sensor.processor_use
                               height: 2.1em
                               icon: 'mdi:chip'
                               icon_position: left
@@ -845,7 +879,7 @@ views:
                                 domain: homeassistant
                                 service: update_entity
                                 data:
-                                  entity_id: sensor.synology_dsm_cpu_load_total
+                                  entity_id: sensor.processor_use
                             - background_style:
                                 background: >-
                                   radial-gradient(circle, rgba(45,45,45,1) 0%,
@@ -853,7 +887,7 @@ views:
                               card_style:
                                 background: '#FFFFFF00'
                                 box-shadow: none
-                              entity: sensor.synology_dsm_memory_usage_real
+                              entity: sensor.memory_use_percent
                               height: 2.1em
                               icon: 'mdi:memory'
                               icon_position: left
@@ -891,7 +925,7 @@ views:
                                 domain: homeassistant
                                 service: update_entity
                                 data:
-                                  entity_id: sensor.synology_dsm_memory_usage_real
+                                  entity_id: sensor.memory_use_percent
                             - background_style:
                                 background: >-
                                   radial-gradient(circle, rgba(45,45,45,1) 0%,
@@ -899,7 +933,7 @@ views:
                               card_style:
                                 background: '#FFFFFF00'
                                 box-shadow: none
-                              entity: sensor.synology_dsm_volume_used_volume_1
+                              entity: sensor.disk_use_percent
                               height: 2.1em
                               icon: 'mdi:harddisk'
                               icon_position: left
@@ -922,7 +956,7 @@ views:
                                   margin-right: -0.7em;
                                   margin-top: 0.1em;
                                 }
-                              title: Lagring - 16TB
+                              title: Lagring - 10.5TB
                               title_style:
                                 color: '#e0e1e1'
                                 margin-left: 0.95em
@@ -937,39 +971,53 @@ views:
                                 domain: homeassistant
                                 service: update_entity
                                 data:
-                                  entity_id: sensor.synology_dsm_volume_used_volume_1
+                                  entity_id: sensor.disk_use_percent
+                            - entity: sensor.nas_net_down
+                              style: |
+                                :host {
+                                --paper-item-icon-color: green;
+                                  }
+                            - entity: sensor.nas_net_up
+                              style: |
+                                :host {
+                                --paper-item-icon-color: #385581;
+                                  }
                           show_header_toggle: false
                           style: |
                             ha-card {
                               box-shadow: none;
-                              border-radius: 1vw;
+                              border-radius: 1em;
                               background: rgba(36, 42, 43, 0.88);
                               padding-right: 0.7em;
                             }
-                          title: Synology NAS
+                          title: "\U000e0020 \U000e0020 Synology NAS"
                           type: entities
                         - align_state: left
                           entities:
+                            - color: '#385581'
+                              entity: sensor.synology_dsm_network_up
+                              name: Uppladdning
                             - color: green
                               entity: sensor.synology_dsm_network_down
                               name: Nedladdning
-                            - color: '#6d252590'
-                              entity: sensor.synology_dsm_network_up
-                              name: Uppladdning
                           group: false
-                          name: Nätverk
+                          points_per_hour: 2.5
+                          line_width: 2.5
+                          hour24: true
+                          hours_to_show: 12
                           show:
                             fill: fade
                             icon: false
                             name: false
+                            state: false
                             name_adaptive_color: true
+                            labels: hover
+                            legend: false
                           style: |
                             ha-card {
-                              box-shadow: none;
-                              margin-top: -1.58em;
-                              border-radius: 8vw;
-                              background: rgba(36, 42, 43, 0.88);
-                              padding-left: 1em;
+                              border-radius: 1em !important;
+                              margin-top: -5.55em !important;
+                              height: 10em !important;
                             }
                           tap_action:
                             action: none
@@ -977,8 +1025,8 @@ views:
                       style: |
                         ha-card {
                           --paper-card-background-color: rgba(36, 42, 43, 0.88);
+                          border-radius: 1em;
                           box-shadow: none;
-                          border-radius: 1vw;
                         }
                       type: 'custom:vertical-stack-in-card'
                   column_num: 3
@@ -986,11 +1034,10 @@ views:
                   type: 'custom:layout-card'
                 deviceID:
                   - this
-                large: true
                 style:
                   background: none
-                  border-radius: 0.8vw 0.8vw 0.8vw 0.8vw
-                  padding: 3vw 2.5vw 5vw 2.5vw
+                  box-shadow: none
+                  width: 85em
                 title: Stäng
             title: null
             type: icon
@@ -1170,6 +1217,7 @@ views:
                   - this
                 style:
                   '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  '--ha-card-box-shadow': none
                   border-radius: 0.8vw
                   opacity: 0.9
                 title: Scenarier
@@ -2301,13 +2349,13 @@ views:
                                   service: update_entity
                                   data:
                                     entity_id: sensor.imac_time_machine
-                              - entity: input_boolean.ignore_auto_stang_allt
+                              - entity: input_boolean.lock_computer
                                 icon: 'mdi:lock-alert'
                                 name: 'Ignorera "Stäng allt"'
                                 style: |
                                   :host {
                                   --paper-item-icon-color: 
-                                   {% if is_state('input_boolean.ignore_auto_stang_allt', 'on') %}
+                                   {% if is_state('input_boolean.lock_computer', 'on') %}
                                       #3182b7
                                    {% else %}
                                      #9da0a2
@@ -2432,6 +2480,22 @@ views:
                   width: 3.5%
                 type: image
             type: conditional
+          - type: conditional
+            conditions:
+              - entity: input_boolean.lock_computer
+                state: 'on'
+            elements:
+              - icon: 'mdi:lock-alert'
+                style:
+                  '--iron-icon-height': 2.2vw
+                  '--iron-icon-width': 2.2vw
+                  color: '#6e818a60'
+                  left: 57.65%
+                  top: 33.58%
+                tap_action:
+                  action: none
+                title: null
+                type: icon
 
           #################################################################
           #                                                               #
@@ -2814,7 +2878,7 @@ views:
                         - entity: automation.turn_on_flakt_temp
                           icon: 'mdi:hotel'
                           name: Slå på om temp är över 26 °C
-                        - entity: input_number.flakt_minuter
+                        - entity: input_number.fan_timer
                         - entity: sensor.flakt_timer_value
                       type: entities
                     - entities:
@@ -4569,7 +4633,7 @@ views:
           #                                                               #
           #################################################################
 
-          - entity: device_tracker.mattias
+          - entity: person.mattias
             state_image:
               home: /local/hemma_mattias_on.png
               not_home: /local/hemma_mattias_off.png
@@ -4579,7 +4643,7 @@ views:
               width: 10%
             type: image
           - conditions:
-              - entity: device_tracker.mattias
+              - entity: person.mattias
                 state: home
             elements:
               - entity: sensor.mattias_last_changed
@@ -4604,7 +4668,7 @@ views:
                 type: 'custom:circle-sensor-card'
             type: conditional
           - conditions:
-              - entity: device_tracker.mattias
+              - entity: person.mattias
                 state: not_home
             elements:
               - entity: sensor.mattias_last_changed
@@ -4635,7 +4699,7 @@ views:
                 card:
                   cards:
                     - entities:
-                        - entity: device_tracker.mattias
+                        - entity: person.mattias
                           secondary_info: last-changed
                         - entity: binary_sensor.iphone_x
                           icon: 'mdi:cellphone'
@@ -4660,7 +4724,7 @@ views:
                         }
                       type: entities
                     - entities:
-                        - entity: device_tracker.mattias
+                        - entity: person.mattias
                       hours_to_show: 24
                       refresh_interval: 0
                       style: |
@@ -4695,7 +4759,7 @@ views:
           #                                                               #
           #################################################################
 
-          - entity: device_tracker.sanja
+          - entity: person.sanja
             state_image:
               home: /local/hemma_sanja_on.png
               not_home: /local/hemma_sanja_off.png
@@ -4705,7 +4769,7 @@ views:
               width: 10%
             type: image
           - conditions:
-              - entity: device_tracker.sanja
+              - entity: person.sanja
                 state: home
             elements:
               - entity: sensor.sanja_last_changed
@@ -4730,7 +4794,7 @@ views:
                 type: 'custom:circle-sensor-card'
             type: conditional
           - conditions:
-              - entity: device_tracker.sanja
+              - entity: person.sanja
                 state: not_home
             elements:
               - entity: sensor.sanja_last_changed
@@ -4761,7 +4825,7 @@ views:
                 card:
                   cards:
                     - entities:
-                        - entity: device_tracker.sanja
+                        - entity: person.sanja
                           secondary_info: last-changed
                         - entity: binary_sensor.iphone_xr
                           icon: 'mdi:cellphone'
@@ -4777,7 +4841,7 @@ views:
                           card_style:
                             background: '#FFFFFF00'
                             box-shadow: none
-                          entity: sensor.printer_black
+                          entity: sensor.hp_printer_inkcartridge_black
                           height: 2.1em
                           icon: 'mdi:water-outline'
                           icon_position: left
@@ -4791,9 +4855,9 @@ views:
                           rounding: 0.3em
                           severity:
                             - color: '#303435'
-                              value: 90
-                            - color: '#6d2525'
                               value: 100
+                            - color: '#6d2525'
+                              value: 10
                           style: |
                             ha-card {
                               background-color: #FFFFFF00;
@@ -4816,7 +4880,7 @@ views:
                             domain: homeassistant
                             service: update_entity
                             data:
-                              entity_id: sensor.printer_black
+                              entity_id: sensor.hp_printer_inkcartridge_black
                         - background_style:
                             background: >-
                               radial-gradient(circle, rgba(45,45,45,1) 0%,
@@ -4824,7 +4888,7 @@ views:
                           card_style:
                             background: '#FFFFFF00'
                             box-shadow: none
-                          entity: sensor.printer_color
+                          entity: sensor.hp_printer_inkcartridge_cyanmagentayellow
                           height: 2.1em
                           icon: 'mdi:water'
                           icon_position: left
@@ -4838,9 +4902,9 @@ views:
                           rounding: 0.3em
                           severity:
                             - color: '#303435'
-                              value: 90
-                            - color: '#6d2525'
                               value: 100
+                            - color: '#6d2525'
+                              value: 10
                           style: |
                             ha-card {
                               background-color: #FFFFFF00;
@@ -4863,7 +4927,7 @@ views:
                             domain: homeassistant
                             service: update_entity
                             data:
-                              entity_id: sensor.printer_color
+                              entity_id: sensor.hp_printer_inkcartridge_cyanmagentayellow
                       style: |
                         ha-card {
                           border-radius: 0px !important;
@@ -4884,7 +4948,7 @@ views:
                         }
                       type: entities
                     - entities:
-                        - entity: device_tracker.sanja
+                        - entity: person.sanja
                       hours_to_show: 24
                       refresh_interval: 0
                       style: |

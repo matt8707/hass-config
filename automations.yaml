@@ -37,12 +37,12 @@
   action:
   - service: shell_command.clear_logs
 
-- alias: clear_plex_poster
-  trigger:
-    platform: time_pattern
-    minutes: "/30"
-  action:
-  - service: shell_command.clear_plex_poster
+# - alias: clear_plex_poster
+#   trigger:
+#     platform: time_pattern
+#     minutes: "/30"
+#   action:
+#   - service: shell_command.clear_plex_poster
 
 - alias: reset_conditional_media
   trigger:
@@ -114,6 +114,8 @@
   action:
     - service: input_boolean.turn_on
       entity_id: input_boolean.motion_vardagsrum
+    # - service: light.turn_on
+    #   entity_id: light.hall
       
 - alias: turn_off_motion_vardagsrum
   trigger:
@@ -286,7 +288,7 @@
     from: 'off'
     to: 'on'
     for: 
-      hours: "{{ states('input_number.flakt_minuter') | int }}"
+      hours: "{{ states('input_number.fan_timer') | int }}"
   action:
     - service: switch.turn_off
       entity_id: switch.wemo_flakt
@@ -300,10 +302,10 @@
     condition: or
     conditions:
       - condition: state
-        entity_id: device_tracker.mattias
+        entity_id: person.mattias
         state: 'home'
       - condition: state
-        entity_id: device_tracker.sanja
+        entity_id: person.sanja
         state: 'home'
   action:
     - service: switch.turn_on
@@ -337,12 +339,6 @@
 - alias: close_popups_on_tablet
   trigger:
     - platform: state
-      entity_id: switch.fullykiosk_screen
-      from: 'on'
-      to: 'off'
-      for:
-        seconds: 30
-    - platform: state
       entity_id: switch.fullykiosk_screensaver
       from: 'off'
       to: 'on'
@@ -362,8 +358,8 @@
   action:
   - service: switch.turn_off
     entity_id: switch.fullykiosk_screensaver
-  - service: switch.turn_on
-    entity_id: switch.fullykiosk_screen
+  # - service: switch.turn_on
+  #   entity_id: switch.fullykiosk_screen
 
 - alias: turn_off_fullykiosk_screen
   trigger:
@@ -375,27 +371,27 @@
   - service: switch.turn_on
     entity_id: switch.fullykiosk_screensaver
 
-- alias: fullykiosk_update_screensaver_status
-  trigger:
-    - platform: state
-      entity_id: switch.fullykiosk_screensaver
-      from: 'off'
-      to: 'on'
-    - platform: state
-      entity_id: switch.fullykiosk_screensaver
-      from: 'on'
-      to: 'off'
-  action:
-    - service: homeassistant.update_entity
-      entity_id:
-        ['sensor.fullykiosk', 'switch.fullykiosk_screensaver']
+# - alias: fullykiosk_update_screensaver_status
+#   trigger:
+#     - platform: state
+#       entity_id: switch.fullykiosk_screensaver
+#       from: 'off'
+#       to: 'on'
+#     - platform: state
+#       entity_id: switch.fullykiosk_screensaver
+#       from: 'on'
+#       to: 'off'
+#   action:
+#     - service: homeassistant.update_entity
+#       entity_id:
+#         ['sensor.fullykiosk', 'switch.fullykiosk_screensaver']
 
 - alias: fullykiosk_automatic_brightness
   trigger:
-    - platform: state
-      entity_id: switch.fullykiosk_screen
-      from: 'off'
-      to: 'on'
+    # - platform: state
+    #   entity_id: switch.fullykiosk_screen
+    #   from: 'off'
+    #   to: 'on'
     - platform: state
       entity_id: switch.fullykiosk_screensaver
       from: 'on'
@@ -406,9 +402,9 @@
         entity_id: input_number.fullykiosk_brightness_slider
         value: >
           {% if is_state('sun.sun', 'above_horizon') %}
-            80
+            90
           {% else %}
-            40
+            50
           {% endif %}
 
 
@@ -651,9 +647,9 @@
     from: 'off'
     to: 'on'
   condition:
-    - condition: state
-      entity_id: switch.fullykiosk_screen
-      state: 'on'
+    # - condition: state
+    #   entity_id: switch.fullykiosk_screen
+    #   state: 'on'
     - condition: state
       entity_id: switch.fullykiosk_screensaver
       state: 'off'
@@ -674,9 +670,9 @@
     from: 'on'
     to: 'off'
   condition:
-    - condition: state
-      entity_id: switch.fullykiosk_screen
-      state: 'on'
+    # - condition: state
+    #   entity_id: switch.fullykiosk_screen
+    #   state: 'on'
     - condition: state
       entity_id: switch.fullykiosk_screensaver
       state: 'off'
@@ -695,9 +691,9 @@
       domain: browser_mod
       service: popup
   condition:
-    - condition: state
-      entity_id: switch.fullykiosk_screen
-      state: 'on'
+    # - condition: state
+    #   entity_id: switch.fullykiosk_screen
+    #   state: 'on'
     - condition: state
       entity_id: switch.fullykiosk_screensaver
       state: 'off'
@@ -837,8 +833,8 @@
 - alias: reveal_laundry_timer
   trigger:
     - platform: state
-      entity_id: calendar.tvatta
-      to: 'on'
+      entity_id: sensor.tvatta_countdown_timer_trigger
+      to: 'true'
   action:
     - service: input_boolean.turn_on
       entity_id: input_boolean.laundry_timer_visibility
@@ -849,7 +845,7 @@
       entity_id: input_boolean.laundry_timer_visibility
       to: 'on'
       for:
-        hours: 6
+        hours: 4
   action:
     - service: input_boolean.turn_off
       entity_id: input_boolean.laundry_timer_visibility
@@ -861,42 +857,57 @@
     event_data:
       entity_id: timer.laundry
   action:
+    - service: automation.turn_off
+      entity_id:
+        ['automation.ui_sound_on', 'automation.ui_sound_off', 'automation.ui_sound_popup']
     - service: media_player.play_media
       data:
         entity_id: media_player.tablet
         media_content_id: /local/timer.mp3
         media_content_type: music
     - delay: 00:00:02
-    - service: tts.google_translate_say
-      entity_id: media_player.tablet
+    - service: media_player.play_media
       data_template:
-        message: "{{ ['Tvätten är färdig', 'Dags att gå ner', 'Tvätten är klar'] | random }}"
+        entity_id: media_player.tablet
+        media_content_id: >
+          {{ ['/local/tts_custom/timer_tvatten_ar_fardig.mp3',
+              '/local/tts_custom/timer_tvatten_ar_klar.mp3',
+              '/local/tts_custom/timer_dags_att_ga_ner.mp3'] | random}}
+        media_content_type: music
+    # - service: tts.google_translate_say
+    #   entity_id: media_player.tablet
+    #   data_template:
+    #     message: "{{ ['Tvätten är färdig', 'Dags att gå ner', 'Tvätten är klar'] | random }}"
     - service: shell_command.notify_laundry
+    - delay: '00:00:03'
+    - service: automation.turn_on
+      entity_id:
+        ['automation.ui_sound_on', 'automation.ui_sound_off', 'automation.ui_sound_popup']
 
 
 
 
     #####################   TEST   #####################
 
-- alias: timer_welcome_home
-  trigger:
-  - platform: state
-    entity_id: input_boolean.motion_hall
-    from: 'off'
-    to: 'on'
-  condition: 
-    condition: and
-    conditions: 
-      - condition: state
-        entity_id: device_tracker.mattias
-        state: 'not_home'
-        for:
-          minutes: 30
-      - condition: state
-        entity_id: device_tracker.sanja
-        state: 'not_home'
-        for:
-          minutes: 30
-  action:
-    - service: script.turn_on
-      entity_id: script.auto_hemma_tracker
+# - alias: timer_welcome_home
+#   trigger:
+#   - platform: state
+#     entity_id: input_boolean.motion_hall
+#     from: 'off'
+#     to: 'on'
+#   condition: 
+#     condition: and
+#     conditions: 
+#       - condition: state
+#         entity_id: person.mattias
+#         state: 'not_home'
+#         for:
+#           minutes: 30
+#       - condition: state
+#         entity_id: person.sanja
+#         state: 'not_home'
+#         for:
+#           minutes: 30
+#   action:
+#     - service: script.turn_on
+#       entity_id: script.auto_hemma_tracker

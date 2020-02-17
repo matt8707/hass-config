@@ -1,3 +1,9 @@
+console.info(
+  `%cBAR-CARD\n%cVersion: 1.7.1`,
+  "color: green; font-weight: bold;",
+  ""
+);
+
 class BarCard extends HTMLElement {
   constructor () {
     super()
@@ -7,43 +13,49 @@ class BarCard extends HTMLElement {
     while(this.shadowRoot.lastChild)
       this.shadowRoot.removeChild(this.shadowRoot.lastChild);
 
+    // Avoid lovelace config modification
+    config = Object.assign({}, config)
+
     // Default Card variables
     const initialConfig = Object.assign({}, config)
+    const defaultConfig = {
+      height : '40px',
+      direction : 'right',
+      rounding : '3px',
+      title_position : 'left',
+      icon_position : 'off',
+      indicator : 'auto',
+      saturation : '50%',
+      animation : 'auto',
+      speed : 1000,
+      delay : 5000,
+      min : 0,
+      max : 100,
+      padding : '4px',
+      align : 'center',
+      color : 'var(--custom-bar-card-color, var(--primary-color))',
+      tap_action : 'info',
+      show_value : true,
+      limit_value : false,
+      show_minmax : false,
+      title : false,
+      severity : false,
+      target : false,
+      attribute : false,
+      icon : false,
+      charge_entity : false,
+      unit_of_measurement : false,
+      card_style : false,
+      icon_style : false,
+      title_style : false,
+      value_style : false,
+      minmax_style : false,
+      background_style : false,
+      visibility : false,
+      decimal : false
+    }
 
-    if (!config.height) config.height = '40px'
-    if (!config.direction) config.direction = 'right'
-    if (!config.rounding) config.rounding = '3px'
-    if (!config.title_position) config.title_position = 'left'
-    if (!config.icon_position) config.icon_position = 'off'
-    if (!config.indicator) config.indicator = 'auto'
-    if (!config.saturation) config.saturation = '50%'
-    if (!config.animation) config.animation = 'auto'
-    if (!config.speed) config.speed = 1000
-    if (!config.delay) config.delay = 5000
-    if (!config.min) config.min = 0
-    if (!config.max) config.max = 100
-    if (!config.padding) config.padding = '4px'
-    if (!config.align) config.align = 'center'
-    if (!config.color) config.color = 'var(--custom-bar-card-color, var(--primary-color))'
-    if (!config.tap_action) config.tap_action = 'info'
-    if (!config.show_value) config.show_value = true
-    if (!config.limit_value) config.limit_value = false
-    if (!config.show_minmax) config.show_minmax = false
-    if (!config.title) config.title = false
-    if (!config.severity) config.severity = false
-    if (!config.target) config.target = false
-    if (!config.attribute) config.attribute = false
-    if (!config.icon) config.icon = false
-    if (!config.charge_entity) config.charge_entity = false
-    if (!config.unit_of_measurement) config.unit_of_measurement = false
-    if (!config.card_style) config.card_style = false
-    if (!config.icon_style) config.icon_style = false
-    if (!config.title_style) config.title_style = false
-    if (!config.value_style) config.value_style = false
-    if (!config.minmax_style) config.minmax_style = false
-    if (!config.background_style) config.background_style = false
-    if (!config.visibility) config.visibility = false
-    if (!config.decimal) config.decimal = false
+    config = Object.assign(defaultConfig, config)
 
     // Check entity types
     let updateArray
@@ -696,6 +708,11 @@ class BarCard extends HTMLElement {
     let color
     sections.forEach(section => {
       let actualValue = this._valueEntityCheck(section.value, hass)
+      if (isNaN(actualValue)) {
+        if (actualValue == stateValue && !color) {
+          color = section.color
+        }
+      }
       if (numberValue <= actualValue && !color) {
         color = section.color
       }
@@ -709,6 +726,11 @@ class BarCard extends HTMLElement {
     let icon
     sections.forEach(section => {
       let actualValue = this._valueEntityCheck(section.value, hass)
+      if (isNaN(actualValue)) {
+        if (actualValue == stateValue && !icon) {
+          icon = section.icon
+        }
+      }
       if (numberValue <= actualValue && !icon) {
         icon = section.icon
       }
@@ -730,7 +752,7 @@ class BarCard extends HTMLElement {
           return attribute
         }
       } else {
-        if (this._hass.states[value] == undefined) throw new Error('Invalid target, min or max entity')
+        if (this._hass.states[value] == undefined) return value
         else return hass.states[value].state
       }
     } else {
@@ -1224,9 +1246,3 @@ class BarCard extends HTMLElement {
 }
 
 customElements.define('bar-card', BarCard)
-
-console.info(
-  `%cBAR-CARD\n%cVersion: 1.6.2`,
-  "color: green; font-weight: bold;",
-  ""
-);
