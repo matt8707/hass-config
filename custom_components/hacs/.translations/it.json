@@ -70,10 +70,13 @@
         "step": {
             "user": {
                 "data": {
+                    "appdaemon": "Abilita il rilevamento e il monitoraggio delle applicazioni AppDaemon",
                     "country": "Filtra con prefisso internazionale.",
                     "debug": "Abilita debug.",
                     "experimental": "Abilita funzionalità sperimentali",
-                    "release_limit": "Numero di versioni da mostrare."
+                    "release_limit": "Numero di versioni da mostrare.",
+                    "sidepanel_icon": "Icona nel pannello laterale",
+                    "sidepanel_title": "Titolo nel pannello laterale"
                 }
             }
         }

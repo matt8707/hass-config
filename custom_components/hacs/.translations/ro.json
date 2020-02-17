@@ -50,20 +50,30 @@
         "exist": "{item} există deja",
         "no": "Nu",
         "ok": "OK",
+        "uninstall": "Sigur doriți să dezinstalați '{item}'?",
         "yes": "Da"
     },
     "options": {
         "step": {
             "user": {
                 "data": {
+                    "appdaemon": "Activați descoperirea și urmărirea aplicațiilor AppDaemon",
                     "country": "Filtrează cu codul țării.",
                     "experimental": "Activați funcțiile experimentale",
-                    "release_limit": "Număr de versiuni afișate."
+                    "not_in_use": "Nu este utilizat cu YAML",
+                    "release_limit": "Număr de versiuni afișate.",
+                    "sidepanel_icon": "Pictogramă Panou lateral",
+                    "sidepanel_title": "Titlu panou lateral"
                 }
             }
         }
     },
+    "repository_banner": {
+        "no_restart_required": "Nu este necesară repornirea",
+        "restart": "Trebuie să reporniți Home Assistant."
+    },
     "repository": {
+        "add_to_lovelace": "Adăugați la Lovelace",
         "authors": "Autori",
         "available": "Disponibil",
         "back_to": "Înapoi la",
@@ -94,6 +104,7 @@
     },
     "settings": {
         "add_custom_repository": "ADĂUGARE DEPOZIT PERSONALIZAT",
+        "adding_new_repo": "Adăugarea unui depozit nou '{repo}'",
         "adding_new_repo_category": "Cu categoria '{categoria}'.",
         "category": "Categorie",
         "compact_mode": "Modul compact",
@@ -102,6 +113,7 @@
         "display": "Afişeaza",
         "grid": "Grilă",
         "hacs_repo": "HACS repo",
+        "hidden_repositories": "depozite ascunse",
         "reload_data": "Reîncărcați datele",
         "reload_window": "Reîncărcați fereastra",
         "save": "Salveaza",
@@ -115,6 +127,7 @@
         "descending": "descendent",
         "last_updated": "Ultima actualizare",
         "name": "Nume",
+        "new_repositories": "Noi depozite",
         "placeholder_search": "Vă rugăm să introduceți un termen de căutare ...",
         "sort": "fel",
         "stars": "Stele"

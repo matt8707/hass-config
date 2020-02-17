@@ -70,10 +70,14 @@
         "step": {
             "user": {
                 "data": {
+                    "appdaemon": "Omogoči odkrivanje in sledenje aplikacij AppDaemon",
                     "country": "Filtrirajte s kodo države.",
                     "debug": "Omogoči odpravljanje napak.",
                     "experimental": "Omogočite poskusne funkcije",
-                    "release_limit": "Število izdaj, ki jih želite prikazati."
+                    "not_in_use": "Ni v uporabi z YAML",
+                    "release_limit": "Število izdaj, ki jih želite prikazati.",
+                    "sidepanel_icon": "Ikona stranske plošče",
+                    "sidepanel_title": "Naslov stranske plošče"
                 }
             }
         }

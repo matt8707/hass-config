@@ -70,10 +70,14 @@
         "step": {
             "user": {
                 "data": {
+                    "appdaemon": "Habilitar el descubrimiento y seguimiento de las aplicaciones de AppDaemon",
                     "country": "Filtrar por el código de país.",
                     "debug": "Habilitar depuración.",
                     "experimental": "Habilitar funciones experimentales",
-                    "release_limit": "Número de versiones a mostrar."
+                    "not_in_use": "No usarse con YAML",
+                    "release_limit": "Número de versiones a mostrar.",
+                    "sidepanel_icon": "Icono del panel lateral",
+                    "sidepanel_title": "Título del panel lateral"
                 }
             }
         }
@@ -121,21 +125,21 @@
         "upgrade": "Actualizar"
     },
     "settings": {
-        "add_custom_repository": "AGREGAR CUSTOM REPOSITORY",
+        "add_custom_repository": "AGREGAR REPOSITORIO PERSONALIZADO",
         "adding_new_repo": "Añadiendo un nuevo repositorio '{repo}'.",
         "adding_new_repo_category": "Con la categoría '{category}'.",
         "bg_task_custom": "Los repositorios personalizados están ocultos mientras se ejecutan las tareas en segundo plano.",
         "category": "Categoría",
         "compact_mode": "Modo compacto",
-        "custom_repositories": "CUSTOM REPOSITORIES",
+        "custom_repositories": "REPOSITORIOS PERSONALIZADOS",
         "delete": "Eliminar",
-        "display": "Display",
-        "grid": "Grilla",
+        "display": "Mostrar",
+        "grid": "Cuadrícula",
         "hacs_repo": "HACS repo",
         "hidden_repositories": "repositorios ocultos",
         "missing_category": "Es necesario seleccionar una categoría",
         "open_repository": "Abrir repositorio",
-        "reload_data": "Releer datos",
+        "reload_data": "Recargar datos",
         "reload_window": "Recargar ventana",
         "repository_configuration": "Configuración del repositorio",
         "save": "Grabar",

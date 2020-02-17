@@ -36,6 +36,7 @@ async def async_setup(hass, config):
     Hacs.configuration = Configuration.from_dict(
         config[DOMAIN], config[DOMAIN].get("options")
     )
+    Hacs.configuration.config = config
     Hacs.configuration.config_type = "yaml"
     await startup_wrapper_for_yaml(Hacs)
     hass.async_create_task(
@@ -56,6 +57,7 @@ async def async_setup_entry(hass, config_entry):
             )
         return False
     Hacs.hass = hass
+
     Hacs.configuration = Configuration.from_dict(
         config_entry.data, config_entry.options
     )
@@ -165,6 +167,9 @@ async def hacs_startup(hacs):
         )
     else:
         async_call_later(hacs.hass, 5, hacs().startup_tasks())
+
+    # Show the configuration
+    hacs.configuration.print()
 
     # Mischief managed!
     return True

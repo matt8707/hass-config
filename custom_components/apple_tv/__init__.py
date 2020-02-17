@@ -5,6 +5,9 @@ from random import randrange
 from functools import partial
 from typing import Sequence, TypeVar, Union
 
+from pyatv import scan, connect, exceptions
+from pyatv.const import Protocol
+
 import voluptuous as vol
 
 from homeassistant import config_entries
@@ -35,7 +38,7 @@ _LOGGER = logging.getLogger(__name__)
 
 DEFAULT_NAME = "Apple TV"
 
-BACKOFF_TIME_UPPER_LIMIT = 600  # Ten minutes
+BACKOFF_TIME_UPPER_LIMIT = 300  # Five minutes
 
 NOTIFICATION_TITLE = "Apple TV Notification"
 NOTIFICATION_ID = "apple_tv_notification"
@@ -161,24 +164,26 @@ class AppleTVManager:
 
     def connection_lost(self, exception):
         """Device was unexpectedly disconnected."""
-        _LOGGER.warning('Connection lost to Apple TV "%s"', self.atv.service.name)
+        _LOGGER.warning('Connection lost to Apple TV "%s"', self.atv.name)
 
         self.atv = None
         self._connection_was_lost = True
-        self._start_connect_loop()
         self._update_state(disconnected=True)
+        self._start_connect_loop()
 
     def connection_closed(self):
         """Device connection was (intentionally) closed."""
         self.atv = None
-        self._start_connect_loop()
         self._update_state(disconnected=True)
+        self._start_connect_loop()
 
     async def connect(self):
+        """Connect to device."""
         self._is_on = True
         self._start_connect_loop()
 
     async def disconnect(self):
+        """Disconnect from device."""
         _LOGGER.debug("Disconnecting from device")
         self._is_on = False
         try:
@@ -198,10 +203,12 @@ class AppleTVManager:
             self._task = asyncio.ensure_future(
                 self._connect_loop(), loop=self.hass.loop
             )
+        else:
+            _LOGGER.debug(
+                "Not starting connect loop (%s, %s)", self.atv is None, self._is_on
+            )
 
     async def _connect_loop(self):
-        from pyatv import exceptions
-
         _LOGGER.debug("Starting connect loop")
 
         # Try to find device and connect as long as the user has said that
@@ -239,7 +246,7 @@ class AppleTVManager:
         identifier = self.config_entry.data.get(CONF_IDENTIFIER)
 
         self.hass.components.persistent_notification.create(
-            "An irrecoverable connection occurred when connecting to "
+            "An irrecoverable connection problem occurred when connecting to "
             "`{0}`. Please go to the Integrations page and reconfigure it".format(name),
             title=NOTIFICATION_TITLE,
             notification_id=NOTIFICATION_ID,
@@ -258,11 +265,9 @@ class AppleTVManager:
         )
 
     async def _scan(self):
-        from pyatv import const, scan
-
         identifier = self.config_entry.data[CONF_IDENTIFIER]
         address = self.config_entry.data[CONF_ADDRESS]
-        protocol = const.Protocol(self.config_entry.data[CONF_PROTOCOL])
+        protocol = Protocol(self.config_entry.data[CONF_PROTOCOL])
 
         self._update_state(message="Discovering device...")
         atvs = await scan(
@@ -287,13 +292,11 @@ class AppleTVManager:
         return None
 
     async def _connect(self, conf):
-        from pyatv import const, connect
-
         credentials = self.config_entry.data[CONF_CREDENTIALS]
         session = async_get_clientsession(self.hass)
 
         for protocol, creds in credentials.items():
-            conf.set_credentials(const.Protocol(int(protocol)), creds)
+            conf.set_credentials(Protocol(int(protocol)), creds)
 
         self._update_state("Connecting to device...")
         self.atv = await connect(conf, self.hass.loop, session=session)
@@ -317,6 +320,9 @@ class AppleTVManager:
         return self._task is not None
 
     def _update_state(self, message="", connected=False, disconnected=False):
+        _LOGGER.debug(
+            "Updating state: connected=%s, disconnected=%s", connected, disconnected
+        )
         for listener in self.listeners:
             if connected:
                 listener.device_connected()

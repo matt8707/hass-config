@@ -56,6 +56,7 @@
         "exist": "{item} już istnieje",
         "generic": "Jesteś pewny?",
         "home_assistant_is_restarting": "Poczekaj, Home Assistant jest teraz ponownie uruchamiany.",
+        "home_assistant_version_not_correct": "Używasz Home Assistant'a w wersji '{haversion}', a to repozytorium wymaga wersji minimum '{minversion}'.",
         "no": "Nie",
         "no_upgrades": "Brak oczekujących aktualizacji",
         "ok": "Ok",
@@ -70,16 +71,21 @@
         "step": {
             "user": {
                 "data": {
+                    "appdaemon": "Włącz wykrywanie i śledzenie aplikacji AppDaemon",
                     "country": "Filtruj według kodu kraju",
                     "debug": "Włącz debugowanie.",
                     "experimental": "Włącz funkcje eksperymentalne",
-                    "release_limit": "Liczba wydań do wyświetlenia"
+                    "not_in_use": "Nieużywany z YAML",
+                    "release_limit": "Liczba wydań do wyświetlenia",
+                    "sidepanel_icon": "Ikona w panelu bocznym",
+                    "sidepanel_title": "Tytuł w panelu bocznym"
                 }
             }
         }
     },
     "repository_banner": {
         "config_flow": "Ta integracja obsługuje config_flow, co oznacza, że możesz teraz przejść do sekcji integracji w interfejsie użytkownika, aby ją skonfigurować.",
+        "config_flow_title": "Obsługiwana konfiguracja poprzez interfejs użytkownika",
         "integration_not_loaded": "Ta integracja nie jest załadowana do Home Assistant'a.",
         "no_restart_required": "Ponowne uruchomienie nie jest wymagane",
         "not_loaded": "Nie załadowano",

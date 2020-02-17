@@ -10,30 +10,27 @@ device_tracker:
       host_two: 192.168.2.25
 """
 import logging
+import re
+import socket
 import subprocess
-import sys
-from datetime import timedelta
-
-import voluptuous as vol
 
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.device_tracker import (
-    PLATFORM_SCHEMA)
-from homeassistant.components.device_tracker.const import (
-    CONF_SCAN_INTERVAL, SCAN_INTERVAL, SOURCE_TYPE_ROUTER)
+import homeassistant.util.dt as dt_util
+import voluptuous as vol
+from homeassistant.components.device_tracker import PLATFORM_SCHEMA
+from homeassistant.components.device_tracker.const import (SCAN_INTERVAL,
+                                                           SOURCE_TYPE_ROUTER)
+from homeassistant.const import CONF_HOSTS, CONF_SCAN_INTERVAL
 
-from homeassistant import util
-from homeassistant import const
 
-import socket
-
-__version__ = '1.0.0'
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
+    {
+    vol.Required(CONF_HOSTS): {cv.string: cv.string},
+    vol.Optional(CONF_SCAN_INTERVAL): cv.time_period,
+    }
+)
 
 _LOGGER = logging.getLogger(__name__)
-
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
-    vol.Required(const.CONF_HOSTS): {cv.string: cv.string},
-})
 
 
 class Host:
@@ -46,9 +43,7 @@ class Host:
         self.dev_id = dev_id
 
     def detectiphone(self):
-        """Send udp message to port 5353 
-           and return True if an arp chache entry is made success.
-        """
+        """Send udp message and look for MAC address."""
         aSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         aSocket.settimeout(1)
         addr = (self.ip_address, 5353)
@@ -56,20 +51,25 @@ class Host:
         aSocket.sendto(message, addr)
     
         try:
-            output = subprocess.check_output('arp -na', shell=True)
-            output = output.decode('utf-8').split('\n')
-            for entry in output:
-                mac = entry.split(' ')
-                if mac[0] != '':
-                    rcvd_ip = mac[1]
-                    rcvd_ip = rcvd_ip[:-1]  # remove last Klammer
-                    rcvd_ip = rcvd_ip[1:]  # remove first Klammer
-                    mac = mac[3]
-                    mac = mac.split(':')
-                    if rcvd_ip == self.ip_address:
-                        if len(mac) == 6:
-                            return True
+            output = subprocess.check_output('ip neigh show to ' + self.ip_address, shell=True)
+            output = output.decode('utf-8').rstrip()
+            _LOGGER.debug(f'ip n output for {self.dev_id} is: {output}')
         except subprocess.CalledProcessError:
+            try:
+                output = subprocess.check_output('arp -na|grep ' + self.ip_address, shell=True)
+                output = output.decode('utf-8').rstrip()
+                _LOGGER.debug(f'arp output for {self.dev_id} is: {output}')
+            except subprocess.CalledProcessError:
+                _LOGGER.fatal("Could not probe network")
+                return False
+
+        mac = re.compile(r'(?:[0-9A-F]{2}[:-]){5}(?:[0-9A-F]{2})', re.IGNORECASE)
+
+        if re.findall(mac, output):
+            _LOGGER.debug(f"Device {self.dev_id} ({self.ip_address}) is HOME")
+            return True
+        else:
+            _LOGGER.debug(f"Device {self.dev_id} ({self.ip_address}) is AWAY")
             return False
 
     def update(self, see):
@@ -81,7 +81,7 @@ class Host:
 def setup_scanner(hass, config, see, discovery_info=None):
     """Set up the Host objects and return the update function."""
     hosts = [Host(ip, dev_id, hass, config) for (dev_id, ip) in
-             config[const.CONF_HOSTS].items()]
+             config[CONF_HOSTS].items()]
     interval = config.get(CONF_SCAN_INTERVAL, SCAN_INTERVAL)
 
     _LOGGER.debug("Started iphonedetect with interval=%s on hosts: %s",
@@ -94,7 +94,7 @@ def setup_scanner(hass, config, see, discovery_info=None):
                 host.update(see)
         finally:
             hass.helpers.event.track_point_in_utc_time(
-                update_interval, util.dt.utcnow() + interval)
+                update_interval, dt_util.utcnow() + interval)
 
     update_interval(None)
     return True

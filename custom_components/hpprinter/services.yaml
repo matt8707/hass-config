@@ -1,0 +1,2 @@
+save_debug_data:
+  description: "Stores the XML and JSON of each request and final JSON to files, Path in CONFIG_PATH/*"

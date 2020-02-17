@@ -56,6 +56,7 @@
         "exist": "{item} már létezik",
         "generic": "Biztos vagy benne?",
         "home_assistant_is_restarting": "Várj, a Home Assistant éppen újraindul.",
+        "home_assistant_version_not_correct": "A Home Assistant '{haversion}' verzióját használod, de ehhez a tárolóhoz legalább a(z) '{minversion}' verzióra van szükség.",
         "no": "Nem",
         "no_upgrades": "Nincs függőben lévő frissítés",
         "ok": "OK",
@@ -70,16 +71,21 @@
         "step": {
             "user": {
                 "data": {
+                    "appdaemon": "AppDaemon appok felfedezésének és nyomon követésének engedélyezése",
                     "country": "Szűrés országkóddal.",
                     "debug": "Hibakeresés engedélyezése.",
                     "experimental": "Kísérleti funkciók engedélyezése",
-                    "release_limit": "Megjelenítendő kiadások száma."
+                    "not_in_use": "YAML-lel nem használható",
+                    "release_limit": "Megjelenítendő kiadások száma.",
+                    "sidepanel_icon": "Oldalsó panel ikon",
+                    "sidepanel_title": "Oldalsó panel cím"
                 }
             }
         }
     },
     "repository_banner": {
         "config_flow": "Ez az integráció támogatja a config_flow-t, vagyis a felhasználói felületen az integrációk menüben lehet konfigurálni.",
+        "config_flow_title": "A felhasználói felület konfigurációja támogatott",
         "integration_not_loaded": "Ez az integráció nincs betöltve a Home Assistantban.",
         "no_restart_required": "Nincs szükség újraindításra",
         "not_loaded": "Nincs betöltve",

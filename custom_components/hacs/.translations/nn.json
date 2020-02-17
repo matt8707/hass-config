@@ -65,10 +65,13 @@
         "step": {
             "user": {
                 "data": {
+                    "appdaemon": "Aktiver AppDeamon-appar-oppdaging og sporing",
                     "country": "Filterer med landskode",
                     "debug": "Aktiver debug.",
                     "experimental": "Aktiver ekspreimentelle funksjonar",
-                    "release_limit": "Talet på utgivingar"
+                    "release_limit": "Talet på utgivingar",
+                    "sidepanel_icon": "Sidepanelikon",
+                    "sidepanel_title": "Sidepaneltittel"
                 }
             }
         }

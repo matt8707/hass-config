@@ -56,6 +56,7 @@
         "exist": "{item} eksisterer allerede",
         "generic": "Er du sikker?",
         "home_assistant_is_restarting": "Vent, Home Assistant starter nå på nytt.",
+        "home_assistant_version_not_correct": "Du kjører Home Assistant '{haversion}', men denne krever minimum versjon '{minversion}' for å bli installert.",
         "no": "Nei",
         "no_upgrades": "Ingen oppgraderinger tilgjengelig",
         "ok": "OK",
@@ -70,16 +71,21 @@
         "step": {
             "user": {
                 "data": {
+                    "appdaemon": "Aktiver oppdagelse og sporing av AppDaemon-apper",
                     "country": "Filtrer med landskode.",
                     "debug": "Aktiver debug",
                     "experimental": "Aktiver eksperimentelle funksjoner",
-                    "release_limit": "Antall utgivelser som skal vises."
+                    "not_in_use": "Ikke i bruk med YAML",
+                    "release_limit": "Antall utgivelser som skal vises.",
+                    "sidepanel_icon": "Sidepanel ikon",
+                    "sidepanel_title": "Sidepanel tittel"
                 }
             }
         }
     },
     "repository_banner": {
         "config_flow": "Denne integrasjonen støtter config_flow, det betyr at du nå kan gå til integrasjoner i brukergrensesnittet for å konfigurere den.",
+        "config_flow_title": "UI konfigurasjon støttet",
         "integration_not_loaded": "Integrasjonen er ikke lastet inn i Home Assistant.",
         "no_restart_required": "Ingen omstart kreves",
         "not_loaded": "Ikke lastet inn",

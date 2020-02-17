@@ -53,6 +53,7 @@
         "exist": "{item} findes allerede",
         "generic": "Er du sikker?",
         "home_assistant_is_restarting": "Vent venligst - Home Assistant genstarter nu.",
+        "home_assistant_version_not_correct": "Du kører Home Assistant version '{haversion}', men dette repository kræver som minimum version '{minversion}'.",
         "no": "Nej",
         "no_upgrades": "Der er ingen opdateringer tilgængelig",
         "ok": "OK",
@@ -67,16 +68,21 @@
         "step": {
             "user": {
                 "data": {
+                    "appdaemon": "Aktiver opdagelse og sporing af AppDaemon-apps",
                     "country": "Filtrer med landekode.",
                     "debug": "Aktiver debug.",
                     "experimental": "Aktivér eksperimentelle funktioner",
-                    "release_limit": "Antal udgivelser, der skal vises."
+                    "not_in_use": "Ikke i brug med YAML",
+                    "release_limit": "Antal udgivelser, der skal vises.",
+                    "sidepanel_icon": "Sidepanelikon",
+                    "sidepanel_title": "Sidepanelets titel"
                 }
             }
         }
     },
     "repository_banner": {
         "config_flow": "Denne integration understøtter config_flow. Det betyder, at du nu kan gå til integrationssektionen i din brugerflade for at konfigurere den.",
+        "config_flow_title": "Brugerfladekonfiguration understøttet",
         "integration_not_loaded": "Denne integration er ikke indlæst i Home Assistant.",
         "no_restart_required": "Ingen genstart påkrævet",
         "not_loaded": "Ikke indlæst",

@@ -58,18 +58,24 @@
         "step": {
             "user": {
                 "data": {
+                    "appdaemon": "Habilitar AppDaemon apps descoberta & rastreamento",
                     "country": "Filtro pelo código do país.",
                     "experimental": "Ativar recursos experimentais",
-                    "release_limit": "Número de lançamentos a serem exibidos."
+                    "release_limit": "Número de lançamentos a serem exibidos.",
+                    "sidepanel_icon": "Icone do painel lateral",
+                    "sidepanel_title": "Titulo do painel lateral"
                 }
             }
         }
     },
     "repository_banner": {
         "no_restart_required": "Não é necessário reiniciar",
-        "not_loaded": "Não carregado"
+        "not_loaded": "Não carregado",
+        "restart": "Você precisa reiniciar o Home Assistant.",
+        "restart_pending": "Reiniciar pendente"
     },
     "repository": {
+        "add_to_lovelace": "Adicionar a Lovelace",
         "authors": "Autores",
         "available": "Disponível",
         "back_to": "Voltar para",
@@ -123,6 +129,7 @@
     },
     "store": {
         "ascending": "ascendente",
+        "clear_new": "Limpar todos os novos repositórios",
         "descending": "descendente",
         "last_updated": "Última atualização",
         "name": "Nome",

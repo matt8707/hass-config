@@ -4,11 +4,14 @@ import logging
 from random import randrange
 from ipaddress import ip_address
 
+from pyatv import pair, scan, const, convert, exceptions
+
 import voluptuous as vol
 
-from homeassistant import core, config_entries, exceptions
+from homeassistant import core, config_entries
 from homeassistant.core import callback
 from homeassistant.const import CONF_PIN, CONF_NAME, CONF_HOST, CONF_PROTOCOL, CONF_TYPE
+from homeassistant.exceptions import HomeAssistantError, HomeAssistantError
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from .const import (
     DOMAIN,
@@ -23,20 +26,18 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-DATA_SCHEMA = vol.Schema({vol.Required(CONF_IDENTIFIER): str})
 INPUT_PIN_SCHEMA = vol.Schema({vol.Required(CONF_PIN, default=None): int})
 
 DEFAULT_START_OFF = False
 
 
 async def device_scan(identifier, loop, cache=None):
-    def _matches_device(dev):
+    def _filter_device(dev):
         # TODO: encoding should be done in pyatv
         if identifier == dev.name.encode("ascii", "ignore").decode():
             return True
         if identifier == str(dev.address):
             return True
-
         return any([x.identifier == identifier for x in dev.services])
 
     def _host_filter():
@@ -45,27 +46,23 @@ async def device_scan(identifier, loop, cache=None):
         except ValueError:
             return None
 
-    from pyatv import scan
-
     if cache:
-        matches = [atv for atv in cache if _matches_device(atv)]
+        matches = [atv for atv in cache if _filter_device(atv)]
         if matches:
             return cache, matches[0]
 
     for hosts in [_host_filter(), None]:
         scan_result = atvs = await scan(loop, timeout=3, hosts=hosts)
-        matches = [atv for atv in scan_result if _matches_device(atv)]
+        matches = [atv for atv in scan_result if _filter_device(atv)]
+
         if matches:
             return scan_result, matches[0]
 
     return scan_result, None
 
 
-def _devices_str(atvs):
-    return ", ".join(["`{0} ({1})`".format(x.name, x.address) for x in atvs])
-
-
-class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+@config_entries.HANDLERS.register(DOMAIN)
+class AppleTVConfigFlow(config_entries.ConfigFlow):
     """Handle a config flow for Apple TV."""
 
     VERSION = 1
@@ -108,9 +105,6 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
-        from pyatv import scan
-        from pyatv.exceptions import NoServiceError
-
         # Be helpful to the user and look for devices
         if self.scan_result is None:
             self.scan_result = atvs = await scan(self.hass.loop, timeout=3)
@@ -125,22 +119,29 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors["base"] = "device_not_found"
             except DeviceAlreadyConfigured:
                 errors["base"] = "device_already_configured"
-            except NoServiceError:
+            except exceptions.NoServiceError:
                 errors["base"] = "no_usable_service"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception")
                 errors["base"] = "unknown"
 
+        default_identifier = ""
+        if self.scan_result:
+            atv = self.scan_result[0]
+            if not self._is_already_configured(atv.identifier):
+                default_identifier = str(atv.address)
+
         return self.async_show_form(
             step_id="user",
-            data_schema=DATA_SCHEMA,
+            data_schema=vol.Schema(
+                {vol.Required(CONF_IDENTIFIER, default=default_identifier): str}
+            ),
             errors=errors,
-            description_placeholders={"devices": _devices_str(self.scan_result)},
+            description_placeholders={"devices": self._devices_str()},
         )
 
     async def async_step_zeroconf(self, discovery_info):
         """Handle device found via zeroconf."""
-        from pyatv import const
 
         service_type = discovery_info[CONF_TYPE]
         properties = discovery_info["properties"]
@@ -157,12 +158,13 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         else:
             return self.async_abort(reason="unrecoverable_error")
 
-        if flow["context"].get("identifier") == self.identifier:
-            return self.async_abort(reason="already_configured")
+        for flow in self._async_in_progress():
+            if flow["context"].get("identifier") == self.identifier:
+                return self.async_abort(reason="already_configured")
 
         self.context["identifier"] = self.identifier
         self.context["title_placeholders"] = {"name": name}
-        await self.async_find_device_wrapper(self.async_step_confirm)
+        return await self.async_find_device_wrapper(self.async_step_confirm)
 
     async def async_find_device_wrapper(self, next_func, allow_exist=False):
         """Find a specific device and call another function when done.
@@ -177,7 +179,7 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         except DeviceAlreadyConfigured:
             return self.async_abort(reason="already_configured")
         except Exception:
-            _LOGGER.exception("exception")
+            _LOGGER.exception("Unexpected exception")
             return self.async_abort(reason="unrecoverable_error")
 
         return await next_func()
@@ -205,9 +207,6 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_confirm(self, user_input=None):
         """Handle user-confirmation of discovered node."""
         if user_input is not None:
-            if self._is_already_configured(self.identifier):
-                return self.async_abort(reason="already_configured")
-
             return await self.async_begin_pairing()
         return self.async_show_form(
             step_id="confirm", description_placeholders={"name": self.atv.name}
@@ -215,8 +214,6 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_begin_pairing(self):
         """Start pairing process for the next available protocol."""
-        from pyatv import pair, exceptions
-
         self.protocol = self._next_protocol_to_pair()
 
         # Dispose previous pairing sessions
@@ -259,8 +256,6 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_pair_with_pin(self, user_input=None):
         """Handle pairing step where a PIN is required from the user."""
-        from pyatv import convert, exceptions
-
         errors = {}
         if user_input is not None:
             try:
@@ -283,69 +278,67 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_pair_no_pin(self, user_input=None):
         """Handle step where user has to enter a PIN on the device."""
-        from pyatv import convert
-
         if user_input is not None:
-            await self.pairing.close()
-
+            await self.pairing.finish()
             if self.pairing.has_paired:
+                self.credentials[self.protocol.value] = self.pairing.service.credentials
                 return await self.async_begin_pairing()
+
+            await self.pairing.close()
             return self.async_abort(reason="device_did_not_pair")
 
-        random_pin = randrange(1000, stop=10000)
-        self.pairing.pin(random_pin)
+        pin = randrange(1000, stop=10000)
+        self.pairing.pin(pin)
         return self.async_show_form(
             step_id="pair_no_pin",
             description_placeholders={
                 "protocol": convert.protocol_str(self.protocol),
-                "pin": random_pin,
+                "pin": pin,
             },
         )
 
     async def async_step_service_problem(self, user_input=None):
         """Inform user that a service will not be added."""
-        from pyatv.convert import protocol_str
-
         if user_input is not None:
             self.credentials[self.protocol.value] = None
             return await self.async_begin_pairing()
 
         return self.async_show_form(
             step_id="service_problem",
-            description_placeholders={"protocol": protocol_str(self.protocol)},
+            description_placeholders={"protocol": convert.protocol_str(self.protocol)},
         )
 
     async def async_step_import(self, info):
         """Import device from configuration file."""
         self.identifier = info.get(CONF_IDENTIFIER)
+        _LOGGER.debug("info: %s", info)
         _LOGGER.debug("Starting import of %s", self.identifier)
         try:
             await self.async_find_device()
             return self.import_device(info)
         except Exception:
+            _LOGGER.exception("Unexpected exception")
             return self.async_abort(reason="unrecoverable_error")
 
     def import_device(self, conf):
         """Add device that has been imported."""
-        from pyatv.conf import Protocol
-
         conf_creds = conf.get(CONF_CREDENTIALS).items()
 
         # Mapping between config entry format and pyatv
         credential_map = {
-            CONF_CREDENTIALS_MRP: Protocol.MRP.value,
-            CONF_CREDENTIALS_DMAP: Protocol.DMAP.value,
-            CONF_CREDENTIALS_AIRPLAY: Protocol.AirPlay.value,
+            CONF_CREDENTIALS_MRP: const.Protocol.MRP.value,
+            CONF_CREDENTIALS_DMAP: const.Protocol.DMAP.value,
+            CONF_CREDENTIALS_AIRPLAY: const.Protocol.AirPlay.value,
         }
 
         _LOGGER.debug("Importing device with identifier %s", self.identifier)
         creds = dict([(credential_map[prot], creds) for prot, creds in conf_creds])
-
+        _LOGGER.debug("creds: %s", creds)
         return self.async_create_entry(
             title=conf.get(CONF_NAME) + " (import from configuration.yaml)",
             data={
                 CONF_IDENTIFIER: conf.get(CONF_IDENTIFIER),
-                CONF_PROTOCOL: Protocol[conf.get(CONF_PROTOCOL)].value,
+                CONF_PROTOCOL: const.Protocol[conf.get(CONF_PROTOCOL)].value,
                 CONF_NAME: conf.get(CONF_NAME),
                 CONF_CREDENTIALS: creds,
                 CONF_ADDRESS: conf.get(CONF_HOST),
@@ -353,6 +346,9 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     async def _async_get_entry(self):
+        if not self._has_valid_credentials():
+            return self.async_abort(reason="invalid_config")
+
         data = {
             CONF_IDENTIFIER: self.atv.identifier,
             CONF_PROTOCOL: self.atv.main_service().protocol.value,
@@ -375,24 +371,36 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return False
             return protocol.value not in self.credentials
 
-        from pyatv.const import Protocol
-
-        protocols = [Protocol.MRP, Protocol.DMAP, Protocol.AirPlay]
+        protocols = [const.Protocol.MRP, const.Protocol.DMAP, const.Protocol.AirPlay]
         for protocol in protocols:
             if _needs_pairing(protocol):
                 return protocol
 
         return None
 
+    def _devices_str(self):
+        return ", ".join(
+            [
+                "`{0} ({1})`".format(x.name, x.address)
+                for x in self.scan_result
+                if not self._is_already_configured(x.identifier)
+            ]
+        )
+
     def _is_already_configured(self, identifier):
         return self._get_config_entry(identifier) is not None
 
     def _get_config_entry(self, identifier):
-        for ident in self.atv.all_identifiers:
-            for entry in self._async_current_entries():
-                if entry.data[CONF_IDENTIFIER] == identifier:
-                    return entry
+        for entry in self._async_current_entries():
+            if entry.data[CONF_IDENTIFIER] == identifier:
+                return entry
         return None
+
+    def _has_valid_credentials(self):
+        return (
+            self.credentials.get(const.Protocol.MRP.value) is not None
+            or self.credentials.get(const.Protocol.DMAP.value) is not None
+        )
 
 
 class AppleTVOptionsFlow(config_entries.OptionsFlow):
@@ -428,9 +436,9 @@ class AppleTVOptionsFlow(config_entries.OptionsFlow):
         )
 
 
-class DeviceNotFound(exceptions.HomeAssistantError):
+class DeviceNotFound(HomeAssistantError):
     """Error to indicate device could not be found."""
 
 
-class DeviceAlreadyConfigured(exceptions.HomeAssistantError):
+class DeviceAlreadyConfigured(HomeAssistantError):
     """Error to indicate device is already configured."""

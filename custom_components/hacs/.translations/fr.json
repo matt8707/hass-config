@@ -56,6 +56,7 @@
         "exist": "{item} existe déjà",
         "generic": "Êtes-vous sûr?",
         "home_assistant_is_restarting": "Attendez, Home Assistant redémarre maintenant.",
+        "home_assistant_version_not_correct": "Vous utilisez la version '{haversion}' de Home Assistant, mais ce référentiel nécessite l'installation de la version minimale '{minversion}'.",
         "no": "Non",
         "no_upgrades": "Aucune mise à niveau en attente",
         "ok": "OK",
@@ -70,16 +71,21 @@
         "step": {
             "user": {
                 "data": {
+                    "appdaemon": "Activer la découverte et le suivi des applications AppDaemon",
                     "country": "Filtrer par code pays.",
                     "debug": "Activez le débogage.",
                     "experimental": "Activer les fonctionnalités expérimentales",
-                    "release_limit": "Nombre de recensés à afficher."
+                    "not_in_use": "Non utilisé avec YAML",
+                    "release_limit": "Nombre de recensés à afficher.",
+                    "sidepanel_icon": "Icône de la barre latérale",
+                    "sidepanel_title": "Titre de la barre latérale"
                 }
             }
         }
     },
     "repository_banner": {
         "config_flow": "Cette intégration prend en charge config_flow, ce qui signifie que vous pouvez maintenant accéder à la section d'intégration de votre interface utilisateur pour le configurer.",
+        "config_flow_title": "Configuration de l'interface utilisateur prise en charge",
         "integration_not_loaded": "Cette intégration n'est pas chargée dans Home Assistant.",
         "no_restart_required": "Aucun redémarrage requis",
         "not_loaded": "Non chargé",

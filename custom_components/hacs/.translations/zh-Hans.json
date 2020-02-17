@@ -56,6 +56,7 @@
         "exist": "{item}已经存在",
         "generic": "你确定吗？",
         "home_assistant_is_restarting": "请等待，Home Assistant现在正在重新启动。",
+        "home_assistant_version_not_correct": "您正在运行Home Assistant的版本为'{haversion}'，但是这个需要安装最低版本是'{minversion}'。",
         "no": "不",
         "no_upgrades": "暂无升级",
         "ok": "确定",
@@ -70,16 +71,21 @@
         "step": {
             "user": {
                 "data": {
+                    "appdaemon": "启用AppDaemon应用发现和跟踪",
                     "country": "用国家代码过滤。",
                     "debug": "启用调试。",
                     "experimental": "启用实验功能",
-                    "release_limit": "要显示的发行数量。"
+                    "not_in_use": "不适用于 YAML",
+                    "release_limit": "要显示的发行数量。",
+                    "sidepanel_icon": "侧面板图标",
+                    "sidepanel_title": "侧面板标题"
                 }
             }
         }
     },
     "repository_banner": {
         "config_flow": "此组件支持config_flow，这意味着您现在可以转到UI的“集成”部分进行配置。",
+        "config_flow_title": "支持UI配置",
         "integration_not_loaded": "此集成未加载到Home Assistant中。",
         "no_restart_required": "无需重启",
         "not_loaded": "未加载",
