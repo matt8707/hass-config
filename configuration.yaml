@@ -55,11 +55,6 @@ logger:
     homeassistant.components.homekit.type_media_players: fatal
     homeassistant.components.shell_command: fatal
     switchbot: fatal
-    # homeassistant.components.sensor: fatal
-    # homeassistant.components.rest.sensor: fatal
-    # homeassistant.components.braviatv.media_player: fatal
-    # homeassistant.components.input_number: fatal
-    # homeassistant.components.template.sensor: fatal
     # pyatv: debug
     # custom_components.apple_tv: debug
 
@@ -194,7 +189,6 @@ input_boolean:
   loading_playstation:
 
   lock_computer:
-  scenes_tip_visibility:
   laundry_timer_visibility:
 
   motion_hall:
@@ -410,7 +404,6 @@ shell_command:
 
   restart_hass_docker: !secret restart_hass_docker
   clear_logs: truncate -s 0 /config/home-assistant.log
-  # clear_plex_poster: rm -r /config/www/plex/*
 
 group:
   automation_system_reference:
