@@ -76,16 +76,6 @@
     scan_interval: 900
     command: !secret monitorer_mute_check
 
-  # - platform: command_line
-  #   name: printer_color
-  #   scan_interval: 21600
-  #   command: !secret printer_color
-
-  # - platform: command_line
-  #   name: printer_black
-  #   scan_interval: 21600
-  #   command: !secret printer_black
-
   - platform: command_line
     name: printer_status
     scan_interval: 10
@@ -133,8 +123,7 @@
 
   - platform: dnsip
 
-  - platform: synologydsm_custom 
-    # changed timedelta so the sensors updates every 30 seconds instead of 15min
+  - platform: synologydsm_custom # changed timedelta, updates every 30 seconds instead of 15min
     host: !secret synologydsm_host
     port: !secret synologydsm_port
     ssl: false
