@@ -1,20 +1,20 @@
 
 .cloud
+.uuid
+.DS_Store
 .google.token
 .homekit.state
 .ps4-games.json
-.spotify-token-cache
 .ssh
 .storage
 .vscode
 bravia.conf
 google_calendars.yaml
-other.yaml
+known_devices.yaml
 secrets.yaml
 themes
 tts
 www/plex
-www/trash
 home-assistant_v2.db
 home-assistant_v2.db-wal
 home-assistant_v2.db-shm
