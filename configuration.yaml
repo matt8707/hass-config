@@ -256,6 +256,10 @@ input_select:
       ['Tyst', 'Standard','Medium', 'Turbo']
     icon: mdi:fan
 
+  roborock_zone:
+    options:
+      ['Ingen vald', 'Hall', 'Kök','Vardagsrum', 'Studio', 'Sovrum']
+
 switch:
   - platform: switchbot
     mac: !secret switchbot_mac

@@ -47,12 +47,121 @@ views:
   - badges: []
     cards:
       - elements:
+          - entity: sensor.placeholder
+            prefix: Vardagsrum
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            style:
+              color: '#bcbebf'
+              font-family: SF Text
+              font-size: 2.4vw
+              font-weight: 500
+              left: 24.85%
+              max-width: 1px
+              top: 9.15%
+              cursor: default
+            type: state-label
+          - entity: sensor.placeholder
+            prefix: Studio
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            style:
+              color: '#bcbebf'
+              font-family: SF Text
+              font-size: 2.4vw
+              font-weight: 500
+              left: 49.65%
+              max-width: 1px
+              top: 9.15%
+              cursor: default
+            type: state-label
+          - entity: sensor.placeholder
+            prefix: Sovrum
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            style:
+              color: '#bcbebf'
+              font-family: SF Text
+              font-size: 2.4vw
+              font-weight: 500
+              left: 74.55%
+              max-width: 1px
+              top: 9.15%
+              cursor: default
+            type: state-label
+          - entity: sensor.placeholder
+            prefix: Media
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            style:
+              color: '#bcbebf'
+              font-family: SF Text
+              font-size: 2.4vw
+              font-weight: 500
+              left: 24.75%
+              max-width: 1px
+              top: 53.4%
+              cursor: default
+            type: state-label
+          - entity: sensor.placeholder
+            prefix: Lampor
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            style:
+              color: '#bcbebf'
+              font-family: SF Text
+              font-size: 2.4vw
+              font-weight: 500
+              left: 49.6%
+              max-width: 1px
+              top: 53.4%
+              cursor: default
+            type: state-label
+          - entity: sensor.placeholder
+            prefix: Hemma
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            style:
+              color: '#bcbebf'
+              font-family: SF Text
+              font-size: 2.4vw
+              font-weight: 500
+              left: 74.5%
+              max-width: 1px
+              top: 53.4%
+              cursor: default
+            type: state-label
 
           #############################################################################################################################################
           #                                                                                                                                           #
           #                                                                  SIDEBAR                                                                  #
           #                                                                                                                                           #
           #############################################################################################################################################
+
+          - image: local/sidebar.png
+            style:
+              left: 10.6%
+              top: 50%
+              width: 21.5%
+            type: image
+          - image: local/sidebar_line.svg
+            style:
+              left: 10.6%
+              top: 50%
+              width: 21.5%
+            type: image
 
           #################################################################
           #                                                               #
@@ -74,7 +183,7 @@ views:
               letter-spacing: '-0.05vw'
               max-width: 1px
               top: 10.8%
-              pointer-events: none
+              cursor: default
             type: state-label
 
           #################################################################
@@ -234,11 +343,11 @@ views:
 
           - icon: 'bha:roborock'
             style:
-              '--iron-icon-height': 3.2vw
-              '--iron-icon-width': 3.2vw
+              '--iron-icon-height': 4vw
+              '--iron-icon-width': 4vw
               color: 'rgba(255, 255, 255, 0.10)'
               left: 4.8%
-              top: 88.7%
+              top: 87.41%
             tap_action:
               action: call-service
               service: browser_mod.popup
@@ -418,8 +527,8 @@ views:
                                   '--iron-icon-width': 4em
                                 service: script.vacuum_start_pause
                                 style:
-                                  background: '#2d3538'
-                                  border-radius: 0.6vw
+                                  background: '#FFFFFF10'
+                                  border-radius: 0.7em
                                   font-size: 1.1em
                                   font-weight: 500
                                   padding: 1.2em 1.4em 1.2em 1.4em
@@ -432,8 +541,8 @@ views:
                                 service_data:
                                   entity_id: vacuum.xiaomi_vacuum_cleaner
                                 style:
-                                  background: '#2d3538'
-                                  border-radius: 0.6vw
+                                  background: '#FFFFFF10'
+                                  border-radius: 0.7em
                                   font-size: 1.1em
                                   font-weight: 500
                                   padding: 1.2em 1.4em 1.2em 1.4em
@@ -446,8 +555,8 @@ views:
                                 service_data:
                                   entity_id: vacuum.xiaomi_vacuum_cleaner
                                 style:
-                                  background: '#2d3538'
-                                  border-radius: 0.6vw
+                                  background: '#FFFFFF10'
+                                  border-radius: 0.7em
                                   font-size: 1.1em
                                   font-weight: 500
                                   padding: 1.2em 1.4em 1.2em 1.4em
@@ -465,50 +574,157 @@ views:
                           type: entities
                       type: 'custom:hui-vertical-stack-card'
                     - break
-                    - cards:
-                        - entities:
-                            - type: 'custom:valetudo-map-card'
-                              entity: sensor.xiaomi_map
-                              rotate: 0
-                              crop:
-                                top: 160
-                                bottom: 88
-                                left: 205
-                                right: 0
-                              min_height: 0
-                              map_scale: 2
-                              floor_color: '#303535'
-                              obstacle_weak_color: '#1b1f10'
-                              obstacle_strong_color: '#1b1f20'
-                              no_go_area_color: '#ff000030'
-                              virtual_wall_color: '#ff000030'
-                              virtual_wall_width: 5
-                              path_color: '#4a5155'
-                              path_width: 0.5
-                              vacuum_icon: 'bha:roborock'
-                              vacuum_color: '#e0e0e0'
-                              style: |
-                                ha-card {
-                                  box-shadow: none;
-                                  background: none;
-                                }
-                          show_header_toggle: false
-                          style: |
-                            ha-card {
-                              box-shadow: none;
-                              border-radius: 1em;
-                              background: rgba(36, 42, 43, 0.88);
-                              padding-right: 0.7em;
-                            }
-                          title: "\U000e0020 \U000e0020 Kartläggning"
-                          type: entities
+                    - type: picture-elements
+                      image: /local/overlay.svg
+                      elements:
+                        - type: 'custom:valetudo-map-card'
+                          entity: sensor.xiaomi_map
+                          rotate: 0
+                          crop:
+                            top: 160
+                            bottom: 88
+                            left: 189
+                            right: 0
+                          min_height: 0
+                          map_scale: 2
+                          floor_color: '#353a3a'
+                          obstacle_weak_color: '#1c202250'
+                          obstacle_strong_color: '#1c2022'
+                          no_go_area_color: '#ff000030'
+                          virtual_wall_color: '#ff000030'
+                          virtual_wall_width: 5
+                          path_color: '#777777'
+                          path_width: 0.5
+                          vacuum_icon: 'bha:roborock'
+                          vacuum_color: '#e0e0e0'
+                          style:
+                            top: 48%
+                            left: 50%
+                            width: 100%
+                            box-shadow: none
+                            '--ha-card-background': none
+                            '--ha-card-box-shadow': none
+                        - type: image
+                          tap_action:
+                            action: call-service
+                            service: input_select.select_option
+                            service_data:
+                              entity_id: input_select.roborock_zone
+                              option: Ingen vald
+                          image: /local/overlay.svg
+                          title: null
+                          style:
+                            top: 50%
+                            left: 50%
+                            width: 100%
+                            cursor: default
+                        - type: image
+                          tap_action:
+                            action: call-service
+                            service: input_select.select_option
+                            service_data:
+                              entity_id: input_select.roborock_zone
+                              option: Vardagsrum
+                          image: /local/overlay.svg
+                          title: Vardagsrum
+                          style:
+                            top: 8%
+                            left: 59.5%
+                            transform: scale(1.6,1.2)
+                        - type: image
+                          tap_action:
+                            action: call-service
+                            service: input_select.select_option
+                            service_data:
+                              entity_id: input_select.roborock_zone
+                              option: Hall
+                          image: /local/overlay.svg
+                          title: Hall
+                          style:
+                            top: 35%
+                            left: 35%
+                            transform: scale(1.4,1.1)
+                            opacity: 10%
+                        - type: image
+                          tap_action:
+                            action: call-service
+                            service: input_select.select_option
+                            service_data:
+                              entity_id: input_select.roborock_zone
+                              option: Kök
+                          image: /local/overlay.svg
+                          title: Kök
+                          style:
+                            top: 36.5%
+                            left: 3.5%
+                            transform: scale(0.9,0.9)
+                        - type: image
+                          tap_action:
+                            action: call-service
+                            service: input_select.select_option
+                            service_data:
+                              entity_id: input_select.roborock_zone
+                              option: Sovrum
+                          image: /local/overlay.svg
+                          title: Sovrum
+                          style:
+                            top: 61%
+                            left: 10.5%
+                            transform: scale(1.4,0.9)
+                        - type: image
+                          tap_action:
+                            action: call-service
+                            service: input_select.select_option
+                            service_data:
+                              entity_id: input_select.roborock_zone
+                              option: Studio
+                          image: /local/overlay.svg
+                          title: Studio
+                          style:
+                            top: 8%
+                            left: 24%
+                            transform: scale(1,1.2)
+                        - type: "custom:button-card"
+                          entity: input_select.roborock_zone
+                          name: Rengöringszon
+                          label: '[[[ return entity.state ]]]'
+                          show_label: true
+                          show_icon: false
+                          tap_action:
+                            action: call-service
+                            service: script.turn_on
+                            service_data:
+                              entity_id: script.zoned_cleanup
+                          styles:
+                            card:
+                              - background: '#FFFFFF10'
+                              - border-radius: 0.7em
+                              - box-shadow: none
+                            name:
+                              - font-size: 0.75em
+                              - color: '#FFFFFF40'
+                              - margin-bottom: 0.05em
+                            label:
+                              - font-size: 1.05em
+                              - padding: 0.02em 0.8em 0.6em 0.8em
+                              - color: >
+                                  [[[
+                                    if (states['input_select.roborock_zone'].state == 'Ingen vald')
+                                      return "#e0e1e170";
+                                    return "#e0e1e1";
+                                  ]]]
+                          style:
+                            left: 80%
+                            top: 86.9%
+                            width: 10.2em
                       style: |
                         ha-card {
                           --paper-card-background-color: rgba(36, 42, 43, 0.88);
                           box-shadow: none;
                           border-radius: 1em;
+                          height: 43.45em;
                         }
-                      type: 'custom:hui-vertical-stack-card'
+                      title: "\U000e0020 \U000e0020 Kartläggning"
                   column_num: 2
                   column_width: [390, 555]
                   layout: vertical
@@ -531,11 +747,11 @@ views:
 
           - icon: 'mdi:information-outline'
             style:
-              '--iron-icon-height': 3.2vw
-              '--iron-icon-width': 3.2vw
+              '--iron-icon-height': 4vw
+              '--iron-icon-width': 4vw
               color: 'rgba(255, 255, 255, 0.10)'
               left: 10.7%
-              top: 88.7%
+              top: 87.41%
             tap_action:
               action: call-service
               service: browser_mod.popup
@@ -661,7 +877,7 @@ views:
                                     entity_id: script.homeassistant_restart
                                   style:
                                     background: '#FFFFFF10'
-                                    border-radius: 0.6em
+                                    border-radius: 0.7em
                                     font-weight: 500
                                     padding: 1.2em 1.5em 1.2em 1.2em
                                 - entity: script.homekit_restart
@@ -669,7 +885,7 @@ views:
                                   name: Homekit
                                   style:
                                     background: '#FFFFFF10'
-                                    border-radius: 0.6em
+                                    border-radius: 0.7em
                                     font-weight: 500
                                     padding: 1.2em 1.5em 1.2em 1.2em
                                     margin-right: -0.7em
@@ -797,7 +1013,7 @@ views:
                                   service: shell_command.fullykiosk_load_start_url
                                   style:
                                     background: '#FFFFFF10'
-                                    border-radius: 0.6em
+                                    border-radius: 0.7em
                                     font-weight: 500
                                     padding: 1.2em 1.5em 1.2em 1.2em
                                 - icon: 'mdi:reload'
@@ -805,7 +1021,7 @@ views:
                                   service: shell_command.fullykiosk_restart_app
                                   style:
                                     background: '#FFFFFF10'
-                                    border-radius: 0.6em
+                                    border-radius: 0.7em
                                     font-weight: 500
                                     padding: 1.2em 1.5em 1.2em 1.2em
                                     margin-right: -0.7em
@@ -1050,11 +1266,11 @@ views:
 
           - icon: 'mdi:home-heart'
             style:
-              '--iron-icon-height': 3.8vw
-              '--iron-icon-width': 3.8vw
+              '--iron-icon-height': 4.6vw
+              '--iron-icon-width': 4.6vw
               color: 'rgba(255, 255, 255, 0.10)'
               left: 16.55%
-              top: 88.79%
+              top: 87.55%
             tap_action:
               action: call-service
               service: browser_mod.popup
@@ -1068,11 +1284,11 @@ views:
                             style:
                               background: '#FFFFFF10'
                               color: '#d2d3d3'
-                              border-radius: 0.6em
+                              border-radius: 0.7em
                               font-weight: 500
                               font-size: 1.1em
                               padding: 1.2em 1.5em 1.2em 1.2em
-                              margin-top: 1.8em
+                              margin-top: 1.75em
                               margin-bottom: 1.1em
                               font-family: SF Text
                               word-spacing: 0.4em
@@ -1085,11 +1301,11 @@ views:
                             style:
                               background: '#FFFFFF10'
                               color: '#d2d3d3'
-                              border-radius: 0.6em
+                              border-radius: 0.7em
                               font-weight: 500
                               font-size: 1.1em
                               padding: 1.2em 1.5em 1.2em 1.2em
-                              margin-top: 1.8em
+                              margin-top: 1.75em
                               margin-bottom: 1.1em
                               font-family: SF Text
                               word-spacing: 0.4em
@@ -1102,7 +1318,7 @@ views:
                             style:
                               background: '#FFFFFF10'
                               color: '#d2d3d3'
-                              border-radius: 0.6em
+                              border-radius: 0.7em
                               font-weight: 500
                               font-size: 1.1em
                               padding: 1.2em 1.5em 1.2em 1.2em
@@ -1118,7 +1334,7 @@ views:
                             style:
                               background: '#FFFFFF10'
                               color: '#d2d3d3'
-                              border-radius: 0.6em
+                              border-radius: 0.7em
                               font-weight: 500
                               font-size: 1.1em
                               padding: 1.2em 1.5em 1.2em 1.2em
@@ -1134,7 +1350,7 @@ views:
                             style:
                               background: '#FFFFFF10'
                               color: '#d2d3d3'
-                              border-radius: 0.6em
+                              border-radius: 0.7em
                               font-weight: 500
                               font-size: 1.1em
                               padding: 1.2em 1.5em 1.2em 1.2em
@@ -1150,7 +1366,7 @@ views:
                             style:
                               background: '#FFFFFF10'
                               color: '#d2d3d3'
-                              border-radius: 0.6em
+                              border-radius: 0.7em
                               font-weight: 500
                               font-size: 1.1em
                               padding: 1.2em 1.5em 1.2em 1.2em
@@ -1181,13 +1397,14 @@ views:
                         <font color="#595c5d">Dimma sänglampor till 20% och stäng allt annat.</font><br>
                       style: |
                         ha-card {
-                          line-height: 1.6em;
+                          line-height: 1.55em;
                           font-size: 1em;
                           background: none;
                           margin-left: 1.1em;
-                          margin-top: 1.1em;
+                          margin-top: 1em;
                           box-shadow: none;
-                          height: 29.9em;
+                          height: 28.8em;
+                          cursor: default;
                         }
                       type: 'custom:hui-markdown-card'
                   type: 'custom:vertical-stack-in-card'
@@ -1534,8 +1751,8 @@ views:
                               service_data:
                                 entity_id: script.tv_mute_toggle
                               style:
-                                background: '#2d3538'
-                                border-radius: 0.6vw
+                                background: '#FFFFFF10'
+                                border-radius: 0.7em
                                 font-size: 1.1em
                                 font-weight: 500
                                 padding: 1.2em 1.4em 1.2em 1.4em
@@ -1547,8 +1764,8 @@ views:
                               service_data:
                                 entity_id: media_player.sony_bravia_tv
                               style:
-                                background: '#2d3538'
-                                border-radius: 0.6vw
+                                background: '#FFFFFF10'
+                                border-radius: 0.7em
                                 font-size: 1.1em
                                 font-weight: 500
                                 padding: 1.2em 1.4em 1.2em 1.4em
@@ -1560,8 +1777,8 @@ views:
                               service_data:
                                 entity_id: media_player.sony_bravia_tv
                               style:
-                                background: '#2d3538'
-                                border-radius: 0.6vw
+                                background: '#FFFFFF10'
+                                border-radius: 0.7em
                                 font-size: 1.1em
                                 font-weight: 500
                                 padding: 1.2em 1.4em 1.2em 1.4em
@@ -1598,7 +1815,7 @@ views:
               - image: /local/vardagsrum_tv_on.png
                 style:
                   left: 30.31%
-                  pointer-events: none
+                  cursor: default
                   top: 37.9%
                   width: 10%
                 type: image
@@ -1606,7 +1823,7 @@ views:
                 image: /local/loader.svg
                 style:
                   left: 33%
-                  pointer-events: none
+                  cursor: default
                   top: 33.6%
                   width: 3.5%
                 type: image
@@ -1680,7 +1897,7 @@ views:
                 image: /local/loader.svg
                 style:
                   left: 44%
-                  pointer-events: none
+                  cursor: default
                   top: 34.2%
                   width: 3.5%
                 type: image
@@ -1695,7 +1912,7 @@ views:
                   'on': /local/vardagsrum_playstation_on.gif
                 style:
                   left: 41.31%
-                  pointer-events: none
+                  cursor: default
                   top: 37.9%
                   width: 10%
                 type: image
@@ -1703,7 +1920,7 @@ views:
                 image: /local/loader.svg
                 style:
                   left: 44%
-                  pointer-events: none
+                  cursor: default
                   top: 33.6%
                   width: 3.5%
                 type: image
@@ -2352,7 +2569,7 @@ views:
                                     service: shell_command.imac_sleep
                                     style:
                                       background: '#FFFFFF10'
-                                      border-radius: 0.6vw
+                                      border-radius: 0.7em
                                       font-size: 1em
                                       font-weight: 500
                                       letter-spacing: 0.015em
@@ -2362,7 +2579,7 @@ views:
                                     service: shell_command.imac_restart
                                     style:
                                       background: '#FFFFFF10'
-                                      border-radius: 0.6vw
+                                      border-radius: 0.7em
                                       font-size: 1em
                                       font-weight: 500
                                       letter-spacing: 0.015em
@@ -2445,7 +2662,7 @@ views:
               - image: /local/studio_dator_on.png
                 style:
                   left: 55.18%
-                  pointer-events: none
+                  cursor: default
                   top: 37.9%
                   width: 10%
                 type: image
@@ -2453,7 +2670,7 @@ views:
                 image: /local/loader.svg
                 style:
                   left: 57.8%
-                  pointer-events: none
+                  cursor: default
                   top: 33.6%
                   width: 3.5%
                 type: image
@@ -2524,8 +2741,8 @@ views:
                               service_data:
                                 entity_id: script.monitorer_mute_toggle
                               style:
-                                background: '#2d3538'
-                                border-radius: 0.6vw
+                                background: '#FFFFFF10'
+                                border-radius: 0.7em
                                 font-size: 1.1em
                                 font-weight: 500
                                 padding: 1.2em 1.4em 1.2em 1.4em
@@ -2537,8 +2754,8 @@ views:
                               service_data:
                                 entity_id: input_number.monitorer_volume
                               style:
-                                background: '#2d3538'
-                                border-radius: 0.6vw
+                                background: '#FFFFFF10'
+                                border-radius: 0.7em
                                 font-size: 1.1em
                                 font-weight: 500
                                 padding: 1.2em 1.4em 1.2em 1.4em
@@ -2550,8 +2767,8 @@ views:
                               service_data:
                                 entity_id: input_number.monitorer_volume
                               style:
-                                background: '#2d3538'
-                                border-radius: 0.6vw
+                                background: '#FFFFFF10'
+                                border-radius: 0.7em
                                 font-size: 1.1em
                                 font-weight: 500
                                 padding: 1.2em 1.4em 1.2em 1.4em
@@ -2926,8 +3143,8 @@ views:
                               service_data:
                                 entity_id: script.tv2_mute_toggle
                               style:
-                                background: '#2d3538'
-                                border-radius: 0.6vw
+                                background: '#FFFFFF10'
+                                border-radius: 0.7em
                                 font-size: 1.1em
                                 font-weight: 500
                                 padding: 1.2em 1.4em 1.2em 1.4em
@@ -2939,8 +3156,8 @@ views:
                               service_data:
                                 entity_id: media_player.samsung_tv_remote
                               style:
-                                background: '#2d3538'
-                                border-radius: 0.6vw
+                                background: '#FFFFFF10'
+                                border-radius: 0.7em
                                 font-size: 1.1em
                                 font-weight: 500
                                 padding: 1.2em 1.4em 1.2em 1.4em
@@ -2952,8 +3169,8 @@ views:
                               service_data:
                                 entity_id: media_player.samsung_tv_remote
                               style:
-                                background: '#2d3538'
-                                border-radius: 0.6vw
+                                background: '#FFFFFF10'
+                                border-radius: 0.7em
                                 font-size: 1.1em
                                 font-weight: 500
                                 padding: 1.2em 1.4em 1.2em 1.4em
@@ -2990,7 +3207,7 @@ views:
               - image: /local/sovrum_tv2_on.png
                 style:
                   left: 91.05%
-                  pointer-events: none
+                  cursor: default
                   top: 37.9%
                   width: 10%
                 type: image
@@ -2998,7 +3215,7 @@ views:
                 image: /local/loader.svg
                 style:
                   left: 93.8%
-                  pointer-events: none
+                  cursor: default
                   top: 33.6%
                   width: 3.5%
                 type: image
@@ -3015,6 +3232,7 @@ views:
               left: 27%
               top: 54%
               width: 3.5%
+              cursor: default
             tap_action:
               action: toggle
             title: null
@@ -3124,7 +3342,7 @@ views:
                           text-shadow: 'var(--plexrecent-active-shadow)'
                           text-rendering: optimizeLegibility
                           font-smoothing: none
-                          pointer-events: none
+                          cursor: default
                         tap_action:
                           action: none
                         type: state-label
@@ -3142,7 +3360,7 @@ views:
                           letter-spacing: 0.031vw
                           text-rendering: optimizeLegibility
                           font-smoothing: none
-                          pointer-events: none
+                          cursor: default
                           text-shadow: 'var(--plexrecent-active-shadow)'
                         tap_action:
                           action: none
@@ -3235,7 +3453,7 @@ views:
                           text-shadow: 'var(--vardagsrum-active-shadow)'
                           text-rendering: optimizeLegibility
                           font-smoothing: none
-                          pointer-events: none
+                          cursor: default
                         tap_action:
                           action: none
                         type: state-label
@@ -3253,7 +3471,7 @@ views:
                           letter-spacing: 0.031vw
                           text-rendering: optimizeLegibility
                           font-smoothing: none
-                          pointer-events: none
+                          cursor: default
                           text-shadow: 'var(--vardagsrum-active-shadow)'
                         tap_action:
                           action: none
@@ -3350,7 +3568,7 @@ views:
                           text-shadow: 'var(--sovrum-active-shadow)'
                           text-rendering: optimizeLegibility
                           font-smoothing: none
-                          pointer-events: none
+                          cursor: default
                         tap_action:
                           action: none
                         type: state-label
@@ -3368,7 +3586,7 @@ views:
                           letter-spacing: 0.031vw
                           text-rendering: optimizeLegibility
                           font-smoothing: none
-                          pointer-events: none
+                          cursor: default
                           text-shadow: 'var(--sovrum-active-shadow)'
                         tap_action:
                           action: none
@@ -3466,7 +3684,7 @@ views:
                           text-shadow: 'var(--playstation-active-shadow)'
                           text-rendering: optimizeLegibility
                           font-smoothing: none
-                          pointer-events: none
+                          cursor: default
                         tap_action:
                           action: none
                         type: state-label
@@ -3484,7 +3702,7 @@ views:
                           letter-spacing: 0.031vw
                           text-rendering: optimizeLegibility
                           font-smoothing: none
-                          pointer-events: none
+                          cursor: default
                           text-shadow: 'var(--playstation-active-shadow)'
                         tap_action:
                           action: none
@@ -3581,7 +3799,7 @@ views:
                           text-shadow: 'var(--googlenest-active-shadow)'
                           text-rendering: optimizeLegibility
                           font-smoothing: none
-                          pointer-events: none
+                          cursor: default
                         tap_action:
                           action: none
                         type: state-label
@@ -3599,7 +3817,7 @@ views:
                           letter-spacing: 0.031vw
                           text-rendering: optimizeLegibility
                           font-smoothing: none
-                          pointer-events: none
+                          cursor: default
                           text-shadow: 'var(--googlenest-active-shadow)'
                         tap_action:
                           action: none
@@ -3744,7 +3962,7 @@ views:
                       text-shadow: 'var(--vardagsrum-active-shadow)'
                       text-rendering: optimizeLegibility
                       font-smoothing: none
-                      pointer-events: none
+                      cursor: default
                     tap_action:
                       action: none
                     type: state-label
@@ -3763,7 +3981,7 @@ views:
                       text-shadow: 'var(--vardagsrum-active-shadow)'
                       text-rendering: optimizeLegibility
                       font-smoothing: none
-                      pointer-events: none
+                      cursor: default
                     tap_action:
                       action: none
                     type: state-label
@@ -3837,7 +4055,7 @@ views:
                       text-shadow: 'var(--sovrum-active-shadow)'
                       text-rendering: optimizeLegibility
                       font-smoothing: none
-                      pointer-events: none
+                      cursor: default
                     tap_action:
                       action: none
                     type: state-label
@@ -3856,7 +4074,7 @@ views:
                       text-shadow: 'var(--sovrum-active-shadow)'
                       text-rendering: optimizeLegibility
                       font-smoothing: none
-                      pointer-events: none
+                      cursor: default
                     tap_action:
                       action: none
                     type: state-label
@@ -3931,7 +4149,7 @@ views:
                       text-shadow: 'var(--playstation-active-shadow)'
                       text-rendering: optimizeLegibility
                       font-smoothing: none
-                      pointer-events: none
+                      cursor: default
                     tap_action:
                       action: none
                     type: state-label
@@ -3950,7 +4168,7 @@ views:
                       text-shadow: 'var(--playstation-active-shadow)'
                       text-rendering: optimizeLegibility
                       font-smoothing: none
-                      pointer-events: none
+                      cursor: default
                     tap_action:
                       action: none
                     type: state-label
@@ -4024,7 +4242,7 @@ views:
                       text-shadow: 'var(--googlenest-active-shadow)'
                       text-rendering: optimizeLegibility
                       font-smoothing: none
-                      pointer-events: none
+                      cursor: default
                     tap_action:
                       action: none
                     type: state-label
@@ -4043,7 +4261,7 @@ views:
                       text-shadow: 'var(--googlenest-active-shadow)'
                       text-rendering: optimizeLegibility
                       font-smoothing: none
-                      pointer-events: none
+                      cursor: default
                     tap_action:
                       action: none
                     type: state-label
@@ -4996,7 +5214,7 @@ views:
             title: null
             type: image
 
-        image: /local/uibg0.png
+        image: /local/uibg.png
         type: picture-elements
     panel: true
     path: default_view
