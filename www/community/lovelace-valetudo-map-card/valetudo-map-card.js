@@ -7,9 +7,15 @@ class ValetudoMapCard extends HTMLElement {
     this.lastValidRobotPosition = [];
 
     this.cardContainer = document.createElement('ha-card');
+    this.cardContainer.id = 'lovelaceValetudoHaCard';
     this.cardContainerStyle = document.createElement('style');
     this.shadowRoot.appendChild(this.cardContainer);
     this.shadowRoot.appendChild(this.cardContainerStyle);
+
+    this.controlContainer = document.createElement('ha-card');
+    this.controlContainerStyle = document.createElement('style');
+    this.shadowRoot.appendChild(this.controlContainer);
+    this.shadowRoot.appendChild(this.controlContainerStyle);
   };
 
   shouldDraw(state) {
@@ -270,7 +276,7 @@ class ValetudoMapCard extends HTMLElement {
 
     // Set container CSS
     this.cardContainerStyle.textContent = `
-      ha-card {
+      #lovelaceValetudoHaCard {
         height: ${containerHeight}px;
         padding-top: ${containerMinHeightPadding}px;
         padding-bottom: ${containerMinHeightPadding}px;
@@ -293,6 +299,26 @@ class ValetudoMapCard extends HTMLElement {
         height: 100%;
       }
     `
+
+    // Set control container CSS
+    this.controlContainerStyle.textContent = `
+      .flex-box {
+        display: flex;
+        justify-content: space-evenly;
+      }
+      paper-button {
+        cursor: pointer;
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        padding: 8px;
+      }
+      ha-icon {
+        width: 24px;
+        height: 24px;
+      }
+    `
+
     // Don't draw unnecessarily often
     if (!this.shouldDraw(mapEntity)) return;
 
@@ -310,6 +336,52 @@ class ValetudoMapCard extends HTMLElement {
     const vacuumColor = this.calculateColor(homeAssistant, this._config.vacuum_color, '--primary-text-color');
 
     this.drawMap(this.cardContainer, mapEntity, mapHeight, mapWidth, floorColor, obstacleWeakColor, obstacleStrongColor, noGoAreaColor, virtualWallColor, pathColor, chargerColor, vacuumColor);
+
+    // Draw controls
+    if (this._config.vacuum_entity) {
+        this.controlFlexBox = document.createElement('div');
+        this.controlFlexBox.classList.add('flex-box');
+
+        // Create controls
+        const startButton = document.createElement('paper-button');
+        const startIcon = document.createElement('ha-icon');
+        const startRipple = document.createElement('paper-ripple');
+        startIcon.icon = 'mdi:play';
+        startButton.appendChild(startIcon);
+        startButton.appendChild(startRipple);
+        startButton.addEventListener('click', (event) => {
+          this._hass.callService('vacuum', 'start', { entity_id: this._config.vacuum_entity }).then();
+        });
+        this.controlFlexBox.appendChild(startButton);
+
+        const stopButton = document.createElement('paper-button');
+        const stopIcon = document.createElement('ha-icon');
+        const stopRipple = document.createElement('paper-ripple');
+        stopIcon.icon = 'mdi:stop';
+        stopButton.appendChild(stopIcon);
+        stopButton.appendChild(stopRipple);
+        stopButton.addEventListener('click', (event) => {
+          this._hass.callService('vacuum', 'stop', { entity_id: this._config.vacuum_entity }).then();
+        });
+        this.controlFlexBox.appendChild(stopButton);
+
+        const homeButton = document.createElement('paper-button');
+        const homeIcon = document.createElement('ha-icon');
+        const homeRipple = document.createElement('paper-ripple');
+        homeIcon.icon = 'hass:home-map-marker';
+        homeButton.appendChild(homeIcon);
+        homeButton.appendChild(homeRipple);
+        homeButton.addEventListener('click', (event) => {
+          this._hass.callService('vacuum', 'return_to_base', { entity_id: this._config.vacuum_entity }).then();
+        });
+        this.controlFlexBox.appendChild(homeButton);
+
+        // Replace existing controls
+        while (this.controlContainer.firstChild) {
+          this.controlContainer.firstChild.remove();
+        };
+        this.controlContainer.append(this.controlFlexBox);
+    };
   };
 
   getCardSize() {
