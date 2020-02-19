@@ -280,22 +280,10 @@ restart_laundry_timer:
 zoned_cleanup:
   sequence:
     - condition: template
-      value_template: "{{ is_state('input_select.roborock_zone', 'Ingen vald') }}"
+      value_template: "{{ not is_state('input_select.roborock_zone', 'Ingen vald') }}"
     - service: vacuum.send_command
       data_template:
         entity_id: vacuum.rockrobo
         command: zoned_cleanup
         params:
-          zone_ids: >
-            {% set zone = states('input_select.roborock_zone') %}
-            {% if zone == 'Vardagsrum' %}
-            - Vardagsrum
-            {% elif zone == 'Studio' %}
-            - Studio
-            {% elif zone == 'Hall' %}
-            - Hall
-            {% elif zone == 'Kök' %}
-            - Kök
-            {% elif zone == 'Sovrum' %}
-            - Sovrum
-            {% endif %}
+          zone_ids: ["{{ states('input_select.roborock_zone') }}"]
