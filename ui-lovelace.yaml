@@ -151,16 +151,25 @@ views:
           #############################################################################################################################################
 
           - image: local/sidebar.png
+            tap_action:
+              action: none
+            hold_action:
+              action: none
             style:
               left: 10.6%
               top: 50%
               width: 21.5%
             type: image
           - image: local/sidebar_line.svg
+            tap_action:
+              action: none
+            hold_action:
+              action: none
             style:
               left: 10.6%
               top: 50%
               width: 21.5%
+              opacity: 0.75
             type: image
 
           #################################################################
@@ -249,9 +258,9 @@ views:
               <font color='#5d6569'>
 
               {% if is_state('vacuum.xiaomi_vacuum_cleaner', 'cleaning') %}
-              <b>Morty dammsuger</b>
+                <b>Morty dammsuger</b>
               {% elif is_state('vacuum.xiaomi_vacuum_cleaner', 'returning') %}
-              <b>Morty är färdig</b>
+                <b>Morty är färdig</b>
               {% endif %}
 
               {% if is_state('sensor.dark_sky_temperature', 'unknown') or is_state('sensor.dark_sky_precip_probability', 'unknown') %}
@@ -268,19 +277,28 @@ views:
               {% endif %}
 
               {% if is_state('person.mattias', 'home') and is_state('person.sanja', 'not_home') %} 
-              Sanja gick för {{ states('sensor.sanja_last_changed_h') }} sedan
+                Sanja gick för {{ states('sensor.sanja_last_changed_h') }} sedan
 
               {% elif is_state('person.mattias', 'not_home') and is_state('person.sanja', 'home') %} 
-              Mattias gick för {{ states('sensor.mattias_last_changed_h') }} sedan 
+                Mattias gick för {{ states('sensor.mattias_last_changed_h') }} sedan 
               {% endif %}
 
               {{ states('sensor.tvatta_countdown') }}
 
-              {% if states('sensor.imac_get_ip') == states('sensor.myip') %} {{'\u26A0\uFE0F'}} VPN är nere...{% endif %}
+              {% if states('sensor.imac_get_ip') == states('sensor.public_ip') or states('sensor.myip') == states('sensor.public_ip') %}
+                {{'\u26A0\uFE0F'}} Kontrollera VPN-anslutning.
+              {% endif %}
               
               {% if is_state('binary_sensor.check_plex', 'off') %}{{'\u26A0\uFE0F'}} Plex är nere...{% endif %}
 
+              {% if is_state('binary_sensor.nas_internet_access', 'off') %}{{'\u26A0\uFE0F'}} Kontrollera NAS internetåtkomst{% endif %}
+
               </font>
+              {% if is_state('sensor.krisinformation_timer_trigger', 'true') %}
+                <font size='5.5em'>{{'\u26A0\uFE0F'}} <b>Krisinformation</b></font><br>
+                <font color='#5d6569' size='5.3em'>{{ state_attr('sensor.krisinformation_sverige', 'messages')[0]["Message"] | truncate(92, True, '...', 0) }}</font>
+              {% endif %}
+
             style:
               '--ha-card-background': none
               '--ha-card-box-shadow': none
@@ -289,6 +307,7 @@ views:
               font-size: 1.6vw
               font-weight: 300
               height: 1px
+              max-height: 4em
               left: 11%
               letter-spacing: 0.06vw
               line-height: 2.05vw
@@ -772,8 +791,16 @@ views:
                             - entity: sensor.home_assistant_log
                               icon: 'mdi:file-document'
                               name: Loggfil
-                            - entity: sensor.docker_container_status
-                              icon: 'mdi:docker'
+                            - entity: sensor.vpn_nas
+                              style: |
+                                :host {
+                                --paper-item-icon-color: 
+                                  {% if is_state('sensor.vpn_nas', 'Ansluten') %}
+                                    #9e9e9e
+                                  {% else %}
+                                    red
+                                  {% endif %};
+                                  }
                             - entity: sensor.docker_home_assistant_up_time
                               name: Senaste omstart
                             - background_style:
@@ -2396,7 +2423,6 @@ views:
                               - entity: sensor.macos_uptime_template
                                 name: Verklig drifttid
                               - entity: sensor.vpn_imac
-                                name: VPN
                                 style: |
                                   :host {
                                   --paper-item-icon-color: 
