@@ -31,9 +31,18 @@
     value_template: 'OK'
     scan_interval: 5
 
+  - platform: krisinformation
+    county: "Skåne län"
+    latitude: !secret homeassistant_latitude
+    longitude: !secret homeassistant_longitude
+    radius: 50
+
+  - platform: krisinformation
+    country: 'Sverige'
+
   - platform: command_line
     name: imac_get_ip
-    scan_interval: 900
+    scan_interval: 300
     command: !secret imac_get_ip
 
   - platform: command_line
@@ -310,14 +319,30 @@
           {% endif %}
 
       vpn_imac:
+        friendly_name: VPN
         value_template: >-
-          {% if states('sensor.imac_get_ip') == states('sensor.myip') %}
+          {% if states('sensor.imac_get_ip') == states('sensor.public_ip') %}
             Ej Ansluten
           {% else %}
             Ansluten
           {% endif %}
         icon_template: >-
-          {% if states('sensor.imac_get_ip') == states('sensor.myip') %}
+          {% if states('sensor.imac_get_ip') == states('sensor.public_ip') %}
+            mdi:shield-alert
+          {% else %}
+            mdi:shield-check
+          {% endif %}
+
+      vpn_nas:
+        friendly_name: VPN
+        value_template: >-
+          {% if states('sensor.myip') == states('sensor.public_ip') %}
+            Ej Ansluten
+          {% else %}
+            Ansluten
+          {% endif %}
+        icon_template: >-
+          {% if states('sensor.myip') == states('sensor.public_ip') %}
             mdi:shield-alert
           {% else %}
             mdi:shield-check
@@ -403,12 +428,21 @@
             false
           {% else %} 
             {% set calendar_tvattid = state_attr('calendar.tvatta', 'start_time') %}
-            {% set nu_tid = now() %}
-            {% if ((as_timestamp(calendar_tvattid) - as_timestamp(nu_tid)) / 86400) <= 0.004 %}
+            {% if ((as_timestamp(calendar_tvattid) - as_timestamp(now())) / 86400) <= 0.004 %}
             true
             {% else %}
             false
             {% endif %}
+          {% endif %}
+
+      krisinformation_timer_trigger:
+        entity_id: sensor.time
+        value_template: >-
+          {% set date = state_attr('sensor.krisinformation_sverige', 'messages')[0]["Published"] %}
+          {% if ((as_timestamp(date) - as_timestamp(now())) / 86400) <= -0.5 %}
+          false
+          {% else %}
+          true
           {% endif %}
 
       mattias_last_changed:
@@ -683,15 +717,6 @@
           Av
           {% endif %}
 
-      docker_container_status:
-        friendly_name: Container
-        value_template: >
-          {% if is_state('sensor.docker_home_assistant_status', 'running') %}
-          Igång
-          {% else %}
-          {{ states('sensor.docker_home_assistant_status') }}
-          {% endif %}
-
       nas_disk_temp:
         friendly_name: Disktemperatur
         unit_of_measurement: '°C'
@@ -708,7 +733,7 @@
           {% if down < 1000 %}
           {{ down | round(0) }} kb/s
           {% elif down >= 1000 %}
-          {{ ((down / 1000) | round(2)|string).rstrip('.0') }} mb/s
+          {{ ((down / 1000) | round(2)|string).rstrip('.0') }} Mb/s
           {% endif %}
 
       nas_net_up:
@@ -719,5 +744,8 @@
           {% if up < 1000 %}
           {{ up | round(0) }} kb/s
           {% elif up >= 1000 %}
-          {{ ((up / 1000) | round(2)|string).rstrip('.0') }} mb/s
+          {{ ((up / 1000) | round(2)|string).rstrip('.0') }} Mb/s
           {% endif %}
+
+      public_ip:
+        value_template: !secret public_ip
