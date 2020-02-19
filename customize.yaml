@@ -65,3 +65,6 @@
 
   light.spot_2: 
     friendly_name: Taklampa 2
+
+  binary_sensor.wemo_motion:
+    friendly_name: vardagsrummet

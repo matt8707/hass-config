@@ -79,9 +79,8 @@ say_auto_hemma:
 
 auto_hemma:
   sequence:
-    - service: automation.turn_off
-      entity_id:
-        ['automation.ui_sound_on', 'automation.ui_sound_off', 'automation.ui_sound_popup']
+    - service: homeassistant.turn_off
+      entity_id: group.ui_sound
     - service_template: >-
         {% if is_state('switch.fullykiosk_screen', 'on') and is_state('switch.fullykiosk_screensaver', 'off') %}
           script.say_auto_hemma
@@ -97,9 +96,8 @@ auto_hemma:
             scene.hemma_above_horizon
           {% endif %}
     - delay: '00:00:04'
-    - service: automation.turn_on
-      entity_id:
-        ['automation.ui_sound_on', 'automation.ui_sound_off', 'automation.ui_sound_popup']
+    - service: homeassistant.turn_on
+      entity_id: group.ui_sound
 
 auto_hemma_tracker:
   sequence:
@@ -121,9 +119,8 @@ say_auto_stang_allt:
 
 auto_stang_allt:
   sequence:
-    - service: automation.turn_off
-      entity_id:
-        ['automation.ui_sound_on', 'automation.ui_sound_off', 'automation.ui_sound_popup']
+    - service: homeassistant.turn_off
+      entity_id: group.ui_sound
     - service_template: >-
         {% if is_state('switch.fullykiosk_screen', 'on') and is_state('switch.fullykiosk_screensaver', 'off') %}
           script.say_auto_stang_allt
@@ -163,9 +160,8 @@ auto_stang_allt:
           script.dummy
         {% endif %}
     - delay: '00:00:04'
-    - service: automation.turn_on
-      entity_id:
-        ['automation.ui_sound_on', 'automation.ui_sound_off', 'automation.ui_sound_popup']
+    - service: homeassistant.turn_on
+      entity_id: group.ui_sound
 
 reference_monitors:
   sequence:

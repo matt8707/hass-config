@@ -611,7 +611,7 @@
 
       last_motion_sensor_triggered:
         value_template: >-
-          {% set sensors = [states.input_boolean.motion_hall, states.input_boolean.motion_badrum, states.input_boolean.motion_garderob, states.input_boolean.motion_vardagsrum] %}
+          {% set sensors = [states.input_boolean.motion_hall, states.input_boolean.motion_badrum, states.input_boolean.motion_garderob, states.binary_sensor.wemo_motion] %}
           {% for sensor in sensors %}
             {% if as_timestamp(sensor.last_changed) == as_timestamp(sensors | map(attribute='last_changed') | max) %}
               {{ sensor.entity_id }}

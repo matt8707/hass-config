@@ -192,9 +192,11 @@ input_boolean:
   laundry_timer_visibility:
 
   motion_hall:
+    name: hallen
   motion_garderob:
+    name: klädkammaren
   motion_badrum:
-  motion_vardagsrum:
+    name: badrummet
 
   active_media_appletv_var:
   active_media_appletv_sov:
@@ -415,6 +417,10 @@ group:
     icon: 'mdi:tune-vertical'
     entities:
       ['automation.reference_monitors', 'automation.reference_headphones']
+
+  ui_sound:
+    entities:
+      ['automation.ui_sound_on', 'automation.ui_sound_off', 'automation.ui_sound_popup']
 
   active_media_plex_recent:
     entities:
