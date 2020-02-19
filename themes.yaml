@@ -4,7 +4,7 @@ slate:
   primary-color: '#434b4d'
   accent-color: '#ff0000'
   dark-primary-color: '#e0e1e1'
-  light-primary-color: '#e0e1e1'
+  light-primary-color: '#262b2c'
   # Text colors
   primary-text-color: '#e0e1e1'
   text-primary-color: 'var(--primary-text-color)'
