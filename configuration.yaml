@@ -520,3 +520,7 @@ binary_sensor:
     scan_interval: 300
     payload_on: "on"
     payload_off: "off"
+
+  - platform: ping
+    host: 8.8.8.8
+    name: nas_internet_access
