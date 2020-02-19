@@ -1,38 +1,26 @@
 """The Apple TV integration."""
 import asyncio
 import logging
-from random import randrange
 from functools import partial
+from random import randrange
 from typing import Sequence, TypeVar, Union
-
-from pyatv import scan, connect, exceptions
-from pyatv.const import Protocol
 
 import voluptuous as vol
 
+import homeassistant.helpers.config_validation as cv
 from homeassistant import config_entries
+from homeassistant.const import (CONF_ADDRESS, CONF_NAME, CONF_PROTOCOL,
+                                 EVENT_HOMEASSISTANT_STOP)
 from homeassistant.core import callback
 from homeassistant.helpers import discovery
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-import homeassistant.helpers.config_validation as cv
-from homeassistant.const import (
-    CONF_NAME,
-    CONF_HOST,
-    EVENT_HOMEASSISTANT_STOP,
-)
+from pyatv import connect, exceptions, scan
+from pyatv.const import Protocol
 
-from .const import (
-    DOMAIN,
-    CONF_ADDRESS,
-    CONF_IDENTIFIER,
-    CONF_PROTOCOL,
-    CONF_CREDENTIALS,
-    CONF_CREDENTIALS_MRP,
-    CONF_CREDENTIALS_DMAP,
-    CONF_CREDENTIALS_AIRPLAY,
-    CONF_START_OFF,
-    SOURCE_INVALID_CREDENTIALS,
-)
+from .const import (CONF_CREDENTIALS, CONF_CREDENTIALS_AIRPLAY,
+                    CONF_CREDENTIALS_DMAP, CONF_CREDENTIALS_MRP,
+                    CONF_IDENTIFIER, CONF_START_OFF, DOMAIN,
+                    SOURCE_INVALID_CREDENTIALS)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -69,7 +57,7 @@ CONFIG_SCHEMA = vol.Schema(
             [
                 vol.Schema(
                     {
-                        vol.Required(CONF_HOST): cv.string,
+                        vol.Required(CONF_ADDRESS): cv.string,
                         vol.Required(CONF_IDENTIFIER): cv.string,
                         vol.Required(CONF_PROTOCOL): vol.In(["DMAP", "MRP"]),
                         vol.Required(CONF_CREDENTIALS): CREDENTIALS_SCHEMA,
@@ -247,7 +235,7 @@ class AppleTVManager:
 
         self.hass.components.persistent_notification.create(
             "An irrecoverable connection problem occurred when connecting to "
-            "`{0}`. Please go to the Integrations page and reconfigure it".format(name),
+            "`f{name}`. Please go to the Integrations page and reconfigure it",
             title=NOTIFICATION_TITLE,
             notification_id=NOTIFICATION_ID,
         )
