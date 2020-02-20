@@ -59,8 +59,7 @@
   trigger:
   - platform: state
     entity_id:
-      ['input_boolean.motion_hall', 'input_boolean.motion_garderob', 
-       'input_boolean.motion_badrum', 'binary_sensor.wemo_motion']
+      ['input_boolean.motion_garderob', 'input_boolean.motion_badrum', 'binary_sensor.wemo_motion']
     to: 'on'
   action:
   - service: browser_mod.toast
@@ -214,6 +213,9 @@
   action:
     - service: switch.turn_off
       entity_id: switch.fullykiosk_screensaver
+    - service: input_boolean.turn_off
+      data_template:
+        entity_id: "{{ trigger.entity_id }}"
     - service_template: input_number.set_value
       data_template:
         entity_id: input_number.fullykiosk_brightness_slider
