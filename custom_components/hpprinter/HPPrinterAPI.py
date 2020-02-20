@@ -1,6 +1,6 @@
 import sys
-import logging
 import json
+import logging
 
 import aiohttp
 import xmltodict
@@ -33,9 +33,7 @@ class HPPrinterAPI:
 
     def initialize(self):
         try:
-            timeout = aiohttp.ClientTimeout(total=10)
-
-            self._session = async_create_clientsession(hass=self._hass, timeout=timeout)
+            self._session = async_create_clientsession(hass=self._hass)
 
         except Exception as ex:
             exc_type, exc_obj, tb = sys.exc_info()
@@ -86,7 +84,7 @@ class HPPrinterAPI:
         try:
             _LOGGER.debug(f"Retrieving {self._data_type} from {self._host}")
 
-            async with self._session.get(self._url, ssl=False) as response:
+            async with self._session.get(self._url, ssl=False, timeout=aiohttp.ClientTimeout(total=10)) as response:
                 response.raise_for_status()
 
                 content = await response.text()

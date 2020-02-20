@@ -3,10 +3,10 @@
     "title": "HP Printer",
     "step": {
       "user": {
-        "title": "Set up HP Printer",
+        "title": "HP Printer instellen",
         "data": {
           "host": "Host",
-          "name": "Name"
+          "name": "Naam"
         }
       }
     }

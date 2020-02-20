@@ -9,18 +9,27 @@ class VerticalStackInCard extends HTMLElement {
         if (!config || !config.cards || !Array.isArray(config.cards)) {
             throw new Error('Card config incorrect');
         }
-        
-        const shadow = this.shadowRoot;
-        while (shadow.hasChildNodes()) {
-            shadow.removeChild(shadow.lastChild);
+
+        this.style.boxShadow = "var(--ha-card-box-shadow, 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2))";
+        this.style.borderRadius = "var(--ha-card-border-radius, 2px)";
+        this.style.background = "var(--paper-card-background-color)";
+        this.style.display = "block";
+        this.style.overflow = "hidden";
+
+        const root = this.shadowRoot;
+        while (root.hasChildNodes()) {
+            root.removeChild(root.lastChild);
         }
-        
-        const card = document.createElement("ha-card");
-        const cardContent = document.createElement("div");
-        
-        card.header = config.title;
+
         this._refCards = [];
-        
+        if (config.title) {
+            const title = document.createElement("div");
+            title.className = "header";
+            title.style = "font-family: var(--paper-font-headline_-_font-family); color: var(--paper-card-header-color); -webkit-font-smoothing: var(--paper-font-headline_-_-webkit-font-smoothing); font-size: var(--paper-font-headline_-_font-size); font-weight: var(--paper-font-headline_-_font-weight); letter-spacing: var(--paper-font-headline_-_letter-spacing); line-height: var(--paper-font-headline_-_line-height);text-rendering: var(--paper-font-common-expensive-kerning_-_text-rendering);opacity: var(--dark-primary-opacity);padding: 24px 16px 0px 16px";
+            title.innerHTML = '<div class="name">' + config.title + '</div>';
+            root.appendChild(title);
+        }
+
         const _createThing = (tag, config) => {
             const element = document.createElement(tag);
             try {
@@ -76,7 +85,7 @@ class VerticalStackInCard extends HTMLElement {
 
             if (customElements.get(tag)) {
                 const element = _createThing(tag, item);
-                cardContent.appendChild(element);
+                root.appendChild(element);
                 this._refCards.push(element);
             } else {
                 // If element doesn't exist (yet) create an error
@@ -96,12 +105,10 @@ class VerticalStackInCard extends HTMLElement {
                     _fireEvent("ll-rebuild", {}, element);
                 });
 
-                cardContent.appendChild(element);
+                root.appendChild(element);
                 this._refCards.push(element);
             }
         });
-        card.appendChild(cardContent);
-        shadow.appendChild(card);
     }
 
     set hass(hass) {

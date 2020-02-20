@@ -9,6 +9,7 @@ class HPDeviceData:
         self._consumable_data_manager = ConsumableConfigDynPrinterDataAPI(hass, host, reader=reader)
         self._product_config_manager = ProductConfigDynDataAPI(hass, host, reader=reader)
 
+        self._hass = hass
         self._name = name
         self._host = host
 
@@ -32,9 +33,13 @@ class HPDeviceData:
             self._consumable_data = await self._consumable_data_manager.get_data(store)
             self._product_config_data = await self._product_config_manager.get_data(store)
 
-            is_online = self._usage_data is not None and \
-                        self._consumable_data is not None and \
-                        self._product_config_data is not None
+            data_list = [self._usage_data, self._consumable_data, self._product_config_data]
+            is_online = True
+
+            for item in data_list:
+                if item is None:
+                    is_online = False
+                    break
 
             if is_online:
                 self.set_usage_data()
