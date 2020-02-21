@@ -68,10 +68,12 @@ class HPDeviceData:
                 root = self._consumable_data.get("ConsumableConfigDyn", {})
                 consumables_info = root.get("ConsumableInfo", [])
 
-                for consumable_key in consumables_info:
-                    consumable = consumables_info[consumable_key]
+                if "ConsumableLabelCode" in consumables_info:
+                    self.set_printer_consumable_data(consumables_info)
+                else:
+                    for consumable_key in consumables_info:
+                        consumable = consumables_info[consumable_key]
 
-                    if consumable is not None:
                         self.set_printer_consumable_data(consumable)
 
         except Exception as ex:
@@ -112,11 +114,14 @@ class HPDeviceData:
                     printer_consumables = consumables_data.get("Consumable")
 
                     if printer_consumables is not None:
-                        for key in printer_consumables:
-                            consumable = printer_consumables.get(key)
+                        if "ConsumableStation" in printer_consumables:
+                            self.set_printer_consumable_usage_data(printer_consumables)
+                        else:
+                            for key in printer_consumables:
+                                consumable = printer_consumables.get(key)
 
-                            if consumable is not None:
-                                self.set_printer_consumable_usage_data(consumable)
+                                if consumable is not None:
+                                    self.set_printer_consumable_usage_data(consumable)
 
         except Exception as ex:
             exc_type, exc_obj, tb = sys.exc_info()
@@ -189,7 +194,7 @@ class HPDeviceData:
     def set_printer_consumable_usage_data(self, printer_consumable_data):
         try:
             color = self.clean_parameter(printer_consumable_data, "MarkerColor")
-            head_type = self.clean_parameter(printer_consumable_data, "ConsumableTypeEnum")
+            head_type = self.clean_parameter(printer_consumable_data, "ConsumableTypeEnum").capitalize()
             station = self.clean_parameter(printer_consumable_data, "ConsumableStation")
 
             cartridge_key = f"{head_type} {color}"
@@ -228,7 +233,7 @@ class HPDeviceData:
     def set_printer_consumable_data(self, printer_consumable_data):
         try:
             consumable_label_code = self.clean_parameter(printer_consumable_data, "ConsumableLabelCode")
-            head_type = self.clean_parameter(printer_consumable_data, "ConsumableTypeEnum")
+            head_type = self.clean_parameter(printer_consumable_data, "ConsumableTypeEnum").capitalize()
             product_number = self.clean_parameter(printer_consumable_data, "ProductNumber")
             serial_number = self.clean_parameter(printer_consumable_data, "SerialNumber")
             remaining = self.clean_parameter(printer_consumable_data, "ConsumablePercentageLevelRemaining", "0")
@@ -237,7 +242,7 @@ class HPDeviceData:
             installation_data = self.clean_parameter(installation, "Date")
 
             manufacturer = printer_consumable_data.get("Manufacturer", {})
-            manufactured_by = self.clean_parameter(manufacturer, "Name")
+            manufactured_by = self.clean_parameter(manufacturer, "Name").rstrip()
             manufactured_at = self.clean_parameter(manufacturer, "Date")
 
             warranty = printer_consumable_data.get("Warranty", {})
