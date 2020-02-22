@@ -592,7 +592,7 @@ views:
                               background: rgba(36, 42, 43, 0.88);
                               padding-right: 0.7em;
                             }
-                          title: "\U000e0020 \U000e0020 Dammsugare"
+                          title: " ‍  ‍ Dammsugare"
                           type: entities
                       type: 'custom:hui-vertical-stack-card'
                     - break
@@ -836,12 +836,12 @@ views:
                             width: 10.2em
                       style: |
                         ha-card {
-                          --paper-card-background-color: rgba(36, 42, 43, 0.91);
+                          background: rgba(36, 42, 43, 0.88);
                           box-shadow: none;
                           border-radius: 1em;
                           height: 43.9em;
                         }
-                      title: "\U000e0020 \U000e0020 Kartläggning"
+                      title: " ‍  ‍ Kartläggning"
                   column_num: 2
                   column_width: [390, 555]
                   layout: vertical
@@ -1022,7 +1022,7 @@ views:
                           background: rgba(36, 42, 43, 0.88);
                           padding-right: 0.7em;
                         }
-                      title: "\U000e0020 \U000e0020 Home Assistant Core"
+                      title: " ‍  ‍ Home Assistant Core"
                       type: entities
                     - break
                     - entities:
@@ -1156,7 +1156,7 @@ views:
                           background: rgba(36, 42, 43, 0.88);
                           padding-right: 0.7em;
                         }
-                      title: "\U000e0020 \U000e0020 Väggplattan"
+                      title: " ‍  ‍ Väggplattan"
                       type: entities
                     - break
                     - entities:
@@ -1321,10 +1321,10 @@ views:
                               entity: sensor.synology_dsm_network_down
                               name: Nedladdning
                           group: false
-                          points_per_hour: 2.5
+                          points_per_hour: 30
                           line_width: 2.5
                           hour24: true
-                          hours_to_show: 12
+                          hours_to_show: 1.5
                           show:
                             fill: fade
                             icon: false
@@ -1353,7 +1353,7 @@ views:
                           background: rgba(36, 42, 43, 0.88);
                           padding-right: 0.7em;
                         }
-                      title: "\U000e0020 \U000e0020 Synology NAS"
+                      title: " ‍  ‍ Synology NAS"
                       type: entities
                   column_num: 3
                   layout: vertical
@@ -1488,22 +1488,22 @@ views:
                               justify-content: center
                               margin-right: 0.7em
                     - content: >
-                        <font size="3em" color="#abadad">{{'\U0001F3E0'}} {{'\U000e0020'}} **Hemma** </font><br>
+                        <font size="3em" color="#abadad">{{'\U0001F3E0'}}  ‍ **Hemma** </font><br>
                         <font color="#595c5d">Standardbelysning baserat på klockslag.</font><br>
 
-                        <font size="3em" color="#abadad">{{'\U0001F44B\U0001F3FB'}} {{'\U000e0020'}} **Lämna** </font><br>
+                        <font size="3em" color="#abadad">{{'\U0001F44B\U0001F3FB'}}  ‍ **Lämna** </font><br>
                         <font color="#595c5d">Stäng alla enheter och släck lampor.</font><br>
 
-                        <font size="3em" color="#abadad">{{'\U0001F37F'}} {{'\U000e0020'}}**Filmdags** </font><br>
+                        <font size="3em" color="#abadad">{{'\U0001F37F'}}  ‍**Filmdags** </font><br>
                         <font color="#595c5d">Dimma lampor i vardagsrummet och starta Tv.</font><br>
 
-                        <font size="3em" color="#abadad">{{'\U0001F389'}} {{'\U000e0020'}} **Party** </font><br>
+                        <font size="3em" color="#abadad">{{'\U0001F389'}}  ‍ **Party** </font><br>
                         <font color="#595c5d">Dimma lampor och gör slumpmässiga färger.</font><br>
 
-                        <font size="3em" color="#abadad">{{'\U0001F525'}} {{'\U000e0020'}}**Bemysa** </font><br>
+                        <font size="3em" color="#abadad">{{'\U0001F525'}}  ‍**Bemysa** </font><br>
                         <font color="#595c5d">Mysbelysning i hela lägenheten.</font><br>
 
-                        <font size="3em" color="#abadad">{{'\U0001F6CC'}} {{'\U000e0020'}} **Läggdags** </font><br>
+                        <font size="3em" color="#abadad">{{'\U0001F6CC'}}  ‍ **Läggdags** </font><br>
                         <font color="#595c5d">Dimma sänglampor till 20% och stäng allt annat.</font><br>
                       style: |
                         ha-card {
@@ -1919,7 +1919,7 @@ views:
             title: null
             type: image
           - conditions:
-              - entity: input_boolean.loading_braviatv
+              - entity: input_boolean.sony_bravia_tv
                 state: 'on'
             elements:
               - image: /local/vardagsrum_tv_on.png
@@ -2000,7 +2000,7 @@ views:
             title: null
             type: image
           - conditions:
-              - entity: input_boolean.loading_playstation
+              - entity: input_boolean.playstation_template
                 state: 'on'
             elements:
               - filter: opacity(45%)
@@ -2013,10 +2013,10 @@ views:
                 type: image
             type: conditional
           - conditions:
-              - entity: input_boolean.loading_playstation
+              - entity: input_boolean.playstation_template
                 state: 'on'
             elements:
-              - entity: input_boolean.loading_playstation
+              - entity: input_boolean.playstation_template
                 state_image:
                   'off': /local/vardagsrum_playstation_off.gif
                   'on': /local/vardagsrum_playstation_on.gif
@@ -2765,7 +2765,7 @@ views:
             title: null
             type: image
           - conditions:
-              - entity: input_boolean.loading_dator
+              - entity: input_boolean.dator_template
                 state: 'on'
             elements:
               - image: /local/studio_dator_on.png
@@ -3310,7 +3310,7 @@ views:
             title: null
             type: image
           - conditions:
-              - entity: input_boolean.loading_samsungtv
+              - entity: input_boolean.samsung_6_series_50
                 state: 'on'
             elements:
               - image: /local/sovrum_tv2_on.png
@@ -3389,8 +3389,8 @@ views:
                   #################################################################
 
                   - conditions:
-                      - entity: group.active_media_plex_recent
-                        state: 'off'
+                      - entity: input_select.conditional_media
+                        state: 'Senast nedladdat'
                     elements:
                       - accent_color: none
                         all_shadows: false
@@ -3476,8 +3476,8 @@ views:
                         type: state-label
                     type: conditional
                   - conditions:
-                      - entity: group.active_media_plex_recent
-                        state_not: 'off'
+                      - entity: input_select.conditional_media
+                        state_not: 'Senast nedladdat'
                     elements:
                       - image: /local/media_background_large.svg
                         style:
@@ -3499,8 +3499,8 @@ views:
                   #                                                               #
                   #################################################################
                   - conditions:
-                      - entity: input_boolean.active_media_appletv_var
-                        state: 'on'
+                      - entity: input_select.conditional_media
+                        state: 'Vardagsrum'
                     elements:
                       - artwork: full-cover-fit
                         entity: media_player.vardagsrum
@@ -3614,8 +3614,8 @@ views:
                   #################################################################
 
                   - conditions:
-                      - entity: input_boolean.active_media_appletv_sov
-                        state: 'on'
+                      - entity: input_select.conditional_media
+                        state: 'Sovrum'
                     elements:
                       - artwork: full-cover-fit
                         entity: media_player.sovrum
@@ -3729,8 +3729,8 @@ views:
                   #################################################################
 
                   - conditions:
-                      - entity: input_boolean.active_media_playstation
-                        state: 'on'
+                      - entity: input_select.conditional_media
+                        state: 'Playstation 4'
                     elements:
                       - artwork: full-cover-fit
                         entity: media_player.playstation_4
@@ -3845,8 +3845,8 @@ views:
                   #################################################################
 
                   - conditions:
-                      - entity: input_boolean.active_media_google_nest
-                        state: 'on'
+                      - entity: input_select.conditional_media
+                        state: 'Google Nest Mini'
                     elements:
                       - artwork: full-cover-fit
                         entity: media_player.google_nest_mini

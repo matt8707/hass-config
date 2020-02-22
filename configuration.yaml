@@ -80,7 +80,7 @@ recorder:
        'binary_sensor.garderob_motion', 'binary_sensor.wemo_motion',
 
        'sensor.tvatta_countdown',
-       
+
        'sensor.imac_cpu_per', 'sensor.imac_mem_per', 'sensor.imac_system_ssd',
        'sensor.imac_macintosh_hd', 'sensor.imac_time_machine',
 
@@ -183,10 +183,10 @@ timer:
     icon: 'mdi:washing-machine'
 
 input_boolean:
-  loading_dator:
-  loading_braviatv:
-  loading_samsungtv:
-  loading_playstation:
+  dator_template:
+  sony_bravia_tv:
+  samsung_6_series_50:
+  playstation_template:
 
   lock_computer:
   laundry_timer_visibility:
@@ -197,11 +197,6 @@ input_boolean:
     name: klädkammaren
   motion_badrum:
     name: badrummet
-
-  active_media_appletv_var:
-  active_media_appletv_sov:
-  active_media_playstation:
-  active_media_google_nest:
 
 input_number:
   monitorer_volume:
@@ -259,8 +254,14 @@ input_select:
     icon: mdi:fan
 
   roborock_zone:
+    initial: Ingen vald
     options:
       ['Ingen vald', 'Hall', 'Kök','Vardagsrum', 'Studio', 'Sovrum']
+
+  conditional_media:
+    initial: Senast nedladdat
+    options:
+      ['Senast nedladdat', 'Vardagsrum', 'Sovrum', 'Playstation 4', 'Google Nest Mini']
 
 switch:
   - platform: switchbot
@@ -324,18 +325,15 @@ switch:
 
       fullykiosk_screensaver:
         value_template: >-
-          {% if state_attr('sensor.fullykiosk', 'currentFragment') == 'screensaver' %}
-            on
-          {% else %}
-            off
-          {% endif %}
+          {% if is_state_attr('sensor.fullykiosk', 'currentFragment', 'screensaver') %}
+            on {% else %} off {% endif %}
         turn_on:
           service: shell_command.fullykiosk_screensaver_on
         turn_off:
           service: shell_command.fullykiosk_screensaver_off
 
       media_play_pause_vardagsrum:
-        value_template: "{% if is_state('media_player.vardagsrum', 'playing') %}on{% else %}off{% endif %}"
+        value_template: "{% if is_state('media_player.vardagsrum', 'playing') %} on {% else %} off {% endif %}"
         turn_on:
           service: media_player.media_play
           entity_id: media_player.vardagsrum
@@ -421,38 +419,6 @@ group:
   ui_sound:
     entities:
       ['automation.ui_sound_on', 'automation.ui_sound_off', 'automation.ui_sound_popup']
-
-  active_media_plex_recent:
-    entities:
-      ['input_boolean.active_media_appletv_var', 'input_boolean.active_media_appletv_sov', 
-      'input_boolean.active_media_playstation', 'input_boolean.active_media_google_nest']
-
-  active_media_appletv_var:
-    entities:
-      ['input_boolean.active_media_appletv_sov', 'input_boolean.active_media_playstation', 
-      'input_boolean.active_media_google_nest']
-
-  active_media_appletv_sov:
-    entities:
-      ['input_boolean.active_media_appletv_var', 'input_boolean.active_media_playstation', 
-      'input_boolean.active_media_google_nest']
-
-  active_media_playstation:
-    entities:
-      ['input_boolean.active_media_appletv_var', 'input_boolean.active_media_appletv_sov', 
-      'input_boolean.active_media_google_nest']
-
-  active_media_google_nest:
-    entities:
-      ['input_boolean.active_media_appletv_var', 'input_boolean.active_media_appletv_sov', 
-      'input_boolean.active_media_playstation']
-
-  active_media_automations:
-    entities:
-      ['automation.active_media_appletv_var_playing', 'automation.active_media_appletv_var_idle', 
-      'automation.active_media_appletv_sov_playing', 'automation.active_media_appletv_sov_idle', 
-      'automation.active_media_playstation_playing', 'automation.active_media_playstation_standby', 
-      'automation.active_media_google_nest_playing', 'automation.active_media_google_nest_off']
 
 hacs:
   token: !secret hacs_token

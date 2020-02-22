@@ -13,12 +13,6 @@
     - service: frontend.set_theme
       data:
         name: slate
-    - service: input_boolean.turn_off
-      entity_id: group.active_media_plex_recent
-    - service: input_number.set_value
-      data_template:
-        entity_id: input_number.fullykiosk_brightness_slider
-        value: "{{ (state_attr('sensor.fullykiosk', 'screenBrightness') | int / 2.55) | round(0) }}"
     - delay: 00:01:00
     - service: homekit.start
 
@@ -46,8 +40,9 @@
     - delay: 00:00:05
     - service: homeassistant.update_entity
       entity_id:
-        ['sensor.imac_cpu_per', 'sensor.imac_mem_per', 'sensor.imac_system_ssd', 'sensor.imac_macintosh_hd', 
-         'sensor.imac_time_machine', 'sensor.getvolume', 'sensor.macos_uptime']
+        ['sensor.imac_cpu_per', 'sensor.imac_mem_per', 'sensor.imac_system_ssd', 
+        'sensor.imac_macintosh_hd', 'sensor.imac_time_machine', 'sensor.getvolume', 
+        'sensor.macos_uptime']
 
     ####################################################
     #                                                  #
@@ -59,7 +54,8 @@
   trigger:
   - platform: state
     entity_id:
-      ['input_boolean.motion_garderob', 'input_boolean.motion_badrum', 'binary_sensor.wemo_motion']
+      ['input_boolean.motion_garderob', 'input_boolean.motion_badrum', 
+      'binary_sensor.wemo_motion']
     to: 'on'
   action:
   - service: browser_mod.toast
@@ -130,8 +126,7 @@
     - service_template: >
         {% if is_state(trigger.entity_id, 'on') %}
           script.reference_monitors
-        {% else %}
-          script.reference_headphones
+        {% else %} script.reference_headphones
         {% endif %}
 
 - alias: turn_off_monitorer
@@ -140,7 +135,7 @@
       entity_id: switch.dator_template
       to: 'off'
       for:
-        minutes: 5
+        minutes: 15
   action:
   - service: switch.turn_off
     entity_id: switch.wemo_monitorer
@@ -199,7 +194,7 @@
       entity_id: switch.fullykiosk_screensaver
       to: 'on'
       for:
-        seconds: 30
+        minutes: 15
   action:
     - service: browser_mod.close_popup
       data:
@@ -213,18 +208,16 @@
   action:
     - service: switch.turn_off
       entity_id: switch.fullykiosk_screensaver
-    - service: input_boolean.turn_off
-      data_template:
-        entity_id: "{{ trigger.entity_id }}"
     - service_template: input_number.set_value
       data_template:
         entity_id: input_number.fullykiosk_brightness_slider
         value: >
-          {% if is_state('sun.sun', 'above_horizon') %}
-            90
-          {% else %}
-            50
+          {% if is_state('sun.sun', 'above_horizon') %} 90
+          {% else %} 50
           {% endif %}
+    - service: input_boolean.turn_off
+      data_template:
+        entity_id: "{{ trigger.entity_id }}"
 
 - alias: turn_off_fullykiosk_screen
   trigger:
@@ -241,44 +234,26 @@
     #                                                  #
     ####################################################
 
-- alias: turn_off_tv_loading
-  trigger:
-    - platform: state
-      entity_id: media_player.sony_bravia_tv
-  action:
-    - service: input_boolean.turn_off
-      entity_id: input_boolean.loading_braviatv
-
-- alias: turn_off_tv2_loading
-  trigger:
-    - platform: state
-      entity_id: switch.samsung_6_series_50
-  action:
-    - service: input_boolean.turn_off
-      entity_id: input_boolean.loading_samsungtv
-
-- alias: turn_off_dator_loading
-  trigger:
-    - platform: state
-      entity_id: switch.dator_template
-  action:
-    - service: input_boolean.turn_off
-      entity_id: input_boolean.loading_dator
-
-- alias: turn_off_ps4_loading
-  trigger:
-    - platform: state
-      entity_id: switch.playstation_template
-  action:
-    - service: input_boolean.turn_off
-      entity_id: input_boolean.loading_playstation
-
-- alias: turn_off_loading_fail_safe
+- alias: turn_off_loading_wheel
   trigger:
     - platform: state
       entity_id: 
-        ['input_boolean.loading_braviatv', 'input_boolean.loading_samsungtv', 
-         'input_boolean.loading_dator', 'input_boolean.loading_playstation']
+        ['media_player.sony_bravia_tv', 'switch.samsung_6_series_50', 
+         'switch.dator_template', 'switch.playstation_template']
+  action:
+    - service: input_boolean.turn_off
+      data_template:
+        entity_id: >-
+          {{ trigger.entity_id | 
+          replace('media_player', 'input_boolean') | 
+          replace('switch', 'input_boolean') }}
+
+- alias: turn_off_loading_wheel_fail_safe
+  trigger:
+    - platform: state
+      entity_id: 
+        ['input_boolean.sony_bravia_tv', 'input_boolean.samsung_6_series_50', 
+         'input_boolean.dator_template', 'input_boolean.playstation_template']
       to: 'on'
       for:
         minutes: 1
@@ -311,7 +286,10 @@
   - service: input_select.select_option
     data_template:
       entity_id: input_select.hdmi
-      option: "{{ state_attr('media_player.sony_bravia_tv', 'media_title') }}"
+      option: >-
+        {% if state_attr('media_player.sony_bravia_tv', 'None') %} HDMI 1
+        {% else %} {{ state_attr('media_player.sony_bravia_tv', 'media_title') }}
+        {% endif %}
 
 - alias: hdmi2_input_select
   trigger:
@@ -332,12 +310,8 @@
     data_template:
       entity_id: input_select.hdmi2
       option: >-
-        {% set source = states('sensor.samsung_6_series_50_media_input_source') %}
-        {% if source == 'HDMI3' %}
-          HDMI
-        {% else %}
-          TV
-        {% endif %}
+        {% if is_state('sensor.samsung_6_series_50_media_input_source', 'HDMI3') %} HDMI
+        {% else %} TV {% endif %}
 
     ####################################################
     #                                                  #
@@ -400,16 +374,11 @@
     data_template:
       entity_id: vacuum.xiaomi_vacuum_cleaner
       fan_speed: >-
-        {% if is_state('input_select.roborock_fan_speed', 'Tyst') %}
-          Quiet
-        {% elif is_state('input_select.roborock_fan_speed', 'Standard') %}
-          Balanced
-        {% elif is_state('input_select.roborock_fan_speed', 'Medium') %}
-          75
-        {% elif is_state('input_select.roborock_fan_speed', 'Turbo') %}
-          100
-        {% else %}
-          Balanced
+        {% if is_state('input_select.roborock_fan_speed', 'Tyst') %} Quiet
+        {% elif is_state('input_select.roborock_fan_speed', 'Standard') %} Balanced
+        {% elif is_state('input_select.roborock_fan_speed', 'Medium') %} 75
+        {% elif is_state('input_select.roborock_fan_speed', 'Turbo') %} 100
+        {% else %} Balanced
         {% endif %}
 
 - alias: roborock_fan_speed_input_select_update
@@ -421,16 +390,11 @@
     data_template:
       entity_id: input_select.roborock_fan_speed
       option: >-
-        {% if is_state('sensor.roborock_fan_speed', 'Quiet') %}
-          Tyst
-        {% elif is_state('sensor.roborock_fan_speed', 'Balanced') %}
-          Standard
-        {% elif is_state('sensor.roborock_fan_speed', '75') %}
-          Medium
-        {% elif is_state('sensor.roborock_fan_speed', '100') %}
-          Turbo
-        {% else %}
-          Standard
+        {% if is_state('sensor.roborock_fan_speed', 'Quiet') %} Tyst
+        {% elif is_state('sensor.roborock_fan_speed', 'Balanced') %} Standard
+        {% elif is_state('sensor.roborock_fan_speed', '75') %} Medium
+        {% elif is_state('sensor.roborock_fan_speed', '100') %} Turbo
+        {% else %} Standard
         {% endif %}
 
     ####################################################
@@ -443,9 +407,11 @@
   trigger:
   - platform: state
     entity_id:
-      ['light.belysning', 'light.fonsterlampa', 'light.datorlampa', 'light.taklampor', 'light.mattias', 'light.sanja', 'light.badrum', 
-      'light.taklampa', 'light.kladkammare_2', 'light.hall', 'switch.wemo_flakt', 'switch.wemo_monitorer', 'input_boolean.loading_dator', 
-      'input_boolean.loading_playstation', 'input_boolean.loading_braviatv', 'input_boolean.loading_samsungtv']
+      ['light.belysning', 'light.fonsterlampa', 'light.datorlampa', 'light.taklampor', 
+      'light.mattias', 'light.sanja', 'light.badrum', 'light.taklampa', 'light.kladkammare_2', 
+      'light.hall', 'switch.wemo_flakt', 'switch.wemo_monitorer', 'input_boolean.dator_template', 
+      'input_boolean.playstation_template', 'input_boolean.sony_bravia_tv', 
+      'input_boolean.samsung_6_series_50']
     to: 'on'
   condition:
     - condition: state
@@ -462,8 +428,9 @@
   trigger:
   - platform: state
     entity_id:
-      ['light.belysning', 'light.fonsterlampa', 'light.datorlampa', 'light.taklampor', 'light.mattias', 'light.sanja', 'light.badrum', 
-      'light.taklampa', 'light.kladkammare_2', 'light.hall', 'switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 
+      ['light.belysning', 'light.fonsterlampa', 'light.datorlampa', 'light.taklampor', 
+      'light.mattias', 'light.sanja', 'light.badrum', 'light.taklampa', 'light.kladkammare_2', 
+      'light.hall', 'switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 
       'switch.playstation_template', 'switch.tv_template', 'switch.tv2_template']
     to: 'off'
   condition:
@@ -501,112 +468,98 @@
     #                                                  #
     ####################################################
 
-- alias: active_media_appletv_var_playing
+- alias: conditional_media_playing
   trigger:
     - platform: state
-      entity_id: sensor.apple_tv_vardagsrum_status
-      to: 'Spelar'
+      entity_id: 
+        ['media_player.vardagsrum', 'media_player.sovrum', 
+         'media_player.playstation_4', 'media_player.google_nest_mini']
+      to: playing
   action:
-    - service: input_boolean.turn_on
-      entity_id: input_boolean.active_media_appletv_var
-    - service: input_boolean.turn_off
-      entity_id: group.active_media_appletv_var
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.conditional_media
+        option: "{{ trigger.to_state.name }}"
 
-- alias: active_media_appletv_var_idle
+- alias: conditional_media_paused
   trigger:
     - platform: state
-      entity_id: sensor.apple_tv_vardagsrum_status
-      to: 'Av'
+      entity_id: 
+        ['media_player.vardagsrum', 'media_player.sovrum', 
+         'media_player.google_nest_mini']
+      to: paused
       for:
-        minutes: 15
-    - platform: state
-      entity_id: sensor.apple_tv_vardagsrum_status
-      to: 'Pausad'
-      for:
-        minutes: 15
+        minutes: 10
   action:
-    service: input_boolean.turn_off
-    entity_id: input_boolean.active_media_appletv_var
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.conditional_media
+        option: >-
+          {% set media_players = 
+            [states.media_player.vardagsrum, states.media_player.sovrum, 
+            states.media_player.playstation_4, states.media_player.google_nest_mini] %}
+          {% if media_players | selectattr('state','eq','playing') | list | count == 0 %}
+            {% if media_players | selectattr('state','eq','paused') | list | count == 0 %}
+            Senast nedladdat
+            {% else %}
+            {{ media_players | selectattr('state','eq','paused') | map(attribute='name') | max }}
+            {% endif %}
+          {% else %}
+          {{ media_players | selectattr('state','eq','playing') | map(attribute='name') | max }}
+          {% endif %}
 
-- alias: active_media_appletv_sov_playing
+- alias: conditional_media_idle
   trigger:
-    - platform: state
-      entity_id: sensor.apple_tv_sovrum_status
-      to: 'Spelar'
+    - platform: template
+      value_template: >
+        {{ is_state('media_player.vardagsrum', 'idle') and
+        is_state('media_player.sovrum', 'idle') and
+        is_state('media_player.playstation_4', 'standby') and
+        is_state('media_player.google_nest_mini', 'off') }}
   action:
-    - service: input_boolean.turn_on
-      entity_id: input_boolean.active_media_appletv_sov
-    - service: input_boolean.turn_off
-      entity_id: group.active_media_appletv_sov
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.conditional_media
+        option: Senast nedladdat
 
-- alias: active_media_appletv_sov_idle
-  trigger:
-    - platform: state
-      entity_id: sensor.apple_tv_sovrum_status
-      to: 'Av'
-      for:
-        minutes: 15
-    - platform: state
-      entity_id: sensor.apple_tv_sovrum_status
-      to: 'Pausad'
-      for:
-        minutes: 15
-  action:
-    service: input_boolean.turn_off
-    entity_id: input_boolean.active_media_appletv_sov
 
-- alias: active_media_playstation_playing
-  trigger:
-    - platform: state
-      entity_id: media_player.playstation_4
-      to: 'playing'
-    - platform: state
-      entity_id: script.media_ps4_ps_button
-  action:
-    - service: input_boolean.turn_on
-      entity_id: input_boolean.active_media_playstation
-    - service: input_boolean.turn_off
-      entity_id: group.active_media_playstation
 
-- alias: active_media_playstation_standby
-  trigger:
-    - platform: state
-      entity_id: media_player.playstation_4
-      to: 'standby'
-      for:
-        minutes: 15
-    - platform: state
-      entity_id: media_player.playstation_4
-      to: 'idle'
-      for:
-        minutes: 15
-  action:
-    service: input_boolean.turn_off
-    entity_id: input_boolean.active_media_playstation
 
-- alias: active_media_google_nest_playing
-  trigger:
-    - platform: state
-      entity_id: media_player.google_nest_mini
-      to: 'playing'
-  action:
-    - service: input_boolean.turn_on
-      entity_id: input_boolean.active_media_google_nest
-    - service: input_boolean.turn_off
-      entity_id: group.active_media_google_nest
+### Apple Tv - No title temp fix ###
 
-- alias: active_media_google_nest_off
+- alias: conditional_media_fall_back_1
   trigger:
-    - platform: state
-      entity_id: media_player.google_nest_mini
-      to: 'off'
+    - platform: template
+      value_template: >
+        {{ is_state_attr('media_player.vardagsrum', 'media_title', 'No title') }}
       for:
-        minutes: 15
-    - platform: state
-      entity_id: media_player.google_nest_mini
-      to: 'paused'
-      for:
-        minutes: 15
+        seconds: 5
   action:
-    service: input_boolean.turn_off
-    entity_id: input_boolean.active_media_google_nest
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.conditional_media
+        option: >-
+          {% set media_players = [states.media_player.sovrum, states.media_player.playstation_4, 
+          states.media_player.google_nest_mini] %} {% if media_players | selectattr('state','eq','playing') 
+          | list | count == 0 %} {% if media_players | selectattr('state','eq','paused') | list | count == 0 %}
+          Senast nedladdat {% else %} {{ media_players | selectattr('state','eq','paused') | map(attribute='name') 
+          | max }} {% endif %} {% else %} {{ media_players | selectattr('state','eq','playing') 
+          | map(attribute='name') | max }}{% endif %}
+- alias: conditional_media_fall_back_2
+  trigger:
+    - platform: template
+      value_template: >
+        {{ is_state_attr('media_player.sovrum', 'media_title', 'No title') }}
+      for:
+        seconds: 5
+  action:
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.conditional_media
+        option: >-
+          {% set media_players = [states.media_player.vardagsrum, states.media_player.playstation_4, 
+          states.media_player.google_nest_mini] %} {% if media_players | selectattr('state','eq','playing') 
+          | list | count == 0 %} {% if media_players | selectattr('state','eq','paused') | list | count == 0 %}
+          Senast nedladdat {% else %} {{ media_players | selectattr('state','eq','paused') | map(attribute='name') 
+          | max }} {% endif %} {% else %} {{ media_players | selectattr('state','eq','playing') 
+          | map(attribute='name') | max }}{% endif %}

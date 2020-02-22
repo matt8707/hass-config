@@ -57,3 +57,8 @@ All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.m
 * Control a pedestal fan, using [Belkin WeMo Switch](https://www.belkin.com/) and hue motion sensor temperature data to automate on summer nights.
 
 ![lights_switches.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/lights_switches.png)
+
+***
+
+**Home Assistant Community Topic**  
+[https://community.home-assistant.io/t/a-different-take-on-designing-a-lovelace-ui/](https://community.home-assistant.io/t/a-different-take-on-designing-a-lovelace-ui/)

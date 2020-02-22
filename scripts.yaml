@@ -2,7 +2,7 @@
 dator_on:
   sequence:
     - service: input_boolean.turn_on
-      entity_id: input_boolean.loading_dator
+      entity_id: input_boolean.dator_template
     - service: switch.toggle
       entity_id: switch.switchbot
     - condition: template
@@ -20,48 +20,48 @@ dator_off:
     - condition: template
       value_template: "{{ not is_state('input_boolean.lock_computer', 'on') }}"
     - service: input_boolean.turn_on
-      entity_id: input_boolean.loading_dator
+      entity_id: input_boolean.dator_template
     - service: shell_command.imac_turn_off
 
 tv_on:
   sequence:
     - service: input_boolean.turn_on
-      entity_id: input_boolean.loading_braviatv
+      entity_id: input_boolean.sony_bravia_tv
     - service: script.turn_on
       entity_id: script.vardagsrum_appletv_start
 
 tv_off:
   sequence:
     - service: input_boolean.turn_on
-      entity_id: input_boolean.loading_braviatv
+      entity_id: input_boolean.sony_bravia_tv
     - service: media_player.turn_off
       entity_id: media_player.sony_bravia_tv
 
 tv2_on:
   sequence:
     - service: input_boolean.turn_on
-      entity_id: input_boolean.loading_samsungtv
+      entity_id: input_boolean.samsung_6_series_50
     - service: script.turn_on
       entity_id: script.sovrum_appletv_start
 
 tv2_off:
   sequence:
     - service: input_boolean.turn_on
-      entity_id: input_boolean.loading_samsungtv
+      entity_id: input_boolean.samsung_6_series_50
     - service: switch.turn_off
       entity_id: switch.samsung_6_series_50
 
 playstation_on:
   sequence:
     - service: input_boolean.turn_on
-      entity_id: input_boolean.loading_playstation
+      entity_id: input_boolean.playstation_template
     - service: media_player.turn_on
       entity_id: media_player.playstation_4
 
 playstation_off:
   sequence:
     - service: input_boolean.turn_on
-      entity_id: input_boolean.loading_playstation
+      entity_id: input_boolean.playstation_template
     - service: media_player.turn_off
       entity_id: media_player.playstation_4
 
@@ -74,7 +74,10 @@ say_auto_hemma:
       data_template:
         entity_id: media_player.tablet
         media_content_id: >
-          {{ ['/local/tts_custom/hej.mp3', '/local/tts_custom/startar.mp3', '/local/tts_custom/varmer_upp.mp3', '/local/tts_custom/valkommen_hem.mp3'] | random }}
+          {{ ['/local/tts_custom/hej.mp3', 
+          '/local/tts_custom/startar.mp3', 
+          '/local/tts_custom/varmer_upp.mp3', 
+          '/local/tts_custom/valkommen_hem.mp3'] | random }}
         media_content_type: music
 
 auto_hemma:
@@ -82,7 +85,8 @@ auto_hemma:
     - service: homeassistant.turn_off
       entity_id: group.ui_sound
     - service_template: >-
-        {% if is_state('switch.fullykiosk_screen', 'on') and is_state('switch.fullykiosk_screensaver', 'off') %}
+        {% if is_state('switch.fullykiosk_screen', 'on') and 
+        is_state('switch.fullykiosk_screensaver', 'off') %}
           script.say_auto_hemma
         {% else %}
           script.dummy
@@ -101,7 +105,9 @@ auto_hemma:
 
 auto_hemma_tracker:
   sequence:
-    - wait_template: "{{ is_state('person.mattias', 'home') or is_state('person.sanja', 'home') }}"
+    - wait_template: >-
+       {{ is_state('person.mattias', 'home') or 
+          is_state('person.sanja', 'home') }}
     - service: script.turn_on
       entity_id: script.auto_hemma
 
@@ -122,11 +128,8 @@ auto_stang_allt:
     - service: homeassistant.turn_off
       entity_id: group.ui_sound
     - service_template: >-
-        {% if is_state('switch.fullykiosk_screen', 'on') and is_state('switch.fullykiosk_screensaver', 'off') %}
-          script.say_auto_stang_allt
-        {% else %}
-          script.dummy
-        {% endif %}
+        {% if is_state('switch.fullykiosk_screensaver', 'off') %}
+        script.say_auto_stang_allt {% else %} script.dummy {% endif %}
     - service: light.turn_off
       entity_id: light.alla_lampor_utom_hall
     - service: switch.turn_off
@@ -138,27 +141,19 @@ auto_stang_allt:
           script.toast_dator_locked
         {% elif is_state('switch.dator_template', 'on') %}
           script.dator_off
-        {% else %}
-          script.dummy
-        {% endif %}
+        {% else %} script.dummy {% endif %}
     - service_template: >-
         {% if is_state('switch.playstation_template', 'on') %}
           script.playstation_off
-        {% else %}
-          script.dummy
-        {% endif %}
+        {% else %} script.dummy {% endif %}
     - service_template: >-
         {% if is_state('switch.tv_template', 'on') %}
           script.tv_off
-        {% else %}
-          script.dummy
-        {% endif %}
+        {% else %} script.dummy {% endif %}
     - service_template: >-
         {% if is_state('switch.tv2_template', 'on') %}
           script.tv2_off
-        {% else %}
-          script.dummy
-        {% endif %}
+        {% else %} script.dummy {% endif %}
     - delay: '00:00:04'
     - service: homeassistant.turn_on
       entity_id: group.ui_sound
@@ -204,11 +199,8 @@ tv_mute_toggle:
       data_template:
         entity_id: media_player.sony_bravia_tv
         is_volume_muted: >-
-          {% if state_attr('media_player.sony_bravia_tv', 'is_volume_muted') == false %}
-          true
-          {% else %}
-          false
-          {% endif %}
+          {% if is_state_attr('media_player.sony_bravia_tv', 'is_volume_muted', false) %}
+          true {% else %} false {% endif %}
 
 tv2_mute_toggle:
   sequence:
@@ -216,18 +208,15 @@ tv2_mute_toggle:
       data_template:
         entity_id: media_player.samsung_tv_remote
         is_volume_muted: >-
-          {% if state_attr('media_player.samsung_tv_remote', 'is_volume_muted') == false %}
-          true
-          {% else %}
-          false
-          {% endif %}
+          {% if is_state_attr('media_player.samsung_tv_remote', 'is_volume_muted', false) %}
+          true {% else %} false {% endif %}
 
 monitorer_mute_toggle:
   sequence:
     - service: homeassistant.update_entity
       entity_id: sensor.monitorer_mute_check
     - service_template: >
-        {% if states('sensor.monitorer_mute_check') == 'false' %}
+        {% if is_state('sensor.monitorer_mute_check', 'false') %}
           shell_command.monitorer_mute_on
         {% else %}
           shell_command.monitorer_mute_off
@@ -259,7 +248,8 @@ media_ps4_ps_button:
 vacuum_start_pause:
   sequence:
     - service_template: >-
-        {% if is_state('vacuum.xiaomi_vacuum_cleaner', 'docked') or is_state('vacuum.xiaomi_vacuum_cleaner', 'paused') %}
+        {% if is_state('vacuum.xiaomi_vacuum_cleaner', 'docked') or 
+        is_state('vacuum.xiaomi_vacuum_cleaner', 'paused') %}
           vacuum.start
         {% else %}
           vacuum.pause
