@@ -145,7 +145,9 @@ class HPPrinterHomeAssistant:
 
         cartridges_data = data.get(HP_DEVICE_CARTRIDGES)
 
-        is_online = self.create_status_sensor(data)
+        is_online = self.create_status_binary_sensor(data)
+
+        self.create_status_sensor(data)
 
         if is_online:
             self.create_printer_sensor(data)
@@ -201,6 +203,31 @@ class HPPrinterHomeAssistant:
             async_dispatcher_send(self._hass, signal)
 
     def create_status_sensor(self, data):
+        is_online = data.get(HP_DEVICE_IS_ONLINE, False)
+        status = data.get(PRINTER_CURRENT_STATUS, "Off")
+        model = data.get(ENTITY_MODEL)
+
+        name = data.get("Name", DEFAULT_NAME)
+        sensor_name = f"{name} {HP_DEVICE_STATUS}"
+
+        icon = "mdi:printer" if is_online else "mdi:printer-off"
+
+        attributes = {
+            "friendly_name": sensor_name,
+            "device_class": "connectivity"
+        }
+
+        entity = {
+            ENTITY_NAME: sensor_name,
+            ENTITY_STATE: status,
+            ENTITY_ATTRIBUTES: attributes,
+            ENTITY_ICON: icon,
+            ENTITY_MODEL: model
+        }
+
+        self.set_entity(DOMAIN_SENSOR, sensor_name, entity)
+
+    def create_status_binary_sensor(self, data):
         is_online = data.get(HP_DEVICE_IS_ONLINE, False)
         model = data.get(ENTITY_MODEL)
 

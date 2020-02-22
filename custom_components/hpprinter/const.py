@@ -13,8 +13,7 @@ SIGNAL_UPDATE_HP_PRINTER = f'updates_{DOMAIN}'
 NOTIFICATION_ID = f'{DOMAIN}_notification'
 NOTIFICATION_TITLE = f'{DEFAULT_NAME} Setup'
 
-# SCAN_INTERVAL = timedelta(minutes=60)
-SCAN_INTERVAL = timedelta(seconds=30)
+SCAN_INTERVAL = timedelta(seconds=10)
 
 SENSOR_ENTITY_ID = 'sensor.{}_{}'
 BINARY_SENSOR_ENTITY_ID = 'binary_sensor.{}_{}'
@@ -26,6 +25,7 @@ ENTITY_STATE = 'state'
 ENTITY_ATTRIBUTES = 'attributes'
 ENTITY_NAME = 'name'
 ENTITY_MODEL = 'model'
+PRINTER_CURRENT_STATUS = 'status'
 
 PRINTER_SENSOR = "Printer"
 
@@ -93,7 +93,8 @@ HP_INK_MAPPING = {
     "Y": "Yellow",
     "M": "Magenta",
     "K": "Black",
-    "CMY": "CyanMagentaYellow"
+    "CMY": "CyanMagentaYellow",
+    "CMYK": "CyanMagentaYellowBlack"
 }
 
 SIGNAL_UPDATE_BINARY_SENSOR = f"{DEFAULT_NAME}_{DOMAIN_BINARY_SENSOR}_SIGNLE_UPDATE"
@@ -102,4 +103,14 @@ SIGNAL_UPDATE_SENSOR = f"{DEFAULT_NAME}_{DOMAIN_SENSOR}_SIGNLE_UPDATE"
 SIGNALS = {
     DOMAIN_BINARY_SENSOR: SIGNAL_UPDATE_BINARY_SENSOR,
     DOMAIN_SENSOR: SIGNAL_UPDATE_SENSOR
+}
+
+PRINTER_STATUS = {
+    "ready": "On",
+    "scanProcessing": "Scanning",
+    "copying": "Copying",
+    "processing": "Printing",
+    "cancelJob": "Cancelling Job",
+    "inPowerSave": "Idle",
+    "": "Off"
 }
