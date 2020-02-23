@@ -1,0 +1,71 @@
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: switch.tv2_template
+                          name: Samsung TV
+                          secondary_info: last-changed
+                        - entity: input_select.hdmi2
+                      style: |
+                        ha-card {
+                          margin-bottom: -1em;
+                        }
+                      type: entities
+                    - entities:
+                        - buttons:
+                            - icon: 'mdi:volume-mute'
+                              icon_style:
+                                '--iron-icon-height': 1.7em
+                                '--iron-icon-width': 1.7em
+                              service: script.turn_on
+                              service_data:
+                                entity_id: script.tv2_mute_toggle
+                              style:
+                                background: '#FFFFFF10'
+                                border-radius: 0.7em
+                                font-size: 1.1em
+                                font-weight: 500
+                                padding: 1.2em 1.4em 1.2em 1.4em
+                            - icon: 'mdi:volume-minus'
+                              icon_style:
+                                '--iron-icon-height': 1.7em
+                                '--iron-icon-width': 1.7em
+                              service: media_player.volume_down
+                              service_data:
+                                entity_id: media_player.samsung_tv_remote
+                              style:
+                                background: '#FFFFFF10'
+                                border-radius: 0.7em
+                                font-size: 1.1em
+                                font-weight: 500
+                                padding: 1.2em 1.4em 1.2em 1.4em
+                            - icon: 'mdi:volume-plus'
+                              icon_style:
+                                '--iron-icon-height': 1.7em
+                                '--iron-icon-width': 1.7em
+                              service: media_player.volume_up
+                              service_data:
+                                entity_id: media_player.samsung_tv_remote
+                              style:
+                                background: '#FFFFFF10'
+                                border-radius: 0.7em
+                                font-size: 1.1em
+                                font-weight: 500
+                                padding: 1.2em 1.4em 1.2em 1.4em
+                          type: 'custom:button-entity-row'
+                      style: |
+                        ha-card {
+                          margin-top: -1.5em;
+                          padding-bottom: 0.4em;
+                        }
+                      type: entities
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Tv

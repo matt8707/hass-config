@@ -1,0 +1,48 @@
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: person.mattias
+                          secondary_info: last-changed
+                        - entity: binary_sensor.iphone_x
+                          icon: 'mdi:cellphone'
+                        - entity: sensor.mattias_battery_level
+                      style: |
+                        ha-card {
+                          margin-bottom: -1vw;
+                        }
+                      type: entities
+                    - entities:
+                        - entity: sensor.placeholder
+                          icon: 'mdi:'
+                          name: Historik
+                      style: |
+                        ha-card {
+                          margin-top: -9%;
+                          margin-left: -12.2%;
+                          background-color: #FFFFFF00;
+                          opacity: 0.9;
+                          font-weight: 500;
+                        }
+                      type: entities
+                    - entities:
+                        - entity: person.mattias
+                      hours_to_show: 24
+                      refresh_interval: 0
+                      style: |
+                        ha-card {
+
+                          margin-top: -10.5%;
+                          padding-left: 2.2%;
+                        }
+                      type: history-graph
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Mattias

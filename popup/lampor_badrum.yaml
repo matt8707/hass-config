@@ -1,0 +1,54 @@
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: light.badrum
+                          secondary_info: last-changed
+                      style: |
+                        ha-card {
+                          z-index: 5;
+                        }
+                      type: entities
+                    - entities:
+                        - color_temp: true
+                          entity: light.badrum
+                          header: false
+                          persist_features: true
+                          type: 'custom:light-slider-card'
+                      show_header_toggle: false
+                      style: |
+                        ha-card {
+                          z-index: 0;
+                          padding-top: 0.5em;
+                        }
+                      type: entities
+                    - brightness: false
+                      color_picker: false
+                      color_temp: true
+                      effects_list: false
+                      entity: light.badrum
+                      full_width_sliders: false
+                      header: false
+                      persist_features: true
+                      show_slider_percent: false
+                      style: |
+                        ha-card {
+                          margin-top: -0.9em;
+                          opacity: 0.7;
+                          z-index: 5;
+                        }
+                      type: 'custom:light-entity-card'
+                  style: |
+                    ha-card {
+                      padding-bottom: 1.2em;
+                    }
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Badrumsbelysning

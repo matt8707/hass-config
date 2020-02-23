@@ -1,0 +1,87 @@
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: switch.wemo_monitorer
+                          secondary_info: last-changed
+                        - entity: input_number.monitorer_volume
+                          style: |
+                            :host {
+                            --paper-item-icon-color: 
+                             {% if is_state('sensor.monitorer_mute_check', 'true') %}
+                               #FFFFFF20
+                             {% elif states('input_number.monitorer_volume') | int == 0 %}
+                               #9da0a2
+                             {% elif states('input_number.monitorer_volume') | int < 60 %}
+                               #3182b7
+                             {% else %}
+                               red
+                             {% endif %};
+                             }
+                        - entity: automation.turn_off_monitorer
+                          icon: 'mdi:speaker-off'
+                          name: Stäng av när dator stängs av
+                        - entity: group.automation_system_reference
+                      style: |
+                        ha-card {
+                          margin-bottom: -1em;
+                        }
+                      type: entities
+                    - entities:
+                        - buttons:
+                            - icon: 'mdi:volume-mute'
+                              icon_style:
+                                '--iron-icon-height': 1.7em
+                                '--iron-icon-width': 1.7em
+                              service: script.turn_on
+                              service_data:
+                                entity_id: script.monitorer_mute_toggle
+                              style:
+                                background: '#FFFFFF10'
+                                border-radius: 0.7em
+                                font-size: 1.1em
+                                font-weight: 500
+                                padding: 1.2em 1.4em 1.2em 1.4em
+                            - icon: 'mdi:volume-minus'
+                              icon_style:
+                                '--iron-icon-height': 1.7em
+                                '--iron-icon-width': 1.7em
+                              service: input_number.decrement
+                              service_data:
+                                entity_id: input_number.monitorer_volume
+                              style:
+                                background: '#FFFFFF10'
+                                border-radius: 0.7em
+                                font-size: 1.1em
+                                font-weight: 500
+                                padding: 1.2em 1.4em 1.2em 1.4em
+                            - icon: 'mdi:volume-plus'
+                              icon_style:
+                                '--iron-icon-height': 1.7em
+                                '--iron-icon-width': 1.7em
+                              service: input_number.increment
+                              service_data:
+                                entity_id: input_number.monitorer_volume
+                              style:
+                                background: '#FFFFFF10'
+                                border-radius: 0.7em
+                                font-size: 1.1em
+                                font-weight: 500
+                                padding: 1.2em 1.4em 1.2em 1.4em
+                          type: 'custom:button-entity-row'
+                      style: |
+                        ha-card {
+                          margin-top: -1.5em;
+                          padding-bottom: 0.4em;
+                        }
+                      type: entities
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Monitorer

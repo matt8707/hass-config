@@ -1,0 +1,35 @@
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: switch.wemo_flakt
+                          secondary_info: last-changed
+                        - entity: automation.turn_on_flakt_temp
+                          icon: 'mdi:hotel'
+                          name: Slå på om temp är över 26 °C
+                        - entity: input_number.fan_timer
+                        - entity: sensor.flakt_timer_value
+                      type: entities
+                    - entities:
+                        - color: '#e74c3c'
+                          entity: sensor.hall_temperature
+                          name: Sovrum
+                      hours_to_show: 24
+                      name: ' '
+                      show:
+                        icon: false
+                      type: 'custom:mini-graph-card'
+                      style: |
+                        ha-card {
+                          margin-top: -3.5em;
+                        }
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Fläkt

@@ -1,0 +1,145 @@
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                card:
+                  cards:
+                    - entities:
+                        - entity: person.sanja
+                          secondary_info: last-changed
+                        - entity: binary_sensor.iphone_xr
+                          icon: 'mdi:cellphone'
+                        - entity: binary_sensor.macbook_pro
+                          icon: 'mdi:laptop'
+                        - entity: sensor.printer_status_template
+                          name: Skrivare
+                          icon: 'mdi:printer'
+                        - background_style:
+                            background: >-
+                              radial-gradient(circle, rgba(45,45,45,1) 0%,
+                              rgba(0,0,0,1) 100%)
+                          card_style:
+                            background: '#FFFFFF00'
+                            box-shadow: none
+                          entity: sensor.hp_printer_inkcartridge_black
+                          height: 2.1em
+                          icon: 'mdi:water-outline'
+                          icon_position: left
+                          unit_of_measurement: '%'
+                          icon_style:
+                            color: '#9e9e9e'
+                            margin-left: '-0.45em'
+                            filter: none
+                          max: 100
+                          min: 0
+                          rounding: 0.3em
+                          severity:
+                            - color: '#303435'
+                              value: 100
+                            - color: '#6d2525'
+                              value: 10
+                          style: |
+                            ha-card {
+                              background-color: #FFFFFF00;
+                              margin-left: -0.4em;
+                              margin-right: -0.5em;
+                              margin-top: 0.1em;
+                            }
+                          title: Svart
+                          title_style:
+                            color: '#e0e1e1'
+                            margin-left: 0.95em
+                          type: 'custom:bar-card'
+                          value_style:
+                            color: '#e0e1e1'
+                            font-size: 0.95em
+                            font-weight: 400
+                          width: 50%
+                          tap_action: service
+                          service_options:
+                            domain: homeassistant
+                            service: update_entity
+                            data:
+                              entity_id: sensor.hp_printer_inkcartridge_black
+                        - background_style:
+                            background: >-
+                              radial-gradient(circle, rgba(45,45,45,1) 0%,
+                              rgba(0,0,0,1) 100%)
+                          card_style:
+                            background: '#FFFFFF00'
+                            box-shadow: none
+                          entity: sensor.hp_printer_inkcartridge_cyanmagentayellow
+                          height: 2.1em
+                          icon: 'mdi:water'
+                          icon_position: left
+                          unit_of_measurement: '%'
+                          icon_style:
+                            color: '#9e9e9e'
+                            margin-left: '-0.45em'
+                            filter: none
+                          max: 100
+                          min: 0
+                          rounding: 0.3em
+                          severity:
+                            - color: '#303435'
+                              value: 100
+                            - color: '#6d2525'
+                              value: 10
+                          style: |
+                            ha-card {
+                              background-color: #FFFFFF00;
+                              margin-left: -0.4em;
+                              margin-right: -0.5em;
+                              margin-top: 0.1em;
+                            }
+                          title: Färg
+                          title_style:
+                            color: '#e0e1e1'
+                            margin-left: 0.95em
+                          type: 'custom:bar-card'
+                          value_style:
+                            color: '#e0e1e1'
+                            font-size: 0.95em
+                            font-weight: 400
+                          width: 50%
+                          tap_action: service
+                          service_options:
+                            domain: homeassistant
+                            service: update_entity
+                            data:
+                              entity_id: sensor.hp_printer_inkcartridge_cyanmagentayellow
+                      style: |
+                        ha-card {
+                          margin-bottom: -1vw;
+                        }
+                      type: entities
+                    - entities:
+                        - entity: sensor.placeholder
+                          icon: 'mdi:'
+                          name: Historik
+                      style: |
+                        ha-card {
+                          margin-top: -9%;
+                          margin-left: -12.2%;
+                          background-color: #FFFFFF00;
+                          opacity: 0.9;
+                          font-weight: 500;
+                        }
+                      type: entities
+                    - entities:
+                        - entity: person.sanja
+                      hours_to_show: 24
+                      refresh_interval: 0
+                      style: |
+                        ha-card {
+                          margin-top: -10.5%;
+                          padding-left: 2.2%;
+                        }
+                      type: history-graph
+                  type: 'custom:vertical-stack-in-card'
+                deviceID:
+                  - this
+                style:
+                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
+                  border-radius: 0.8vw
+                  opacity: 0.9
+                title: Sanja
