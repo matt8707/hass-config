@@ -17,18 +17,31 @@ dator_on_retry:
 
 dator_off:
   sequence:
+    - service_template: >-
+        {% if is_state('input_boolean.lock_computer', 'on') %}
+        script.dator_off_toast {% else %}
+        script.dummy {% endif %}
     - condition: template
       value_template: "{{ not is_state('input_boolean.lock_computer', 'on') }}"
     - service: input_boolean.turn_on
       entity_id: input_boolean.dator_template
     - service: shell_command.imac_turn_off
 
+dator_off_toast:
+  sequence:
+    - service: browser_mod.toast
+      data:
+        duration: 8000
+        message: 'Dator är låst från att stängas av...'
+
 tv_on:
   sequence:
     - service: input_boolean.turn_on
       entity_id: input_boolean.sony_bravia_tv
-    - service: script.turn_on
-      entity_id: script.vardagsrum_appletv_start
+    - service: remote.send_command
+      data:
+        entity_id: remote.vardagsrum
+        command: menu
 
 tv_off:
   sequence:
@@ -37,12 +50,23 @@ tv_off:
     - service: media_player.turn_off
       entity_id: media_player.sony_bravia_tv
 
+tv_mute_toggle:
+  sequence:
+    - service: media_player.volume_mute
+      data_template:
+        entity_id: media_player.sony_bravia_tv
+        is_volume_muted: >-
+          {% if is_state_attr('media_player.sony_bravia_tv', 'is_volume_muted', false) %}
+          true {% else %} false {% endif %}
+
 tv2_on:
   sequence:
     - service: input_boolean.turn_on
       entity_id: input_boolean.samsung_6_series_50
-    - service: script.turn_on
-      entity_id: script.sovrum_appletv_start
+    - service: remote.send_command
+      data:
+        entity_id: remote.sovrum
+        command: menu
 
 tv2_off:
   sequence:
@@ -50,6 +74,15 @@ tv2_off:
       entity_id: input_boolean.samsung_6_series_50
     - service: switch.turn_off
       entity_id: switch.samsung_6_series_50
+
+tv2_mute_toggle:
+  sequence:
+    - service: media_player.volume_mute
+      data_template:
+        entity_id: media_player.samsung_tv_remote
+        is_volume_muted: >-
+          {% if is_state_attr('media_player.samsung_tv_remote', 'is_volume_muted', false) %}
+          true {% else %} false {% endif %}
 
 playstation_on:
   sequence:
@@ -65,8 +98,34 @@ playstation_off:
     - service: media_player.turn_off
       entity_id: media_player.playstation_4
 
+media_ps4_ps_button:
+  sequence:
+    - service: ps4.send_command
+      data:
+        entity_id: media_player.playstation_4
+        command: ps
+
 dummy:
   sequence:
+
+auto_hemma:
+  sequence:
+    - service: homeassistant.turn_off
+      entity_id: group.ui_sound
+    - service_template: >-
+        {% if is_state('switch.fullykiosk_screen', 'on') and 
+        is_state('switch.fullykiosk_screensaver', 'off') %}
+        script.say_auto_hemma {% else %} 
+        script.dummy {% endif %}
+    - service: scene.turn_on
+      data_template:
+        entity_id: >
+          {% if is_state('sun.sun', 'below_horizon') %}
+          scene.hemma_below_horizon {% else %} 
+          scene.hemma_above_horizon {% endif %}
+    - delay: '00:00:04'
+    - service: homeassistant.turn_on
+      entity_id: group.ui_sound
 
 say_auto_hemma:
   sequence:
@@ -80,36 +139,39 @@ say_auto_hemma:
           '/local/tts_custom/valkommen_hem.mp3'] | random }}
         media_content_type: music
 
-auto_hemma:
+auto_stang_allt:
   sequence:
     - service: homeassistant.turn_off
       entity_id: group.ui_sound
     - service_template: >-
-        {% if is_state('switch.fullykiosk_screen', 'on') and 
-        is_state('switch.fullykiosk_screensaver', 'off') %}
-          script.say_auto_hemma
-        {% else %}
-          script.dummy
-        {% endif %}
-    - service: scene.turn_on
-      data_template:
-        entity_id: >
-          {% if is_state('sun.sun', 'below_horizon') %}
-            scene.hemma_below_horizon
-          {% else %}
-            scene.hemma_above_horizon
-          {% endif %}
+        {% if is_state('switch.fullykiosk_screensaver', 'off') %}
+        script.say_auto_stang_allt {% else %}
+        script.dummy {% endif %}
+    - service: light.turn_off
+      entity_id: light.alla_lampor_utom_hall
+    - service: switch.turn_off
+      entity_id: switch.wemo_flakt
+    - service: switch.turn_off
+      entity_id: switch.wemo_monitorer
+    - service_template: >-
+        {% if is_state('switch.dator_template', 'on') %}
+        script.dator_off {% else %}
+        script.dummy {% endif %}
+    - service_template: >-
+        {% if is_state('switch.playstation_template', 'on') %}
+        script.playstation_off {% else %}
+        script.dummy {% endif %}
+    - service_template: >-
+        {% if is_state('switch.tv_template', 'on') %}
+        script.tv_off {% else %}
+        script.dummy {% endif %}
+    - service_template: >-
+        {% if is_state('switch.tv2_template', 'on') %}
+        script.tv2_off {% else %}
+        script.dummy {% endif %}
     - delay: '00:00:04'
     - service: homeassistant.turn_on
       entity_id: group.ui_sound
-
-auto_hemma_tracker:
-  sequence:
-    - wait_template: >-
-       {{ is_state('person.mattias', 'home') or 
-          is_state('person.sanja', 'home') }}
-    - service: script.turn_on
-      entity_id: script.auto_hemma
 
 say_auto_stang_allt:
   sequence:
@@ -123,41 +185,6 @@ say_auto_stang_allt:
               '/local/tts_custom/stanger_ner_allt.mp3'] | random}}
         media_content_type: music
 
-auto_stang_allt:
-  sequence:
-    - service: homeassistant.turn_off
-      entity_id: group.ui_sound
-    - service_template: >-
-        {% if is_state('switch.fullykiosk_screensaver', 'off') %}
-        script.say_auto_stang_allt {% else %} script.dummy {% endif %}
-    - service: light.turn_off
-      entity_id: light.alla_lampor_utom_hall
-    - service: switch.turn_off
-      entity_id: switch.wemo_flakt
-    - service: switch.turn_off
-      entity_id: switch.wemo_monitorer
-    - service_template: >-
-        {% if is_state('input_boolean.lock_computer', 'on') %}
-          script.toast_dator_locked
-        {% elif is_state('switch.dator_template', 'on') %}
-          script.dator_off
-        {% else %} script.dummy {% endif %}
-    - service_template: >-
-        {% if is_state('switch.playstation_template', 'on') %}
-          script.playstation_off
-        {% else %} script.dummy {% endif %}
-    - service_template: >-
-        {% if is_state('switch.tv_template', 'on') %}
-          script.tv_off
-        {% else %} script.dummy {% endif %}
-    - service_template: >-
-        {% if is_state('switch.tv2_template', 'on') %}
-          script.tv2_off
-        {% else %} script.dummy {% endif %}
-    - delay: '00:00:04'
-    - service: homeassistant.turn_on
-      entity_id: group.ui_sound
-
 reference_monitors:
   sequence:
     - service: shell_command.reference_click
@@ -170,12 +197,18 @@ reference_headphones:
     - service: shell_command.reference_kill
     - service: shell_command.reference_headphones
 
-toast_dator_locked:
+monitorer_mute_toggle:
   sequence:
-    - service: browser_mod.toast
-      data:
-        duration: 8000
-        message: 'Dator är låst från att stängas av...'
+    - service: homeassistant.update_entity
+      entity_id: sensor.monitorer_mute_check
+    - service_template: >
+        {% if is_state('sensor.monitorer_mute_check', 'false') %}
+          shell_command.monitorer_mute_on
+        {% else %}
+          shell_command.monitorer_mute_off
+        {% endif %}
+    - service: homeassistant.update_entity
+      entity_id: sensor.monitorer_mute_check
 
 homeassistant_restart:
   sequence:
@@ -193,57 +226,12 @@ homekit_restart:
         message: 'Startar om Homekit...'
     - service: homekit.start
 
-tv_mute_toggle:
+restart_laundry_timer:
   sequence:
-    - service: media_player.volume_mute
-      data_template:
-        entity_id: media_player.sony_bravia_tv
-        is_volume_muted: >-
-          {% if is_state_attr('media_player.sony_bravia_tv', 'is_volume_muted', false) %}
-          true {% else %} false {% endif %}
-
-tv2_mute_toggle:
-  sequence:
-    - service: media_player.volume_mute
-      data_template:
-        entity_id: media_player.samsung_tv_remote
-        is_volume_muted: >-
-          {% if is_state_attr('media_player.samsung_tv_remote', 'is_volume_muted', false) %}
-          true {% else %} false {% endif %}
-
-monitorer_mute_toggle:
-  sequence:
-    - service: homeassistant.update_entity
-      entity_id: sensor.monitorer_mute_check
-    - service_template: >
-        {% if is_state('sensor.monitorer_mute_check', 'false') %}
-          shell_command.monitorer_mute_on
-        {% else %}
-          shell_command.monitorer_mute_off
-        {% endif %}
-    - service: homeassistant.update_entity
-      entity_id: sensor.monitorer_mute_check
-
-vardagsrum_appletv_start:
-  sequence:
-    - service: remote.send_command
-      data:
-        entity_id: remote.vardagsrum
-        command: menu
-
-sovrum_appletv_start:
-  sequence:
-    - service: remote.send_command
-      data:
-        entity_id: remote.sovrum
-        command: menu
-
-media_ps4_ps_button:
-  sequence:
-    - service: ps4.send_command
-      data:
-        entity_id: media_player.playstation_4
-        command: ps
+    - service: timer.cancel
+      entity_id: timer.laundry
+    - service: timer.start
+      entity_id: timer.laundry
 
 vacuum_start_pause:
   sequence:
@@ -255,13 +243,6 @@ vacuum_start_pause:
           vacuum.pause
         {% endif %}
       entity_id: vacuum.xiaomi_vacuum_cleaner
-
-restart_laundry_timer:
-  sequence:
-    - service: timer.cancel
-      entity_id: timer.laundry
-    - service: timer.start
-      entity_id: timer.laundry
 
 zoned_cleanup:
   sequence:

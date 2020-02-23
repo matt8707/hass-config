@@ -16,9 +16,6 @@
   - platform: filesize
     file_paths:
       - /config/home-assistant_v2.db
-
-  - platform: filesize
-    file_paths:
       - /config/home-assistant.log
 
   - platform: systemmonitor
@@ -210,19 +207,6 @@
           {% elif uptime | timestamp_custom("%M") | int >= 2 %}{{ uptime | timestamp_custom("%M") | int}} minuter
           {% else %}Minde än 1 minut
           {% endif %}
-
-      hall_temperature: 
-        unit_of_measurement: '°C'
-        friendly_name: Temperatur Hall
-        value_template: "{{ (states('sensor.sensor_hall_temperature')|float)|round(1) }}"
-
-      runda_darksky_prob: 
-        value_template: >
-          {{ states('sensor.dark_sky_precip_probability') | round }}%
-
-      runda_darksky_temp: 
-        value_template: >
-          {{ states('sensor.dark_sky_apparent_temperature') | round }}°
 
       hass_version_template:
         value_template: >-

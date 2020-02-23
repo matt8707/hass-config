@@ -6,6 +6,7 @@
     ####################################################
 
 - alias: homeassistant_start
+  initial_state: true
   trigger:
     - platform: homeassistant
       event: start
@@ -17,6 +18,7 @@
     - service: homekit.start
 
 - alias: restart_homekit
+  initial_state: true
   trigger:
     platform: time
     at: '04:00:00'
@@ -24,6 +26,7 @@
   - service: homekit.start
 
 - alias: clear_log_filesize
+  initial_state: true
   trigger:
   - platform: numeric_state
     entity_id: sensor.home_assistant_log
@@ -32,6 +35,7 @@
   - service: shell_command.clear_logs
 
 - alias: update_imac_sensors
+  initial_state: true
   trigger:
     - platform: state
       entity_id: switch.dator_template
@@ -51,6 +55,7 @@
     ####################################################
 
 - alias: toast
+  initial_state: true
   trigger:
   - platform: state
     entity_id:
@@ -86,6 +91,7 @@
     ####################################################
 
 - alias: monitorer_volume_slider
+  initial_state: true
   trigger:
     platform: state
     entity_id: input_number.monitorer_volume
@@ -99,6 +105,7 @@
       entity_id: sensor.monitorer_mute_check
 
 - alias: monitorer_volume_update
+  initial_state: true
   trigger:
     - platform: state
       entity_id: sensor.getvolume
@@ -115,6 +122,7 @@
         value: "{{ states('sensor.getvolume') }}"
 
 - alias: eq_calibration
+  initial_state: true
   trigger:
     - platform: state
       entity_id: switch.wemo_monitorer
@@ -125,11 +133,11 @@
   action:
     - service_template: >
         {% if is_state(trigger.entity_id, 'on') %}
-          script.reference_monitors
-        {% else %} script.reference_headphones
-        {% endif %}
+        script.reference_monitors {% else %}
+        script.reference_headphones {% endif %}
 
 - alias: turn_off_monitorer
+  initial_state: true
   trigger:
     - platform: state
       entity_id: switch.dator_template
@@ -147,6 +155,7 @@
     ####################################################
 
 - alias: turn_off_fläkt
+  initial_state: true
   trigger:
     platform: state
     entity_id: switch.wemo_flakt
@@ -158,9 +167,10 @@
       entity_id: switch.wemo_flakt
 
 - alias: turn_on_fläkt_temp
+  initial_state: true
   trigger:
     platform: numeric_state
-    entity_id: sensor.sensor_hall_temperature
+    entity_id: sensor.hall_temperature
     above: 26
   condition:
     condition: or
@@ -182,6 +192,7 @@
     ####################################################
 
 - alias: tablet_brightness_slider
+  initial_state: true
   trigger:
     platform: state
     entity_id: input_number.fullykiosk_brightness_slider
@@ -189,6 +200,7 @@
     service: shell_command.fullykiosk_brightness_slider
 
 - alias: close_popups_on_tablet
+  initial_state: true
   trigger:
     - platform: state
       entity_id: switch.fullykiosk_screensaver
@@ -201,6 +213,7 @@
         deviceID: tablet
 
 - alias: turn_on_fullykiosk_screen
+  initial_state: true
   trigger:
     - platform: state
       entity_id: input_boolean.motion_hall
@@ -212,14 +225,15 @@
       data_template:
         entity_id: input_number.fullykiosk_brightness_slider
         value: >
-          {% if is_state('sun.sun', 'above_horizon') %} 90
-          {% else %} 50
-          {% endif %}
+          {% if is_state('sun.sun', 'above_horizon') %}
+          90 {% else %}
+          50 {% endif %}
     - service: input_boolean.turn_off
       data_template:
         entity_id: "{{ trigger.entity_id }}"
 
 - alias: turn_off_fullykiosk_screen
+  initial_state: true
   trigger:
   - platform: state
     entity_id: light.hall
@@ -235,6 +249,7 @@
     ####################################################
 
 - alias: turn_off_loading_wheel
+  initial_state: true
   trigger:
     - platform: state
       entity_id: 
@@ -249,6 +264,7 @@
           replace('switch', 'input_boolean') }}
 
 - alias: turn_off_loading_wheel_fail_safe
+  initial_state: true
   trigger:
     - platform: state
       entity_id: 
@@ -264,11 +280,12 @@
 
     ####################################################
     #                                                  #
-    #                      INPUT                       #
+    #                      HDMI                        #
     #                                                  #
     ####################################################
 
 - alias: hdmi_input_select
+  initial_state: true
   trigger:
   - platform: state
     entity_id: input_select.hdmi
@@ -279,6 +296,7 @@
       source: "{{ states('input_select.hdmi') }}"
 
 - alias: hdmi_input_select_update
+  initial_state: true
   trigger:
   - platform: state
     entity_id: media_player.sony_bravia_tv
@@ -287,11 +305,13 @@
     data_template:
       entity_id: input_select.hdmi
       option: >-
-        {% if state_attr('media_player.sony_bravia_tv', 'None') %} HDMI 1
-        {% else %} {{ state_attr('media_player.sony_bravia_tv', 'media_title') }}
+        {% if state_attr('media_player.sony_bravia_tv', 'None') %}
+        HDMI 1 {% else %}
+        {{ state_attr('media_player.sony_bravia_tv', 'media_title') }}
         {% endif %}
 
 - alias: hdmi2_input_select
+  initial_state: true
   trigger:
   - platform: state
     entity_id: input_select.hdmi2
@@ -302,6 +322,7 @@
       source: "{{ states('input_select.hdmi2') }}"
 
 - alias: hdmi2_input_select_update
+  initial_state: true
   trigger:
   - platform: state
     entity_id: media_player.samsung_tv_remote
@@ -310,8 +331,9 @@
     data_template:
       entity_id: input_select.hdmi2
       option: >-
-        {% if is_state('sensor.samsung_6_series_50_media_input_source', 'HDMI3') %} HDMI
-        {% else %} TV {% endif %}
+        {% if is_state('sensor.samsung_6_series_50_media_input_source', 'HDMI3') %}
+        HDMI {% else %}
+        TV {% endif %}
 
     ####################################################
     #                                                  #
@@ -320,6 +342,7 @@
     ####################################################
 
 - alias: reveal_laundry_timer
+  initial_state: true
   trigger:
     - platform: state
       entity_id: sensor.tvatta_countdown_timer_trigger
@@ -332,6 +355,7 @@
       entity_id: input_boolean.laundry_timer_visibility
 
 - alias: alert_laundry_timer_finished
+  initial_state: true
   trigger:
     platform: event
     event_type: timer.finished
@@ -366,6 +390,7 @@
     ####################################################
 
 - alias: roborock_fan_speed_input_select
+  initial_state: true
   trigger:
   - platform: state
     entity_id: input_select.roborock_fan_speed
@@ -382,6 +407,7 @@
         {% endif %}
 
 - alias: roborock_fan_speed_input_select_update
+  initial_state: true
   trigger:
     platform: state
     entity_id: sensor.roborock_fan_speed
@@ -404,6 +430,7 @@
     ####################################################
 
 - alias: ui_sound_on
+  initial_state: true
   trigger:
   - platform: state
     entity_id:
@@ -425,6 +452,7 @@
       media_content_type: music
 
 - alias: ui_sound_off
+  initial_state: true
   trigger:
   - platform: state
     entity_id:
@@ -445,6 +473,7 @@
       media_content_type: music
 
 - alias: ui_sound_popup
+  initial_state: true
   trigger:
     platform: event
     event_type: call_service
@@ -469,6 +498,7 @@
     ####################################################
 
 - alias: conditional_media_playing
+  initial_state: true
   trigger:
     - platform: state
       entity_id: 
@@ -482,6 +512,7 @@
         option: "{{ trigger.to_state.name }}"
 
 - alias: conditional_media_paused
+  initial_state: true
   trigger:
     - platform: state
       entity_id: 
@@ -509,6 +540,7 @@
           {% endif %}
 
 - alias: conditional_media_idle
+  initial_state: true
   trigger:
     - platform: template
       value_template: >
@@ -528,6 +560,7 @@
 ### Apple Tv - No title temp fix ###
 
 - alias: conditional_media_fall_back_1
+  initial_state: true
   trigger:
     - platform: template
       value_template: >
@@ -546,6 +579,7 @@
           | max }} {% endif %} {% else %} {{ media_players | selectattr('state','eq','playing') 
           | map(attribute='name') | max }}{% endif %}
 - alias: conditional_media_fall_back_2
+  initial_state: true
   trigger:
     - platform: template
       value_template: >

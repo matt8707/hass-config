@@ -266,13 +266,13 @@ views:
               {% if is_state('sensor.dark_sky_temperature', 'unknown') or is_state('sensor.dark_sky_precip_probability', 'unknown') %}
               {% else %}
                 {% if states('sensor.dark_sky_temperature') | float <= 0.0 %}
-                Känns som {{ states('sensor.runda_darksky_temp') }} {{'\u2744\uFE0F'}} med {{ states('sensor.runda_darksky_prob') }} risk för snö 
+                Känns som {{ states('sensor.dark_sky_apparent_temperature') | round }}° {{'\u2744\uFE0F'}} med {{ states('sensor.dark_sky_precip_probability') | round }}% risk för snö 
 
                 {% elif states('sensor.dark_sky_temperature') | float > 0.0 %} 
-                Känns som {{ states('sensor.runda_darksky_temp') }} med {{ states('sensor.runda_darksky_prob') }} risk för regn {% if states('sensor.dark_sky_precip_probability') | float > 30.0 %} {{'\u2614\uFE0F' }} {% endif %}
+                Känns som {{ states('sensor.dark_sky_apparent_temperature') | round }}° med {{ states('sensor.dark_sky_precip_probability') | round }}% risk för regn {% if states('sensor.dark_sky_precip_probability') | float > 30.0 %} {{'\u2614\uFE0F' }} {% endif %}
 
                 {% elif states('sensor.dark_sky_temperature') | float > 19.0 and states('sensor.dark_sky_precip_probability') | float < 5.0 %}
-                Känns som {{ states('sensor.runda_darksky_temp') }} {{'\U0001F60E' }} med {{ states('sensor.runda_darksky_prob') }} risk för regn
+                Känns som {{ states('sensor.dark_sky_apparent_temperature') | round }}° {{'\U0001F60E' }} med {{ states('sensor.dark_sky_precip_probability') | round }}% risk för regn
                 {% endif %}
               {% endif %}
 
@@ -3187,7 +3187,7 @@ views:
                       type: entities
                     - entities:
                         - color: '#e74c3c'
-                          entity: sensor.sensor_hall_temperature
+                          entity: sensor.hall_temperature
                           name: Sovrum
                       hours_to_show: 24
                       name: ' '
@@ -3337,6 +3337,7 @@ views:
           #############################################################################################################################################
 
           - image: /local/overlay.svg
+            # temp_fix
             style:
               left: 27%
               top: 54%
