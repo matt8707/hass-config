@@ -54,7 +54,7 @@
                           style: |
                             ha-card {
                               background-color: #FFFFFF00;
-                              margin-left: -0.4em;
+                              margin-left: -0.35em;
                               margin-right: -0.5em;
                               margin-top: 0.1em;
                             }
@@ -100,7 +100,7 @@
                           style: |
                             ha-card {
                               background-color: #FFFFFF00;
-                              margin-left: -0.4em;
+                              margin-left: -0.35em;
                               margin-right: -0.5em;
                               margin-top: 0.1em;
                               margin-bottom: 1.5em;
@@ -190,7 +190,7 @@
                           style: |
                             ha-card {
                               background-color: #FFFFFF00;
-                              margin-left: -0.4em;
+                              margin-left: -0.35em;
                               margin-right: -0.7em;
                               margin-top: 0.1em;
                             }
@@ -236,7 +236,7 @@
                           style: |
                             ha-card {
                               background-color: #FFFFFF00;
-                              margin-left: -0.4em;
+                              margin-left: -0.35em;
                               margin-right: -0.7em;
                               margin-top: 0.1em;
                               margin-bottom: 1.5em;
@@ -318,7 +318,7 @@
                           style: |
                             ha-card {
                               background-color: #FFFFFF00;
-                              margin-left: -0.4em;
+                              margin-left: -0.35em;
                               margin-right: -0.7em;
                               margin-top: 0.1em;
                             }
@@ -364,7 +364,7 @@
                           style: |
                             ha-card {
                               background-color: #FFFFFF00;
-                              margin-left: -0.4em;
+                              margin-left: -0.35em;
                               margin-right: -0.7em;
                               margin-top: 0.1em;
                             }
@@ -410,7 +410,7 @@
                           style: |
                             ha-card {
                               background-color: #FFFFFF00;
-                              margin-left: -0.4em;
+                              margin-left: -0.35em;
                               margin-right: -0.7em;
                               margin-top: 0.1em;
                             }

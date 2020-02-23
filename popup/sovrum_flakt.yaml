@@ -24,6 +24,7 @@
                       style: |
                         ha-card {
                           margin-top: -3.5em;
+                          border-radius: 0.8vw !important;
                         }
                   type: 'custom:vertical-stack-in-card'
                 deviceID:

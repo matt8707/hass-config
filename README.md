@@ -37,7 +37,7 @@ The three icons at the bottom in order
 * Monitor [Home Assistant](https://home-assistant.io/), [tablet](https://www.samsung.com/us/mobile/tablets/galaxy-tab-a/galaxy-tab-a-10-1-2019-32gb-black-wi-fi-sm-t510nzkaxar/) and [Network Attached Storage](https://www.synology.com/products/DS918+).
 * A list of [scenes](https://www.home-assistant.io/integrations/scene/) with a legend.
 
-![info.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/info.png)
+![info2.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/info2.png)
 
 ### Lights and sensors
 
