@@ -41,7 +41,7 @@ resources:
     type: module
   - url: /community_plugin/popup-backdrop-filter.js
     type: module
- 
+
 title: Hemma
 views:
   - badges: []

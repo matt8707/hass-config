@@ -58,6 +58,8 @@ All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.m
 
 ![lights_switches.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/lights_switches.png)
 
+![vacuum.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/vacuum.png)
+
 ***
 
 **Home Assistant Community Topic**  
