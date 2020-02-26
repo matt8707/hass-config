@@ -84,6 +84,7 @@
     },
     "repository_banner": {
         "config_flow": "Ta integracija podpira config_flow, kar pomeni, da lahko zdaj greste na odsek integracije vašega uporabniškega vmesnika, da ga konfigurirate.",
+        "config_flow_title": "Konfiguracija uporabniškega vmesnika je podprta",
         "integration_not_loaded": "Ta integracija ni naložena v programu Home Assistant.",
         "no_restart_required": "Ponovni zagon ni potreben",
         "not_loaded": "Ni naloženo",

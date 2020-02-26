@@ -56,6 +56,7 @@
         "exist": "{item} existiert bereits",
         "generic": "Bist du dir sicher?",
         "home_assistant_is_restarting": "Bitte warte, Home Assistant wird jetzt neu gestartet.",
+        "home_assistant_version_not_correct": "Du benutzt die Home Assistant-Version '{haversion}', für dieses Repository muss jedoch die Mindestversion '{minversion}' installiert sein.",
         "no": "Nein",
         "no_upgrades": "Keine Upgrades ausstehend",
         "ok": "OK",
