@@ -293,12 +293,6 @@ views:
 
               {% if is_state('binary_sensor.nas_internet_access', 'off') %}{{'\u26A0\uFE0F'}} Kontrollera NAS internetåtkomst{% endif %}
 
-              </font>
-              {% if is_state('sensor.krisinformation_timer_trigger', 'true') %}
-                <font size='5.5em'>{{'\u26A0\uFE0F'}} <b>Krisinformation</b></font><br>
-                <font color='#6a7377' size='5.3em'>{{ state_attr('sensor.krisinformation_sverige', 'messages')[0]["Message"] | truncate(92, True, '...', 0) }}</font>
-              {% endif %}
-
             style:
               '--ha-card-background': none
               '--ha-card-box-shadow': none
@@ -307,7 +301,7 @@ views:
               font-size: 1.6vw
               font-weight: 300
               height: 1px
-              max-height: 4em
+              max-height: 4vw
               left: 11%
               letter-spacing: 0.06vw
               line-height: 2.05vw
@@ -317,6 +311,59 @@ views:
               top: 16%
               width: 17.5vw
             type: 'custom:hui-markdown-card'
+
+          - type: conditional
+            conditions:
+              - entity: input_boolean.krisinformation_visibility
+                state: 'on'
+            elements:
+              - cards:
+                - content: >
+                    {{'\u26A0\uFE0F'}} <b>Krisinformation</b><br>
+
+                    {{ as_timestamp(state_attr('sensor.krisinformation_sverige', 'messages')[0]["Published"]) | timestamp_custom('%Y-%m-%d') }}<br>
+                    {{ state_attr('sensor.krisinformation_sverige', 'messages')[0]["Message"] | truncate(280, True, '...', 0) }}
+                  style: |
+                    ha-card {
+                      padding-top: 0.4vw;
+                    }
+                  type: 'custom:hui-markdown-card'
+                - buttons:
+                    - icon: 'mdi:check-bold'
+                      name: OK
+                      service: input_boolean.turn_off
+                      service_data:
+                        entity_id: input_boolean.krisinformation_visibility
+                      style:
+                        background: '#FFFFFF10'
+                        color: 'rgba(255, 255, 255, 0.8)'
+                        border-radius: 0.6vw
+                        font-weight: 500
+                        font-family: SF Display
+                        padding: 0.7vw 1vw 0.8vw 0.7vw
+                        margin-bottom: 1.3vw
+                  type: 'custom:button-entity-row'
+                style:
+                  '--ha-card-background': '#5a1f1f'
+                  '--ha-card-box-shadow': none
+                  filter: 'drop-shadow(0 0 1vw #1e1e1e)'
+                  '--primary-text-color': 'rgba(255, 255, 255, 0.9)'
+                  font-family: SF Display
+                  font-size: 1.3vw
+                  font-weight: 300
+                  height: 1px
+                  max-height: 4vw
+                  left: 10.7%
+                  letter-spacing: 0.06vw
+                  line-height: 1.7vw
+                  max-width: 17vw
+                  position: absolute
+                  top: 18%
+                  width: 17.5vw
+                  hyphens: auto
+                  '--ha-card-border-radius': 0.7vw
+                  '--ha-card-border': '0.1vw solid #292c2e'
+                type: 'custom:vertical-stack-in-card'
 
           - type: conditional
             conditions:
@@ -334,7 +381,10 @@ views:
                   service_data:
                     entity_id: script.restart_laundry_timer
                 hold_action:
-                  action: none
+                  action: call-service
+                  service: input_boolean.turn_off
+                  service_data:
+                    entity_id: input_boolean.laundry_timer_visibility
                 double_tap_action:
                   action: none
                 styles:

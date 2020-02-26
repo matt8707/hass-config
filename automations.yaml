@@ -14,8 +14,13 @@
     - service: frontend.set_theme
       data:
         name: slate
-    - delay: 00:01:00
+    - delay: 00:00:30
     - service: homekit.start
+    - condition: state
+      entity_id: light.hall
+      state: 'off'
+    - service: switch.turn_on
+      entity_id: switch.fullykiosk_screensaver
 
 - alias: restart_homekit
   initial_state: true
@@ -34,19 +39,35 @@
   action:
   - service: shell_command.clear_logs
 
-- alias: update_imac_sensors
+- alias: dator_on_update
   initial_state: true
   trigger:
     - platform: state
       entity_id: switch.dator_template
       to: 'on'
   action:
+    - service: light.turn_on
+      entity_id: 
+        ['light.datorlampa', 'light.taklampor']
     - delay: 00:00:05
     - service: homeassistant.update_entity
       entity_id:
         ['sensor.imac_cpu_per', 'sensor.imac_mem_per', 'sensor.imac_system_ssd', 
         'sensor.imac_macintosh_hd', 'sensor.imac_time_machine', 'sensor.getvolume', 
         'sensor.macos_uptime']
+
+- alias: krisinformation_visibility
+  initial_state: true
+  trigger:
+    - platform: state
+      entity_id: sensor.krisinformation_time_trigger
+  action:
+    - service_template: >
+        {% if is_state(trigger.entity_id, 'true') %}
+        input_boolean.turn_on {% else %}
+        input_boolean.turn_off {% endif %}
+      data: 
+        entity_id: input_boolean.krisinformation_visibility
 
     ####################################################
     #                                                  #
@@ -83,6 +104,37 @@
       state: 'on'
   action:
     - service: shell_command.notify_motion_hall
+
+    ####################################################
+    #                                                  #
+    #                      LIGHTS                      #
+    #                                                  #
+    ####################################################
+
+- alias: light_studio_auto
+  initial_state: true
+  trigger:
+    - platform: state
+      entity_id: switch.switchbot
+  condition:
+    - condition: state
+      entity_id: switch.dator_template
+      state: 'off'
+  action:
+    - service: light.turn_on
+      entity_id: 
+        ['light.datorlampa', 'light.taklampor']
+
+- alias: light_studio_manual
+  initial_state: true
+  trigger:
+    - platform: state
+      entity_id: switch.dator_template
+      to: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: 
+        ['light.datorlampa', 'light.taklampor']
 
     ####################################################
     #                                                  #
@@ -132,7 +184,7 @@
       state: 'on'
   action:
     - service_template: >
-        {% if is_state(trigger.entity_id, 'on') %}
+        {% if trigger.to_state.state == 'on' %}
         script.reference_monitors {% else %}
         script.reference_headphones {% endif %}
 

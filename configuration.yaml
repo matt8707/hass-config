@@ -21,7 +21,8 @@ lovelace:
 
 person:
   - name: Mattias
-    id: 1b8e4036264b484ba6c360555c9a0547
+    id: mattias6264b484ba6c360555c9a0547
+    user_id: 1b8e4036264b484ba6c360555c9a0547
     device_trackers:
       ['device_tracker.mattias', 'device_tracker.iphone', 'device_tracker.mattias_bluetooth']
 
@@ -189,6 +190,7 @@ input_boolean:
   playstation_template:
 
   lock_computer:
+  krisinformation_visibility:
   laundry_timer_visibility:
 
   motion_hall:
@@ -452,11 +454,11 @@ media_player:
   - platform: braviatv
     host: !secret braviatv_host
 
-  # - platform: samsungtv_custom
-  #   host: !secret samsungtv_host
-  #   mac: !secret samsungtv_mac
-  #   port: !secret samsungtv_port
-  #   protocol: ws
+  - platform: samsungtv_custom
+    host: !secret samsungtv_host
+    mac: !secret samsungtv_mac
+    port: !secret samsungtv_port
+    protocol: ws
 
 device_tracker:
   - platform: iphonedetect

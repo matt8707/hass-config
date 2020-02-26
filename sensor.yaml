@@ -10,8 +10,7 @@
 
   - platform: version
     name: hass_version_latest
-    beta: false
-    image: default
+    source: docker
 
   - platform: filesize
     file_paths:
@@ -542,7 +541,7 @@
             true {% else %} false {% endif %}
           {% endif %}
 
-      krisinformation_timer_trigger:
+      krisinformation_time_trigger:
         entity_id: sensor.time
         value_template: >-
           {% set date = state_attr('sensor.krisinformation_sverige', 'messages')[0]["Published"] %}
