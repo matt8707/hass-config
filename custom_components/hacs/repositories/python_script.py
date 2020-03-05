@@ -1,10 +1,11 @@
 """Class for python_scripts in HACS."""
-from aiogithubapi import AIOGitHubException
-from .repository import HacsRepository, register_repository_class
+from integrationhelper import Logger
+
+from .repository import HacsRepository
 from ..hacsbase.exceptions import HacsException
+from ..helpers.information import find_file_name
 
 
-@register_repository_class
 class HacsPythonScript(HacsRepository):
     """python_scripts in HACS."""
 
@@ -13,11 +14,12 @@ class HacsPythonScript(HacsRepository):
     def __init__(self, full_name):
         """Initialize."""
         super().__init__()
-        self.information.full_name = full_name
-        self.information.category = self.category
+        self.data.full_name = full_name
+        self.data.category = "python_script"
         self.content.path.remote = "python_scripts"
-        self.content.path.local = f"{self.system.config_path}/python_scripts"
+        self.content.path.local = f"{self.hacs.system.config_path}/python_scripts"
         self.content.single = True
+        self.logger = Logger(f"hacs.repository.{self.data.category}.{full_name}")
 
     async def validate_repository(self):
         """Validate."""
@@ -25,26 +27,25 @@ class HacsPythonScript(HacsRepository):
         await self.common_validate()
 
         # Custom step 1: Validate content.
-        try:
-            self.content.objects = await self.repository_object.get_contents(
-                self.content.path.remote, self.ref
-            )
-        except AIOGitHubException:
+        if self.data.content_in_root:
+            self.content.path.remote = ""
+
+        compliant = False
+        for treefile in self.treefiles:
+            if treefile.startswith(f"{self.content.path.remote}") and treefile.endswith(
+                ".py"
+            ):
+                compliant = True
+                break
+        if not compliant:
             raise HacsException(
                 f"Repostitory structure for {self.ref.replace('tags/','')} is not compliant"
             )
 
-        if not isinstance(self.content.objects, list):
-            self.validate.errors.append("Repostitory structure not compliant")
-
-        self.content.files = []
-        for filename in self.content.objects:
-            self.content.files.append(filename.name)
-
         # Handle potential errors
         if self.validate.errors:
             for error in self.validate.errors:
-                if not self.system.status.startup:
+                if not self.hacs.system.status.startup:
                     self.logger.error(error)
         return self.validate.success
 
@@ -57,31 +58,30 @@ class HacsPythonScript(HacsRepository):
         await self.common_registration()
 
         # Set name
-        self.information.name = self.content.objects[0].name.replace(".py", "")
+        find_file_name(self)
 
     async def update_repository(self):  # lgtm[py/similar-function]
         """Update."""
-        if self.github.ratelimits.remaining == 0:
+        if self.hacs.github.ratelimits.remaining == 0:
             return
         # Run common update steps.
         await self.common_update()
 
         # Get python_script objects.
-        if self.repository_manifest:
-            if self.repository_manifest.content_in_root:
-                self.content.path.remote = ""
+        if self.data.content_in_root:
+            self.content.path.remote = ""
 
-        self.content.objects = await self.repository_object.get_contents(
-            self.content.path.remote, self.ref
-        )
-
-        self.content.files = []
-        for filename in self.content.objects:
-            self.content.files.append(filename.name)
+        compliant = False
+        for treefile in self.treefiles:
+            if treefile.startswith(f"{self.content.path.remote}") and treefile.endswith(
+                ".py"
+            ):
+                compliant = True
+                break
+        if not compliant:
+            raise HacsException(
+                f"Repostitory structure for {self.ref.replace('tags/','')} is not compliant"
+            )
 
         # Update name
-        self.information.name = self.content.objects[0].name.replace(".py", "")
-
-        self.content.files = []
-        for filename in self.content.objects:
-            self.content.files.append(filename.name)
+        find_file_name(self)
