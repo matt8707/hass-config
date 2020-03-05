@@ -99,6 +99,7 @@ class HPDeviceData:
                 root = self._product_config_data.get("ProductConfigDyn", {})
                 product_information = root.get("ProductInformation", {})
                 self._device_data[ENTITY_MODEL] = product_information.get("MakeAndModel")
+                self._device_data[ENTITY_MODEL_FAMILY] = product_information.get("MakeAndModelFamily")
 
         except Exception as ex:
             exc_type, exc_obj, tb = sys.exc_info()

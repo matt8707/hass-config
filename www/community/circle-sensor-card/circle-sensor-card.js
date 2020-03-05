@@ -1,6 +1,6 @@
 import {
   LitElement, html
-} from 'https://unpkg.com/@polymer/lit-element@0.5.2/lit-element.js?module';
+} from 'https://unpkg.com/@polymer/lit-element@^0.5.2/lit-element.js?module';
 
 class CircleSensorCard extends LitElement {
   static get properties() {

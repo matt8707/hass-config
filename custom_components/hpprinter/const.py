@@ -26,6 +26,7 @@ ENTITY_ATTRIBUTES = 'attributes'
 ENTITY_NAME = 'name'
 ENTITY_MODEL = 'model'
 PRINTER_CURRENT_STATUS = 'status'
+ENTITY_MODEL_FAMILY = "model-family"
 
 PRINTER_SENSOR = "Printer"
 

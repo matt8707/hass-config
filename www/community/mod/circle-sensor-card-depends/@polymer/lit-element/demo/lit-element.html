@@ -1,0 +1,84 @@
+<!DOCTYPE html><!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+--><html><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>lit-element demo</title>
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+</head>
+<body>
+  <script type="module">
+    import { LitElement, html } from '../lit-element.js';
+
+    class MyElement extends LitElement {
+
+      static get properties() {
+        return {
+          foo: String,
+          bar: Number,
+          whales: Number
+        }
+      }
+
+      constructor() {
+        super();
+        this.foo = 'foo';
+        this.whales = 0;
+        this.addEventListener('click', async (e) => {
+          this.whales++;
+          await this.renderComplete;
+          this.dispatchEvent(new CustomEvent('whales', {detail: {whales: this.whales}}))
+          console.log(this.shadowRoot.querySelector('.count').textContent);
+        });
+      }
+
+      _firstRendered() {
+        console.log('first rendered!');
+      }
+
+      _render({foo, bar, whales}) {
+        return html`
+          <style>
+            :host {
+              display: block;
+            }
+
+            :host([hidden]) {
+              display: none;
+            }
+
+            .count {
+              color: green;
+            }
+
+            .content {
+              border: 1px solid black;
+              padding: 8px;
+            }
+          </style>
+          <h4 on-click="${(e) => console.log(this, e.target)}">Foo: ${foo}, Bar: ${bar}</h4>
+          <div class="content">
+            <slot></slot>
+          </div>
+          <div class="count">
+            whales: ${'🐳'.repeat(whales)}
+          </div>
+        `;
+      }
+
+      _didRender() {
+        console.log('didRender!');
+      }
+
+    }
+
+    customElements.define('my-element', MyElement);
+  </script>
+  <my-element bar="5" whales="5">Hi</my-element>
+</body></html>

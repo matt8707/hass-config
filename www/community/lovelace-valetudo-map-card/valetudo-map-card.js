@@ -228,21 +228,21 @@ class ValetudoMapCard extends HTMLElement {
   };
 
   setConfig(config) {
-    if (config.show_dock === undefined) config.show_dock = true;
-    if (config.show_vacuum === undefined) config.show_vacuum = true;
-    if (config.show_path === undefined) config.show_path = true;
-    if (config.map_scale === undefined) config.map_scale = 1;
-    if (config.icon_scale === undefined) config.icon_scale = 1;
-    if (config.rotate === undefined) config.rotate = 0;
-    if (Number(config.rotate)) config.rotate = `${config.rotate}deg`;
-    if (config.crop !== Object(config.crop)) config.crop = {};
-    if (config.crop.top === undefined) config.crop.top = 0;
-    if (config.crop.bottom === undefined) config.crop.bottom = 0;
-    if (config.crop.left === undefined) config.crop.left = 0;
-    if (config.crop.right === undefined) config.crop.right = 0;
-    if (config.min_height === undefined) config.min_height = 0;
+    this._config = Object.assign({}, config);
 
-    this._config = config;
+    if (this._config.show_dock === undefined) this._config.show_dock = true;
+    if (this._config.show_vacuum === undefined) this._config.show_vacuum = true;
+    if (this._config.show_path === undefined) this._config.show_path = true;
+    if (this._config.map_scale === undefined) this._config.map_scale = 1;
+    if (this._config.icon_scale === undefined) this._config.icon_scale = 1;
+    if (this._config.rotate === undefined) this._config.rotate = 0;
+    if (Number(this._config.rotate)) this._config.rotate = `${this._config.rotate}deg`;
+    if (this._config.crop !== Object(this._config.crop)) this._config.crop = {};
+    if (this._config.crop.top === undefined) this._config.crop.top = 0;
+    if (this._config.crop.bottom === undefined) this._config.crop.bottom = 0;
+    if (this._config.crop.left === undefined) this._config.crop.left = 0;
+    if (this._config.crop.right === undefined) this._config.crop.right = 0;
+    if (this._config.min_height === undefined) this._config.min_height = 0;
   };
 
   set hass(hass) {
@@ -337,8 +337,32 @@ class ValetudoMapCard extends HTMLElement {
 
     this.drawMap(this.cardContainer, mapEntity, mapHeight, mapWidth, floorColor, obstacleWeakColor, obstacleStrongColor, noGoAreaColor, virtualWallColor, pathColor, chargerColor, vacuumColor);
 
-    // Draw controls
+    // Draw status and controls
     if (this._config.vacuum_entity) {
+        let infoEntity = this._hass.states[this._config.vacuum_entity]
+
+        this.infoBox = document.createElement('div');
+        this.infoBox.classList.add('flex-box');
+
+        if (infoEntity && infoEntity.attributes && infoEntity.attributes.status) {
+            const statusInfo = document.createElement('p');
+            statusInfo.innerHTML = infoEntity.attributes.status
+            this.infoBox.appendChild(statusInfo)
+        };
+
+        if (infoEntity && infoEntity.attributes && infoEntity.attributes.battery_icon && infoEntity.attributes.battery_level) {
+            const batteryData = document.createElement('div');
+            batteryData.style.display = "flex"
+            batteryData.style.alignItems = "center"
+            const batteryIcon = document.createElement('ha-icon');
+            const batteryText = document.createElement('span');
+            batteryIcon.icon = infoEntity.attributes.battery_icon
+            batteryText.innerHTML = " " + infoEntity.attributes.battery_level + " %"
+            batteryData.appendChild(batteryIcon);
+            batteryData.appendChild(batteryText);
+            this.infoBox.appendChild(batteryData);
+        };
+
         this.controlFlexBox = document.createElement('div');
         this.controlFlexBox.classList.add('flex-box');
 
@@ -380,6 +404,7 @@ class ValetudoMapCard extends HTMLElement {
         while (this.controlContainer.firstChild) {
           this.controlContainer.firstChild.remove();
         };
+        this.controlContainer.append(this.infoBox);
         this.controlContainer.append(this.controlFlexBox);
     };
   };

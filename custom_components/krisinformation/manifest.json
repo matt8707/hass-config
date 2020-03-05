@@ -4,5 +4,5 @@
   "documentation": "https://github.com/isabellaalstrom/sensor.krisinformation",
   "dependencies": [],
   "codeowners": ["@isabellaalstrom"],
-  "requirements": []
+  "requirements": ["jsonpath>=0.82"]
 }

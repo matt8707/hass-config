@@ -1,0 +1,80 @@
+{
+  "_from": "/local/community/mod/circle-sensor-card-depends/@polymer/lit-element@0.5.2",
+  "_id": "/local/community/mod/circle-sensor-card-depends/@polymer/lit-element@0.5.2",
+  "_inBundle": false,
+  "_integrity": "sha512-7v/UlqVO05YuFCxxtC7jpuMQuDiPxArO7gACHqZ3uFd9/BM9YTdktX3bKRTnKTFUaPuNWWoPGvpAe2WOQCH2Pw==",
+  "_location": "//local/community/mod/circle-sensor-card-depends/@polymer/lit-element",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "/local/community/mod/circle-sensor-card-depends/@polymer/lit-element@0.5.2",
+    "name": "/local/community/mod/circle-sensor-card-depends/@polymer/lit-element",
+    "escapedName": "/local/community/mod/circle-sensor-card-depends/@polymer%2flit-element",
+    "scope": "/local/community/mod/circle-sensor-card-depends/@polymer",
+    "rawSpec": "0.5.2",
+    "saveSpec": null,
+    "fetchSpec": "0.5.2"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org//local/community/mod/circle-sensor-card-depends/@polymer/lit-element/-/lit-element-0.5.2.tgz",
+  "_shasum": "8d4e2d1ada27cf0f1a38b7b0eb9fadae92eb63df",
+  "_spec": "/local/community/mod/circle-sensor-card-depends/@polymer/lit-element@0.5.2",
+  "_where": "/home/xubuntu/tmp",
+  "author": {
+    "name": "The Polymer Authors"
+  },
+  "bugs": {
+    "url": "https://github.com/Polymer/lit-element/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "/local/community/mod/circle-sensor-card-depends/@polymer/polymer": "^3.0.2",
+    "/local/community/mod/circle-sensor-card-depends/lit-html": "^0.10.0"
+  },
+  "deprecated": "/local/community/mod/circle-sensor-card-depends/@polymer/lit-element has moved to lit-element. Please uninstall this package and install lit-element. See https://www.polymer-project.org/blog/2019-01-11-lit-element-rc",
+  "description": "Polymer based /local/community/mod/circle-sensor-card-depends/lit-html custom element",
+  "devDependencies": {
+    "@types/chai": "^4.0.1",
+    "@types/mocha": "^5.0.0",
+    "@webcomponents/webcomponentsjs": "^2.0.1",
+    "chai": "^4.0.2",
+    "mocha": "^5.0.5",
+    "tslint": "^5.7.0",
+    "typedoc": "^0.8.0",
+    "typescript": "^2.7.2",
+    "uglify-es": "^3.3.9",
+    "wct-browser-legacy": "^1.0.1",
+    "web-component-tester": "^6.6.0"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "homepage": "https://github.com/Polymer/lit-element#readme",
+  "license": "BSD-3-Clause",
+  "main": "lit-element.js",
+  "module": "lit-element.js",
+  "name": "/local/community/mod/circle-sensor-card-depends/@polymer/lit-element",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Polymer/lit-element.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "checksize": "uglifyjs lit-element.js -mc --toplevel | gzip -9 | wc -c",
+    "format": "find src test | grep '\\.js$\\|\\.ts$' | xargs clang-format --style=file -i",
+    "gen-docs": "typedoc --readme none --mode modules --excludeNotExported --excludePrivate --exclude **/*_test.ts --out ./docs/api .",
+    "lint": "tslint --project ./",
+    "prepublishOnly": "npm run build",
+    "regen-package-lock": "rm -rf node_modules package-lock.json; npm install",
+    "test": "npm run build && wct"
+  },
+  "typings": "lit-element.d.ts",
+  "version": "0.5.2"
+}

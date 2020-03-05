@@ -76,6 +76,7 @@ class PrinterSensor(Entity):
         self._printer_name = printer_name
         self._entity = entity
         self._remove_dispatcher = None
+        self._ha = _get_printer(self._hass, self._printer_name)
 
     @property
     def unique_id(self) -> Optional[str]:
@@ -84,14 +85,7 @@ class PrinterSensor(Entity):
 
     @property
     def device_info(self):
-        return {
-            "identifiers": {
-                (DOMAIN, self.unique_id)
-            },
-            "name": self.name,
-            "manufacturer": MANUFACTURER,
-            ENTITY_MODEL: self._entity.get(ENTITY_MODEL)
-        }
+        return self._ha.device_info
 
     @property
     def should_poll(self):
@@ -133,17 +127,11 @@ class PrinterSensor(Entity):
     async def async_update_data(self):
         _LOGGER.debug(f"{CURRENT_DOMAIN} update_data: {self.name} | {self.unique_id}")
 
-        printer = _get_printer(self._hass, self._printer_name)
-        if printer is not None:
-            self._entity = printer.get_entity(CURRENT_DOMAIN, self.name)
+        if self._ha is not None:
+            self._entity = self._ha.get_entity(CURRENT_DOMAIN, self.name)
 
             if self._entity is None:
                 self._entity = {}
                 await self.async_remove()
-
-                dev_id = self.device_info.get("id")
-                device_reg = await dr.async_get_registry(self._hass)
-
-                device_reg.async_remove_device(dev_id)
             else:
                 self.async_schedule_update_ha_state(True)
