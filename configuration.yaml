@@ -13,8 +13,6 @@ default_config:
 
 frontend:
   themes: !include themes.yaml
-  extra_html_url:
-    - /local/custom-icons_v01.html
 
 lovelace:
   mode: yaml
@@ -47,6 +45,29 @@ docker_monitor:
           sensors:
             ['status', 'uptime', 'cpu_percentage_usage', 'memory_percentage_usage']
 
+mqtt:
+  broker: !secret mqtt_broker
+  discovery: true
+  discovery_prefix: homeassistant
+
+cast:
+  media_player:
+    - host: !secret google_cast_host
+
+wemo:
+  discovery: false
+  static: !secret wemo_static
+
+plex:
+  host: !secret plex_host
+  port: !secret plex_port
+  token: !secret plex_token
+
+hue:
+  bridges:
+    - host: !secret hue_host
+      allow_unreachable: true
+
 logger:
   default: warning
   logs:
@@ -55,7 +76,7 @@ logger:
     homeassistant.components.command_line.sensor: fatal
     homeassistant.components.homekit.type_media_players: fatal
     homeassistant.components.shell_command: fatal
-    switchbot: fatal
+    # switchbot: fatal
     # pyatv: debug
     # custom_components.apple_tv: debug
 
@@ -266,8 +287,8 @@ input_select:
       ['Senast nedladdat', 'Vardagsrum', 'Sovrum', 'Playstation 4', 'Google Nest Mini']
 
 switch:
-  - platform: switchbot
-    mac: !secret switchbot_mac
+  # - platform: switchbot
+  #   mac: !secret switchbot_mac
 
   - platform: command_line
     switches:
@@ -410,6 +431,7 @@ shell_command:
 
   restart_hass_docker: !secret restart_hass_docker
   clear_logs: truncate -s 0 /config/home-assistant.log
+  switchbot_rpi: !secret switchbot_rpi
 
 group:
   automation_system_reference:
@@ -424,8 +446,6 @@ group:
 
 hacs:
   token: !secret hacs_token
-
-wemo:
 
 vacuum:
   - platform: xiaomi_miio

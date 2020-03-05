@@ -78,9 +78,9 @@
       {% endif %}
 
   - platform: plex_recently_added
-    token: !secret plex_recently_added_token
-    host: !secret plex_recently_added_host
-    port: !secret plex_recently_added_port
+    token: !secret plex_token
+    host: !secret plex_host
+    port: !secret plex_port
     max: 1
     img_dir: '/plex/'
 

@@ -44,6 +44,7 @@
   trigger:
     - platform: state
       entity_id: switch.dator_template
+      from: 'off'
       to: 'on'
   action:
     - service: light.turn_on
@@ -82,6 +83,7 @@
     entity_id:
       ['input_boolean.motion_garderob', 'input_boolean.motion_badrum', 
       'binary_sensor.wemo_motion']
+    from: 'off'
     to: 'on'
   action:
   - service: browser_mod.toast
@@ -97,6 +99,7 @@
   trigger:
     - platform: state
       entity_id: input_boolean.motion_hall
+      from: 'off'
       to: 'on'
   condition:
     - condition: state
@@ -111,25 +114,26 @@
     #                                                  #
     ####################################################
 
-- alias: light_studio_auto
-  initial_state: true
-  trigger:
-    - platform: state
-      entity_id: switch.switchbot
-  condition:
-    - condition: state
-      entity_id: switch.dator_template
-      state: 'off'
-  action:
-    - service: light.turn_on
-      entity_id: 
-        ['light.datorlampa', 'light.taklampor']
+# - alias: light_studio_auto
+#   initial_state: true
+#   trigger:
+#     - platform: state
+#       entity_id: switch.switchbot
+#   condition:
+#     - condition: state
+#       entity_id: switch.dator_template
+#       state: 'off'
+#   action:
+#     - service: light.turn_on
+#       entity_id: 
+#         ['light.datorlampa', 'light.taklampor']
 
 - alias: light_studio_manual
   initial_state: true
   trigger:
     - platform: state
       entity_id: switch.dator_template
+      from: 'off'
       to: 'on'
   action:
     - service: light.turn_on
@@ -184,7 +188,9 @@
       state: 'on'
   action:
     - service_template: >
-        {% if trigger.to_state.state == 'on' %}
+        {% if trigger.from_state.state == 'unavailable' %}
+        script.dummy
+        {% elif trigger.to_state.state == 'on' %}
         script.reference_monitors {% else %}
         script.reference_headphones {% endif %}
 
@@ -193,6 +199,7 @@
   trigger:
     - platform: state
       entity_id: switch.dator_template
+      from: 'on'
       to: 'off'
       for:
         minutes: 15
@@ -211,6 +218,7 @@
   trigger:
     platform: state
     entity_id: switch.wemo_flakt
+    from: 'off'
     to: 'on'
     for: 
       hours: "{{ states('input_number.fan_timer') | int }}"
@@ -256,6 +264,7 @@
   trigger:
     - platform: state
       entity_id: switch.fullykiosk_screensaver
+      from: 'off'
       to: 'on'
       for:
         minutes: 15
@@ -269,6 +278,7 @@
   trigger:
     - platform: state
       entity_id: input_boolean.motion_hall
+      from: 'off'
       to: 'on'
   action:
     - service: switch.turn_off
@@ -289,6 +299,7 @@
   trigger:
   - platform: state
     entity_id: light.hall
+    from: 'on'
     to: 'off'
   action:
   - service: switch.turn_on
@@ -491,6 +502,7 @@
       'light.hall', 'switch.wemo_flakt', 'switch.wemo_monitorer', 'input_boolean.dator_template', 
       'input_boolean.playstation_template', 'input_boolean.sony_bravia_tv', 
       'input_boolean.samsung_6_series_50']
+    from: 'off'
     to: 'on'
   condition:
     - condition: state
@@ -512,6 +524,7 @@
       'light.mattias', 'light.sanja', 'light.badrum', 'light.taklampa', 'light.kladkammare_2', 
       'light.hall', 'switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 
       'switch.playstation_template', 'switch.tv_template', 'switch.tv2_template']
+    from: 'on'
     to: 'off'
   condition:
     - condition: state
@@ -606,8 +619,39 @@
         entity_id: input_select.conditional_media
         option: Senast nedladdat
 
+    ####################################################
 
+- alias: turn_on_tv_fail_safe
+  initial_state: true
+  trigger:
+    platform: event
+    event_type: call_service
+    event_data: 
+      domain: media_player
+      service: turn_on
+      service_data:
+        entity_id: media_player.sony_bravia_tv
+  action:
+    - service: remote.send_command
+      data:
+        entity_id: remote.vardagsrum
+        command: menu
 
+- alias: turn_on_tv2_fail_safe
+  initial_state: true
+  trigger:
+    platform: event
+    event_type: call_service
+    event_data: 
+      domain: media_player
+      service: turn_on
+      service_data:
+        entity_id: media_player.samsung_tv_remote
+  action:
+    - service: remote.send_command
+      data:
+        entity_id: remote.sovrum
+        command: menu
 
 ### Apple Tv - No title temp fix ###
 

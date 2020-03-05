@@ -94,3 +94,7 @@ slate:
   mini-media-player-artwork-opacity: '1'
   mini-media-player-progress-height: '5px'
   mini-media-player-scale: '1.14'
+  # popup-backdrop-filter
+  iron-overlay-backdrop-filter: 'blur(15px)'
+  iron-overlay-backdrop-background-color: 'rgba(0,0,0,.6)'
+  iron-overlay-backdrop-opacity: '1'

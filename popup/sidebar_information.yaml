@@ -449,7 +449,7 @@
                               entity: sensor.synology_dsm_network_down
                               name: Nedladdning
                           group: false
-                          points_per_hour: 30
+                          points_per_hour: 20
                           line_width: 2.5
                           hour24: true
                           hours_to_show: 1.5

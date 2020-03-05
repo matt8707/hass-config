@@ -52,7 +52,7 @@ All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.m
 
 ### Switches
 
-* [SwitchBot](https://www.switch-bot.com/bot) to cold boot computer (with [usb bluetooth adapter](https://plugable.com/products/usb-bt4le) in NAS). Numerous shell commands to monitor and control macOS.
+* [SwitchBot](https://www.switch-bot.com/bot) to cold boot computer with, for now, a raspberry as a [hub](https://github.com/OpenWonderLabs/python-host). Numerous shell commands to monitor and control macOS.
 * [Belkin WeMo Switch](https://www.belkin.com/) to control studio monitors (speakers) with automations to apply [EQ calibration](https://www.sonarworks.com/reference) and volume control through AppleScript.
 * Control a pedestal fan, using [Belkin WeMo Switch](https://www.belkin.com/) and hue motion sensor temperature data to automate on summer nights.
 
