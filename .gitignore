@@ -15,6 +15,7 @@ secrets.yaml
 themes
 tts
 www/plex
+www/font
 home-assistant_v2.db
 home-assistant_v2.db-wal
 home-assistant_v2.db-shm
