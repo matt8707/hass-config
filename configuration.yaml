@@ -496,18 +496,6 @@ google:
   client_secret: !secret google_client_secret
 
 binary_sensor:
-  - platform: ping
-    host: !secret ping_iphone_xr
-    name: iPhone XR
-
-  - platform: ping
-    host: secret ping_macbook_pro
-    name: MacBook Pro
-
-  - platform: ping
-    host: secret ping_iphone_x
-    name: iPhone X
-
   - platform: command_line
     name: check_plex
     command: !secret check_plex
