@@ -233,9 +233,9 @@
                           entity: sensor.xiaomi_map
                           rotate: 0
                           crop:
-                            top: 160
+                            top: 150
                             bottom: 88
-                            left: 189
+                            left: 135
                             right: 0
                           min_height: 0
                           map_scale: 2
