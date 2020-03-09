@@ -45,7 +45,7 @@ All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.m
 
 * Modified (CSS+JS) vertical [Light Entity Card](https://github.com/ljmerza/light-entity-card) for easier touch control.
 * If applicable, show a Light Entity Card color wheel.
-* [Custom SVG](https://github.com/matt8707/hass-config/blob/master/www/custom-icons_v01.html) icons to reflect current color.
+* [Custom SVG](https://github.com/matt8707/hass-config/blob/master/www/community/mod/hass-bha-icons.js) icons to reflect current color.
 * Brightness percentage in a [Circle sensor](https://github.com/custom-cards/circle-sensor-card).
 
 ***
