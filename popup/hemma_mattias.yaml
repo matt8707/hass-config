@@ -6,25 +6,10 @@
                     - entities:
                         - entity: person.mattias
                           secondary_info: last-changed
-                        - entity: binary_sensor.iphone_x
-                          icon: 'mdi:cellphone'
-                        - entity: sensor.mattias_battery_level
                       style: |
                         ha-card {
-                          margin-bottom: -1vw;
-                        }
-                      type: entities
-                    - entities:
-                        - entity: sensor.placeholder
-                          icon: 'mdi:'
-                          name: Historik
-                      style: |
-                        ha-card {
-                          margin-top: -9%;
-                          margin-left: -12.2%;
-                          background-color: #FFFFFF00;
-                          opacity: 0.9;
-                          font-weight: 500;
+                          margin-right: 0.55em;
+                          margin-left: 0.55em;
                         }
                       type: entities
                     - entities:
@@ -33,11 +18,38 @@
                       refresh_interval: 0
                       style: |
                         ha-card {
-
-                          margin-top: -10.5%;
-                          padding-left: 2.2%;
+                          margin-top: -1.5em;
+                          margin-left: 0.4em;
                         }
                       type: history-graph
+                    - entities:
+                        - entity: device_tracker.mattias
+                          name: Router
+                          icon: 'mdi:router-wireless'
+                        - entity: device_tracker.mattias_bluetooth
+                          name: Bluetooth
+                          icon: 'mdi:bluetooth'
+                        - entity: device_tracker.iphone
+                          name: iPhone GPS
+                          icon: 'mdi:cellphone'
+                      style: |
+                        ha-card {
+                          margin-top: -2.8em;
+                          margin-right: 0.55em;
+                        }
+                      type: entities
+
+                    - type: map
+                      default_zoom: 15
+                      entities:
+                        - device_tracker.iphone
+                      style: |
+                        ha-card {
+                          margin-top: -2em;
+                          padding: 2em;
+                          opacity: 0.9;
+                        }
+
                   type: 'custom:vertical-stack-in-card'
                 deviceID:
                   - this
@@ -45,4 +57,4 @@
                   '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
                   border-radius: 0.8vw
                   opacity: 0.9
-                title: Mattias
+                title: Sanja
