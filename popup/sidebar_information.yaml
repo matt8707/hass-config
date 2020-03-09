@@ -4,12 +4,8 @@
                 card:
                   cards:
                     - entities:
-                        - entity: sensor.hass_version_installed
-                          icon: 'mdi:home-assistant'
-                          name: Installerad version
                         - entity: sensor.hass_version_template
-                          icon: 'mdi:update'
-                          name: Senste versionen
+                        - entity: sensor.hass_release_template
                         - entity: sensor.home_assistant_v2_db
                           icon: 'mdi:database'
                           name: Databas
