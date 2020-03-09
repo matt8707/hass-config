@@ -11,6 +11,8 @@
         "installed": "installerad",
         "integration": "Integration",
         "integrations": "Integrationer",
+        "netdaemon": "NetDaemon",
+        "netdaemon_apps": "NetDaemon Applikationer",
         "plugin": "Plugin",
         "plugins": "Plugins",
         "python_script": "Python skript",
@@ -32,6 +34,7 @@
             "user": {
                 "data": {
                     "appdaemon": "Upptäck och följ Appdaemon applikationer",
+                    "netdaemon": "Upptäck och följ NetDaemon applikationer",
                     "python_script": "Upptäck och följ python_scripts",
                     "sidepanel_icon": "Ikon för sidpanel",
                     "sidepanel_title": "Rubrik för sidpanel",
@@ -70,6 +73,7 @@
                     "country": "Filtrera på landskod.",
                     "debug": "Aktivera felsökning",
                     "experimental": "Använd experimentella funktioner",
+                    "netdaemon": "Upptäck och följ NetDaemon applikationer",
                     "release_limit": "Antalet releaser som visas.",
                     "sidepanel_icon": "Ikon för sidpanel",
                     "sidepanel_title": "Rubrik för sidpanel"

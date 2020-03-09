@@ -13,6 +13,8 @@
         "integration": "Integrasjon",
         "integrations": "Integrasjonar",
         "manage": "Handtere",
+        "netdaemon": "NetDaemon",
+        "netdaemon_apps": "NetDeamon-appar",
         "plugin": "Tillegg",
         "plugins": "Tillegg",
         "python_script": "Pythonskript",
@@ -34,6 +36,7 @@
             "user": {
                 "data": {
                     "appdaemon": "Aktiver AppDeamon-appar-oppdaging og sporing",
+                    "netdaemon": "Aktiver NetDeamon-appar-oppdaging og sporing",
                     "python_script": "Aktiver pythonscript-oppdaging og sporing",
                     "sidepanel_icon": "Sidepanelikon",
                     "sidepanel_title": "Sidepaneltittel",
@@ -75,6 +78,7 @@
                     "country": "Filterer med landskode",
                     "debug": "Aktiver debug.",
                     "experimental": "Aktiver ekspreimentelle funksjonar",
+                    "netdaemon": "Aktiver NetDeamon-appar-oppdaging og sporing",
                     "not_in_use": "Kan ikkje brukast saman med YAML",
                     "release_limit": "Talet på utgivingar",
                     "sidepanel_icon": "Sidepanelikon",

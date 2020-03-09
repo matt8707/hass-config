@@ -12,6 +12,8 @@
         "installed": "εγκατεστημένο",
         "integration": "Ενσωμάτωση",
         "integrations": "Ενσωματωμένα",
+        "netdaemon": "NetDaemon",
+        "netdaemon_apps": "NetDaemon Apps",
         "plugin": "Πρόσθετο",
         "plugins": "Πρόσθετα",
         "python_script": "Πρόγραμμα Python",
@@ -33,6 +35,7 @@
             "user": {
                 "data": {
                     "appdaemon": "Ενεργοποίηση εύρεσης & παρακολούθησης για το AppDaemon",
+                    "netdaemon": "Ενεργοποίηση εύρεσης & παρακολούθησης για το NetDaemon",
                     "python_script": "Ενεργοποίηση εύρεσης & παρακολούθησης για τα python_scripts",
                     "sidepanel_icon": "Εικονίδιο πλαϊνού πάνελ",
                     "sidepanel_title": "Τίτλος πλαϊνού πάνελ",
@@ -72,6 +75,7 @@
                     "country": "Κριτήριο με βάση τον κωδικό χώρας.",
                     "debug": "Ενεργοποίηση εντοπισμού σφαλμάτων.",
                     "experimental": "Ενεργοποίση πειραματικών λειτουργιών",
+                    "netdaemon": "Ενεργοποίηση εύρεσης & παρακολούθησης για το NetDaemon",
                     "release_limit": "Αριθμός εκδόσεων που να παραθέτονται.",
                     "sidepanel_icon": "Εικονίδιο πλαϊνού πάνελ",
                     "sidepanel_title": "Τίτλος πλαϊνού πάνελ"

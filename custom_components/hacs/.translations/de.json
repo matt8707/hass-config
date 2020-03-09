@@ -13,6 +13,8 @@
         "integration": "Integration",
         "integrations": "Integrationen",
         "manage": "verwalten",
+        "netdaemon": "NetDaemon",
+        "netdaemon_apps": "NetDaemon Apps",
         "plugin": "Plugin",
         "plugins": "Plugins",
         "python_script": "Python Skript",
@@ -33,11 +35,12 @@
         "step": {
             "user": {
                 "data": {
-                    "appdaemon": "AppDaemon App-Discovery & Tracking aktivieren",
-                    "python_script": "Python Script-Discovery & Tracking aktivieren",
+                    "appdaemon": "AppDaemon App-Entdeckung & Nachverfolgung aktivieren",
+                    "netdaemon": "NetDaemon App-Entdeckung & Nachverfolgung aktivieren",
+                    "python_script": "Python Script-Entdeckung & Nachverfolgung aktivieren",
                     "sidepanel_icon": "Sidepanel Symbol",
                     "sidepanel_title": "Sidepanel Titel",
-                    "theme": "Theme-Discovery & Tracking aktivieren",
+                    "theme": "Theme-Entdeckung & Nachverfolgung aktivieren",
                     "token": "Persönlicher GitHub Zugriffstoken"
                 },
                 "description": "Wenn du Hilfe mit den Einstellungen brauchst, kannst du hier nachsehen: https:\/\/hacs.xyz\/docs\/configuration\/start",
@@ -71,10 +74,11 @@
         "step": {
             "user": {
                 "data": {
-                    "appdaemon": "AppDaemon App-Discovery & Tracking aktivieren",
+                    "appdaemon": "AppDaemon App-Entdeckung & Nachverfolgung aktivieren",
                     "country": "Nach Ländercode filtern.",
                     "debug": "Debug aktivieren.",
                     "experimental": "Experimentelle Funktionen aktivieren",
+                    "netdaemon": "NetDaemon App-Entdeckung & Nachverfolgung aktivieren",
                     "not_in_use": "Nicht in Verwendung mit YAML",
                     "release_limit": "Anzahl anzuzeigender Releases.",
                     "sidepanel_icon": "Sidepanel Symbol",

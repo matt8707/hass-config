@@ -11,6 +11,8 @@
         "installed": "instalat",
         "integration": "Integrare",
         "integrations": "Integrări",
+        "netdaemon": "NetDaemon",
+        "netdaemon_apps": "Aplicații NetDaemon",
         "plugin": "Plugin",
         "plugins": "Plugin-uri",
         "python_script": "Script Python",
@@ -32,6 +34,7 @@
             "user": {
                 "data": {
                     "appdaemon": "Activați descoperirea și urmărirea aplicațiilor AppDaemon",
+                    "netdaemon": "Activați descoperirea și urmărirea aplicațiilor NetDaemon",
                     "python_script": "Activați descoperirea și urmărirea python_scripts",
                     "sidepanel_icon": "Pictogramă Panou lateral",
                     "sidepanel_title": "Titlu panou lateral",
@@ -61,6 +64,7 @@
                     "appdaemon": "Activați descoperirea și urmărirea aplicațiilor AppDaemon",
                     "country": "Filtrează cu codul țării.",
                     "experimental": "Activați funcțiile experimentale",
+                    "netdaemon": "Activați descoperirea și urmărirea aplicațiilor NetDaemon",
                     "not_in_use": "Nu este utilizat cu YAML",
                     "release_limit": "Număr de versiuni afișate.",
                     "sidepanel_icon": "Pictogramă Panou lateral",

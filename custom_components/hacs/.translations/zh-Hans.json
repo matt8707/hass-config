@@ -13,6 +13,8 @@
         "integration": "自定义组件",
         "integrations": "自定义组件",
         "manage": "管理",
+        "netdaemon": "NetDaemon应用",
+        "netdaemon_apps": "NetDaemon应用",
         "plugin": "Lovelace插件",
         "plugins": "Lovelace插件",
         "python_script": "Python脚本",
@@ -34,6 +36,7 @@
             "user": {
                 "data": {
                     "appdaemon": "启用AppDaemon应用发现和跟踪",
+                    "netdaemon": "启用NetDaemon应用发现和跟踪",
                     "python_script": "启用python_scripts发现和跟踪",
                     "sidepanel_icon": "侧面板图标",
                     "sidepanel_title": "侧面板标题",
@@ -75,6 +78,7 @@
                     "country": "用国家代码过滤。",
                     "debug": "启用调试。",
                     "experimental": "启用实验功能",
+                    "netdaemon": "启用NetDaemon应用发现和跟踪",
                     "not_in_use": "不适用于 YAML",
                     "release_limit": "要显示的发行数量。",
                     "sidepanel_icon": "侧面板图标",

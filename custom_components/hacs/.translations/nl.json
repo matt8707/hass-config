@@ -13,6 +13,8 @@
         "integration": "Integratie",
         "integrations": "Integraties",
         "manage": "beheer",
+        "netdaemon": "NetDaemon",
+        "netdaemon_apps": "NetDaemon Apps",
         "plugin": "Plugin",
         "plugins": "Plugins",
         "python_script": "Python Script",
@@ -34,6 +36,7 @@
             "user": {
                 "data": {
                     "appdaemon": "Zet AppDaemon apps ontdekken & traceren aan",
+                    "netdaemon": "Zet NetDaemon apps ontdekken & traceren aan",
                     "python_script": "Zet python_scripts ontdekken & traceren aan",
                     "sidepanel_icon": "Zijpaneel icoon",
                     "sidepanel_title": "Zijpaneel titel",
@@ -74,6 +77,7 @@
                     "country": "Filter met land code.",
                     "debug": "Schakel debug in.",
                     "experimental": "Zet experimentele functies aan",
+                    "netdaemon": "Zet NetDaemon apps ontdekken & traceren aan",
                     "not_in_use": "Niet in gebruik met YAML",
                     "release_limit": "Aantal releases om te laten zien.",
                     "sidepanel_icon": "Zijpaneel icoon",

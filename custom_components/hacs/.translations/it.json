@@ -13,6 +13,8 @@
         "integration": "Integrazione",
         "integrations": "Integrazioni",
         "manage": "gestione",
+        "netdaemon": "NetDaemon",
+        "netdaemon_apps": "Applicazioni NetDaemon",
         "plugin": "Plugin",
         "plugins": "Plugin",
         "python_script": "Script python",
@@ -34,6 +36,7 @@
             "user": {
                 "data": {
                     "appdaemon": "Abilita il rilevamento e il monitoraggio delle applicazioni AppDaemon",
+                    "netdaemon": "Abilita il rilevamento e il monitoraggio delle applicazioni NetDaemon",
                     "python_script": "Abilita il rilevamento e il monitoraggio dei python_scripts",
                     "sidepanel_icon": "Icona nel pannello laterale",
                     "sidepanel_title": "Titolo nel pannello laterale",
@@ -75,6 +78,7 @@
                     "country": "Filtra con prefisso internazionale.",
                     "debug": "Abilita debug.",
                     "experimental": "Abilita funzionalità sperimentali",
+                    "netdaemon": "Abilita il rilevamento e il monitoraggio delle applicazioni NetDaemon",
                     "not_in_use": "Non in uso con YAML",
                     "release_limit": "Numero di versioni da mostrare.",
                     "sidepanel_icon": "Icona nel pannello laterale",
