@@ -282,12 +282,8 @@ views:
                 {% endif %}
               {% endif %}
 
-              {% if is_state('person.mattias', 'home') and is_state('person.sanja', 'not_home') %} 
-                Sanja gick för {{ states('sensor.sanja_last_changed_h') }} sedan
+              Nästa buss {{ states('sensor.skanetrafiken') }}
 
-              {% elif is_state('person.mattias', 'not_home') and is_state('person.sanja', 'home') %} 
-                Mattias gick för {{ states('sensor.mattias_last_changed_h') }} sedan 
-              {% endif %}
 
               {{ states('sensor.tvatta_countdown') }}
 
@@ -299,6 +295,14 @@ views:
 
               {% if is_state('binary_sensor.nas_internet_access', 'off') %}{{'\u26A0\uFE0F'}} Kontrollera NAS internetåtkomst{% endif %}
 
+            # {% if is_state('person.mattias', 'home') and is_state('person.sanja', 'not_home') %} 
+            #   Sanja gick för {{ states('sensor.sanja_last_changed_h') }} sedan
+
+            # {% elif is_state('person.mattias', 'not_home') and is_state('person.sanja', 'home') %} 
+            #   Mattias gick för {{ states('sensor.mattias_last_changed_h') }} sedan 
+            # {% endif %}
+
+            # {{ as_timestamp(states('sensor.malmo_c')) | timestamp_custom ('%H:%M') }} tåg
             style:
               '--ha-card-background': none
               '--ha-card-box-shadow': none
@@ -312,10 +316,10 @@ views:
               letter-spacing: 0.06vw
               line-height: 2.05vw
               max-width: 17vw
-              opacity: 0.65
+              opacity: 0.75
               position: absolute
               top: 16%
-              width: 17.5vw
+              width: 17vw
             type: 'custom:hui-markdown-card'
 
           - type: conditional
