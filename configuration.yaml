@@ -85,28 +85,18 @@ recorder:
   include:
     entities: 
       ['light.belysning', 'light.fonsterlampa', 'media_player.sony_bravia_tv', 'media_player.playstation_4',
-
        'light.datorlampa', 'light.taklampor', 'switch.dator_template', 'switch.wemo_monitorer',
-
        'light.mattias', 'light.sanja', 'switch.wemo_flakt', 'media_player.samsung_tv_remote',
-
        'media_player.vardagsrum', 'media_player.sovrum', 'media_player.google_nest_mini',
-
        'light.badrum', 'light.taklampa', 'light.kladkammare_2', 'light.hall',
-
        'person.mattias', 'person.sanja',
-
        'vacuum.xiaomi_vacuum_cleaner', 'sensor.roborock_battery_level', 'sensor.roborock_fan_speed',
-
        'sensor.hall_temperature', 'binary_sensor.hall_motion', 'binary_sensor.badrum_motion', 
        'binary_sensor.garderob_motion', 'binary_sensor.wemo_motion',
-
        'sensor.tvatta_countdown',
-
        'sensor.imac_cpu_per', 'sensor.imac_mem_per', 'sensor.imac_system_ssd',
        'sensor.imac_macintosh_hd', 'sensor.imac_time_machine',
-
-       'sensor.synology_dsm_network_up', 'sensor.synology_dsm_network_down']
+       'sensor.synology_dsm_network_up', 'sensor.synology_dsm_network_down', 'sensor.aktuellt_timpris']
 
 automation: !include automations.yaml
 script: !include scripts.yaml
@@ -216,10 +206,13 @@ input_boolean:
 
   motion_hall:
     name: hallen
+    initial: off
   motion_garderob:
     name: klädkammaren
+    initial: off
   motion_badrum:
     name: badrummet
+    initial: off
 
 input_number:
   monitorer_volume:
@@ -432,6 +425,7 @@ shell_command:
   restart_hass_docker: !secret restart_hass_docker
   clear_logs: truncate -s 0 /config/home-assistant.log
   switchbot_rpi: !secret switchbot_rpi
+  update_data_kwh: !secret update_data_kwh
 
 group:
   automation_system_reference:
