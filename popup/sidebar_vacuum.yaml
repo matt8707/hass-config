@@ -235,7 +235,7 @@
                           crop:
                             top: 150
                             bottom: 88
-                            left: 135
+                            left: 152
                             right: 0
                           min_height: 0
                           map_scale: 2
