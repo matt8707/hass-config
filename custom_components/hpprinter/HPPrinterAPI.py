@@ -95,7 +95,7 @@ class HPPrinterAPI:
                 for ns in NAMESPACES_TO_REMOVE:
                     content = content.replace(f'{ns}:', '')
 
-                json_data = xmltodict.parse(content)
+                json_data = await self._hass.async_add_executor_job(xmltodict.parse, content)
 
                 result = json_data
 

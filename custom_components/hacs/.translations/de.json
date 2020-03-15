@@ -120,6 +120,7 @@
         "note_installed": "Wird installiert nach",
         "note_integration": "du musst es dann noch in die Datei 'configuration.yaml' hinzufügen",
         "note_plugin": "du musst es dann noch in deine Lovelace-Einstellungen ('ui-lovelace.yaml' oder im Raw-Konfigurationseditor) hinzufügen",
+        "note_plugin_post_107": "Du musst es noch zu deiner Lovelace-Konfiguration hinzufügen ('configuration.yaml' oder der Ressourceneditor '\/config\/lovelace\/resources')",
         "open_issue": "Problem melden",
         "open_plugin": "Plugin öffnen",
         "reinstall": "Neu installieren",
