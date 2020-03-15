@@ -42,7 +42,7 @@ resources:
     type: module
   - url: /community_plugin/mod/light-slider-card.js?v=3.2.2
     type: js
-  - url: /community_plugin/mod/hass-bha-icons.js?v=fc7df76
+  - url: /community_plugin/mod/hass-bha-icons.js?v=f015ee3
     type: js
   - url: /local/font.css #'https://sf.abarba.me/font.css'
     type: css
@@ -148,6 +148,36 @@ views:
               top: 53.4%
               cursor: default
             type: state-label
+
+          #################################################################
+          #                                                               #
+          #                            COVID-19                           #
+          #                                                               #
+          #################################################################
+      
+          - content: >
+              <font color='#6a7377'> ‍  ‍  ‍  ‍  ‍ 
+              <b><ha-icon icon="mdi:mdi:bacteria-outline"></ha-icon> Coronavirus</b>  ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
+              <b><ha-icon icon="mdi:mdi:emoticon-sad"></ha-icon> {{ states('sensor.sweden_coronavirus_current') }}</b> smittade  ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
+              <b><ha-icon icon="mdi:emoticon-happy"></ha-icon> {{ states('sensor.sweden_coronavirus_recovered') }}</b> tillfrisknade  ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
+              <b><ha-icon icon="mdi:grave-stone"></ha-icon> {{ states('sensor.sweden_coronavirus_deaths') }}</b> avlidna  ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
+              <ha-icon icon="mdi:chart-bar"></ha-icon> {{ ((states('sensor.sweden_coronavirus_confirmed') | int / 10327589 ) * 100) | round(4) }}% av Sverige
+              </font>
+            style:
+              '--ha-card-background': none
+              '--ha-card-box-shadow': none
+              '--primary-text-color': '#6a7377'
+              font-family: SF Display
+              font-size: 1.2vw
+              font-weight: 400
+              height: 1px
+              left: 67.4%
+              letter-spacing: 0.06vw
+              line-height: 2.05vw
+              opacity: 0.6
+              top: 91.5%
+              width: 90vw
+            type: 'custom:hui-markdown-card'
 
           #############################################################################################################################################
           #                                                                                                                                           #
@@ -282,7 +312,7 @@ views:
                 {% endif %}
               {% endif %}
 
-              Nästa buss {{ states('sensor.skanetrafiken') }}
+              Nästa buss går {{ states('sensor.skanetrafiken') }}
 
 
               {{ states('sensor.tvatta_countdown') }}
@@ -295,14 +325,6 @@ views:
 
               {% if is_state('binary_sensor.nas_internet_access', 'off') %}{{'\u26A0\uFE0F'}} Kontrollera NAS internetåtkomst{% endif %}
 
-            # {% if is_state('person.mattias', 'home') and is_state('person.sanja', 'not_home') %} 
-            #   Sanja gick för {{ states('sensor.sanja_last_changed_h') }} sedan
-
-            # {% elif is_state('person.mattias', 'not_home') and is_state('person.sanja', 'home') %} 
-            #   Mattias gick för {{ states('sensor.mattias_last_changed_h') }} sedan 
-            # {% endif %}
-
-            # {{ as_timestamp(states('sensor.malmo_c')) | timestamp_custom ('%H:%M') }} tåg
             style:
               '--ha-card-background': none
               '--ha-card-box-shadow': none
@@ -311,15 +333,12 @@ views:
               font-size: 1.6vw
               font-weight: 300
               height: 1px
-              max-height: 4vw
               left: 11%
               letter-spacing: 0.06vw
               line-height: 2.05vw
-              max-width: 17vw
               opacity: 0.75
-              position: absolute
               top: 16%
-              width: 17vw
+              width: 17.5vw
             type: 'custom:hui-markdown-card'
 
           - type: conditional
@@ -329,8 +348,7 @@ views:
             elements:
               - cards:
                 - content: >
-                    {{'\u26A0\uFE0F'}} <b>Krisinformation</b><br>
-
+                    {{'\u26A0\uFE0F'}} <b>Krisinformation</b><br><br>
                     {{ as_timestamp(state_attr('sensor.krisinformation_sverige', 'messages')[0]["Published"]) | timestamp_custom('%Y-%m-%d') }}<br>
                     {{ state_attr('sensor.krisinformation_sverige', 'messages')[0]["Message"] | truncate(280, True, '...', 0) }}
                   style: |
@@ -338,21 +356,32 @@ views:
                       padding-top: 0.4vw;
                     }
                   type: 'custom:hui-markdown-card'
-                - buttons:
-                    - icon: 'mdi:check-bold'
-                      name: OK
-                      service: input_boolean.turn_off
-                      service_data:
-                        entity_id: input_boolean.krisinformation_visibility
-                      style:
-                        background: '#FFFFFF10'
-                        color: 'rgba(255, 255, 255, 0.8)'
-                        border-radius: 0.6vw
-                        font-weight: 500
-                        font-family: SF Display
-                        padding: 0.7vw 1vw 0.8vw 0.7vw
-                        margin-bottom: 1.3vw
-                  type: 'custom:button-entity-row'
+                - type: "custom:button-card"
+                  show_icon: false
+                  show_name: false
+                  show_label: true
+                  label: OK
+                  tap_action:
+                    action: call-service
+                    service: input_boolean.turn_off
+                    service_data:
+                      entity_id: input_boolean.krisinformation_visibility
+                  styles:
+                    label:
+                      - font-size: 1.5vw
+                      - background: '#FFFFFF10'
+                      - border-radius: 0.6vw
+                      - font-weight: 500
+                      - letter-spacing: 0.09vw
+                      - opacity: 0.65
+                      - padding: 0.7vw 1vw 0.8vw 1vw
+                      - font-family: SF Display
+                      - margin-bottom: 1vw
+                      - margin-top: -0.5vw
+                  style:
+                    left: 10.8%
+                    top: 78%
+                    font-size: 1.6vw
                 style:
                   '--ha-card-background': '#5a1f1f'
                   '--ha-card-box-shadow': none
@@ -371,6 +400,7 @@ views:
                   top: 18%
                   width: 17.5vw
                   hyphens: auto
+                  z-index: 10
                   '--ha-card-border-radius': 0.7vw
                   '--ha-card-border': '0.1vw solid #292c2e'
                 type: 'custom:vertical-stack-in-card'
@@ -2715,8 +2745,7 @@ views:
           #################################################################
 
           - entity: switch.auto_hemma_template
-            hold_action:
-              action: none
+            hold_action: !include popup/hemma_data_kwh.yaml
             state_image:
               'off': /local/auto_hemma_off.png
               'on': /local/auto_hemma_on.gif
