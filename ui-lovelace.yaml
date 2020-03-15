@@ -168,14 +168,14 @@ views:
               '--ha-card-box-shadow': none
               '--primary-text-color': '#6a7377'
               font-family: SF Display
-              font-size: 1.2vw
+              font-size: 1.15vw
               font-weight: 400
               height: 1px
-              left: 67.4%
+              left: 67.6%
               letter-spacing: 0.06vw
               line-height: 2.05vw
-              opacity: 0.6
-              top: 91.5%
+              opacity: 0.5
+              top: 91.9%
               width: 90vw
             type: 'custom:hui-markdown-card'
 
@@ -357,8 +357,6 @@ views:
                     }
                   type: 'custom:hui-markdown-card'
                 - type: "custom:button-card"
-                  show_icon: false
-                  show_name: false
                   show_label: true
                   label: OK
                   tap_action:
@@ -376,12 +374,12 @@ views:
                       - opacity: 0.65
                       - padding: 0.7vw 1vw 0.8vw 1vw
                       - font-family: SF Display
-                      - margin-bottom: 1vw
-                      - margin-top: -0.5vw
-                  style:
-                    left: 10.8%
-                    top: 78%
-                    font-size: 1.6vw
+                    card:
+                      - width: 4.5vw
+                      - height: 5vw
+                      - margin: auto
+                      - margin-top: -1vw
+                      - padding-bottom: 1vw
                 style:
                   '--ha-card-background': '#5a1f1f'
                   '--ha-card-box-shadow': none
