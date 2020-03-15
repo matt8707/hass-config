@@ -19,7 +19,7 @@
                       style: |
                         ha-card {
                           margin-top: -1.5em;
-                          margin-left: 0.4em;
+                          margin-left: 0.5em;
                         }
                       type: history-graph
                     - entities:
@@ -38,18 +38,16 @@
                           margin-right: 0.55em;
                         }
                       type: entities
-
                     - type: map
                       default_zoom: 15
                       entities:
                         - device_tracker.iphone
                       style: |
                         ha-card {
-                          margin-top: -2em;
-                          padding: 2em;
-                          opacity: 0.9;
+                          height: 24.9em;
+                          border-radius: 0em 0em 0.8vw 0.8vw !important;
+                          filter: invert(1) contrast(80%) hue-rotate(250deg);
                         }
-
                   type: 'custom:vertical-stack-in-card'
                 deviceID:
                   - this
@@ -57,4 +55,4 @@
                   '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
                   border-radius: 0.8vw
                   opacity: 0.9
-                title: Sanja
+                title: Mattias
