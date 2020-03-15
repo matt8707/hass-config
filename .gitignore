@@ -12,6 +12,7 @@ bravia.conf
 google_calendars.yaml
 known_devices.yaml
 secrets.yaml
+secrets.py
 themes
 tts
 www/plex
