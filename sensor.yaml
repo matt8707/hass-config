@@ -17,6 +17,10 @@
       - /config/home-assistant_v2.db
       - /config/home-assistant.log
 
+  - platform: file
+    name: oresundskraft
+    file_path: /config/python/data.kwh
+
   - platform: systemmonitor
     resources:
       - type: disk_use_percent
@@ -29,14 +33,14 @@
     display_options:
       ['time', 'date']
 
-  - platform: dnsip
+  - platform: scrape
+    resource: https://elen.nu/timpriser-pa-el-for-elomrade-se4-malmo
+    name: Aktuellt timpris
+    select: ".elspot-area-price"
+    value_template: '{{ ((value.split(" ")[0]) | replace (",", "."))}}'
+    unit_of_measurement: "öre/kWh"
 
-  # - platform: trafikverket_train
-  #   api_key: !secret trafikverket_api_key
-  #   trains:
-  #   - name: !secret trafikverket_to
-  #     from: !secret trafikverket_from
-  #     to: !secret trafikverket_to
+  - platform: dnsip
 
   - platform: darksky
     api_key: !secret darksky_api_key
@@ -220,18 +224,12 @@
           {% endif %}
 
       hass_version_template:
-        icon_template: 'mdi:home-assistant'
-        friendly_name_template: >-
-          {% if states('sensor.hass_version_installed') == states('sensor.hass_version_latest') %}
-            Installerad version
-          {% else %}
-            Senste versionen
-          {% endif %}
+        friendly_name: Senaste versionen
         value_template: >-
           {% if states('sensor.hass_version_installed') == states('sensor.hass_version_latest') %}
-            {{ states('sensor.hass_version_installed') }}
+            Ja
           {% else %}
-            {{ states('sensor.hass_version_installed') }} < {{ states('sensor.hass_version_latest') }}
+            Nej - {{ states('sensor.hass_version_latest') }}
           {% endif %}
 
       hass_release_template:
@@ -241,9 +239,7 @@
           {{ state_attr('calendar.home_assistant_devs','message') }}
         value_template: >-
           {% set dev = state_attr('calendar.home_assistant_devs', 'start_time') %}
-          {% set sub_timmar = as_timestamp(dev) | timestamp_custom('%H') | int / 24 %}
-          {% set count = (as_timestamp(dev) - as_timestamp(now())) / 86400 - sub_timmar %}
-          {{ (count + sub_timmar) | round }} dagar
+          {{ ((as_timestamp(dev) - as_timestamp(now())) / 86400) | int + 1 }} dagar
 
       printer_status_template:
         friendly_name: Skrivare
@@ -547,7 +543,7 @@
             {% set count = (as_timestamp(calendar_tvattid) - as_timestamp(nu_tid)) / 86400 - sub_timmar %}
 
             {% if count <= 0.0 %}
-              {{'\U0001F4A6'}} Tvätt idag <br>klockan {{ tid }}
+              {{'\U0001F4A6'}} Tvätt idag {{ tid }}
             {% elif count <= 1.0 %}
               Tvätt imorgon klockan {{ tid }}
             {% elif count <= 2.0 %}
@@ -650,9 +646,9 @@
           states('sensor.synology_dsm_temperature_sdc'), states('sensor.synology_dsm_temperature_sdd')) | max }}
 
       nas_net_down:
-        friendly_name: Nedladdning
+        value_template: ' '
         icon_template: 'mdi:arrow-down-bold'
-        value_template: >
+        friendly_name_template: >
           {% set down = states('sensor.synology_dsm_network_down') | float %}
           {% if down < 1000 %}
           {{ down | round(0) }} kb/s
@@ -661,9 +657,9 @@
           {% endif %}
 
       nas_net_up:
-        friendly_name: Uppladdning
-        icon_template: 'mdi:arrow-up-bold-outline'
-        value_template: >
+        value_template: ' '
+        icon_template: 'mdi:arrow-up-bold'
+        friendly_name_template: >
           {% set up = states('sensor.synology_dsm_network_up') | float %}
           {% if up < 1000 %}
           {{ up | round(0) }} kb/s
@@ -774,3 +770,112 @@
           {% else %} {% set artist_title = state_attr('media_player.google_nest_mini', 'media_artist') 
           + ' - ' + state_attr('media_player.google_nest_mini', 'media_title') %}
           {{ artist_title | truncate(30, True, '...', 0) }} {% endif %}
+
+    ####################################################
+    #                                                  #
+    #                    Monthly kWh                   #
+    #                                                  #
+    ####################################################
+
+      oresundskraft_1:
+        friendly_name_template: >
+          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[0].split(' ')[1], 
+          '%Y-%m-%d')) | timestamp_custom('%b') }}
+        value_template: "{{ states('sensor.oresundskraft').split(',')[0].split(' ')[2] | int }}"
+
+      oresundskraft_2:
+        friendly_name_template: >
+          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[1].split(' ')[1], 
+          '%Y-%m-%d')) | timestamp_custom('%b') }}
+        value_template: "{{ states('sensor.oresundskraft').split(',')[1].split(' ')[2] | int }}"
+
+      oresundskraft_3:
+        friendly_name_template: >
+          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[2].split(' ')[1], 
+          '%Y-%m-%d')) | timestamp_custom('%b') }}
+        value_template: "{{ states('sensor.oresundskraft').split(',')[2].split(' ')[2] | int }}"
+
+      oresundskraft_4:
+        friendly_name_template: >
+          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[3].split(' ')[1], 
+          '%Y-%m-%d')) | timestamp_custom('%b') }}
+        value_template: "{{ states('sensor.oresundskraft').split(',')[3].split(' ')[2] | int }}"
+
+      oresundskraft_5:
+        friendly_name_template: >
+          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[4].split(' ')[1], 
+          '%Y-%m-%d')) | timestamp_custom('%b') | replace('y','j') }}
+        value_template: "{{ states('sensor.oresundskraft').split(',')[4].split(' ')[2] | int }}"
+
+      oresundskraft_6:
+        friendly_name_template: >
+          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[5].split(' ')[1], 
+          '%Y-%m-%d')) | timestamp_custom('%b') }}
+        value_template: "{{ states('sensor.oresundskraft').split(',')[5].split(' ')[2] | int }}"
+
+      oresundskraft_7:
+        friendly_name_template: >
+          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[6].split(' ')[1], 
+          '%Y-%m-%d')) | timestamp_custom('%b') }}
+        value_template: "{{ states('sensor.oresundskraft').split(',')[6].split(' ')[2] | int }}"
+
+      oresundskraft_8:
+        friendly_name_template: >
+          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[7].split(' ')[1], 
+          '%Y-%m-%d')) | timestamp_custom('%b') }}
+        value_template: "{{ states('sensor.oresundskraft').split(',')[7].split(' ')[2] | int }}"
+
+      oresundskraft_9:
+        friendly_name_template: >
+          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[8].split(' ')[1], 
+          '%Y-%m-%d')) | timestamp_custom('%b') }}
+        value_template: "{{ states('sensor.oresundskraft').split(',')[8].split(' ')[2] | int }}"
+
+      oresundskraft_10:
+        friendly_name_template: >
+          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[9].split(' ')[1], 
+          '%Y-%m-%d')) | timestamp_custom('%b') | replace('c','k') }}
+        value_template: "{{ states('sensor.oresundskraft').split(',')[9].split(' ')[2] | int }}"
+
+      oresundskraft_11:
+        friendly_name_template: >
+          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[10].split(' ')[1], 
+          '%Y-%m-%d')) | timestamp_custom('%b') }}
+        value_template: "{{ states('sensor.oresundskraft').split(',')[10].split(' ')[2] | int }}"
+
+      oresundskraft_12:
+        friendly_name_template: >
+          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[11].split(' ')[1], 
+          '%Y-%m-%d')) | timestamp_custom('%b') }}
+        value_template: "{{ states('sensor.oresundskraft').split(',')[11].split(' ')[2] | int }}"
+
+      last_month_kwh:
+        unit_of_measurement: 'kWh'
+        friendly_name_template: >
+          {% if now().month-1 == 0 %}
+            Beräknad {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[11].split(' ')[1], '%Y-%m-%d')) | 
+            timestamp_custom('%B') | replace('ay', 'aj') | replace('y', 'i') | replace('ch', 's') 
+            | replace('ne', 'ni') | replace('ust', 'usti') | replace('ct', 'kt')  }}
+          {% else %}
+            {% for month in range(12) %}
+              {% if now().month-1 == (states('sensor.oresundskraft').split(',')[month].split(' ')[0]|join|string).lstrip('0')|int %}
+                Beräknad {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[month].split(' ')[1], '%Y-%m-%d')) | 
+                timestamp_custom('%B') | replace('ay', 'aj') | replace('y', 'i') | replace('ch', 's') 
+                | replace('ne', 'ni') | replace('ust', 'usti') | replace('ct', 'kt')  }}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        value_template: >
+          {% for month in range(12) %}
+            {% if now().month-1 == (states('sensor.oresundskraft').split(',')
+            [month].split(' ')[0]|join|string).lstrip('0')|int %}
+              {{ states('sensor.oresundskraft').split(',')[month].split(' ')[2] }}
+            {% endif %}
+          {% endfor %}
+
+      total_year_kwh:
+        entity_id: sensor.oresundskraft
+        friendly_name_template: > 
+          Totalt för {{ now().year }}
+        value_template: "{{ states('sensor.oresundskraft').split('total=')[1]}}"
+        unit_of_measurement: 'kWh'
