@@ -4,24 +4,19 @@
                 card:
                   cards:
                     - entities:
+                        - entity: sensor.hass_version_installed
+                          icon: 'mdi:home-assistant'
+                          name: Installerad version
                         - entity: sensor.hass_version_template
+                          icon: 'mdi:update'
                         - entity: sensor.hass_release_template
+                          icon: 'mdi:dev-to'
                         - entity: sensor.home_assistant_v2_db
                           icon: 'mdi:database'
                           name: Databas
                         - entity: sensor.home_assistant_log
                           icon: 'mdi:file-document'
                           name: Loggfil
-                        - entity: sensor.vpn_nas
-                          style: |
-                            :host {
-                            --paper-item-icon-color: 
-                              {% if is_state('sensor.vpn_nas', 'Ansluten') %}
-                                #9e9e9e
-                              {% else %}
-                                red
-                              {% endif %};
-                              }
                         - entity: sensor.docker_home_assistant_up_time
                           name: Senaste omstart
                         - background_style:
@@ -152,7 +147,7 @@
                     - entities:
                         - entity: switch.fullykiosk_screen
                           icon: 'mdi:tablet'
-                          name: Skärm av/på
+                          name: Display
                         - entity: input_number.fullykiosk_brightness_slider
                         - entity: switch.fullykiosk_screensaver
                           icon: 'mdi:power-sleep'
@@ -288,6 +283,16 @@
                         - entity: sensor.nas_disk_temp
                         - entity: sensor.drifttid
                           icon: 'mdi:calendar-month'
+                        - entity: sensor.vpn_nas
+                          style: |
+                            :host {
+                            --paper-item-icon-color: 
+                              {% if is_state('sensor.vpn_nas', 'Ansluten') %}
+                                #9e9e9e
+                              {% else %}
+                                red
+                              {% endif %};
+                              }
                         - background_style:
                             background: >-
                               radial-gradient(circle, rgba(45,45,45,1) 0%,
@@ -409,6 +414,7 @@
                               margin-left: -0.35em;
                               margin-right: -0.7em;
                               margin-top: 0.1em;
+                              z-index: 3;
                             }
                           title: Lagring - 10.5TB
                           title_style:
@@ -426,24 +432,45 @@
                             service: update_entity
                             data:
                               entity_id: sensor.disk_use_percent
-                        - entity: sensor.nas_net_down
-                          style: |
-                            :host {
-                            --paper-item-icon-color: green;
-                              }
-                        - entity: sensor.nas_net_up
-                          style: |
-                            :host {
-                            --paper-item-icon-color: #385581;
-                              }
+                        - type: 'custom:hui-horizontal-stack-card'
+                          cards:
+                            - entities:
+                                - entity: sensor.nas_net_down
+                                  style: |
+                                    :host {
+                                    --paper-item-icon-color: green;
+                                      }
+                              style: |
+                                ha-card {
+                                  box-shadow: none;
+                                  background: none;
+                                  margin-top: -1.4em;
+                                  max-height: 1px;
+                                  z-index: 2;
+                                }
+                              type: entities
+                            - entities:
+                                - entity: sensor.nas_net_up
+                                  style: |
+                                    :host {
+                                    --paper-item-icon-color: #385581;
+                                      }
+                              style: |
+                                ha-card {
+                                  box-shadow: none;
+                                  background: none;
+                                  margin-top: -1.4em;
+                                  max-height: 1px;
+                                  z-index: 2;
+                                } 
+                              z-index: 2;
+                              type: entities
                         - align_state: left
                           entities:
                             - color: '#385581'
                               entity: sensor.synology_dsm_network_up
-                              name: Uppladdning
                             - color: green
                               entity: sensor.synology_dsm_network_down
-                              name: Nedladdning
                           group: false
                           points_per_hour: 20
                           line_width: 2.5
@@ -462,7 +489,7 @@
                               border-radius: 0.35em;
                               background: none;
                               box-shadow: none;
-                              margin-top: -6.1em;
+                              margin-top: -3em;
                               margin-left: 0.65em;
                               height: 10em;
                             }
