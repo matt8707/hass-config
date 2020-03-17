@@ -383,7 +383,7 @@ var xt="adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prot
 
     <form>
     <div class='light-slider-card-center'>
-      <input .value='${t.attributes.brightness || 0 }' .onchange='${e=>this.setBrightness(e,t)}'  id="slider_input" type="range" min="0" max="254" oninput="slider_output.value = Math.round(slider_input.value / 2.54 )">
+      <input .value='${t.attributes.brightness || 0 }' .onchange='${e=>this.setBrightness(e,t)}'  id="slider_input" type="range" min="0" step="2.54" max="254" oninput="slider_output.value = Math.round(slider_input.value / 2.54 )">
       </div>
       <div class='percent' style="margin-left: 0.3vw;">
      <output .value='${Math.round(t.attributes.brightness / 2.54 ) || 0 }' id="slider_output"></output><span style="margin-left: 0.05em; margin-top: -0.03em; font-size: 0.85em;">%</span>
