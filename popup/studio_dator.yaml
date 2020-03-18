@@ -17,7 +17,7 @@
                                   background: '#FFFFFF00'
                                   box-shadow: none
                                 entity: sensor.imac_cpu_per
-                                height: 2.1em
+                                height: 2em
                                 icon: 'mdi:chip'
                                 icon_position: left
                                 icon_style:
@@ -37,7 +37,8 @@
                                     background-color: #FFFFFF00;
                                     margin-left: -0.35em;
                                     margin-right: -0.5em;
-                                    margin-top: 0.1em;
+                                    margin-top: -2px;
+                                    max-height: 36px;
                                   }
                                 title: Processor
                                 title_style:
@@ -63,7 +64,7 @@
                                   background: '#FFFFFF00'
                                   box-shadow: none
                                 entity: sensor.imac_mem_per
-                                height: 2.1em
+                                height: 2em
                                 icon: 'mdi:memory'
                                 icon_position: left
                                 icon_style:
@@ -83,7 +84,8 @@
                                     background-color: #FFFFFF00;
                                     margin-left: -0.35em;
                                     margin-right: -0.5em;
-                                    margin-top: 0.1em;
+                                    max-height: 36px;
+                                    margin-bottom: 10px;
                                   }
                                 title: Minne
                                 title_style:
@@ -125,6 +127,18 @@
                                      red
                                    {% endif %};
                                    }
+                              - entity: input_boolean.lock_computer
+                                icon: 'mdi:lock-alert'
+                                name: Avstängningslås
+                                style: |
+                                  :host {
+                                  --paper-item-icon-color: 
+                                   {% if is_state('input_boolean.lock_computer', 'on') %}
+                                      #3182b7
+                                   {% else %}
+                                     #9da0a2
+                                   {% endif %};
+                                   }
                               - background_style:
                                   background: >-
                                     radial-gradient(circle, rgba(45,45,45,1) 0%,
@@ -133,7 +147,7 @@
                                   background: '#FFFFFF00'
                                   box-shadow: none
                                 entity: sensor.imac_system_ssd
-                                height: 2.1em
+                                height: 2em
                                 icon: 'mdi:harddisk'
                                 icon_position: left
                                 icon_style:
@@ -153,7 +167,8 @@
                                     background-color: #FFFFFF00;
                                     margin-left: -0.35em;
                                     margin-right: -0.5em;
-                                    margin-top: 0.1em;
+                                    max-height: 36px;
+                                    margin-top: -2px;
                                   }
                                 title: System SSD
                                 title_style:
@@ -179,7 +194,7 @@
                                   background: '#FFFFFF00'
                                   box-shadow: none
                                 entity: sensor.imac_macintosh_hd
-                                height: 2.1em
+                                height: 2em
                                 icon: 'mdi:harddisk'
                                 icon_position: left
                                 icon_style:
@@ -199,7 +214,7 @@
                                     background-color: #FFFFFF00;
                                     margin-left: -0.35em;
                                     margin-right: -0.5em;
-                                    margin-top: 0.1em;
+                                    max-height: 36px;
                                   }
                                 title: Macintosh HD
                                 title_style:
@@ -225,7 +240,7 @@
                                   background: '#FFFFFF00'
                                   box-shadow: none
                                 entity: sensor.imac_time_machine
-                                height: 2.1em
+                                height: 2em
                                 icon: 'mdi:harddisk'
                                 icon_position: left
                                 icon_style:
@@ -245,7 +260,7 @@
                                     background-color: #FFFFFF00;
                                     margin-left: -0.35em;
                                     margin-right: -0.5em;
-                                    margin-top: 0.1em;
+                                    max-height: 36px;
                                   }
                                 title: Time Machine
                                 title_style:
@@ -263,23 +278,12 @@
                                   service: update_entity
                                   data:
                                     entity_id: sensor.imac_time_machine
-                              - entity: input_boolean.lock_computer
-                                icon: 'mdi:lock-alert'
-                                name: 'Ignorera "Stäng allt"'
-                                style: |
-                                  :host {
-                                  --paper-item-icon-color: 
-                                   {% if is_state('input_boolean.lock_computer', 'on') %}
-                                      #3182b7
-                                   {% else %}
-                                     #9da0a2
-                                   {% endif %};
-                                   }
                             style: |
                               ha-card {
                                 margin-bottom: -1em;
                                 margin-right: 0.55em;
                               }
+                            show_header_toggle: false
                             type: entities
                           - entities:
                               - buttons:
@@ -292,7 +296,8 @@
                                       font-size: 1em
                                       font-weight: 500
                                       letter-spacing: 0.015em
-                                      padding: 1em
+                                      padding: 1.2em 1.5em 1.2em 1.2em
+                                      margin-bottom: 0.25em
                                   - icon: 'mdi:restart'
                                     name: Starta om
                                     service: shell_command.imac_restart
@@ -302,7 +307,8 @@
                                       font-size: 1em
                                       font-weight: 500
                                       letter-spacing: 0.015em
-                                      padding: 1em
+                                      padding: 1.2em 1.5em 1.2em 1.2em
+                                      margin-bottom: 0.25em
                                 type: 'custom:button-entity-row'
                             style: |
                               ha-card {
