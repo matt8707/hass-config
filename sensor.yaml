@@ -58,6 +58,25 @@
     value_template: '{{ value_json.isScreenOn }}'
     scan_interval: 3
 
+  - platform: rest
+    name: docker_cpu
+    resource: !secret docker_cpu_resource
+    value_template: >
+      {% set cpuDelta = value_json.cpu_stats.cpu_usage.total_usage - value_json.precpu_stats.cpu_usage.total_usage %}
+      {% set systemDelta = value_json.cpu_stats.system_cpu_usage - value_json.precpu_stats.system_cpu_usage %}
+      {{ (cpuDelta / systemDelta * value_json.cpu_stats.cpu_usage.percpu_usage | length * 100) | round(1) }}
+    json_attributes:
+      - cpu_stats
+      - precpu_stats
+      - memory_stats
+
+  - platform: rest
+    name: docker_uptime
+    resource: !secret docker_uptime_resource
+    value_template: >
+      {{ value_json.status.split(' ')[1:] | join(' ') | replace ('About a minute', '1 minut') | replace ('seconds', 'sekunder')
+      | replace ('minutes', 'minuter') | replace ('hours', 'timmar') | replace ('days', 'dagar') + ' sedan' }}
+
   - platform: synologydsm_custom
     # changed timedelta, updates every 30 seconds instead of 15min
     host: !secret synologydsm_host
@@ -192,6 +211,11 @@
       placeholder:
         value_template: " "
 
+      docker_mem:
+        value_template: >-
+          {{ (state_attr('sensor.docker_cpu', 'memory_stats')['usage'] / 
+          state_attr('sensor.docker_cpu', 'memory_stats')['limit'] * 100) | round(1) }}
+
       vpn_imac:
         friendly_name: VPN
         value_template: >-
@@ -239,7 +263,10 @@
           {{ state_attr('calendar.home_assistant_devs','message') }}
         value_template: >-
           {% set dev = state_attr('calendar.home_assistant_devs', 'start_time') %}
+          {% if ((as_timestamp(dev) - as_timestamp(now())) / 86400) < 0 %}
+          Idag {% else %}
           {{ ((as_timestamp(dev) - as_timestamp(now())) / 86400) | int + 1 }} dagar
+          {% endif %}
 
       printer_status_template:
         friendly_name: Skrivare
