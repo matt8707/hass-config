@@ -47,7 +47,7 @@
                             background: '#FFFFFF00'
                             box-shadow: none
                           entity: sensor.hp_printer_inkcartridge_black
-                          height: 2.1em
+                          height: 2em
                           icon: 'mdi:water-outline'
                           icon_position: left
                           unit_of_measurement: '%'
@@ -68,7 +68,8 @@
                               background-color: #FFFFFF00;
                               margin-left: -0.35em;
                               margin-right: -0.5em;
-                              margin-top: 0.1em;
+                              margin-top: -2px;
+                              max-height: 36px;
                             }
                           title: Svart
                           title_style:
@@ -94,7 +95,7 @@
                             background: '#FFFFFF00'
                             box-shadow: none
                           entity: sensor.hp_printer_inkcartridge_cyanmagentayellow
-                          height: 2.1em
+                          height: 2em
                           icon: 'mdi:water'
                           icon_position: left
                           unit_of_measurement: '%'
@@ -115,7 +116,7 @@
                               background-color: #FFFFFF00;
                               margin-left: -0.35em;
                               margin-right: -0.5em;
-                              margin-top: 0.1em;
+                              max-height: 36px;
                             }
                           title: Färg
                           title_style:
