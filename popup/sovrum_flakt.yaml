@@ -11,6 +11,7 @@
                           name: Slå på om temp är över 26 °C
                         - entity: input_number.fan_timer
                         - entity: sensor.flakt_timer_value
+                      show_header_toggle: false
                       type: entities
                     - entities:
                         - color: '#e74c3c'
