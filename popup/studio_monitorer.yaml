@@ -24,6 +24,7 @@
                           icon: 'mdi:speaker-off'
                           name: Stäng av när dator stängs av
                         - entity: group.automation_system_reference
+                      show_header_toggle: false
                       style: |
                         ha-card {
                           margin-bottom: -1em;
