@@ -4,15 +4,15 @@
   "config_flow": true,
   "documentation": "https://www.home-assistant.io/integrations/apple_tv",
   "requirements": [
-    "pyatv==0.4.0a16"
+    "pyatv==0.4.0"
   ],
   "zeroconf": [
     "_mediaremotetv._tcp.local.",
     "_appletv-v2._tcp.local.",
     "_touch-able._tcp.local."
   ],
-  "homekit": {},
   "dependencies": [],
+  "after_dependencies": ["discovery"],
   "codeowners": [
     "@postlund"
   ]
