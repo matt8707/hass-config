@@ -182,17 +182,15 @@
   trigger:
     - platform: state
       entity_id: switch.wemo_monitorer
-  condition:
-    - condition: state
-      entity_id: switch.dator_template
-      state: 'on'
   action:
-    - service_template: >
-        {% if trigger.from_state.state == 'unavailable' %}
-        script.dummy
-        {% elif trigger.to_state.state == 'on' %}
-        script.reference_monitors {% else %}
-        script.reference_headphones {% endif %}
+    - service: script.turn_on
+      data_template:
+        entity_id: >-
+          {% if trigger.from_state.state == 'off' and trigger.to_state.state == 'on' %}
+          script.reference_monitors
+          {% elif trigger.from_state.state == 'on' and trigger.to_state.state == 'off' %}
+          script.reference_headphones 
+          {% else %} script.dummy {% endif %}
 
 - alias: turn_off_monitorer
   initial_state: true
