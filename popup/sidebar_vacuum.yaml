@@ -13,10 +13,10 @@
                                 radial-gradient(circle, rgba(45,45,45,1) 0%,
                                 rgba(0,0,0,1) 100%)
                             card_style:
-                              background: '#FFFFFF00'
+                              background: none
                               box-shadow: none
                             entity: sensor.roborock_filter
-                            height: 2.1em
+                            height: 2em
                             icon: 'mdi:filter-variant'
                             icon_position: left
                             icon_style:
@@ -33,10 +33,11 @@
                                 value: 10
                             style: |
                               ha-card {
-                                background-color: #FFFFFF00;
+                                background-color: none;
                                 margin-left: -0.35em;
                                 margin-right: -0.5em;
-                                margin-top: 0.1em;
+                                margin-top: -2px;
+                                max-height: 36px;
                               }
                             title: Filter
                             title_style:
@@ -53,10 +54,10 @@
                                 radial-gradient(circle, rgba(45,45,45,1) 0%,
                                 rgba(0,0,0,1) 100%)
                             card_style:
-                              background: '#FFFFFF00'
+                              background: none
                               box-shadow: none
                             entity: sensor.roborock_huvudborste
-                            height: 2.1em
+                            height: 2em
                             icon: 'mdi:broom'
                             icon_position: left
                             icon_style:
@@ -73,10 +74,10 @@
                                 value: 10
                             style: |
                               ha-card {
-                                background-color: #FFFFFF00;
+                                background-color: none;
                                 margin-left: -0.35em;
                                 margin-right: -0.5em;
-                                margin-top: 0.1em;
+                                max-height: 36px;
                               }
                             title: Huvudborste
                             title_style:
@@ -93,10 +94,10 @@
                                 radial-gradient(circle, rgba(45,45,45,1) 0%,
                                 rgba(0,0,0,1) 100%)
                             card_style:
-                              background: '#FFFFFF00'
+                              background: none
                               box-shadow: none
                             entity: sensor.roborock_sidoborste
-                            height: 2.1em
+                            height: 2em
                             icon: 'mdi:tools'
                             icon_position: left
                             icon_style:
@@ -113,10 +114,10 @@
                                 value: 10
                             style: |
                               ha-card {
-                                background-color: #FFFFFF00;
+                                background-color: none;
                                 margin-left: -0.35em;
                                 margin-right: -0.5em;
-                                margin-top: 0.1em;
+                                max-height: 36px;
                               }
                             title: Sidoborste
                             title_style:
@@ -133,10 +134,10 @@
                                 radial-gradient(circle, rgba(45,45,45,1) 0%,
                                 rgba(0,0,0,1) 100%)
                             card_style:
-                              background: '#FFFFFF00'
+                              background: none
                               box-shadow: none
                             entity: sensor.roborock_sensorer
-                            height: 2.1em
+                            height: 2em
                             icon: 'mdi:spray-bottle'
                             icon_position: left
                             icon_style:
@@ -153,10 +154,11 @@
                                 value: 10
                             style: |
                               ha-card {
-                                background-color: #FFFFFF00;
+                                background-color: none;
                                 margin-left: -0.35em;
                                 margin-right: -0.5em;
-                                margin-top: 0.1em;
+                                margin-bottom: 10px;
+                                max-height: 36px;
                               }
                             title: Sensorer
                             title_style:
@@ -233,9 +235,9 @@
                           entity: sensor.xiaomi_map
                           rotate: 0
                           crop:
-                            top: 150
+                            top: 170
                             bottom: 88
-                            left: 152
+                            left: 149
                             right: 0
                           min_height: 0
                           map_scale: 2
@@ -273,8 +275,8 @@
                               - letter-spacing: 0.003em
                               - color: '#aeb0b0'
                           style:
-                            left: 24%
-                            top: 77%
+                            left: 22.5%
+                            top: 76%
                         - type: "custom:button-card"
                           name: Kök
                           show_label: false
@@ -292,8 +294,8 @@
                               - letter-spacing: 0.003em
                               - color: '#aeb0b0'
                           style:
-                            left: 17.5%
-                            top: 52.5%
+                            left: 17%
+                            top: 51%
                         - type: "custom:button-card"
                           name: Studio
                           show_label: false
@@ -311,7 +313,7 @@
                               - letter-spacing: 0.003em
                               - color: '#aeb0b0'
                           style:
-                            left: 38%
+                            left: 39.5%
                             top: 22%
                         - type: "custom:button-card"
                           name: Vardagsrum
@@ -462,14 +464,14 @@
                                   ]]]
                           style:
                             left: 80%
-                            top: 87.6%
+                            top: 82.5%
                             width: 10.2em
                       style: |
                         ha-card {
                           background: rgba(36, 42, 43, 0.88);
                           box-shadow: none;
                           border-radius: 1em;
-                          height: 43.9em;
+                          height: 41.9em;
                         }
                       title: " ‍  ‍ Kartläggning"
                   column_num: 2
