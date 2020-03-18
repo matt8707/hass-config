@@ -5,53 +5,29 @@ custom_header:
         user_agent: Mobile
       config:
         kiosk_mode: false
-
-resources:
-  - url: /community_plugin/bar-card/bar-card.js
-    type: js
-  - url: /community_plugin/button-card/button-card.js
-    type: module
-  - url: /community_plugin/button-entity-row/button-entity-row.js
-    type: module
-  - url: /community_plugin/custom-header/custom-header.js
-    type: module
-  - url: /community_plugin/light-entity-card/light-entity-card.js
-    type: js
-  - url: /community_plugin/lovelace-card-mod/card-mod.js
-    type: module
-  - url: /community_plugin/lovelace-layout-card/layout-card.js
-    type: module
-  - url: /community_plugin/lovelace-valetudo-map-card/valetudo-map-card.js
-    type: js
-  - url: /community_plugin/mini-graph-card/mini-graph-card-bundle.js
-    type: module
-  - url: /community_plugin/swipe-card/swipe-card.js
-    type: module
-  - url: /community_plugin/popup-backdrop-filter/popup-backdrop-filter.js
-    type: module
-  - url: /community_plugin/upcoming-media-card/upcoming-media-card.js
-    type: js
-  - url: /community_plugin/vertical-stack-in-card/vertical-stack-in-card.js
-    type: js
-
-  ####################################################################
-
-  - url: /community_plugin/mod/circle-sensor-card.js?v=1.2.0
-    type: module
-  - url: /community_plugin/mod/mini-media-player-bundle.js?v=1.6.0
-    type: module
-  - url: /community_plugin/mod/light-slider-card.js?v=3.2.2
-    type: js
-  - url: /community_plugin/mod/hass-bha-icons.js?v=f015ee3
-    type: js
-  - url: /local/font.css #'https://sf.abarba.me/font.css'
-    type: css
-
+preload:
+  - markdown
+  - conditional
+  - map
+  - entities
+ 
 title: Hemma
 views:
   - badges: []
     cards:
       - elements:
+          - title: preload_popup
+            entities:
+              - input_number.monitorer_volume
+              - group.automation_system_reference
+              - input_select.hdmi
+              - person.mattias
+              - person.sanja
+            style:
+              left: -50%
+              opacity: 0
+            type: 'custom:hui-entities-card'
+
           - entity: sensor.placeholder
             prefix: Vardagsrum
             tap_action:
