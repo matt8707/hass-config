@@ -127,7 +127,7 @@ recorder:
        'sensor.tvatta_countdown',
        'sensor.imac_cpu_per', 'sensor.imac_mem_per', 'sensor.imac_system_ssd',
        'sensor.imac_macintosh_hd', 'sensor.imac_time_machine',
-       'sensor.synology_dsm_network_up', 'sensor.synology_dsm_network_down', 'sensor.aktuellt_timpris']
+       'sensor.synology_dsm_network_up', 'sensor.synology_dsm_network_down', 'sensor.aktuellt_spotpris']
 
 automation: !include automations.yaml
 script: !include scripts.yaml
