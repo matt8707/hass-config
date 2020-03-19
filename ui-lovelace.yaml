@@ -10,7 +10,7 @@ preload:
   - conditional
   - map
   - entities
- 
+
 title: Hemma
 views:
   - badges: []
@@ -329,7 +329,7 @@ views:
                     {{ state_attr('sensor.krisinformation_sverige', 'messages')[0]["Message"] | truncate(280, True, '...', 0) }}
                   style: |
                     ha-card {
-                      padding-top: 0.4vw;
+                      padding: 0.4vw;
                     }
                   type: 'custom:hui-markdown-card'
                 - type: "custom:button-card"
@@ -343,7 +343,7 @@ views:
                   styles:
                     label:
                       - font-size: 1.5vw
-                      - background: '#FFFFFF10'
+                      - background: '#FFFFFF15'
                       - border-radius: 0.6vw
                       - font-weight: 500
                       - letter-spacing: 0.09vw
@@ -353,9 +353,9 @@ views:
                     card:
                       - width: 4.5vw
                       - height: 5vw
-                      - margin: auto
-                      - margin-top: -1vw
+                      - margin-top: -0.5vw
                       - padding-bottom: 1vw
+                      - margin-left: 138%
                 style:
                   '--ha-card-background': '#5a1f1f'
                   '--ha-card-box-shadow': none
@@ -375,6 +375,7 @@ views:
                   width: 17.5vw
                   hyphens: auto
                   z-index: 10
+
                   '--ha-card-border-radius': 0.7vw
                   '--ha-card-border': '0.1vw solid #292c2e'
                 type: 'custom:vertical-stack-in-card'
