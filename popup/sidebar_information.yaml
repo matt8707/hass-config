@@ -479,7 +479,7 @@
                               border-radius: 0.35em;
                               background: none;
                               box-shadow: none;
-                              margin-top: -3.5em;
+                              margin-top: -3.55em;
                               margin-left: 0.65em;
                               height: 10em;
                             }
