@@ -35,7 +35,7 @@
 
   - platform: scrape
     resource: https://elen.nu/timpriser-pa-el-for-elomrade-se4-malmo
-    name: Aktuellt timpris
+    name: Aktuellt spotpris
     select: ".elspot-area-price"
     value_template: '{{ ((value.split(" ")[0]) | replace (",", "."))}}'
     unit_of_measurement: "öre/kWh"
@@ -74,8 +74,9 @@
     name: docker_uptime
     resource: !secret docker_uptime_resource
     value_template: >
-      {{ value_json.status.split(' ')[1:] | join(' ') | replace ('About a minute', '1 minut') | replace ('seconds', 'sekunder')
-      | replace ('minutes', 'minuter') | replace ('hours', 'timmar') | replace ('days', 'dagar') + ' sedan' }}
+      {{ value_json.status.split(' ')[1:] | join(' ') | replace ('About a minute', '1 minut') 
+      | replace ('About an hour', '1 timme')  | replace ('seconds', 'sekunder') | replace ('minutes', 'minuter') 
+      | replace ('hours', 'timmar') | replace ('days', 'dagar') + ' sedan' }}
 
   - platform: synologydsm_custom
     # changed timedelta, updates every 30 seconds instead of 15min
@@ -263,7 +264,8 @@
           {{ state_attr('calendar.home_assistant_devs','message') }}
         value_template: >-
           {% set dev = state_attr('calendar.home_assistant_devs', 'start_time') %}
-          {% if ((as_timestamp(dev) - as_timestamp(now())) / 86400) < 0 %}
+          {% if ((as_timestamp(dev) - as_timestamp(now())) / 86400) < -1 %}
+          Släppt {% elif ((as_timestamp(dev) - as_timestamp(now())) / 86400) < 0 %}
           Idag {% else %}
           {{ ((as_timestamp(dev) - as_timestamp(now())) / 86400) | int + 1 }} dagar
           {% endif %}
@@ -878,6 +880,16 @@
 
       last_month_kwh:
         unit_of_measurement: 'kWh'
+        value_template: >
+          {% for month in range(12) %}
+            {% if now().month-1 == (states('sensor.oresundskraft').split(',')
+            [month].split(' ')[0]|join|string).lstrip('0')|int %}
+              {{ states('sensor.oresundskraft').split(',')[month].split(' ')[2] }}
+            {% endif %}
+          {% endfor %}
+
+      last_month_price:
+        entity_id: sensor.oresundskraft
         friendly_name_template: >
           {% if now().month-1 == 0 %}
             Beräknad {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[11].split(' ')[1], '%Y-%m-%d')) | 
@@ -893,12 +905,12 @@
             {% endfor %}
           {% endif %}
         value_template: >
-          {% for month in range(12) %}
-            {% if now().month-1 == (states('sensor.oresundskraft').split(',')
-            [month].split(' ')[0]|join|string).lstrip('0')|int %}
-              {{ states('sensor.oresundskraft').split(',')[month].split(' ')[2] }}
-            {% endif %}
-          {% endfor %}
+          {% set solkraft = states('sensor.last_month_kwh') | float * 0.05 %}
+          {% set kwh = states('sensor.last_month_kwh') | float %}
+          {% set arsavgift = 480 / 365 * 30 | float %}
+          {% set spotpris = states('sensor.aktuellt_spotpris') | float / 100 %}
+          {{ (solkraft + arsavgift + (0.2373 * kwh * 1.25)) | round(2) }}
+        unit_of_measurement: 'kr'
 
       total_year_kwh:
         entity_id: sensor.oresundskraft
@@ -906,3 +918,15 @@
           Totalt för {{ now().year }}
         value_template: "{{ states('sensor.oresundskraft').split('total=')[1]}}"
         unit_of_measurement: 'kWh'
+
+      year:
+        entity_id: sensor.time
+        friendly_name_template: > 
+          {{ now().year }}
+        value_template: ' '
+
+      last_year:
+        entity_id: sensor.time
+        friendly_name_template: > 
+          {{ now().year-1 }}
+        value_template: ' '
