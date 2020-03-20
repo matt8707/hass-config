@@ -14,50 +14,61 @@ default_config:
 frontend:
   themes: !include themes.yaml
 
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+sensor: !include sensor.yaml
+
 lovelace:
   mode: yaml
   resources:
-    - url: /hacsfiles/bar-card/bar-card.js
-      type: js
-    - url: /hacsfiles/button-card/button-card.js
-      type: module
-    - url: /hacsfiles/button-entity-row/button-entity-row.js
-      type: module
-    - url: /hacsfiles/custom-header/custom-header.js
-      type: module
-    - url: /hacsfiles/light-entity-card/light-entity-card.js
-      type: js
-    - url: /hacsfiles/lovelace-card-mod/card-mod.js
-      type: module
-    - url: /hacsfiles/lovelace-card-preloader/lovelace-card-preloader.js
-      type: module
-    - url: /hacsfiles/lovelace-layout-card/layout-card.js
-      type: module
-    - url: /hacsfiles/lovelace-valetudo-map-card/valetudo-map-card.js
-      type: js
-    - url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js
-      type: module
-    - url: /hacsfiles/swipe-card/swipe-card.js
-      type: module
-    - url: /hacsfiles/popup-backdrop-filter/popup-backdrop-filter.js
-      type: module
-    - url: /hacsfiles/upcoming-media-card/upcoming-media-card.js
-      type: js
-    - url: /hacsfiles/vertical-stack-in-card/vertical-stack-in-card.js
-      type: js
+    [ {'url':'/hacsfiles/bar-card/bar-card.js',                               'type':'js'},
+      {'url':'/hacsfiles/button-card/button-card.js',                         'type':'module'},
+      {'url':'/hacsfiles/button-entity-row/button-entity-row.js',             'type':'module'},
+      {'url':'/hacsfiles/custom-header/custom-header.js',                     'type':'module'},
+      {'url':'/hacsfiles/light-entity-card/light-entity-card.js',             'type':'js'},
+      {'url':'/hacsfiles/lovelace-card-mod/card-mod.js',                      'type':'module'},
+      {'url':'/hacsfiles/lovelace-card-preloader/lovelace-card-preloader.js', 'type':'module'},
+      {'url':'/hacsfiles/lovelace-layout-card/layout-card.js',                'type':'module'},
+      {'url':'/hacsfiles/lovelace-valetudo-map-card/valetudo-map-card.js',    'type':'js'},
+      {'url':'/hacsfiles/mini-graph-card/mini-graph-card-bundle.js',          'type':'module'},
+      {'url':'/hacsfiles/swipe-card/swipe-card.js',                           'type':'module'},
+      {'url':'/hacsfiles/popup-backdrop-filter/popup-backdrop-filter.js',     'type':'module'},
+      {'url':'/hacsfiles/upcoming-media-card/upcoming-media-card.js',         'type':'js'},
+      {'url':'/hacsfiles/vertical-stack-in-card/vertical-stack-in-card.js',   'type':'js'},
 
-    ####################################################################
+      {'url':'/hacsfiles/mod/circle-sensor-card.js?v=1.2.0',                  'type':'module'},
+      {'url':'/hacsfiles/mod/mini-media-player-bundle.js?v=1.6.0',            'type':'module'},
+      {'url':'/hacsfiles/mod/light-slider-card.js?v=3.2.2',                   'type':'js'},
+      {'url':'/hacsfiles/mod/hass-bha-icons.js?v=f015ee3',                    'type':'js'},
+      {'url':'/local/font.css',                                               'type':'css'} ]
 
-    - url: /hacsfiles/mod/circle-sensor-card.js?v=1.2.0
-      type: module
-    - url: /hacsfiles/mod/mini-media-player-bundle.js?v=1.6.0
-      type: module
-    - url: /hacsfiles/mod/light-slider-card.js?v=3.2.2
-      type: js
-    - url: /hacsfiles/mod/hass-bha-icons.js?v=f015ee3
-      type: js
-    - url: /local/font.css #'https://sf.abarba.me/font.css'
-      type: css
+logger:
+  default: warning
+  logs:
+    braviarc.braviarc: fatal
+    homeassistant.components.websocket_api: fatal
+    homeassistant.components.command_line.sensor: fatal
+    homeassistant.components.homekit.type_media_players: fatal
+    homeassistant.components.shell_command: fatal
+
+recorder:
+  purge_keep_days: 7
+  include:
+    entities: 
+      ['light.belysning', 'light.fonsterlampa', 'media_player.sony_bravia_tv', 'media_player.playstation_4',
+       'light.datorlampa', 'light.taklampor', 'switch.dator_template', 'switch.wemo_monitorer',
+       'light.mattias', 'light.sanja', 'switch.wemo_flakt', 'media_player.samsung',
+       'media_player.vardagsrum', 'media_player.sovrum', 'media_player.google_nest_mini',
+       'light.badrum', 'light.taklampa', 'light.kladkammare_2', 'light.hall',
+       'person.mattias', 'person.sanja',
+       'vacuum.xiaomi_vacuum_cleaner', 'sensor.roborock_battery_level', 'sensor.roborock_fan_speed',
+       'sensor.hall_temperature', 'binary_sensor.hall_motion', 'binary_sensor.badrum_motion', 
+       'binary_sensor.garderob_motion', 'binary_sensor.wemo_motion',
+       'sensor.tvatta_countdown',
+       'sensor.imac_cpu_per', 'sensor.imac_mem_per', 'sensor.imac_system_ssd',
+       'sensor.imac_macintosh_hd', 'sensor.imac_time_machine',
+       'sensor.synology_dsm_network_up', 'sensor.synology_dsm_network_down', 'sensor.aktuellt_spotpris']
 
 person:
   - name: Mattias
@@ -71,6 +82,49 @@ person:
     device_trackers:
       ['device_tracker.sanja', 'device_tracker.sanja_bluetooth']
 
+device_tracker:
+  - platform: iphonedetect
+    consider_home: 120
+    new_device_defaults:
+      track_new_devices: false
+    hosts:
+      Mattias: !secret iphonedetect_mattias
+      Sanja: !secret iphonedetect_sanja
+
+  - platform: bluetooth_tracker
+
+hue:
+  bridges:
+    - host: !secret hue_host
+      allow_unreachable: true
+
+wemo:
+  discovery: false
+  static: !secret wemo_static
+
+media_player:
+  - platform: braviatv
+    host: !secret braviatv_host
+
+cast:
+  media_player:
+    - host: !secret google_cast_host
+
+samsungtv:
+  - host: !secret samsungtv_host
+
+hacs:
+  token: !secret hacs_token
+
+google:
+  client_id: !secret google_client_id
+  client_secret: !secret google_client_secret
+
+vacuum:
+  - platform: xiaomi_miio
+    host: !secret roborock_host
+    token: !secret roborock_token
+
 tts:
   - platform: google_translate
     language: 'sv'
@@ -81,58 +135,10 @@ mqtt:
   discovery: true
   discovery_prefix: homeassistant
 
-cast:
-  media_player:
-    - host: !secret google_cast_host
-
-wemo:
-  discovery: false
-  static: !secret wemo_static
-
 plex:
   host: !secret plex_host
   port: !secret plex_port
   token: !secret plex_token
-
-hue:
-  bridges:
-    - host: !secret hue_host
-      allow_unreachable: true
-
-logger:
-  default: warning
-  logs:
-    braviarc.braviarc: fatal
-    homeassistant.components.websocket_api: fatal
-    homeassistant.components.command_line.sensor: fatal
-    homeassistant.components.homekit.type_media_players: fatal
-    homeassistant.components.shell_command: fatal
-    # switchbot: fatal
-    # pyatv: debug
-    # custom_components.apple_tv: debug
-
-recorder:
-  purge_keep_days: 7
-  include:
-    entities: 
-      ['light.belysning', 'light.fonsterlampa', 'media_player.sony_bravia_tv', 'media_player.playstation_4',
-       'light.datorlampa', 'light.taklampor', 'switch.dator_template', 'switch.wemo_monitorer',
-       'light.mattias', 'light.sanja', 'switch.wemo_flakt', 'media_player.samsung_tv_remote',
-       'media_player.vardagsrum', 'media_player.sovrum', 'media_player.google_nest_mini',
-       'light.badrum', 'light.taklampa', 'light.kladkammare_2', 'light.hall',
-       'person.mattias', 'person.sanja',
-       'vacuum.xiaomi_vacuum_cleaner', 'sensor.roborock_battery_level', 'sensor.roborock_fan_speed',
-       'sensor.hall_temperature', 'binary_sensor.hall_motion', 'binary_sensor.badrum_motion', 
-       'binary_sensor.garderob_motion', 'binary_sensor.wemo_motion',
-       'sensor.tvatta_countdown',
-       'sensor.imac_cpu_per', 'sensor.imac_mem_per', 'sensor.imac_system_ssd',
-       'sensor.imac_macintosh_hd', 'sensor.imac_time_machine',
-       'sensor.synology_dsm_network_up', 'sensor.synology_dsm_network_down', 'sensor.aktuellt_spotpris']
-
-automation: !include automations.yaml
-script: !include scripts.yaml
-scene: !include scenes.yaml
-sensor: !include sensor.yaml
 
 browser_mod:
   devices:
@@ -141,13 +147,93 @@ browser_mod:
     c2080cea-6627150a:
       name: tablet
 
+timer:
+  laundry:
+    duration: '01:00:00'
+    icon: 'mdi:washing-machine'
+
+binary_sensor:
+  - platform: command_line
+    name: check_plex
+    command: !secret check_plex
+    scan_interval: 300
+    payload_on: "on"
+    payload_off: "off"
+
+  - platform: ping
+    host: 8.8.8.8
+    name: nas_internet_access
+
+shell_command:
+  # Setup on macos
+  # System Preferences > Sharing > Remote Login
+  # ssh root@hassio.local
+  # ssh-keygen
+  # /config/.ssh/id_rsa
+  # ssh-copy-id -i /config/.ssh/id_rsa USER@XXX.XXX.X.X
+
+  imac_turn_off: !secret imac_turn_off
+  imac_sleep: !secret imac_sleep
+  imac_restart: !secret imac_restart
+  notify_motion_hall: !secret notify_motion_hall
+  notify_laundry: !secret notify_laundry
+
+  monitorer_volume_slider: !secret monitorer_volume_slider
+  monitorer_mute_off: !secret monitorer_mute_off
+  monitorer_mute_on: !secret monitorer_mute_on
+
+  fullykiosk_brightness_slider: !secret fullykiosk_brightness_slider
+  fullykiosk_load_start_url: !secret fullykiosk_load_start_url
+  fullykiosk_restart_app: !secret fullykiosk_restart_app
+  fullykiosk_screensaver_on: !secret fullykiosk_screensaver_on
+  fullykiosk_screensaver_off: !secret fullykiosk_screensaver_off
+
+  reference_click: !secret reference_click
+  reference_kill: !secret reference_kill
+  reference_monitors: !secret reference_monitors
+  reference_headphones: !secret reference_headphones
+
+  restart_hass_docker: !secret restart_hass_docker
+  clear_logs: truncate -s 0 /config/home-assistant.log
+  switchbot_rpi: !secret switchbot_rpi
+  update_data_kwh: !secret update_data_kwh
+
+group:
+  automation_system_reference:
+    name: Automatisk kalibrationsprofil
+    icon: 'mdi:tune-vertical'
+    entities:
+      ['automation.reference_monitors', 'automation.reference_headphones']
+
+  ui_sound:
+    entities:
+      ['automation.ui_sound_on', 'automation.ui_sound_off', 'automation.ui_sound_popup']
+
+light:
+  - platform: group
+    name: Belysning
+    entities:
+      ['light.tvlampa', 'light.golvlampa']
+
+  - platform: group
+    name: Taklampor
+    entities:
+      ['light.spot_1', 'light.spot_2']
+
+  - platform: group
+    name: alla_lampor_utom_hall
+    entities:
+      ['light.fonsterlampa', 'light.tvlampa', 'light.golvlampa', 'light.datorlampa', 
+      'light.vask_hoger', 'light.vask_vanster', 'light.kladkammare_2', 'light.taklampa', 
+      'light.mattias', 'light.sanja', 'light.spot_1', 'light.spot_2']
+
 homekit:
   ip_address: !secret homekit_ip_address
   auto_start: false
   filter:
     include_entities:
       ['switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 'media_player.sony_bravia_tv', 
-      'media_player.samsung_tv_remote', 'switch.playstation_template', 'input_boolean.motion_hall', 
+      'media_player.samsung', 'switch.playstation_template', 'input_boolean.motion_hall', 
       'input_boolean.motion_garderob', 'input_boolean.motion_badrum', 
       'script.auto_hemma', 'script.auto_stang_allt']
   entity_config:
@@ -162,7 +248,7 @@ homekit:
       name: Tv
       feature_list:
         - feature: on_off
-    media_player.samsung_tv_remote:
+    media_player.samsung:
       name: Samsung Tv
       feature_list:
         - feature: on_off
@@ -178,7 +264,7 @@ cloud:
     filter:
       include_entities:
         ['switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 'media_player.sony_bravia_tv', 
-        'media_player.samsung_tv_remote', 'switch.playstation_template', 'media_player.playstation_4', 
+        'media_player.samsung', 'switch.playstation_template', 'media_player.playstation_4', 
         'switch.fullykiosk_screen', 'switch.fullykiosk_screensaver', 'script.auto_hemma', 'script.auto_stang_allt']
     entity_config:
       switch.wemo_flakt:
@@ -199,7 +285,7 @@ cloud:
         aliases:
           ['Tv', 'Sony Tv', 'Sony Bravia Tv', 'Bravia Tv', 'Vardagsrums Tv', 'Vardagsrums Teven', 'Tv Vardagsrum']
         room: Vardagsrum
-      media_player.samsung_tv_remote:
+      media_player.samsung:
         name: Samsung Tv
         aliases:
           ['Samsung Tv', 'Sovrums Tv', 'Sovrums Teven', 'Tv Sovrum']
@@ -220,15 +306,10 @@ cloud:
           ['Stäng allt', 'Auto Stäng allt']
         room: Hall
 
-timer:
-  laundry:
-    duration: '01:00:00'
-    icon: 'mdi:washing-machine'
-
 input_boolean:
   dator_template:
   sony_bravia_tv:
-  samsung_6_series_50:
+  samsung:
   playstation_template:
 
   lock_computer:
@@ -311,8 +392,10 @@ input_select:
       ['Senast nedladdat', 'Vardagsrum', 'Sovrum', 'Playstation 4', 'Google Nest Mini']
 
 switch:
-  # - platform: switchbot
-  #   mac: !secret switchbot_mac
+  - platform: wake_on_lan
+    mac: !secret wake_on_lan_mac_address
+    name: iMac
+    host: !secret wake_on_lan_host
 
   - platform: command_line
     switches:
@@ -340,7 +423,7 @@ switch:
           service: script.tv_off
 
       tv2_template:
-        value_template: "{{ is_state('switch.samsung_6_series_50', 'on') }}"
+        value_template: "{{ is_state('media_player.samsung', 'on') }}"
         turn_on:
           service: script.tv2_on
         turn_off:
@@ -418,116 +501,3 @@ switch:
         turn_off:
           service: media_player.media_pause
           entity_id: media_player.google_nest_mini
-
-  - platform: wake_on_lan
-    mac: !secret wake_on_lan_mac_address
-    name: iMac
-    host: !secret wake_on_lan_host
-
-shell_command:
-  # Setup on macos
-  # System Preferences > Sharing > Remote Login
-  # ssh root@hassio.local
-  # ssh-keygen
-  # /config/.ssh/id_rsa
-  # ssh-copy-id -i /config/.ssh/id_rsa USER@XXX.XXX.X.X
-
-  imac_turn_off: !secret imac_turn_off
-  imac_sleep: !secret imac_sleep
-  imac_restart: !secret imac_restart
-  notify_motion_hall: !secret notify_motion_hall
-  notify_laundry: !secret notify_laundry
-
-  monitorer_volume_slider: !secret monitorer_volume_slider
-  monitorer_mute_off: !secret monitorer_mute_off
-  monitorer_mute_on: !secret monitorer_mute_on
-
-  fullykiosk_brightness_slider: !secret fullykiosk_brightness_slider
-  fullykiosk_load_start_url: !secret fullykiosk_load_start_url
-  fullykiosk_restart_app: !secret fullykiosk_restart_app
-  fullykiosk_screensaver_on: !secret fullykiosk_screensaver_on
-  fullykiosk_screensaver_off: !secret fullykiosk_screensaver_off
-
-  reference_click: !secret reference_click
-  reference_kill: !secret reference_kill
-  reference_monitors: !secret reference_monitors
-  reference_headphones: !secret reference_headphones
-
-  restart_hass_docker: !secret restart_hass_docker
-  clear_logs: truncate -s 0 /config/home-assistant.log
-  switchbot_rpi: !secret switchbot_rpi
-  update_data_kwh: !secret update_data_kwh
-
-group:
-  automation_system_reference:
-    name: Automatisk kalibrationsprofil
-    icon: 'mdi:tune-vertical'
-    entities:
-      ['automation.reference_monitors', 'automation.reference_headphones']
-
-  ui_sound:
-    entities:
-      ['automation.ui_sound_on', 'automation.ui_sound_off', 'automation.ui_sound_popup']
-
-hacs:
-  token: !secret hacs_token
-
-vacuum:
-  - platform: xiaomi_miio
-    host: !secret roborock_host
-    token: !secret roborock_token
-
-light:
-  - platform: group
-    name: Belysning
-    entities:
-      ['light.tvlampa', 'light.golvlampa']
-
-  - platform: group
-    name: Taklampor
-    entities:
-      ['light.spot_1', 'light.spot_2']
-
-  - platform: group
-    name: alla_lampor_utom_hall
-    entities:
-      ['light.fonsterlampa', 'light.tvlampa', 'light.golvlampa', 'light.datorlampa', 
-      'light.vask_hoger', 'light.vask_vanster', 'light.kladkammare_2', 'light.taklampa', 
-      'light.mattias', 'light.sanja', 'light.spot_1', 'light.spot_2']
-
-media_player:
-  - platform: braviatv
-    host: !secret braviatv_host
-
-  - platform: samsungtv_custom
-    host: !secret samsungtv_host
-    mac: !secret samsungtv_mac
-    port: !secret samsungtv_port
-    protocol: ws
-
-device_tracker:
-  - platform: iphonedetect
-    consider_home: 120
-    new_device_defaults:
-      track_new_devices: false
-    hosts:
-      Mattias: !secret iphonedetect_mattias
-      Sanja: !secret iphonedetect_sanja
-
-  - platform: bluetooth_tracker
-
-google:
-  client_id: !secret google_client_id
-  client_secret: !secret google_client_secret
-
-binary_sensor:
-  - platform: command_line
-    name: check_plex
-    command: !secret check_plex
-    scan_interval: 300
-    payload_on: "on"
-    payload_off: "off"
-
-  - platform: ping
-    host: 8.8.8.8
-    name: nas_internet_access
