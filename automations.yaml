@@ -177,20 +177,34 @@
         entity_id: input_number.monitorer_volume
         value: "{{ states('sensor.getvolume') }}"
 
-- alias: eq_calibration
+- alias: eq_calibration_headphones 
   initial_state: true
   trigger:
     - platform: state
       entity_id: switch.wemo_monitorer
+      from: 'on'
+      to: 'off'
   action:
-    - service: script.turn_on
-      data_template:
-        entity_id: >-
-          {% if trigger.from_state.state == 'off' and trigger.to_state.state == 'on' %}
-          script.reference_monitors
-          {% elif trigger.from_state.state == 'on' and trigger.to_state.state == 'off' %}
-          script.reference_headphones 
-          {% else %} script.dummy {% endif %}
+    - service: input_number.set_value
+      data:
+        entity_id: input_number.monitorer_volume
+        value: 20
+    - service: script.reference_headphones 
+
+- alias: eq_calibration_monitors
+  initial_state: true
+  trigger:
+    - platform: state
+      entity_id: switch.wemo_monitorer
+      from: 'off'
+      to: 'on'
+  action:
+    - service: input_number.set_value
+      data:
+        entity_id: input_number.monitorer_volume
+        value: 20
+    - service: script.reference_monitors
+    - service: script.reference_monitors
 
 - alias: turn_off_monitorer
   initial_state: true
@@ -314,7 +328,7 @@
   trigger:
     - platform: state
       entity_id: 
-        ['media_player.sony_bravia_tv', 'switch.samsung_6_series_50', 
+        ['media_player.sony_bravia_tv', 'media_player.samsung', 
          'switch.dator_template', 'switch.playstation_template']
   action:
     - service: input_boolean.turn_off
@@ -329,7 +343,7 @@
   trigger:
     - platform: state
       entity_id: 
-        ['input_boolean.sony_bravia_tv', 'input_boolean.samsung_6_series_50', 
+        ['input_boolean.sony_bravia_tv', 'input_boolean.samsung', 
          'input_boolean.dator_template', 'input_boolean.playstation_template']
       to: 'on'
       for:
@@ -379,22 +393,22 @@
   action:
   - service: media_player.select_source
     data_template:
-      entity_id: media_player.samsung_tv_remote
+      entity_id: media_player.samsung
       source: "{{ states('input_select.hdmi2') }}"
 
-- alias: hdmi2_input_select_update
-  initial_state: true
-  trigger:
-  - platform: state
-    entity_id: media_player.samsung_tv_remote
-  action:
-  - service: input_select.select_option
-    data_template:
-      entity_id: input_select.hdmi2
-      option: >-
-        {% if is_state('sensor.samsung_6_series_50_media_input_source', 'HDMI3') %}
-        HDMI {% else %}
-        TV {% endif %}
+# - alias: hdmi2_input_select_update
+#   initial_state: true
+#   trigger:
+#   - platform: state
+#     entity_id: media_player.samsung
+#   action:
+#   - service: input_select.select_option
+#     data_template:
+#       entity_id: input_select.hdmi2
+#       option: >-
+#         {% if is_state('media_player.samsung', 'HDMI3') %}
+#         HDMI {% else %}
+#         TV {% endif %}
 
     ####################################################
     #                                                  #
@@ -499,7 +513,7 @@
       'light.mattias', 'light.sanja', 'light.badrum', 'light.taklampa', 'light.kladkammare_2', 
       'light.hall', 'switch.wemo_flakt', 'switch.wemo_monitorer', 'input_boolean.dator_template', 
       'input_boolean.playstation_template', 'input_boolean.sony_bravia_tv', 
-      'input_boolean.samsung_6_series_50']
+      'input_boolean.samsung']
     from: 'off'
     to: 'on'
   condition:
@@ -644,7 +658,7 @@
       domain: media_player
       service: turn_on
       service_data:
-        entity_id: media_player.samsung_tv_remote
+        entity_id: media_player.samsung
   action:
     - service: remote.send_command
       data:
