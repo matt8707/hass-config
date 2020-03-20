@@ -3,7 +3,7 @@
     device_class: tv
     source_list: ['HDMI 1', 'HDMI 2/MHL', 'HDMI 3', 'HDMI 4']
 
-  media_player.samsung_tv_remote:
+  media_player.samsung:
     device_class: tv
     source_list: ['TV', 'HDMI']
 
@@ -68,3 +68,6 @@
 
   binary_sensor.wemo_motion:
     friendly_name: vardagsrummet
+
+  device_tracker.iphone:
+    entity_picture: "/local/iphonex.svg"
