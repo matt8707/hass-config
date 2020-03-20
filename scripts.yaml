@@ -69,7 +69,7 @@ tv_mute_toggle:
 tv2_on:
   sequence:
     - service: input_boolean.turn_on
-      entity_id: input_boolean.samsung_6_series_50
+      entity_id: input_boolean.samsung
     - service: remote.send_command
       data:
         entity_id: remote.sovrum
@@ -78,17 +78,17 @@ tv2_on:
 tv2_off:
   sequence:
     - service: input_boolean.turn_on
-      entity_id: input_boolean.samsung_6_series_50
-    - service: switch.turn_off
-      entity_id: switch.samsung_6_series_50
+      entity_id: input_boolean.samsung
+    - service: media_player.turn_off
+      entity_id: media_player.samsung
 
 tv2_mute_toggle:
   sequence:
     - service: media_player.volume_mute
       data_template:
-        entity_id: media_player.samsung_tv_remote
+        entity_id: media_player.samsung
         is_volume_muted: >-
-          {% if is_state_attr('media_player.samsung_tv_remote', 'is_volume_muted', false) %}
+          {% if is_state_attr('media_player.samsung', 'is_volume_muted', false) %}
           true {% else %} false {% endif %}
 
 playstation_on:
