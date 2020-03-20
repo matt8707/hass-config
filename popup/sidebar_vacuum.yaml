@@ -221,7 +221,7 @@
                             ha-card {
                               box-shadow: none;
                               border-radius: 1em;
-                              background: rgba(36, 42, 43, 0.88);
+                              background: rgba(34, 38, 39, 0.9);
                               padding-right: 0.7em;
                             }
                           title: " ‍  ‍ Dammsugare"
@@ -468,7 +468,7 @@
                             width: 10.2em
                       style: |
                         ha-card {
-                          background: rgba(36, 42, 43, 0.88);
+                          background: rgba(34, 38, 39, 0.9);
                           box-shadow: none;
                           border-radius: 1em;
                           height: 41.9em;
