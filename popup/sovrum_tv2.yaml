@@ -34,7 +34,7 @@
                                 '--iron-icon-width': 1.7em
                               service: media_player.volume_down
                               service_data:
-                                entity_id: media_player.samsung_tv_remote
+                                entity_id: media_player.samsung
                               style:
                                 background: '#FFFFFF10'
                                 border-radius: 0.7em
@@ -47,7 +47,7 @@
                                 '--iron-icon-width': 1.7em
                               service: media_player.volume_up
                               service_data:
-                                entity_id: media_player.samsung_tv_remote
+                                entity_id: media_player.samsung
                               style:
                                 background: '#FFFFFF10'
                                 border-radius: 0.7em
