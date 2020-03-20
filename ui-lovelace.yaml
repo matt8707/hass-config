@@ -288,7 +288,9 @@ views:
                 {% endif %}
               {% endif %}
 
-              Nästa buss går {{ states('sensor.skanetrafiken') }}
+              {% if states('sensor.skanetrafiken') != 'från' %}
+                Nästa buss går {{ states('sensor.skanetrafiken') }}
+              {% endif %}
 
 
               {{ states('sensor.tvatta_countdown') }}
@@ -1131,7 +1133,7 @@ views:
             title: null
             type: image
           - conditions:
-              - entity: input_boolean.samsung_6_series_50
+              - entity: input_boolean.samsung
                 state: 'on'
             elements:
               - image: /local/sovrum_tv2_on.png
