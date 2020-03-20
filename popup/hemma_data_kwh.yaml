@@ -14,7 +14,7 @@
                                #405914;
                              }
                             ha-card {
-                            margin-left: 11.5em;
+                            margin-left: 50%;
                              }
                           type: entities
                         - entities:
@@ -25,21 +25,14 @@
                             --paper-item-icon-color: 
                                #323637;
                              }
-                            ha-card {
-                            margin-left: 0.4em;
-                             }
                           type: entities
                     - type: horizontal-stack
                       cards:
                         - type: custom:bar-card
                           entity: sensor.placeholder
-                          color: 'var(--kwh_bar)'
                           max: 320
                           direction: up
                           height: 16em
-                          padding: 0em
-                          animation: off
-                          indicator: off
                           style: |
                             ha-card {
                               opacity: 0;
@@ -57,13 +50,13 @@
                           background_style:
                             background: none
                           card_style:
-                            margin-left: -3.2em
+                            margin-left: -3em
                             margin-top: -1.5em
                           title_position: bottom
                           rounding: 0.3em
                           value_style:
                             color: 'var(--kwh_bar)'
-                            filter: brightness(1.7)
+                            filter: brightness(1.5)
                             font-size: 1em
                             text-shadow: none
                             font-weight: 500
@@ -77,7 +70,7 @@
                               {% else %}
                               --kwh_bar: #323637;
                               {% endif %}
-                              --pos: {{ states('sensor.oresundskraft').split(',')[0].split(' ')[2] | int /19.8 }}em;
+                              --pos: {{ states('sensor.oresundskraft').split(',')[0].split(' ')[2] | int /20 }}em;
                             }
                         - type: custom:bar-card
                           entity: sensor.oresundskraft_2
@@ -92,13 +85,13 @@
                           background_style:
                             background: none
                           card_style:
-                            margin-left: -3.2em
+                            margin-left: -3em
                             margin-top: -1.5em
                           title_position: bottom
                           rounding: 0.3em
                           value_style:
                             color: 'var(--kwh_bar)'
-                            filter: brightness(1.7)
+                            filter: brightness(1.5)
                             font-size: 1em
                             text-shadow: none
                             font-weight: 500
@@ -112,7 +105,7 @@
                               {% else %}
                               --kwh_bar: #323637;
                               {% endif %}
-                              --pos: {{ states('sensor.oresundskraft').split(',')[1].split(' ')[2] | int /19.8 }}em;
+                              --pos: {{ states('sensor.oresundskraft').split(',')[1].split(' ')[2] | int /20 }}em;
                             }
                         - type: custom:bar-card
                           entity: sensor.oresundskraft_3
@@ -127,13 +120,13 @@
                           background_style:
                             background: none
                           card_style:
-                            margin-left: -3.2em
+                            margin-left: -3em
                             margin-top: -1.5em
                           title_position: bottom
                           rounding: 0.3em
                           value_style:
                             color: 'var(--kwh_bar)'
-                            filter: brightness(1.7)
+                            filter: brightness(1.5)
                             font-size: 1em
                             text-shadow: none
                             font-weight: 500
@@ -147,7 +140,7 @@
                               {% else %}
                               --kwh_bar: #323637;
                               {% endif %}
-                              --pos: {{ states('sensor.oresundskraft').split(',')[2].split(' ')[2] | int /19.8 }}em;
+                              --pos: {{ states('sensor.oresundskraft').split(',')[2].split(' ')[2] | int /20 }}em;
                             }
                         - type: custom:bar-card
                           entity: sensor.oresundskraft_4
@@ -162,13 +155,13 @@
                           background_style:
                             background: none
                           card_style:
-                            margin-left: -3.2em
+                            margin-left: -3em
                             margin-top: -1.5em
                           title_position: bottom
                           rounding: 0.3em
                           value_style:
                             color: 'var(--kwh_bar)'
-                            filter: brightness(1.7)
+                            filter: brightness(1.5)
                             font-size: 1em
                             text-shadow: none
                             font-weight: 500
@@ -182,7 +175,7 @@
                               {% else %}
                               --kwh_bar: #323637;
                               {% endif %}
-                              --pos: {{ states('sensor.oresundskraft').split(',')[3].split(' ')[2] | int /19.8 }}em;
+                              --pos: {{ states('sensor.oresundskraft').split(',')[3].split(' ')[2] | int /20 }}em;
                             }
                         - type: custom:bar-card
                           entity: sensor.oresundskraft_5
@@ -197,13 +190,13 @@
                           background_style:
                             background: none
                           card_style:
-                            margin-left: -3.2em
+                            margin-left: -3em
                             margin-top: -1.5em
                           title_position: bottom
                           rounding: 0.3em
                           value_style:
                             color: 'var(--kwh_bar)'
-                            filter: brightness(1.7)
+                            filter: brightness(1.5)
                             font-size: 1em
                             text-shadow: none
                             font-weight: 500
@@ -217,7 +210,7 @@
                               {% else %}
                               --kwh_bar: #323637;
                               {% endif %}
-                              --pos: {{ states('sensor.oresundskraft').split(',')[4].split(' ')[2] | int /19.8 }}em;
+                              --pos: {{ states('sensor.oresundskraft').split(',')[4].split(' ')[2] | int /20 }}em;
                             }
                         - type: custom:bar-card
                           entity: sensor.oresundskraft_6
@@ -232,13 +225,13 @@
                           background_style:
                             background: none
                           card_style:
-                            margin-left: -3.2em
+                            margin-left: -3em
                             margin-top: -1.5em
                           title_position: bottom
                           rounding: 0.3em
                           value_style:
                             color: 'var(--kwh_bar)'
-                            filter: brightness(1.7)
+                            filter: brightness(1.5)
                             font-size: 1em
                             text-shadow: none
                             font-weight: 500
@@ -252,7 +245,7 @@
                               {% else %}
                               --kwh_bar: #323637;
                               {% endif %}
-                              --pos: {{ states('sensor.oresundskraft').split(',')[5].split(' ')[2] | int /19.8 }}em;
+                              --pos: {{ states('sensor.oresundskraft').split(',')[5].split(' ')[2] | int /20 }}em;
                             }
                         - type: custom:bar-card
                           entity: sensor.oresundskraft_7
@@ -267,13 +260,13 @@
                           background_style:
                             background: none
                           card_style:
-                            margin-left: -3.2em
+                            margin-left: -3em
                             margin-top: -1.5em
                           title_position: bottom
                           rounding: 0.3em
                           value_style:
                             color: 'var(--kwh_bar)'
-                            filter: brightness(1.7)
+                            filter: brightness(1.5)
                             font-size: 1em
                             text-shadow: none
                             font-weight: 500
@@ -287,7 +280,7 @@
                               {% else %}
                               --kwh_bar: #323637;
                               {% endif %}
-                              --pos: {{ states('sensor.oresundskraft').split(',')[6].split(' ')[2] | int /19.8 }}em;
+                              --pos: {{ states('sensor.oresundskraft').split(',')[6].split(' ')[2] | int /20 }}em;
                             }
                         - type: custom:bar-card
                           entity: sensor.oresundskraft_8
@@ -302,13 +295,13 @@
                           background_style:
                             background: none
                           card_style:
-                            margin-left: -3.2em
+                            margin-left: -3em
                             margin-top: -1.5em
                           title_position: bottom
                           rounding: 0.3em
                           value_style:
                             color: 'var(--kwh_bar)'
-                            filter: brightness(1.7)
+                            filter: brightness(1.5)
                             font-size: 1em
                             text-shadow: none
                             font-weight: 500
@@ -322,7 +315,7 @@
                               {% else %}
                               --kwh_bar: #323637;
                               {% endif %}
-                              --pos: {{ states('sensor.oresundskraft').split(',')[7].split(' ')[2] | int /19.8 }}em;
+                              --pos: {{ states('sensor.oresundskraft').split(',')[7].split(' ')[2] | int /20 }}em;
                             }
                         - type: custom:bar-card
                           entity: sensor.oresundskraft_9
@@ -337,13 +330,13 @@
                           background_style:
                             background: none
                           card_style:
-                            margin-left: -3.2em
+                            margin-left: -3em
                             margin-top: -1.5em
                           title_position: bottom
                           rounding: 0.3em
                           value_style:
                             color: 'var(--kwh_bar)'
-                            filter: brightness(1.7)
+                            filter: brightness(1.5)
                             font-size: 1em
                             text-shadow: none
                             font-weight: 500
@@ -357,7 +350,7 @@
                               {% else %}
                               --kwh_bar: #323637;
                               {% endif %}
-                              --pos: {{ states('sensor.oresundskraft').split(',')[8].split(' ')[2] | int /19.8 }}em;
+                              --pos: {{ states('sensor.oresundskraft').split(',')[8].split(' ')[2] | int /20 }}em;
                             }
                         - type: custom:bar-card
                           entity: sensor.oresundskraft_10
@@ -372,13 +365,13 @@
                           background_style:
                             background: none
                           card_style:
-                            margin-left: -3.2em
+                            margin-left: -3em
                             margin-top: -1.5em
                           title_position: bottom
                           rounding: 0.3em
                           value_style:
                             color: 'var(--kwh_bar)'
-                            filter: brightness(1.7)
+                            filter: brightness(1.5)
                             font-size: 1em
                             text-shadow: none
                             font-weight: 500
@@ -392,7 +385,7 @@
                               {% else %}
                               --kwh_bar: #323637;
                               {% endif %}
-                              --pos: {{ states('sensor.oresundskraft').split(',')[9].split(' ')[2] | int /19.8 }}em;
+                              --pos: {{ states('sensor.oresundskraft').split(',')[9].split(' ')[2] | int /20 }}em;
                             }
                         - type: custom:bar-card
                           entity: sensor.oresundskraft_11
@@ -407,13 +400,13 @@
                           background_style:
                             background: none
                           card_style:
-                            margin-left: -3.2em
+                            margin-left: -3em
                             margin-top: -1.5em
                           title_position: bottom
                           rounding: 0.3em
                           value_style:
                             color: 'var(--kwh_bar)'
-                            filter: brightness(1.7)
+                            filter: brightness(1.5)
                             font-size: 1em
                             text-shadow: none
                             font-weight: 500
@@ -427,7 +420,7 @@
                               {% else %}
                               --kwh_bar: #323637;
                               {% endif %}
-                              --pos: {{ states('sensor.oresundskraft').split(',')[10].split(' ')[2] | int /19.8 }}em;
+                              --pos: {{ states('sensor.oresundskraft').split(',')[10].split(' ')[2] | int /20 }}em;
                             }
                         - type: custom:bar-card
                           entity: sensor.oresundskraft_12
@@ -442,13 +435,13 @@
                           background_style:
                             background: none
                           card_style:
-                            margin-left: -3.2em
+                            margin-left: -3em
                             margin-top: -1.5em
                           title_position: bottom
                           rounding: 0.3em
                           value_style:
                             color: 'var(--kwh_bar)'
-                            filter: brightness(1.7)
+                            filter: brightness(1.5)
                             font-size: 1em
                             text-shadow: none
                             font-weight: 500
@@ -462,7 +455,7 @@
                               {% else %}
                               --kwh_bar: #323637;
                               {% endif %}
-                              --pos: {{ states('sensor.oresundskraft').split(',')[11].split(' ')[2] | int /19.8 }}em;
+                              --pos: {{ states('sensor.oresundskraft').split(',')[11].split(' ')[2] | int /20 }}em;
                             }
                     - type: horizontal-stack
                       cards:
@@ -471,9 +464,11 @@
                           hours_to_show: 12
                           points_per_hour: 1
                           line_color: '#405914'
+                          align_icon: left
+                          icon: 'mdi:home-currency-usd'
                           show:
                             fill: fade
-                            icon: false
+                            icon: true
                             name: true
                             state: true
                             name_adaptive_color: false
@@ -486,11 +481,14 @@
                               font-size: 14px !important;
                               font-weight: 400 !important;
                               opacity: 1 !important;
-                              margin-left: -1.2em;
+                              margin-left: -9.3em !important;
                             }
                             .state > span {
-                              transform: scale(0.85, 0.85);
-                              margin-left: -0.65em;
+                              transform: scale(0.8, 0.8);
+                              margin-left: -0.7em;
+                            }
+                            .icon {
+                              margin-left: -1.35em !important;
                             }
                             ha-card {
                               border-radius: 0.35em;
@@ -498,8 +496,8 @@
                               box-shadow: none;
                               margin-left: 0.65em;
                               height: 10em;
-                              max-width: 18.5em;
-                              margin-left: 2.5em;
+                              max-width: 13.5em;
+                              margin-left: 3em;
                               margin-top: 1em;
                             }
                         - entities:
@@ -509,8 +507,9 @@
                               icon: 'mdi:poll-box'
                           style: |
                             ha-card {
-                              margin-right: 1.2em;
+                              margin-right: 1.9em;
                               margin-top: -0.3em;
+                              margin-left: -2em;
                             }
                           type: entities
                     - type: conditional
@@ -544,5 +543,5 @@
                   '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
                   border-radius: 0.8vw
                   opacity: 0.9
-                  width: 43em
+                  width: 38em
                 title: Elförbrukning kWh
