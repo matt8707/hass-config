@@ -905,11 +905,27 @@
             {% endfor %}
           {% endif %}
         value_template: >
-          {% set solkraft = states('sensor.last_month_kwh') | float * 0.05 %}
+          {% set dagar %}
+            {% if now().month-1 == 0 %}
+              {{ states('sensor.oresundskraft').split(',')[11].split(' ')[1].split('-')[2] | int }}
+            {% else %}
+              {% for month in range(12) %}
+                {% if now().month-1 == (states('sensor.oresundskraft').split(',')[month].split(' ')[0]|join|string).lstrip('0')|int %}
+                  {{ states('sensor.oresundskraft').split(',')[month].split(' ')[1].split('-')[2] | int }}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          {% endset %}
           {% set kwh = states('sensor.last_month_kwh') | float %}
-          {% set arsavgift = 480 / 365 * 30 | float %}
-          {% set spotpris = states('sensor.aktuellt_spotpris') | float / 100 %}
-          {{ (solkraft + arsavgift + (0.2373 * kwh * 1.25)) | round(2) }}
+            {% set eon_solkraft = states('sensor.last_month_kwh') | float * 0.05 %}
+            {% set eon_arsavgift = 480 / 366 * dagar | float %}
+              {% set spotpris = states('sensor.aktuellt_spotpris') | float / 100 %}
+            {% set ore_abonnemang = 1020 / 366 * dagar | float %}
+            {% set ore_elöverföring = kwh * 0.1400 %}
+            {% set ore_energiskatt = kwh * 0.3530 %}
+              {% set eon = (eon_solkraft + eon_arsavgift + (0.2373 * kwh * 1.25)) | round(2) %}
+              {% set ore = ((ore_abonnemang + ore_elöverföring + ore_energiskatt) * 1.25) | round(2) %}
+          {{ eon + ore }}
         unit_of_measurement: 'kr'
 
       total_year_kwh:
