@@ -397,6 +397,13 @@ switch:
     name: iMac
     host: !secret wake_on_lan_host
 
+  - platform: rest
+    resource: !secret ha_dockermon_watchtower
+    name: Watchtower
+    body_on: '{"state": "start"}'
+    body_off: '{"state": "stop"}'
+    is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
+
   - platform: command_line
     switches:
       fullykiosk_screen:
