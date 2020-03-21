@@ -10,6 +10,7 @@ preload:
   - conditional
   - map
   - entities
+  - iframe
 
 title: Hemma
 views:
@@ -278,7 +279,7 @@ views:
               Kan inte läsa in väderinformation...
               {% else %}
                 {% if states('sensor.dark_sky_temperature') | float <= 0.0 %}
-                Känns som {{ states('sensor.dark_sky_apparent_temperature') | round }}° {{'\u2744\uFE0F'}} med {{ states('sensor.dark_sky_precip_probability') | round }}% risk för snö 
+                Känns som {{ states('sensor.dark_sky_apparent_temperature') | round }}° med {{ states('sensor.dark_sky_precip_probability') | round }}% risk för snö {{'\u2744\uFE0F'}}
 
                 {% elif states('sensor.dark_sky_temperature') | float > 0.0 %} 
                 Känns som {{ states('sensor.dark_sky_apparent_temperature') | round }}° med {{ states('sensor.dark_sky_precip_probability') | round }}% risk för regn {% if states('sensor.dark_sky_precip_probability') | float > 30.0 %} {{'\u2614\uFE0F' }} {% endif %}
@@ -471,6 +472,55 @@ views:
             tap_action: !include popup/sidebar_scenarier.yaml
             title: null
             type: icon
+
+          #################################################################
+          #                                                               #
+          #                             HACS                              #
+          #                                                               #
+          #################################################################
+
+          - conditions:
+              - entity: sensor.hacs
+                state_not: '0'
+              - entity: sensor.hacs
+                state_not: 'unknown'
+            elements:
+              - entity: sensor.hacs
+                hold_action:
+                  action: none
+                style:
+                  left: 10.45%
+                  top: 95.2%
+                  letter-spacing: 0.06vw
+                  font-family: SF Display
+                  color: '#6a7377'
+                  font-size: 1.15vw
+                  font-weight: 500
+                  opacity: 0.5
+                  background: '#202a2f90'
+                  padding: 0.4vw 0.5vw 0.4vw 0.5vw
+                  border-radius: 0.7vw
+                tap_action:
+                  action: call-service
+                  service: browser_mod.popup
+                  service_data:
+                    card:
+                      type: iframe
+                      url: !secret hacs_url
+                      aspect_ratio: 60%
+                      style: |
+                        ha-card {
+                          border-radius: 1em;
+                        }
+                    deviceID:
+                      - this
+                    style:
+                      background: none
+                      box-shadow: none
+                      width: 75em
+                    title: Stäng
+                type: state-label
+            type: conditional
 
           #############################################################################################################################################
           #                                                                                                                                           #
