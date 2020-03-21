@@ -60,7 +60,7 @@
 
   - platform: rest
     name: docker_cpu
-    resource: !secret docker_cpu_resource
+    resource: !secret ha_dockermon_cpu
     value_template: >
       {% set cpuDelta = value_json.cpu_stats.cpu_usage.total_usage - value_json.precpu_stats.cpu_usage.total_usage %}
       {% set systemDelta = value_json.cpu_stats.system_cpu_usage - value_json.precpu_stats.system_cpu_usage %}
@@ -72,7 +72,7 @@
 
   - platform: rest
     name: docker_uptime
-    resource: !secret docker_uptime_resource
+    resource: !secret ha_dockermon_uptime
     value_template: >
       {{ value_json.status.split(' ')[1:] | join(' ') | replace ('About a minute', '1 minut') 
       | replace ('About an hour', '1 timme')  | replace ('seconds', 'sekunder') | replace ('minutes', 'minuter') 
@@ -249,12 +249,14 @@
           {% endif %}
 
       hass_version_template:
-        friendly_name: Senaste versionen
+        icon_template: 'mdi:home-assistant'
+        friendly_name_template: >-
+          Installerad {{ states('sensor.hass_version_installed') }}
         value_template: >-
           {% if states('sensor.hass_version_installed') == states('sensor.hass_version_latest') %}
-            Ja
+            Senaste
           {% else %}
-            Nej - {{ states('sensor.hass_version_latest') }}
+            {{ states('sensor.hass_version_latest') }}
           {% endif %}
 
       hass_release_template:
