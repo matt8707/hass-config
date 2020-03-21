@@ -4,11 +4,9 @@
                 card:
                   cards:
                     - entities:
-                        - entity: sensor.hass_version_installed
-                          icon: 'mdi:home-assistant'
-                          name: Installerad version
                         - entity: sensor.hass_version_template
-                          icon: 'mdi:update'
+                        - entity: switch.watchtower
+                          icon: 'mdi:lighthouse-on'
                         - entity: sensor.hass_release_template
                           icon: 'mdi:dev-to'
                         - entity: sensor.home_assistant_v2_db
