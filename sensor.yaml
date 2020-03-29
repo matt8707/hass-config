@@ -261,15 +261,20 @@
 
       hass_release_template:
         entity_id: sensor.time
-        icon_template: 'mdi:update'
+        icon_template: 'mdi:dev-to'
         friendly_name_template: >-
-          {{ state_attr('calendar.home_assistant_devs','message') }}
+          {% set d = ((as_timestamp(state_attr('calendar.home_assistant_devs', 
+          'start_time')) - as_timestamp(now())) / 86400) %}
+          {% if d > 20 %} Planerad beta
+          {% else %} {{ state_attr('calendar.home_assistant_devs','message') }}
+          {% endif %}
         value_template: >-
-          {% set dev = state_attr('calendar.home_assistant_devs', 'start_time') %}
-          {% if ((as_timestamp(dev) - as_timestamp(now())) / 86400) < -1 %}
-          Släppt {% elif ((as_timestamp(dev) - as_timestamp(now())) / 86400) < 0 %}
-          Idag {% else %}
-          {{ ((as_timestamp(dev) - as_timestamp(now())) / 86400) | int + 1 }} dagar
+          {% set d = ((as_timestamp(state_attr('calendar.home_assistant_devs', 
+          'start_time')) - as_timestamp(now())) / 86400) %}
+          {% if d < -1 %} Släppt
+          {% elif d < 0 %} Idag 
+          {% elif d > 20 %} Ingen
+          {% else %} {{ d | int + 1 }} dagar
           {% endif %}
 
       printer_status_template:
