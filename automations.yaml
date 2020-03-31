@@ -110,38 +110,6 @@
 
     ####################################################
     #                                                  #
-    #                      LIGHTS                      #
-    #                                                  #
-    ####################################################
-
-# - alias: light_studio_auto
-#   initial_state: true
-#   trigger:
-#     - platform: state
-#       entity_id: switch.switchbot
-#   condition:
-#     - condition: state
-#       entity_id: switch.dator_template
-#       state: 'off'
-#   action:
-#     - service: light.turn_on
-#       entity_id: 
-#         ['light.datorlampa', 'light.taklampor']
-
-- alias: light_studio_manual
-  initial_state: true
-  trigger:
-    - platform: state
-      entity_id: switch.dator_template
-      from: 'off'
-      to: 'on'
-  action:
-    - service: light.turn_on
-      entity_id: 
-        ['light.datorlampa', 'light.taklampor']
-
-    ####################################################
-    #                                                  #
     #                     MONITORS                     #
     #                                                  #
     ####################################################
@@ -203,7 +171,6 @@
       data:
         entity_id: input_number.monitorer_volume
         value: 20
-    - service: script.reference_monitors
     - service: script.reference_monitors
 
 - alias: turn_off_monitorer
@@ -395,20 +362,6 @@
     data_template:
       entity_id: media_player.samsung
       source: "{{ states('input_select.hdmi2') }}"
-
-# - alias: hdmi2_input_select_update
-#   initial_state: true
-#   trigger:
-#   - platform: state
-#     entity_id: media_player.samsung
-#   action:
-#   - service: input_select.select_option
-#     data_template:
-#       entity_id: input_select.hdmi2
-#       option: >-
-#         {% if is_state('media_player.samsung', 'HDMI3') %}
-#         HDMI {% else %}
-#         TV {% endif %}
 
     ####################################################
     #                                                  #
