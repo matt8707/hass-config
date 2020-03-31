@@ -4,6 +4,9 @@ dator_on:
     - service: input_boolean.turn_on
       entity_id: input_boolean.dator_template
     - service: shell_command.switchbot_rpi
+    - service: light.turn_on
+      entity_id: 
+        ['light.datorlampa', 'light.taklampor']
 
 # Switchbot integration stopped working
 # dator_on:
@@ -195,13 +198,21 @@ say_auto_stang_allt:
 reference_monitors:
   sequence:
     - service: shell_command.reference_click
+    - delay:
+        seconds: 0.5
     - service: shell_command.reference_kill
+    - delay:
+        seconds: 0.5
     - service: shell_command.reference_monitors
 
 reference_headphones:
   sequence:
     - service: shell_command.reference_click
+    - delay:
+        seconds: 0.5
     - service: shell_command.reference_kill
+    - delay:
+        seconds: 0.5
     - service: shell_command.reference_headphones
 
 monitorer_mute_toggle:
