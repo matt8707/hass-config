@@ -45,11 +45,10 @@
                       style: |
                         ha-card {
                           height: 24.9em;
-                          border-radius: 0em 0em 0.8vw 0.8vw !important;
                           border-top: 1px solid #FFFFFF !important;
                           filter: invert(1) contrast(80%) hue-rotate(250deg);
                         }
-                  type: 'custom:vertical-stack-in-card'
+                  type: custom:stack-in-card
                 deviceID:
                   - this
                 style:

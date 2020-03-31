@@ -2,28 +2,26 @@
               service: browser_mod.popup
               service_data:
                 card:
-                  cards:
-                    - entities:
-                        - entity: switch.playstation_template
-                          icon: 'mdi:playstation'
-                          name: Playstation 4
-                        - entity: media_player.playstation_4
-                          type: 'custom:mini-media-player'
-                          artwork: none
-                          icon: 'mdi:gamepad'
-                          name: Spel
-                          source: full
-                          group: true
-                          scale: 0.99
-                          hide:
-                            volume: true
-                            controls: true
-                            power: true
-                            info: true
-                          style:
-                            --paper-item-icon-color: red
-                      type: entities
-                  type: 'custom:vertical-stack-in-card'
+                  entities:
+                    - entity: switch.playstation_template
+                      icon: 'mdi:playstation'
+                      name: Playstation 4
+                    - entity: media_player.playstation_4
+                      type: custom:mini-media-player
+                      artwork: none
+                      icon: 'mdi:gamepad'
+                      name: Spel
+                      source: full
+                      group: true
+                      scale: 0.99
+                      hide:
+                        volume: true
+                        controls: true
+                        power: true
+                        info: true
+                      style:
+                        --paper-item-icon-color: red
+                  type: entities
                 deviceID:
                   - this
                 style:

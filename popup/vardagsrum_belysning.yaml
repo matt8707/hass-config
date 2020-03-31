@@ -2,56 +2,45 @@
               service: browser_mod.popup
               service_data:
                 card:
+                  type: vertical-stack
                   cards:
                     - entities:
                         - entity: light.belysning
                           secondary_info: last-changed
-                      style: |
-                        ha-card {
-                          z-index: 5
-                        }
-                      type: entities
-                    - entities:
-                        - color_temp: true
-                          entity: light.belysning
+                        - entity: light.belysning
                           header: false
                           persist_features: true
-                          type: 'custom:light-slider-card'
-                      show_header_toggle: false
-                      style: |
-                        ha-card {
-                          z-index: 0;
-                        }
-                      type: entities
-                    - brightness: false
-                      color_picker: false
-                      color_temp: true
-                      effects_list: false
-                      entity: light.belysning
-                      full_width_sliders: false
-                      header: false
-                      persist_features: true
-                      show_slider_percent: false
-                      style: |
-                        ha-card {
-                          padding-bottom: 3em;
-                          margin-top: -1.5em;
-                          margin-left: -1.8em;
-                          opacity: 0.7;
-                          z-index: 5;
-                        }
-                      type: 'custom:light-entity-card'
-                    - entities:
+                          type: custom:light-slider-card
+                          style: |
+                            ha-card {
+                              margin-top: 4em;
+                            }
+                        - entity: light.belysning
+                          color_temp: true
+                          header: false
+                          persist_features: true
+                          brightness: false
+                          color_picker: false
+                          effects_list: false
+                          full_width_sliders: false
+                          show_slider_percent: false
+                          style: |
+                            ha-card {
+                              opacity: 0.7;
+                              box-shadow: none;
+                              background: none;
+                              max-height: 2.5em;
+                            }
+                          type: custom:light-entity-card
+
                         - buttons:
                             - icon: 'mdi:'
                               service: browser_mod.popup
                               service_data:
                                 card:
-                                  cards:
-                                    - entities:
-                                        - entity: light.belysning
-                                          secondary_info: last-changed
-                                      type: entities
+                                  entities:
+                                    - entity: light.belysning
+                                      secondary_info: last-changed
                                     - brightness: false
                                       color_temp: false
                                       entity: light.belysning
@@ -60,8 +49,14 @@
                                       persist_features: true
                                       show_slider_percent: true
                                       smooth_color_wheel: true
-                                      type: 'custom:light-entity-card'
-                                  type: 'custom:vertical-stack-in-card'
+                                      type: custom:light-entity-card
+                                      style: |
+                                        ha-card {
+                                          box-shadow: none;
+                                          margin-bottom: -1em;
+                                        }
+                                  show_header_toggle: false
+                                  type: entities
                                 deviceID:
                                   - this
                                 style:
@@ -83,17 +78,13 @@
                                 margin-bottom: 0.5em
                                 margin-top: 0.8em
                                 padding: 1.8em
-                          type: 'custom:button-entity-row'
-                      style: |
-                        ha-card {
-                          margin-top: -2.3em;
-                        }
+                          type: custom:button-entity-row
+                      show_header_toggle: false
                       type: entities
-                  type: 'custom:vertical-stack-in-card'
                 deviceID:
                   - this
                 style:
-                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
-                  border-radius: 0.8vw
+                  '--ha-card-border-radius': 0 0 0.8em 0.8em
+                  border-radius: 0.8em
                   opacity: 0.9
                 title: Belysning

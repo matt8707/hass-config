@@ -2,53 +2,42 @@
               service: browser_mod.popup
               service_data:
                 card:
+                  type: vertical-stack
                   cards:
                     - entities:
                         - entity: light.kok
                           secondary_info: last-changed
-                      style: |
-                        ha-card {
-                          z-index: 5;
-                        }
-                      type: entities
-                    - entities:
-                        - color_temp: true
-                          entity: light.kok
+                        - entity: light.kok
                           header: false
                           persist_features: true
-                          type: 'custom:light-slider-card'
+                          type: custom:light-slider-card
+                          style: |
+                            ha-card {
+                              margin-top: 4em;
+                            }
+                        - entity: light.kok
+                          color_temp: true
+                          header: false
+                          persist_features: true
+                          brightness: false
+                          color_picker: false
+                          effects_list: false
+                          full_width_sliders: false
+                          show_slider_percent: false
+                          style: |
+                            ha-card {
+                              opacity: 0.7;
+                              box-shadow: none;
+                              background: none;
+                              max-height: 2.5em;
+                            }
+                          type: custom:light-entity-card
                       show_header_toggle: false
-                      style: |
-                        ha-card {
-                          z-index: 0;
-                          padding-top: 0.5em;
-                        }
                       type: entities
-                    - brightness: false
-                      color_picker: false
-                      color_temp: true
-                      effects_list: false
-                      entity: light.kok
-                      full_width_sliders: false
-                      header: false
-                      persist_features: true
-                      show_slider_percent: false
-                      style: |
-                        ha-card {
-                          margin-top: -0.9em;
-                          opacity: 0.7;
-                          z-index: 5;
-                        }
-                      type: 'custom:light-entity-card'
-                  style: |
-                    ha-card {
-                      padding-bottom: 1.2em;
-                    }
-                  type: 'custom:vertical-stack-in-card'
                 deviceID:
                   - this
                 style:
-                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
-                  border-radius: 0.8vw
+                  '--ha-card-border-radius': 0 0 0.8em 0.8em
+                  border-radius: 0.8em
                   opacity: 0.9
                 title: Kökslampa

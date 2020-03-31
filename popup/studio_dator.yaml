@@ -2,365 +2,250 @@
               service: browser_mod.popup
               service_data:
                 card:
-                  cards:
-                    - card:
-                        cards:
-                          - entities:
-                              - entity: switch.dator_template
-                                name: iMac
-                                secondary_info: last-changed
-                              - background_style:
-                                  background: >-
-                                    radial-gradient(circle, rgba(45,45,45,1) 0%,
-                                    rgba(0,0,0,1) 100%)
-                                card_style:
-                                  background: '#FFFFFF00'
-                                  box-shadow: none
-                                entity: sensor.imac_cpu_per
-                                height: 2em
-                                icon: 'mdi:chip'
-                                icon_position: left
-                                icon_style:
-                                  color: '#9e9e9e'
-                                  margin-left: '-0.45em'
-                                  filter: none
-                                max: 100
-                                min: 0
-                                rounding: 0.3em
-                                severity:
-                                  - color: '#303435'
-                                    value: 90
-                                  - color: '#6d2525'
-                                    value: 100
-                                style: |
-                                  ha-card {
-                                    background-color: #FFFFFF00;
-                                    margin-left: -0.35em;
-                                    margin-right: -0.5em;
-                                    margin-top: -2px;
-                                    max-height: 36px;
-                                  }
-                                title: Processor
-                                title_style:
-                                  color: '#e0e1e1'
-                                  margin-left: 0.95em
-                                type: 'custom:bar-card'
-                                value_style:
-                                  color: '#e0e1e1'
-                                  font-size: 0.95em
-                                  font-weight: 400
-                                width: 50%
-                                tap_action: service
-                                service_options:
-                                  domain: homeassistant
-                                  service: update_entity
-                                  data:
-                                    entity_id: sensor.imac_cpu_per
-                              - background_style:
-                                  background: >-
-                                    radial-gradient(circle, rgba(45,45,45,1) 0%,
-                                    rgba(0,0,0,1) 100%)
-                                card_style:
-                                  background: '#FFFFFF00'
-                                  box-shadow: none
-                                entity: sensor.imac_mem_per
-                                height: 2em
-                                icon: 'mdi:memory'
-                                icon_position: left
-                                icon_style:
-                                  color: '#9e9e9e'
-                                  margin-left: '-0.45em'
-                                  filter: none
-                                max: 100
-                                min: 0
-                                rounding: 0.3em
-                                severity:
-                                  - color: '#303435'
-                                    value: 90
-                                  - color: '#6d2525'
-                                    value: 100
-                                style: |
-                                  ha-card {
-                                    background-color: #FFFFFF00;
-                                    margin-left: -0.35em;
-                                    margin-right: -0.5em;
-                                    max-height: 36px;
-                                    margin-bottom: 10px;
-                                  }
-                                title: Minne
-                                title_style:
-                                  color: '#e0e1e1'
-                                  margin-left: 0.95em
-                                type: 'custom:bar-card'
-                                value_style:
-                                  color: '#e0e1e1'
-                                  font-size: 0.95em
-                                  font-weight: 400
-                                width: 50%
-                                tap_action: service
-                                service_options:
-                                  domain: homeassistant
-                                  service: update_entity
-                                  data:
-                                    entity_id: sensor.imac_mem_per
-                              - entity: automation.notification_motion_hall
-                                icon: 'mdi:bell'
-                                name: Mottag notiser
-                                style: |
-                                  :host {
-                                  --paper-item-icon-color: 
-                                   {% if is_state('automation.notification_motion_hall', 'on') %}
-                                      #3182b7
-                                   {% else %}
-                                     #9da0a2
-                                   {% endif %};
-                                   }
-                              - entity: sensor.macos_uptime_template
-                                name: Verklig drifttid
-                              - entity: sensor.vpn_imac
-                                style: |
-                                  :host {
-                                  --paper-item-icon-color: 
-                                   {% if is_state('sensor.vpn_imac', 'Ansluten') %}
-                                     #9e9e9e
-                                   {% else %}
-                                     red
-                                   {% endif %};
-                                   }
-                              - entity: input_boolean.lock_computer
-                                icon: 'mdi:lock-alert'
-                                name: Avstängningslås
-                                style: |
-                                  :host {
-                                  --paper-item-icon-color: 
-                                   {% if is_state('input_boolean.lock_computer', 'on') %}
-                                      #3182b7
-                                   {% else %}
-                                     #9da0a2
-                                   {% endif %};
-                                   }
-                              - background_style:
-                                  background: >-
-                                    radial-gradient(circle, rgba(45,45,45,1) 0%,
-                                    rgba(0,0,0,1) 100%)
-                                card_style:
-                                  background: '#FFFFFF00'
-                                  box-shadow: none
-                                entity: sensor.imac_system_ssd
-                                height: 2em
-                                icon: 'mdi:harddisk'
-                                icon_position: left
-                                icon_style:
-                                  color: '#9e9e9e'
-                                  margin-left: '-0.38em'
-                                  filter: none
-                                max: 100
-                                min: 0
-                                rounding: 0.3em
-                                severity:
-                                  - color: '#303435'
-                                    value: 90
-                                  - color: '#6d2525'
-                                    value: 100
-                                style: |
-                                  ha-card {
-                                    background-color: #FFFFFF00;
-                                    margin-left: -0.35em;
-                                    margin-right: -0.5em;
-                                    max-height: 36px;
-                                    margin-top: -2px;
-                                  }
-                                title: System SSD
-                                title_style:
-                                  color: '#e0e1e1'
-                                  margin-left: 0.95em
-                                type: 'custom:bar-card'
-                                value_style:
-                                  color: '#e0e1e1'
-                                  font-size: 0.95em
-                                  font-weight: 400
-                                width: 50%
-                                tap_action: service
-                                service_options:
-                                  domain: homeassistant
-                                  service: update_entity
-                                  data:
-                                    entity_id: sensor.imac_system_ssd
-                              - background_style:
-                                  background: >-
-                                    radial-gradient(circle, rgba(45,45,45,1) 0%,
-                                    rgba(0,0,0,1) 100%)
-                                card_style:
-                                  background: '#FFFFFF00'
-                                  box-shadow: none
-                                entity: sensor.imac_macintosh_hd
-                                height: 2em
-                                icon: 'mdi:harddisk'
-                                icon_position: left
-                                icon_style:
-                                  color: '#9e9e9e'
-                                  margin-left: '-0.45em'
-                                  filter: none
-                                max: 100
-                                min: 0
-                                rounding: 0.3em
-                                severity:
-                                  - color: '#303435'
-                                    value: 90
-                                  - color: '#6d2525'
-                                    value: 100
-                                style: |
-                                  ha-card {
-                                    background-color: #FFFFFF00;
-                                    margin-left: -0.35em;
-                                    margin-right: -0.5em;
-                                    max-height: 36px;
-                                  }
-                                title: Macintosh HD
-                                title_style:
-                                  color: '#e0e1e1'
-                                  margin-left: 0.95em
-                                type: 'custom:bar-card'
-                                value_style:
-                                  color: '#e0e1e1'
-                                  font-size: 0.95em
-                                  font-weight: 400
-                                width: 50%
-                                tap_action: service
-                                service_options:
-                                  domain: homeassistant
-                                  service: update_entity
-                                  data:
-                                    entity_id: sensor.imac_macintosh_hd
-                              - background_style:
-                                  background: >-
-                                    radial-gradient(circle, rgba(45,45,45,1) 0%,
-                                    rgba(0,0,0,1) 100%)
-                                card_style:
-                                  background: '#FFFFFF00'
-                                  box-shadow: none
-                                entity: sensor.imac_time_machine
-                                height: 2em
-                                icon: 'mdi:harddisk'
-                                icon_position: left
-                                icon_style:
-                                  color: '#9e9e9e'
-                                  margin-left: '-0.45em'
-                                  filter: none
-                                max: 100
-                                min: 0
-                                rounding: 0.3em
-                                severity:
-                                  - color: '#303435'
-                                    value: 90
-                                  - color: '#6d2525'
-                                    value: 100
-                                style: |
-                                  ha-card {
-                                    background-color: #FFFFFF00;
-                                    margin-left: -0.35em;
-                                    margin-right: -0.5em;
-                                    max-height: 36px;
-                                  }
-                                title: Time Machine
-                                title_style:
-                                  color: '#e0e1e1'
-                                  margin-left: 0.95em
-                                type: 'custom:bar-card'
-                                value_style:
-                                  color: '#e0e1e1'
-                                  font-size: 0.95em
-                                  font-weight: 400
-                                width: 50%
-                                tap_action: service
-                                service_options:
-                                  domain: homeassistant
-                                  service: update_entity
-                                  data:
-                                    entity_id: sensor.imac_time_machine
-                            style: |
-                              ha-card {
-                                margin-bottom: -1em;
-                                margin-right: 0.55em;
-                              }
-                            show_header_toggle: false
-                            type: entities
-                          - entities:
-                              - buttons:
-                                  - icon: 'mdi:power-sleep'
-                                    name: Försätt i vila
-                                    service: shell_command.imac_sleep
-                                    style:
-                                      background: '#FFFFFF10'
-                                      border-radius: 0.7em
-                                      font-size: 1em
-                                      font-weight: 500
-                                      letter-spacing: 0.015em
-                                      padding: 1.2em 1.5em 1.2em 1.2em
-                                      margin-bottom: 0.25em
-                                  - icon: 'mdi:restart'
-                                    name: Starta om
-                                    service: shell_command.imac_restart
-                                    style:
-                                      background: '#FFFFFF10'
-                                      border-radius: 0.7em
-                                      font-size: 1em
-                                      font-weight: 500
-                                      letter-spacing: 0.015em
-                                      padding: 1.2em 1.5em 1.2em 1.2em
-                                      margin-bottom: 0.25em
-                                type: 'custom:button-entity-row'
-                            style: |
-                              ha-card {
-                                margin-top: -1.5em;
-                                padding-bottom: 0.2em;
-                              }
-                            type: entities
-                        type: 'custom:vertical-stack-in-card'
-                      conditions:
-                        - entity: switch.dator_template
-                          state: 'on'
-                      type: conditional
-                    - card:
-                        cards:
-                          - entities:
-                              - entity: switch.dator_template
-                                name: iMac
-                                secondary_info: last-changed
-                            style: |
-                              ha-card {
-                                margin-bottom: -1em;
-                              }
-                            type: entities
-                          - entities:
-                              - entity: sensor.placeholder
-                                icon: 'mdi:'
-                                name: Historik
-                            style: |
-                              ha-card {
-                                margin-top: -9%;
-                                margin-left: -12.2%;
-                                background-color: #FFFFFF00;
-                                opacity: 0.9;
-                                font-weight: 500;
-                              }
-                            type: entities
-                          - entities:
-                              - entity: switch.dator_template
-                            hours_to_show: 24
-                            refresh_interval: 0
-                            style: |
-                              ha-card {
-                                margin-top: -10.5%;
-                                padding-left: 2.2%;
-                              }
-                            type: history-graph
-                        type: 'custom:vertical-stack-in-card'
-                      conditions:
-                        - entity: switch.dator_template
-                          state: 'off'
-                      type: conditional
-                  type: 'custom:vertical-stack-in-card'
+                  entities:
+                    - entity: switch.dator_template
+                      name: iMac
+                      secondary_info: last-changed
+                    - entity: sensor.imac_cpu_per
+                      title: Processor
+                      icon: 'mdi:chip'
+                      icon_position: left
+                      width: 45%
+                      height: 2em
+                      max: 100
+                      min: 0
+                      severity: &severity
+                        - color: '#303435'
+                          value: 90
+                        - color: '#6d2525'
+                          value: 100
+                      style: |
+                        ha-card {
+                          box-shadow: none;
+                          margin: 12px 0px 12px 0px;
+                        }
+                        ha-icon {
+                          color: #9e9e9e;
+                          filter: none;
+                        }
+                        bar-card-title {
+                          color: #e0e1e1;
+                          margin-left: 1em;
+                        }
+                        bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, 
+                        bar-card-indicatorcontainer, bar-card-indicator {
+                          border-radius: 0.3em;
+                        }
+                        bar-card-value {
+                          color: #e0e1e1;
+                          text-shadow: none;
+                          font-size: 0.95em;
+                          font-weight: 400;
+                        }
+                        bar-card-background {
+                          background: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(17,18,18,0.3) 75%);
+                          box-shadow: inset 0 0 25px #00000030;
+                          border-radius: 0.3em;
+                        }
+                        bar-card-backgroundbar {
+                          background: none;
+                        }
+                      tap_action: service
+                      service_options:
+                        domain: homeassistant
+                        service: update_entity
+                        data:
+                          entity_id: sensor.imac_cpu_per
+                      type: custom:bar-card
+                    - entity: sensor.imac_mem_per
+                      title: Minne
+                      icon: 'mdi:memory'
+                      icon_position: left
+                      width: 45%
+                      height: 2em
+                      max: 100
+                      min: 0
+                      severity: *severity
+                      style: |
+                        ha-card {
+                          box-shadow: none;
+                          margin: 16px 0px 12px 0px;
+                        }
+                        ha-icon {
+                          color: #9e9e9e;
+                          filter: none;
+                        }
+                        bar-card-title {
+                          color: #e0e1e1;
+                          margin-left: 1em;
+                        }
+                        bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, 
+                        bar-card-indicatorcontainer, bar-card-indicator {
+                          border-radius: 0.3em;
+                        }
+                        bar-card-value {
+                          color: #e0e1e1;
+                          text-shadow: none;
+                          font-size: 0.95em;
+                          font-weight: 400;
+                        }
+                        bar-card-background {
+                          background: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(17,18,18,0.3) 75%);
+                          box-shadow: inset 0 0 25px #00000030;
+                          border-radius: 0.3em;
+                        }
+                        bar-card-backgroundbar {
+                          background: none;
+                        }
+                      tap_action: service
+                      service_options:
+                        domain: homeassistant
+                        service: update_entity
+                        data:
+                          entity_id: sensor.imac_mem_per
+                      type: custom:bar-card
+                    - entity: automation.notification_motion_hall
+                      icon: 'mdi:bell'
+                      name: Mottag notiser
+                      style: |
+                        :host {
+                        --paper-item-icon-color: 
+                          {% if is_state('automation.notification_motion_hall', 'on') %}
+                            #3182b7
+                          {% else %}
+                            #9da0a2
+                          {% endif %};
+                          }
+                    - entity: sensor.macos_uptime_template
+                      name: Verklig drifttid
+                    - entity: sensor.vpn_imac
+                      tap_action:
+                        action: call-service
+                        service: homeassistant.update_entity
+                        service_data:
+                          entity_id: sensor.imac_get_ip
+                      style: |
+                        :host {
+                        --paper-item-icon-color: 
+                          {% if is_state('sensor.vpn_imac', 'Ansluten') %}
+                            #9e9e9e
+                          {% else %}
+                            red
+                          {% endif %};
+                          }
+                    - entity: input_boolean.lock_computer
+                      icon: 'mdi:lock-alert'
+                      name: Avstängningslås
+                      style: |
+                        :host {
+                        --paper-item-icon-color: 
+                          {% if is_state('input_boolean.lock_computer', 'on') %}
+                            #3182b7
+                          {% else %}
+                            #9da0a2
+                          {% endif %};
+                          }
+                    - entity: sensor.imac_system_ssd
+                      title: System SSD
+                      icon: 'mdi:harddisk'
+                      icon_position: left
+                      width: 45%
+                      height: 2em
+                      max: 100
+                      min: 0
+                      severity: *severity
+                      style: &bar-card-style |
+                        ha-card {
+                          box-shadow: none;
+                          margin: 12px 0px 16px 0px;
+                        }
+                        ha-icon {
+                          color: #9e9e9e;
+                          filter: none;
+                        }
+                        bar-card-title {
+                          color: #e0e1e1;
+                          margin-left: 1em;
+                        }
+                        bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, 
+                        bar-card-indicatorcontainer, bar-card-indicator {
+                          border-radius: 0.3em;
+                        }
+                        bar-card-value {
+                          color: #e0e1e1;
+                          text-shadow: none;
+                          font-size: 0.95em;
+                          font-weight: 400;
+                        }
+                        bar-card-background {
+                          background: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(17,18,18,0.3) 75%);
+                          box-shadow: inset 0 0 25px #00000030;
+                          border-radius: 0.3em;
+                        }
+                        bar-card-backgroundbar {
+                          background: none;
+                        }
+                      tap_action: service
+                      service_options:
+                        domain: homeassistant
+                        service: update_entity
+                        data:
+                          entity_id: sensor.imac_system_ssd
+                      type: custom:bar-card
+                    - entity: sensor.imac_macintosh_hd
+                      title: Macintosh HD
+                      icon: 'mdi:harddisk'
+                      icon_position: left
+                      width: 45%
+                      height: 2em
+                      max: 100
+                      min: 0
+                      severity: *severity
+                      style: *bar-card-style
+                      tap_action: service
+                      service_options:
+                        domain: homeassistant
+                        service: update_entity
+                        data:
+                          entity_id: sensor.imac_macintosh_hd
+                      type: custom:bar-card
+                    - entity: sensor.imac_time_machine
+                      title: Time Machine
+                      icon: 'mdi:harddisk'
+                      icon_position: left
+                      width: 45%
+                      height: 2em
+                      max: 100
+                      min: 0
+                      severity: *severity
+                      style: *bar-card-style
+                      tap_action: service
+                      service_options:
+                        domain: homeassistant
+                        service: update_entity
+                        data:
+                          entity_id: sensor.imac_time_machine
+                      type: custom:bar-card
+                    - buttons:
+                        - icon: 'mdi:power-sleep'
+                          name: Försätt i vila
+                          service: shell_command.imac_sleep
+                          style: &button-style
+                            background: '#FFFFFF10'
+                            border-radius: 0.7em
+                            font-size: 1em
+                            font-weight: 500
+                            letter-spacing: 0.015em
+                            padding: 1.2em 1.5em 1.2em 1.2em
+                            margin-bottom: 0.25em
+                            margin-top: 1em
+                        - icon: 'mdi:restart'
+                          name: Starta om
+                          service: shell_command.imac_restart
+                          style: *button-style
+                      type: custom:button-entity-row
+                  show_header_toggle: false
+                  type: entities
                 deviceID:
                   - this
                 style:

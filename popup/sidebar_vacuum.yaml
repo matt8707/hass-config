@@ -8,168 +8,121 @@
                           - entity: sensor.roborock_state
                           - entity: sensor.roborock_battery_level
                           - entity: sensor.roborock_last_clean
-                          - background_style:
-                              background: >-
-                                radial-gradient(circle, rgba(45,45,45,1) 0%,
-                                rgba(0,0,0,1) 100%)
-                            card_style:
-                              background: none
-                              box-shadow: none
-                            entity: sensor.roborock_filter
-                            height: 2em
+                          - entity: sensor.roborock_filter
+                            title: Filter
                             icon: 'mdi:filter-variant'
                             icon_position: left
-                            icon_style:
-                              color: '#9e9e9e'
-                              margin-left: '-0.38em'
-                              filter: none
+                            width: 45%
+                            height: 2em
                             max: 100
                             min: 0
-                            rounding: 0.3em
                             severity:
                               - color: '#303435'
                                 value: 100
                               - color: '#6d2525'
                                 value: 10
-                            style: |
+                            style: &bar-card-style |
                               ha-card {
-                                background-color: none;
-                                margin-left: -0.35em;
-                                margin-right: -0.5em;
-                                margin-top: -2px;
-                                max-height: 36px;
+                                box-shadow: none;
+                                background: none;
+                                margin: 12px 0px 16px 0px;
                               }
-                            title: Filter
-                            title_style:
-                              color: '#e0e1e1'
-                              margin-left: 0.95em
-                            type: 'custom:bar-card'
-                            value_style:
-                              color: '#e0e1e1'
-                              font-size: 0.95em
-                              font-weight: 400
-                            width: 50%
-                          - background_style:
-                              background: >-
-                                radial-gradient(circle, rgba(45,45,45,1) 0%,
-                                rgba(0,0,0,1) 100%)
-                            card_style:
-                              background: none
-                              box-shadow: none
-                            entity: sensor.roborock_huvudborste
-                            height: 2em
+                              ha-icon {
+                                color: #9e9e9e;
+                                filter: none;
+                              }
+                              bar-card-title {
+                                color: #e0e1e1;
+                                margin-left: 1em;
+                              }
+                              bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, 
+                              bar-card-indicatorcontainer, bar-card-indicator {
+                                border-radius: 0.3em;
+                              }
+                              bar-card-value {
+                                color: #e0e1e1;
+                                text-shadow: none;
+                                font-size: 0.95em;
+                                font-weight: 400;
+                              }
+                              bar-card-background {
+                                background: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(17,18,18,0.3) 75%);
+                                box-shadow: inset 0 0 25px #00000030;
+                                border-radius: 0.3em;
+                              }
+                              bar-card-backgroundbar {
+                                background: none;
+                              }
+                            tap_action: service
+                            service_options:
+                              domain: homeassistant
+                              service: update_entity
+                              data:
+                                entity_id: sensor.roborock_filter
+                            type: custom:bar-card
+                          - entity: sensor.roborock_huvudborste
+                            title: Huvudborste
                             icon: 'mdi:broom'
                             icon_position: left
-                            icon_style:
-                              color: '#9e9e9e'
-                              margin-left: '-0.45em'
-                              filter: none
+                            width: 45%
+                            height: 2em
                             max: 100
                             min: 0
-                            rounding: 0.3em
                             severity:
                               - color: '#303435'
                                 value: 100
                               - color: '#6d2525'
                                 value: 10
-                            style: |
-                              ha-card {
-                                background-color: none;
-                                margin-left: -0.35em;
-                                margin-right: -0.5em;
-                                max-height: 36px;
-                              }
-                            title: Huvudborste
-                            title_style:
-                              color: '#e0e1e1'
-                              margin-left: 0.95em
-                            type: 'custom:bar-card'
-                            value_style:
-                              color: '#e0e1e1'
-                              font-size: 0.95em
-                              font-weight: 400
-                            width: 50%
-                          - background_style:
-                              background: >-
-                                radial-gradient(circle, rgba(45,45,45,1) 0%,
-                                rgba(0,0,0,1) 100%)
-                            card_style:
-                              background: none
-                              box-shadow: none
-                            entity: sensor.roborock_sidoborste
-                            height: 2em
+                            style: *bar-card-style
+                            tap_action: service
+                            service_options:
+                              domain: homeassistant
+                              service: update_entity
+                              data:
+                                entity_id: sensor.roborock_huvudborste
+                            type: custom:bar-card
+                          - entity: sensor.roborock_sidoborste
+                            title: Sidoborste
                             icon: 'mdi:tools'
                             icon_position: left
-                            icon_style:
-                              color: '#9e9e9e'
-                              margin-left: '-0.45em'
-                              filter: none
+                            width: 45%
+                            height: 2em
                             max: 100
                             min: 0
-                            rounding: 0.3em
                             severity:
                               - color: '#303435'
                                 value: 100
                               - color: '#6d2525'
                                 value: 10
-                            style: |
-                              ha-card {
-                                background-color: none;
-                                margin-left: -0.35em;
-                                margin-right: -0.5em;
-                                max-height: 36px;
-                              }
-                            title: Sidoborste
-                            title_style:
-                              color: '#e0e1e1'
-                              margin-left: 0.95em
-                            type: 'custom:bar-card'
-                            value_style:
-                              color: '#e0e1e1'
-                              font-size: 0.95em
-                              font-weight: 400
-                            width: 50%
-                          - background_style:
-                              background: >-
-                                radial-gradient(circle, rgba(45,45,45,1) 0%,
-                                rgba(0,0,0,1) 100%)
-                            card_style:
-                              background: none
-                              box-shadow: none
-                            entity: sensor.roborock_sensorer
-                            height: 2em
+                            style: *bar-card-style
+                            tap_action: service
+                            service_options:
+                              domain: homeassistant
+                              service: update_entity
+                              data:
+                                entity_id: sensor.roborock_sidoborste
+                            type: custom:bar-card
+                          - entity: sensor.roborock_sensorer
+                            title: Sensorer
                             icon: 'mdi:spray-bottle'
                             icon_position: left
-                            icon_style:
-                              color: '#9e9e9e'
-                              margin-left: '-0.45em'
-                              filter: none
+                            width: 45%
+                            height: 2em
                             max: 100
                             min: 0
-                            rounding: 0.3em
                             severity:
                               - color: '#303435'
                                 value: 100
                               - color: '#6d2525'
                                 value: 10
-                            style: |
-                              ha-card {
-                                background-color: none;
-                                margin-left: -0.35em;
-                                margin-right: -0.5em;
-                                margin-bottom: 10px;
-                                max-height: 36px;
-                              }
-                            title: Sensorer
-                            title_style:
-                              color: '#e0e1e1'
-                              margin-left: 0.95em
-                            type: 'custom:bar-card'
-                            value_style:
-                              color: '#e0e1e1'
-                              font-size: 0.95em
-                              font-weight: 400
-                            width: 50%
+                            style: *bar-card-style
+                            tap_action: service
+                            service_options:
+                              domain: homeassistant
+                              service: update_entity
+                              data:
+                                entity_id: sensor.roborock_sensorer
+                            type: custom:bar-card
                           - entity: input_select.roborock_fan_speed
                           - buttons:
                               - icon: 'mdi:play-pause'
@@ -177,7 +130,7 @@
                                   '--iron-icon-height': 1.7em
                                   '--iron-icon-width': 4em
                                 service: script.vacuum_start_pause
-                                style:
+                                style: &button-style
                                   background: '#FFFFFF10'
                                   border-radius: 0.7em
                                   font-size: 1.1em
@@ -192,14 +145,7 @@
                                 service: vacuum.return_to_base
                                 service_data:
                                   entity_id: vacuum.xiaomi_vacuum_cleaner
-                                style:
-                                  background: '#FFFFFF10'
-                                  border-radius: 0.7em
-                                  font-size: 1.1em
-                                  font-weight: 500
-                                  padding: 1.2em 1.4em 1.2em 1.4em
-                                  margin-top: 0.9em
-                                  margin-bottom: 0.2em
+                                style: *button-style
                               - icon: 'mdi:map-marker-question'
                                 icon_style:
                                   '--iron-icon-height': 1.9em
@@ -207,15 +153,8 @@
                                 service: vacuum.locate
                                 service_data:
                                   entity_id: vacuum.xiaomi_vacuum_cleaner
-                                style:
-                                  background: '#FFFFFF10'
-                                  border-radius: 0.7em
-                                  font-size: 1.1em
-                                  font-weight: 500
-                                  padding: 1.2em 1.4em 1.2em 1.4em
-                                  margin-top: 0.9em
-                                  margin-bottom: 0.2em
-                            type: 'custom:button-entity-row'
+                                style: *button-style
+                            type: custom:button-entity-row
                           show_header_toggle: false
                           style: |
                             ha-card {
@@ -224,20 +163,23 @@
                               background: rgba(34, 38, 39, 0.9);
                               padding-right: 0.7em;
                             }
-                          title: " ‍  ‍ Dammsugare"
+                            .card-header {
+                              margin-left: 0.4em;
+                            }
+                          title: "Dammsugare"
                           type: entities
-                      type: 'custom:hui-vertical-stack-card'
+                      type: custom:hui-vertical-stack-card
                     - break
                     - type: picture-elements
                       image: /local/overlay.svg
                       elements:
-                        - type: 'custom:valetudo-map-card'
+                        - type: custom:valetudo-map-card
                           entity: sensor.xiaomi_map
                           rotate: 0
                           crop:
                             top: 170
                             bottom: 88
-                            left: 149
+                            left: 170
                             right: 0
                           min_height: 0
                           map_scale: 2
@@ -264,9 +206,9 @@
                           show_icon: false
                           tap_action:
                             action: none
-                          styles:
+                          styles: &button-card-styles
                             card:
-                              - background: '#191c1d55'
+                              - background: '#191c1d80'
                               - border-radius: 0.6em
                               - box-shadow: none
                               - padding: 0.41em 0.7em 0.4em 0.7em
@@ -283,16 +225,7 @@
                           show_icon: false
                           tap_action:
                             action: none
-                          styles:
-                            card:
-                              - background: '#191c1d55'
-                              - border-radius: 0.6em
-                              - box-shadow: none
-                              - padding: 0.41em 0.7em 0.4em 0.7em
-                            name:
-                              - font-size: 0.83em
-                              - letter-spacing: 0.003em
-                              - color: '#aeb0b0'
+                          styles: *button-card-styles
                           style:
                             left: 17%
                             top: 51%
@@ -302,16 +235,7 @@
                           show_icon: false
                           tap_action:
                             action: none
-                          styles:
-                            card:
-                              - background: '#191c1d55'
-                              - border-radius: 0.6em
-                              - box-shadow: none
-                              - padding: 0.41em 0.7em 0.4em 0.7em
-                            name:
-                              - font-size: 0.83em
-                              - letter-spacing: 0.003em
-                              - color: '#aeb0b0'
+                          styles: *button-card-styles
                           style:
                             left: 39.5%
                             top: 22%
@@ -321,16 +245,7 @@
                           show_icon: false
                           tap_action:
                             action: none
-                          styles:
-                            card:
-                              - background: '#191c1d45'
-                              - border-radius: 0.6em
-                              - box-shadow: none
-                              - padding: 0.41em 0.7em 0.4em 0.7em
-                            name:
-                              - font-size: 0.83em
-                              - letter-spacing: 0.003em
-                              - color: '#aeb0b0'
+                          styles: *button-card-styles
                           style:
                             left: 77%
                             top: 9%
@@ -340,16 +255,7 @@
                           show_icon: false
                           tap_action:
                             action: none
-                          styles:
-                            card:
-                              - background: '#191c1d55'
-                              - border-radius: 0.6em
-                              - box-shadow: none
-                              - padding: 0.41em 0.7em 0.4em 0.7em
-                            name:
-                              - font-size: 0.83em
-                              - letter-spacing: 0.003em
-                              - color: '#aeb0b0'
+                          styles: *button-card-styles
                           style:
                             left: 59%
                             top: 49%
@@ -464,20 +370,23 @@
                                   ]]]
                           style:
                             left: 80%
-                            top: 82.5%
+                            top: 83.3%
                             width: 10.2em
                       style: |
                         ha-card {
                           background: rgba(34, 38, 39, 0.9);
                           box-shadow: none;
                           border-radius: 1em;
-                          height: 41.9em;
+                          height: 42.2em;
                         }
-                      title: " ‍  ‍ Kartläggning"
+                        .card-header {
+                          margin-left: 0.4em;
+                        }
+                      title: "Kartläggning"
                   column_num: 2
                   column_width: [390, 555]
                   layout: vertical
-                  type: 'custom:layout-card'
+                  type: custom:layout-card
                 deviceID:
                   - this
                 style:

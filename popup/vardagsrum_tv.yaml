@@ -54,14 +54,14 @@
                                 font-size: 1.1em
                                 font-weight: 500
                                 padding: 1.2em 1.4em 1.2em 1.4em
-                          type: 'custom:button-entity-row'
+                          type: custom:button-entity-row
                       style: |
                         ha-card {
                           margin-top: -1.5em;
                           padding-bottom: 0.4em;
                         }
                       type: entities
-                  type: 'custom:vertical-stack-in-card'
+                  type: vertical-stack
                 deviceID:
                   - this
                 style:

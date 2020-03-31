@@ -8,7 +8,6 @@
                         - entity: switch.watchtower
                           icon: 'mdi:lighthouse-on'
                         - entity: sensor.hass_release_template
-                          icon: 'mdi:dev-to'
                         - entity: sensor.home_assistant_v2_db
                           icon: 'mdi:database'
                           name: Databas
@@ -17,89 +16,82 @@
                           name: Loggfil
                         - entity: sensor.docker_uptime
                           name: Senaste omstart
-                        - background_style:
-                            background: >-
-                              radial-gradient(circle, rgba(45,45,45,1) 0%,
-                              rgba(0,0,0,1) 100%)
-                          card_style:
-                            background: '#FFFFFF00'
-                            box-shadow: none
-                          entity: sensor.docker_cpu
-                          height: 2.1em
-                          icon: 'mdi:chip'
-                          unit_of_measurement: '%'
-                          icon_position: left
-                          icon_style:
-                            color: '#9e9e9e'
-                            margin-left: '-0.45em'
-                            filter: none
-                          max: 100
-                          min: 0
-                          rounding: 0.3em
-                          severity:
-                            - color: '#303435'
-                              value: 90
-                            - color: '#6d2525'
-                              value: 100
-                          style: |
-                            ha-card {
-                              background-color: #FFFFFF00;
-                              margin-left: -0.35em;
-                              margin-right: -0.5em;
-                              margin-top: 0.1em;
-                            }
+                          icon: 'mdi:clock'
+                        - entity: sensor.docker_cpu
                           title: Processor
-                          title_style:
-                            color: '#e0e1e1'
-                            margin-left: 0.95em
-                          type: 'custom:bar-card'
-                          value_style:
-                            color: '#e0e1e1'
-                            font-size: 0.95em
-                            font-weight: 400
-                          width: 50%
-                        - background_style:
-                            background: >-
-                              radial-gradient(circle, rgba(45,45,45,1) 0%,
-                              rgba(0,0,0,1) 100%)
-                          card_style:
-                            background: '#FFFFFF00'
-                            box-shadow: none
-                          entity: sensor.docker_mem
-                          height: 2.1em
-                          icon: 'mdi:memory'
-                          unit_of_measurement: '%'
+                          icon: 'mdi:chip'
                           icon_position: left
-                          icon_style:
-                            color: '#9e9e9e'
-                            margin-left: '-0.45em'
-                            filter: none
+                          unit_of_measurement: '%'
+                          width: 45%
+                          height: 2em
                           max: 100
                           min: 0
-                          rounding: 0.3em
                           severity:
                             - color: '#303435'
                               value: 90
                             - color: '#6d2525'
                               value: 100
-                          style: |
+                          style: &bar-card-style |
                             ha-card {
-                              background-color: #FFFFFF00;
-                              margin-left: -0.35em;
-                              margin-right: -0.5em;
-                              margin-top: 0.1em;
-                              margin-bottom: 1.5em;
+                              box-shadow: none;
+                              background: none;
+                              margin: 12px 0px 16px 0px;
                             }
+                            ha-icon {
+                              color: #9e9e9e;
+                              filter: none;
+                            }
+                            bar-card-title {
+                              color: #e0e1e1;
+                              margin-left: 1em;
+                            }
+                            bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, 
+                            bar-card-indicatorcontainer, bar-card-indicator {
+                              border-radius: 0.3em;
+                            }
+                            bar-card-value {
+                              color: #e0e1e1;
+                              text-shadow: none;
+                              font-size: 0.95em;
+                              font-weight: 400;
+                            }
+                            bar-card-background {
+                              background: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(17,18,18,0.3) 75%);
+                              box-shadow: inset 0 0 25px #00000030;
+                              border-radius: 0.3em;
+                            }
+                            bar-card-backgroundbar {
+                              background: none;
+                            }
+                          tap_action: service
+                          service_options:
+                            domain: homeassistant
+                            service: update_entity
+                            data:
+                              entity_id: sensor.docker_cpu
+                          type: custom:bar-card
+                        - entity: sensor.docker_mem
                           title: Minne
-                          title_style:
-                            color: '#e0e1e1'
-                            margin-left: 0.95em
-                          type: 'custom:bar-card'
-                          value_style:
-                            color: '#e0e1e1'
-                            font-size: 0.95em
-                            font-weight: 400
-                          width: 50%
+                          icon: 'mdi:memory'
+                          icon_position: left
+                          unit_of_measurement: '%'
+                          width: 45%
+                          height: 2em
+                          max: 100
+                          min: 0
+                          severity:
+                            - color: '#303435'
+                              value: 90
+                            - color: '#6d2525'
+                              value: 100
+                          style: *bar-card-style
+                          tap_action: service
+                          service_options:
+                            domain: homeassistant
+                            service: update_entity
+                            data:
+                              entity_id: sensor.docker_mem
+                          type: custom:bar-card
                         - buttons:
                             - icon: 'mdi:reload'
                               name: Home Assistant
@@ -111,6 +103,7 @@
                                 border-radius: 0.7em
                                 font-weight: 500
                                 padding: 1.2em 1.5em 1.2em 1.2em
+                                margin-top: 0.7em
                             - entity: script.homekit_restart
                               icon: 'mdi:reload'
                               name: Homekit
@@ -120,7 +113,8 @@
                                 font-weight: 500
                                 padding: 1.2em 1.5em 1.2em 1.2em
                                 margin-right: -0.7em
-                          type: 'custom:button-entity-row'
+                                margin-top: 0.7em
+                          type: custom:button-entity-row
                       show_header_toggle: false
                       style: |
                         ha-card {
@@ -129,7 +123,10 @@
                           background: rgba(34, 38, 39, 0.9);
                           padding-right: 0.7em;
                         }
-                      title: " ‍  ‍ Home Assistant Core"
+                        .card-header {
+                          margin-left: 0.4em;
+                        }
+                      title: "Home Assistant Core"
                       type: entities
                     - break
                     - entities:
@@ -143,99 +140,48 @@
                         - entity: sensor.fullykiosk_battery_level
                         - entity: sensor.fullykiosk_plugged
                         - entity: sensor.fullykiosk_motion_detector_state
-                        - background_style:
-                            background: >-
-                              radial-gradient(circle, rgba(45,45,45,1) 0%,
-                              rgba(0,0,0,1) 100%)
-                          card_style:
-                            background: '#FFFFFF00'
-                            box-shadow: none
-                          entity: sensor.fullykiosk_memory_percentage
-                          height: 2.1em
+                        - entity: sensor.fullykiosk_memory_percentage
+                          title: Minne - 2GB
                           icon: 'mdi:memory'
                           icon_position: left
-                          icon_style:
-                            color: '#9e9e9e'
-                            margin-left: '-0.45em'
-                            filter: none
+                          width: 45%
+                          height: 2em
                           max: 100
                           min: 0
-                          rounding: 0.3em
                           severity:
                             - color: '#303435'
                               value: 90
                             - color: '#6d2525'
                               value: 100
-                          style: |
-                            ha-card {
-                              background-color: #FFFFFF00;
-                              margin-left: -0.35em;
-                              margin-right: -0.7em;
-                              margin-top: 0.1em;
-                            }
-                          title: Minne - 2GB
-                          title_style:
-                            color: '#e0e1e1'
-                            margin-left: 0.95em
-                          type: 'custom:bar-card'
-                          value_style:
-                            color: '#e0e1e1'
-                            font-size: 0.95em
-                            font-weight: 400
-                          width: 50%
+                          style: *bar-card-style
                           tap_action: service
                           service_options:
                             domain: homeassistant
                             service: update_entity
                             data:
-                              entity_id: sensor.fullykiosk
-                        - background_style:
-                            background: >-
-                              radial-gradient(circle, rgba(45,45,45,1) 0%,
-                              rgba(0,0,0,1) 100%)
-                          card_style:
-                            background: '#FFFFFF00'
-                            box-shadow: none
-                          entity: sensor.fullykiosk_storage_percentage
-                          height: 2.1em
+                              entity_id: sensor.fullykiosk_memory_percentage
+                          type: custom:bar-card
+                        - entity: sensor.fullykiosk_storage_percentage
+                          title: Lagring - 32GB
                           icon: 'mdi:sd'
                           icon_position: left
-                          icon_style:
-                            color: '#9e9e9e'
-                            margin-left: '-0.45em'
-                            filter: none
+                          width: 45%
+                          height: 2em
                           max: 100
                           min: 0
-                          rounding: 0.3em
                           severity:
                             - color: '#303435'
                               value: 90
                             - color: '#6d2525'
                               value: 100
-                          style: |
-                            ha-card {
-                              background-color: #FFFFFF00;
-                              margin-left: -0.35em;
-                              margin-right: -0.7em;
-                              margin-top: 0.1em;
-                              margin-bottom: 1.5em;
-                            }
-                          title: Lagring - 32GB
-                          title_style:
-                            color: '#e0e1e1'
-                            margin-left: 0.95em
-                          type: 'custom:bar-card'
-                          value_style:
-                            color: '#e0e1e1'
-                            font-size: 0.95em
-                            font-weight: 400
-                          width: 50%
+                          style: *bar-card-style
                           tap_action: service
                           service_options:
                             domain: homeassistant
                             service: update_entity
                             data:
-                              entity_id: sensor.fullykiosk
+                              entity_id: sensor.fullykiosk_storage_percentage
+                          type: custom:bar-card
                         - buttons:
                             - icon: 'mdi:reload'
                               name: Startsidan
@@ -245,6 +191,7 @@
                                 border-radius: 0.7em
                                 font-weight: 500
                                 padding: 1.2em 1.5em 1.2em 1.2em
+                                margin-top: 0.7em
                             - icon: 'mdi:reload'
                               name: Hela appen
                               service: shell_command.fullykiosk_restart_app
@@ -254,7 +201,8 @@
                                 font-weight: 500
                                 padding: 1.2em 1.5em 1.2em 1.2em
                                 margin-right: -0.7em
-                          type: 'custom:button-entity-row'
+                                margin-top: 0.7em
+                          type: custom:button-entity-row
                       show_header_toggle: false
                       style: |
                         ha-card {
@@ -263,7 +211,10 @@
                           background: rgba(34, 38, 39, 0.9);
                           padding-right: 0.7em;
                         }
-                      title: " ‍  ‍ Väggplattan"
+                        .card-header {
+                          margin-left: 0.4em;
+                        }
+                      title: "Väggplattan"
                       type: entities
                     - break
                     - entities:
@@ -281,146 +232,70 @@
                                 red
                               {% endif %};
                               }
-                        - background_style:
-                            background: >-
-                              radial-gradient(circle, rgba(45,45,45,1) 0%,
-                              rgba(0,0,0,1) 100%)
-                          card_style:
-                            background: '#FFFFFF00'
-                            box-shadow: none
-                          entity: sensor.processor_use
-                          height: 2.1em
+                        - entity: sensor.processor_use
+                          title: Processor
                           icon: 'mdi:chip'
                           icon_position: left
-                          icon_style:
-                            color: '#9e9e9e'
-                            margin-left: '-0.45em'
-                            filter: none
+                          width: 45%
+                          height: 2em
                           max: 100
                           min: 0
-                          rounding: 0.3em
                           severity:
                             - color: '#303435'
                               value: 90
                             - color: '#6d2525'
                               value: 100
-                          style: |
-                            ha-card {
-                              background-color: #FFFFFF00;
-                              margin-left: -0.35em;
-                              margin-right: -0.7em;
-                              margin-top: 0.1em;
-                            }
-                          title: Processor
-                          title_style:
-                            color: '#e0e1e1'
-                            margin-left: 0.95em
-                          type: 'custom:bar-card'
-                          value_style:
-                            color: '#e0e1e1'
-                            font-size: 0.95em
-                            font-weight: 400
-                          width: 50%
+                          style: *bar-card-style
                           tap_action: service
                           service_options:
                             domain: homeassistant
                             service: update_entity
                             data:
                               entity_id: sensor.processor_use
-                        - background_style:
-                            background: >-
-                              radial-gradient(circle, rgba(45,45,45,1) 0%,
-                              rgba(0,0,0,1) 100%)
-                          card_style:
-                            background: '#FFFFFF00'
-                            box-shadow: none
-                          entity: sensor.memory_use_percent
-                          height: 2.1em
+                          type: custom:bar-card
+                        - entity: sensor.memory_use_percent
+                          title: Minne - 4GB
                           icon: 'mdi:memory'
                           icon_position: left
-                          icon_style:
-                            color: '#9e9e9e'
-                            margin-left: '-0.45em'
-                            filter: none
+                          width: 45%
+                          height: 2em
                           max: 100
                           min: 0
-                          rounding: 0.3em
                           severity:
                             - color: '#303435'
                               value: 90
                             - color: '#6d2525'
                               value: 100
-                          style: |
-                            ha-card {
-                              background-color: #FFFFFF00;
-                              margin-left: -0.35em;
-                              margin-right: -0.7em;
-                              margin-top: 0.1em;
-                            }
-                          title: Minne - 4GB
-                          title_style:
-                            color: '#e0e1e1'
-                            margin-left: 0.95em
-                          type: 'custom:bar-card'
-                          value_style:
-                            color: '#e0e1e1'
-                            font-size: 0.95em
-                            font-weight: 400
-                          width: 50%
+                          style: *bar-card-style
                           tap_action: service
                           service_options:
                             domain: homeassistant
                             service: update_entity
                             data:
                               entity_id: sensor.memory_use_percent
-                        - background_style:
-                            background: >-
-                              radial-gradient(circle, rgba(45,45,45,1) 0%,
-                              rgba(0,0,0,1) 100%)
-                          card_style:
-                            background: '#FFFFFF00'
-                            box-shadow: none
-                          entity: sensor.disk_use_percent
-                          height: 2.1em
+                          type: custom:bar-card
+                        - entity: sensor.disk_use_percent
+                          title: Lagring - 10.5TB
                           icon: 'mdi:harddisk'
                           icon_position: left
-                          icon_style:
-                            color: '#9e9e9e'
-                            margin-left: '-0.45em'
-                            filter: none
+                          width: 45%
+                          height: 2em
                           max: 100
                           min: 0
-                          rounding: 0.3em
                           severity:
                             - color: '#303435'
                               value: 90
                             - color: '#6d2525'
                               value: 100
-                          style: |
-                            ha-card {
-                              background-color: #FFFFFF00;
-                              margin-left: -0.35em;
-                              margin-right: -0.7em;
-                              margin-top: 0.1em;
-                              z-index: 3;
-                            }
-                          title: Lagring - 10.5TB
-                          title_style:
-                            color: '#e0e1e1'
-                            margin-left: 0.95em
-                          type: 'custom:bar-card'
-                          value_style:
-                            color: '#e0e1e1'
-                            font-size: 0.95em
-                            font-weight: 400
-                          width: 50%
+                          style: *bar-card-style
                           tap_action: service
                           service_options:
                             domain: homeassistant
                             service: update_entity
                             data:
                               entity_id: sensor.disk_use_percent
-                        - type: 'custom:hui-horizontal-stack-card'
+                          type: custom:bar-card
+                        - type: custom:hui-horizontal-stack-card
                           cards:
                             - entities:
                                 - entity: sensor.nas_net_down
@@ -477,13 +352,13 @@
                               border-radius: 0.35em;
                               background: none;
                               box-shadow: none;
-                              margin-top: -3.55em;
+                              margin-top: -3.45em;
                               margin-left: 0.65em;
                               height: 10em;
                             }
                           tap_action:
                             action: none
-                          type: 'custom:mini-graph-card'
+                          type: custom:mini-graph-card
                       show_header_toggle: false
                       style: |
                         ha-card {
@@ -492,11 +367,14 @@
                           background: rgba(34, 38, 39, 0.9);
                           padding-right: 0.7em;
                         }
-                      title: " ‍  ‍ Synology NAS"
+                        .card-header {
+                          margin-left: 0.4em;
+                        }
+                      title: "Synology NAS"
                       type: entities
                   column_num: 3
                   layout: vertical
-                  type: 'custom:layout-card'
+                  type: custom:layout-card
                 deviceID:
                   - this
                 style:

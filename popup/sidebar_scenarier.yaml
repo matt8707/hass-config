@@ -3,7 +3,7 @@
               service_data:
                 card:
                   cards:
-                    - type: 'custom:button-entity-row'
+                    - type: custom:button-entity-row
                       buttons:
                         - - entity: script.auto_hemma
                             name: "\U0001F3E0 Hemma"
@@ -132,8 +132,8 @@
                           height: 28.75em;
                           cursor: default;
                         }
-                      type: 'custom:hui-markdown-card'
-                  type: 'custom:vertical-stack-in-card'
+                      type: custom:hui-markdown-card
+                  type: custom:stack-in-card
                 deviceID:
                   - this
                 style:
