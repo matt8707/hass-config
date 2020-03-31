@@ -5,9 +5,11 @@ custom_header:
         user_agent: Mobile
       config:
         kiosk_mode: false
-preload:
+
+preload_cards:
   - markdown
   - conditional
+  - history-graph
   - map
   - entities
   - iframe
@@ -17,6 +19,7 @@ views:
   - badges: []
     cards:
       - elements:
+
           - title: preload_popup
             entities:
               - input_number.monitorer_volume
@@ -27,104 +30,7 @@ views:
             style:
               left: -50%
               opacity: 0
-            type: 'custom:hui-entities-card'
-
-          - entity: sensor.placeholder
-            prefix: Vardagsrum
-            tap_action:
-              action: none
-            hold_action:
-              action: none
-            style:
-              color: '#bcbebf'
-              font-family: SF Text
-              font-size: 2.4vw
-              font-weight: 500
-              left: 24.85%
-              max-width: 1px
-              top: 9.15%
-              cursor: default
-            type: state-label
-          - entity: sensor.placeholder
-            prefix: Studio
-            tap_action:
-              action: none
-            hold_action:
-              action: none
-            style:
-              color: '#bcbebf'
-              font-family: SF Text
-              font-size: 2.4vw
-              font-weight: 500
-              left: 49.65%
-              max-width: 1px
-              top: 9.15%
-              cursor: default
-            type: state-label
-          - entity: sensor.placeholder
-            prefix: Sovrum
-            tap_action:
-              action: none
-            hold_action:
-              action: none
-            style:
-              color: '#bcbebf'
-              font-family: SF Text
-              font-size: 2.4vw
-              font-weight: 500
-              left: 74.55%
-              max-width: 1px
-              top: 9.15%
-              cursor: default
-            type: state-label
-          - entity: sensor.placeholder
-            prefix: Media
-            tap_action:
-              action: none
-            hold_action:
-              action: none
-            style:
-              color: '#bcbebf'
-              font-family: SF Text
-              font-size: 2.4vw
-              font-weight: 500
-              left: 24.75%
-              max-width: 1px
-              top: 53.4%
-              cursor: default
-            type: state-label
-          - entity: sensor.placeholder
-            prefix: Lampor
-            tap_action:
-              action: none
-            hold_action:
-              action: none
-            style:
-              color: '#bcbebf'
-              font-family: SF Text
-              font-size: 2.4vw
-              font-weight: 500
-              left: 49.6%
-              max-width: 1px
-              top: 53.4%
-              cursor: default
-            type: state-label
-          - entity: sensor.placeholder
-            prefix: Hemma
-            tap_action:
-              action: none
-            hold_action:
-              action: none
-            style:
-              color: '#bcbebf'
-              font-family: SF Text
-              font-size: 2.4vw
-              font-weight: 500
-              left: 74.5%
-              max-width: 1px
-              top: 53.4%
-              cursor: default
-            type: state-label
+            type: custom:hui-entities-card
 
           #################################################################
           #                                                               #
@@ -133,9 +39,9 @@ views:
           #################################################################
       
           - content: >
-              <font color='#6a7377'> ‍  ‍  ‍  ‍  ‍ 
-              <b><ha-icon icon="mdi:mdi:bacteria-outline"></ha-icon> Coronavirus</b>  ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
-              <b><ha-icon icon="mdi:mdi:emoticon-sad"></ha-icon> {{ states('sensor.sweden_coronavirus_current') }}</b> smittade  ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
+              <font color='#6a7377'>
+              <b><ha-icon icon="mdi:bacteria-outline"></ha-icon> Coronavirus</b>  ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
+              <b><ha-icon icon="mdi:emoticon-sad"></ha-icon> {{ states('sensor.sweden_coronavirus_current') }}</b> smittade  ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
               <b><ha-icon icon="mdi:emoticon-happy"></ha-icon> {{ states('sensor.sweden_coronavirus_recovered') }}</b> tillfrisknade  ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
               <b><ha-icon icon="mdi:grave-stone"></ha-icon> {{ states('sensor.sweden_coronavirus_deaths') }}</b> avlidna  ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
               <ha-icon icon="mdi:chart-bar"></ha-icon> {{ ((states('sensor.sweden_coronavirus_confirmed') | int / 10327589 ) * 100) | round(4) }}% av Sverige
@@ -148,13 +54,13 @@ views:
               font-size: 1.15vw
               font-weight: 400
               height: 1px
-              left: 67.6%
+              left: 69.3%
               letter-spacing: 0.06vw
               line-height: 2.05vw
               opacity: 0.5
               top: 91.9%
               width: 90vw
-            type: 'custom:hui-markdown-card'
+            type: custom:hui-markdown-card
 
           #############################################################################################################################################
           #                                                                                                                                           #
@@ -318,7 +224,7 @@ views:
               opacity: 0.75
               top: 16%
               width: 17.5vw
-            type: 'custom:hui-markdown-card'
+            type: custom:hui-markdown-card
 
           - type: conditional
             conditions:
@@ -334,7 +240,7 @@ views:
                     ha-card {
                       padding: 0.4vw;
                     }
-                  type: 'custom:hui-markdown-card'
+                  type: custom:hui-markdown-card
                 - type: "custom:button-card"
                   show_label: true
                   label: OK
@@ -378,10 +284,9 @@ views:
                   width: 17.5vw
                   hyphens: auto
                   z-index: 10
-
                   '--ha-card-border-radius': 0.7vw
                   '--ha-card-border': '0.1vw solid #292c2e'
-                type: 'custom:vertical-stack-in-card'
+                type: custom:stack-in-card
 
           - type: conditional
             conditions:
@@ -455,6 +360,18 @@ views:
             tap_action: !include popup/sidebar_information.yaml
             title: null
             type: icon
+          - conditions:
+              - entity: sensor.hass_version_template
+                state_not: 'Senaste'
+            elements:
+              - image: /local/update_available.svg
+                style:
+                  left: 12.2%
+                  top: 85%
+                  width: 1.7%
+                  cursor: default
+                type: image
+            type: conditional
 
           #################################################################
           #                                                               #
@@ -486,6 +403,7 @@ views:
                 state_not: 'unknown'
             elements:
               - entity: sensor.hacs
+                prefix: "HACS: "
                 hold_action:
                   action: none
                 style:
@@ -528,6 +446,23 @@ views:
           #                                                                                                                                           #
           #############################################################################################################################################
 
+          - entity: sensor.placeholder
+            prefix: Vardagsrum
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            style:
+              color: '#bcbebf'
+              font-family: SF Text
+              font-size: 2.4vw
+              font-weight: 500
+              left: 24.85%
+              max-width: 1px
+              top: 9.15%
+              cursor: default
+            type: state-label
+
           #################################################################
           #                                                               #
           #                           BELYSNING                           #
@@ -536,8 +471,8 @@ views:
 
           - entity: light.belysning
             state_image:
-              'off': /local/vardagsrum_belysning_off.png
-              'on': /local/vardagsrum_belysning_on.png
+              'off': /local/btn/var_belysning_off.svg
+              'on': /local/btn/var_belysning_on.svg
               unavailable: /local/unknown.png
             style:
               left: 30.31%
@@ -553,8 +488,8 @@ views:
                 style:
                   '--iron-icon-height': 1.87vw
                   '--iron-icon-width': 1.87vw
-                  left: 27.40%
-                  top: 15.55%
+                  left: 27.35%
+                  top: 15.6%
                 type: state-icon
             type: conditional
           - conditions:
@@ -580,7 +515,7 @@ views:
                   opacity: 0.7
                   top: 16.3%
                   width: 3.15vw
-                type: 'custom:circle-sensor-card'
+                type: custom:circle-sensor-card
                 units: '%'
             type: conditional
           - hold_action: !include popup/vardagsrum_belysning.yaml
@@ -606,8 +541,8 @@ views:
 
           - entity: light.fonsterlampa
             state_image:
-              'off': /local/vardagsrum_skrivbord_off.png
-              'on': /local/vardagsrum_skrivbord_on.png
+              'off': /local/btn/var_skrivbord_off.svg
+              'on': /local/btn/var_skrivbord_on.svg
               unavailable: /local/unknown.png
             style:
               left: 41.31%
@@ -650,7 +585,7 @@ views:
                   opacity: 0.7
                   top: 16.3%
                   width: 3.15vw
-                type: 'custom:circle-sensor-card'
+                type: custom:circle-sensor-card
                 units: '%'
             type: conditional
           - hold_action: !include popup/vardagsrum_skrivbordslampa.yaml
@@ -677,8 +612,8 @@ views:
           - entity: switch.tv_template
             hold_action: !include popup/vardagsrum_tv.yaml
             state_image:
-              'off': /local/vardagsrum_tv_off.png
-              'on': /local/vardagsrum_tv_on.png
+              'off': /local/btn/var_tv_off.svg
+              'on': /local/btn/var_tv_on.svg
             style:
               left: 30.31%
               top: 37.9%
@@ -706,7 +641,6 @@ views:
                   top: 33.6%
                   width: 3.5%
                 type: image
-
             type: conditional
 
           #################################################################
@@ -718,12 +652,9 @@ views:
           - entity: switch.playstation_template
             hold_action: !include popup/vardagsrum_playstation.yaml
             state_image:
-              'off': /local/vardagsrum_playstation_off.gif
-              'on': /local/vardagsrum_playstation_on.gif
-              playing: /local/vardagsrum_playstation_on.gif
-              standby: /local/vardagsrum_playstation_off.gif
+              'off': /local/btn/var_playstation_off.svg
+              'on': /local/btn/var_playstation_on.svg
               unavailable: /local/unknown.png
-              unknown: /local/unknown.png
             style:
               left: 41.31%
               top: 37.9%
@@ -778,6 +709,23 @@ views:
           #                                                                                                                                           #
           #############################################################################################################################################
 
+          - entity: sensor.placeholder
+            prefix: Studio
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            style:
+              color: '#bcbebf'
+              font-family: SF Text
+              font-size: 2.4vw
+              font-weight: 500
+              left: 49.65%
+              max-width: 1px
+              top: 9.15%
+              cursor: default
+            type: state-label
+
           #################################################################
           #                                                               #
           #                          DATORLAMPA                           #
@@ -786,8 +734,8 @@ views:
 
           - entity: light.datorlampa
             state_image:
-              'off': /local/studio_datorlampa_off.png
-              'on': /local/studio_datorlampa_on.png
+              'off': /local/btn/stu_datorlampa_off.svg
+              'on': /local/btn/stu_datorlampa_on.svg
               unavailable: /local/unknown.png
             style:
               left: 55.18%
@@ -804,7 +752,7 @@ views:
                   '--iron-icon-height': 1.87vw
                   '--iron-icon-width': 1.87vw
                   left: 52.19%
-                  top: 15.55%
+                  top: 15.6%
                 type: state-icon
             type: conditional
           - conditions:
@@ -830,7 +778,7 @@ views:
                   opacity: 0.7
                   top: 16.3%
                   width: 3.15vw
-                type: 'custom:circle-sensor-card'
+                type: custom:circle-sensor-card
                 units: '%'
             type: conditional
           - hold_action: !include popup/studio_datorlampa.yaml
@@ -856,8 +804,8 @@ views:
 
           - entity: light.taklampor
             state_image:
-              'off': /local/studio_taklampor_off.png
-              'on': /local/studio_taklampor_on.png
+              'off': /local/btn/stu_taklampor_off.svg
+              'on': /local/btn/stu_taklampor_on.svg
               unavailable: /local/unknown.png
             style:
               left: 66.14%
@@ -873,8 +821,8 @@ views:
                 style:
                   '--iron-icon-height': 2.4vw
                   '--iron-icon-width': 2.4vw
-                  left: 63.51%
-                  top: 17.1%
+                  left: 63.53%
+                  top: 17.2%
                 type: state-icon
             type: conditional
           - conditions:
@@ -900,7 +848,7 @@ views:
                   opacity: 0.7
                   top: 16.3%
                   width: 3.15vw
-                type: 'custom:circle-sensor-card'
+                type: custom:circle-sensor-card
                 units: '%'
             type: conditional
           - hold_action: !include popup/studio_taklampor.yaml
@@ -927,8 +875,8 @@ views:
           - entity: switch.dator_template
             hold_action: !include popup/studio_dator.yaml
             state_image:
-              'off': /local/studio_dator_off.gif
-              'on': /local/studio_dator_on.png
+              'off': /local/btn/stu_dator_off.svg
+              'on': /local/btn/stu_dator_on.svg
               unavailable: /local/unknown.png
             style:
               left: 55.18%
@@ -984,8 +932,8 @@ views:
           - entity: switch.wemo_monitorer
             hold_action: !include popup/studio_monitorer.yaml
             state_image:
-              'off': /local/studio_monitorer_off.gif
-              'on': /local/studio_monitorer_on.gif
+              'off': /local/btn/stu_monitorer_off.svg
+              'on': /local/btn/stu_monitorer_on.svg
               unavailable: /local/unknown.png
             style:
               left: 66.14%
@@ -1002,6 +950,23 @@ views:
           #                                                                                                                                           #
           #############################################################################################################################################
 
+          - entity: sensor.placeholder
+            prefix: Sovrum
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            style:
+              color: '#bcbebf'
+              font-family: SF Text
+              font-size: 2.4vw
+              font-weight: 500
+              left: 74.55%
+              max-width: 1px
+              top: 9.15%
+              cursor: default
+            type: state-label
+
           #################################################################
           #                                                               #
           #                         MATTIAS LIGHT                         #
@@ -1010,8 +975,8 @@ views:
 
           - entity: light.mattias
             state_image:
-              'off': /local/sovrum_mattias_off.png
-              'on': /local/sovrum_mattias_on.png
+              'off': /local/btn/sov_mattias_off.svg
+              'on': /local/btn/sov_mattias_on.svg
               unavailable: /local/unknown.png
             style:
               left: 80.05%
@@ -1054,7 +1019,7 @@ views:
                   opacity: 0.7
                   top: 16.3%
                   width: 3.15vw
-                type: 'custom:circle-sensor-card'
+                type: custom:circle-sensor-card
                 units: '%'
             type: conditional
           - hold_action: !include popup/sovrum_mattias.yaml
@@ -1080,8 +1045,8 @@ views:
 
           - entity: light.sanja
             state_image:
-              'off': /local/sovrum_sanja_off.png
-              'on': /local/sovrum_sanja_on.png
+              'off': /local/btn/sov_sanja_off.svg
+              'on': /local/btn/sov_sanja_on.svg
               unavailable: /local/unknown.png
             style:
               left: 91.05%
@@ -1097,7 +1062,7 @@ views:
                 style:
                   '--iron-icon-height': 1.9vw
                   '--iron-icon-width': 1.9vw
-                  left: 88%
+                  left: 87.95%
                   top: 15.1%
                 type: state-icon
             type: conditional
@@ -1124,7 +1089,7 @@ views:
                   opacity: 0.7
                   top: 16.3%
                   width: 3.15vw
-                type: 'custom:circle-sensor-card'
+                type: custom:circle-sensor-card
                 units: '%'
             type: conditional
           - hold_action: !include popup/sovrum_sanja.yaml
@@ -1151,8 +1116,8 @@ views:
           - entity: switch.wemo_flakt
             hold_action: !include popup/sovrum_flakt.yaml
             state_image:
-              'off': /local/sovrum_flakt_off.gif
-              'on': /local/sovrum_flakt_on.gif
+              'off': /local/btn/sov_flakt_off.svg
+              'on': /local/btn/sov_flakt_on.svg
               unavailable: /local/unknown.png
             style:
               left: 80.05%
@@ -1172,8 +1137,8 @@ views:
           - entity: switch.tv2_template
             hold_action: !include popup/sovrum_tv2.yaml
             state_image:
-              'off': /local/sovrum_tv2_off.png
-              'on': /local/sovrum_tv2_on.png
+              'off': /local/btn/sov_tv_off.svg
+              'on': /local/btn/sov_tv_on.svg
             style:
               left: 91.05%
               top: 37.9%
@@ -1208,6 +1173,23 @@ views:
           #                                                                  MEDIA                                                                    #
           #                                                                                                                                           #
           #############################################################################################################################################
+
+          - entity: sensor.placeholder
+            prefix: Media
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            style:
+              color: '#bcbebf'
+              font-family: SF Text
+              font-size: 2.4vw
+              font-weight: 500
+              left: 24.75%
+              max-width: 1px
+              top: 53.4%
+              cursor: default
+            type: state-label
 
           - image: /local/overlay.svg
             # temp_fix
@@ -1286,7 +1268,7 @@ views:
                           padding: 0
                           top: -3%
                           width: 360%
-                        type: 'custom:upcoming-media-card'
+                        type: custom:upcoming-media-card
                       - image: /local/media_plex.svg
                         style:
                           left: 13.3%
@@ -1397,7 +1379,7 @@ views:
                           top: 0%
                           width: 100%
                           z-index: -2
-                        type: 'custom:mini-media-player'
+                        type: custom:mini-media-player
                       - image: /local/media_appletv1.svg
                         style:
                           left: 13.3%
@@ -1512,7 +1494,7 @@ views:
                           top: 0%
                           width: 100%
                           z-index: -2
-                        type: 'custom:mini-media-player'
+                        type: custom:mini-media-player
                       - image: /local/media_appletv1.svg
                         style:
                           left: 13.3%
@@ -1628,7 +1610,7 @@ views:
                           top: 0%
                           width: 100%
                           z-index: -2
-                        type: 'custom:mini-media-player'
+                        type: custom:mini-media-player
                       - image: /local/media_playstation.svg
                         style:
                           left: 13.3%
@@ -1743,7 +1725,7 @@ views:
                           top: 0%
                           width: 100%
                           z-index: -2
-                        type: 'custom:mini-media-player'
+                        type: custom:mini-media-player
                       - image: /local/media_googlenest.svg
                         style:
                           left: 13.3%
@@ -1917,7 +1899,7 @@ views:
                       top: 0%
                       width: 47.4%
                       z-index: -1
-                    type: 'custom:mini-media-player'
+                    type: custom:mini-media-player
                   - image: /local/media_overlay_small.svg
                     hold_action:
                       action: none
@@ -2010,7 +1992,7 @@ views:
                       top: 0%
                       width: 47.4%
                       z-index: -1
-                    type: 'custom:mini-media-player'
+                    type: custom:mini-media-player
                   - image: /local/media_overlay_small.svg
                     hold_action:
                       action: none
@@ -2104,7 +2086,7 @@ views:
                       top: 52.8%
                       width: 47.4%
                       z-index: -1
-                    type: 'custom:mini-media-player'
+                    type: custom:mini-media-player
                   - image: /local/media_overlay_small.svg
                     hold_action:
                       action: none
@@ -2197,7 +2179,7 @@ views:
                       top: 52.8%
                       width: 47.4%
                       z-index: -1
-                    type: 'custom:mini-media-player'
+                    type: custom:mini-media-player
                   - image: /local/media_overlay_small.svg
                     hold_action:
                       action: none
@@ -2348,13 +2330,30 @@ views:
               width: 20.95%
               text-rendering: optimizeLegibility
               font-smoothing: none
-            type: 'custom:swipe-card'
+            type: custom:swipe-card
 
           #############################################################################################################################################
           #                                                                                                                                           #
           #                                                                 LAMPOR                                                                    #
           #                                                                                                                                           #
           #############################################################################################################################################
+
+          - entity: sensor.placeholder
+            prefix: Lampor
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            style:
+              color: '#bcbebf'
+              font-family: SF Text
+              font-size: 2.4vw
+              font-weight: 500
+              left: 49.6%
+              max-width: 1px
+              top: 53.4%
+              cursor: default
+            type: state-label
 
           #################################################################
           #                                                               #
@@ -2364,8 +2363,8 @@ views:
 
           - entity: light.badrum
             state_image:
-              'off': /local/lampor_badrum_off.gif
-              'on': /local/lampor_badrum_on.png
+              'off': /local/btn/lam_badrum_off.svg
+              'on': /local/btn/lam_badrum_on.svg
               unavailable: /local/unknown.png
             style:
               left: 55.18%
@@ -2395,7 +2394,7 @@ views:
                   opacity: 0.7
                   top: 60.5%
                   width: 3.15vw
-                type: 'custom:circle-sensor-card'
+                type: custom:circle-sensor-card
                 units: '%'
             type: conditional
           - hold_action: !include popup/lampor_badrum.yaml
@@ -2421,8 +2420,8 @@ views:
 
           - entity: light.kok
             state_image:
-              'off': /local/lampor_kok_off.gif
-              'on': /local/lampor_kok_on.png
+              'off': /local/btn/lam_kok_off.svg
+              'on': /local/btn/lam_kok_on.svg
               unavailable: /local/unknown.png
             style:
               left: 66.14%
@@ -2452,7 +2451,7 @@ views:
                   opacity: 0.7
                   top: 60.9%
                   width: 3.15vw
-                type: 'custom:circle-sensor-card'
+                type: custom:circle-sensor-card
                 units: '%'
             type: conditional
           - hold_action: !include popup/lampor_kok.yaml
@@ -2478,8 +2477,8 @@ views:
 
           - entity: light.kladkammare_2
             state_image:
-              'off': /local/lampor_garderob_off.gif
-              'on': /local/lampor_garderob_on.png
+              'off': /local/btn/lam_garderob_off.svg
+              'on': /local/btn/lam_garderob_on.svg
               unavailable: /local/unknown.png
             style:
               left: 55.18%
@@ -2509,7 +2508,7 @@ views:
                   opacity: 0.7
                   top: 78%
                   width: 3.15vw
-                type: 'custom:circle-sensor-card'
+                type: custom:circle-sensor-card
                 units: '%'
             type: conditional
           - hold_action: !include popup/lampor_garderob.yaml
@@ -2535,8 +2534,8 @@ views:
 
           - entity: light.hall
             state_image:
-              'off': /local/lampor_hall_off.gif
-              'on': /local/lampor_hall_on.png
+              'off': /local/btn/lam_hall_off.svg
+              'on': /local/btn/lam_hall_on.svg
               unavailable: /local/unknown.png
             style:
               left: 66.14%
@@ -2566,7 +2565,7 @@ views:
                   opacity: 0.7
                   top: 78%
                   width: 3.15vw
-                type: 'custom:circle-sensor-card'
+                type: custom:circle-sensor-card
                 units: '%'
             type: conditional
           - hold_action: !include popup/lampor_hall.yaml
@@ -2590,6 +2589,23 @@ views:
           #                                                                                                                                           #
           #############################################################################################################################################
 
+          - entity: sensor.placeholder
+            prefix: Hemma
+            tap_action:
+              action: none
+            hold_action:
+              action: none
+            style:
+              color: '#bcbebf'
+              font-family: SF Text
+              font-size: 2.4vw
+              font-weight: 500
+              left: 74.5%
+              max-width: 1px
+              top: 53.4%
+              cursor: default
+            type: state-label
+
           #################################################################
           #                                                               #
           #                           MATTIAS                             #
@@ -2598,8 +2614,8 @@ views:
 
           - entity: person.mattias
             state_image:
-              home: /local/hemma_mattias_on.png
-              not_home: /local/hemma_mattias_off.png
+              home: /local/btn/hem_mattias_on.svg
+              not_home: /local/btn/hem_mattias_off.svg
             style:
               left: 80.05%
               top: 64.5%
@@ -2628,7 +2644,7 @@ views:
                   opacity: 0.7
                   top: 60.8%
                   width: 3.15vw
-                type: 'custom:circle-sensor-card'
+                type: custom:circle-sensor-card
             type: conditional
           - conditions:
               - entity: person.mattias
@@ -2653,7 +2669,7 @@ views:
                   opacity: 0.7
                   top: 60.8%
                   width: 3.15vw
-                type: 'custom:circle-sensor-card'
+                type: custom:circle-sensor-card
             type: conditional
           - hold_action: !include popup/hemma_mattias.yaml
             image: /local/overlay.svg
@@ -2675,8 +2691,8 @@ views:
 
           - entity: person.sanja
             state_image:
-              home: /local/hemma_sanja_on.png
-              not_home: /local/hemma_sanja_off.png
+              home: /local/btn/hem_sanja_on.svg
+              not_home: /local/btn/hem_sanja_off.svg
             style:
               left: 91.05%
               top: 64.5%
@@ -2705,7 +2721,7 @@ views:
                   opacity: 0.7
                   top: 60.8%
                   width: 3.15vw
-                type: 'custom:circle-sensor-card'
+                type: custom:circle-sensor-card
             type: conditional
           - conditions:
               - entity: person.sanja
@@ -2730,7 +2746,7 @@ views:
                   opacity: 0.7
                   top: 60.8%
                   width: 3.15vw
-                type: 'custom:circle-sensor-card'
+                type: custom:circle-sensor-card
             type: conditional
           - hold_action: !include popup/hemma_sanja.yaml
             image: /local/overlay.svg
@@ -2754,8 +2770,8 @@ views:
             hold_action:
               action: none
             state_image:
-              'off': /local/auto_stang_allt_off.png
-              'on': /local/auto_stang_allt_on.gif
+              'off': /local/btn/hem_stang_allt_off.svg
+              'on': /local/btn/hem_stang_allt_on.svg
             style:
               left: 80.05%
               top: 82.17%
@@ -2774,8 +2790,8 @@ views:
           - entity: switch.auto_hemma_template
             hold_action: !include popup/hemma_data_kwh.yaml
             state_image:
-              'off': /local/auto_hemma_off.png
-              'on': /local/auto_hemma_on.gif
+              'off': /local/btn/hem_hemma_off.svg
+              'on': /local/btn/hem_hemma_on.svg
             style:
               left: 91.05%
               top: 82.17%
