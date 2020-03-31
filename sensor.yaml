@@ -293,6 +293,8 @@
             Avbryter
           {% elif is_state('sensor.hp_printer_status', 'Idle') %}
             Viloläge
+          {% elif is_state('sensor.hp_printer_status', 'trayEmptyOrOpen') %}
+            Inga papper
           {% elif is_state('sensor.hp_printer_status', 'Off') %}
             Av
           {% else %}
