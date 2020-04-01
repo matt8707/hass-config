@@ -200,12 +200,6 @@
 
   - platform: template
     sensors:
-      flakt_timer_value:
-        friendly_name: Stäng av fläkt efter timer
-        icon_template: 'mdi:fan-off'
-        unit_of_measurement: h
-        value_template: "{{ states('input_number.fan_timer') | int }}"
-
       public_ip:
         value_template: !secret public_ip
 
