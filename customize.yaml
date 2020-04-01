@@ -71,3 +71,6 @@
 
   device_tracker.iphone:
     entity_picture: "/local/iphonex.svg"
+
+  sensor.hall_temperature:
+    friendly_name: Temperatur
