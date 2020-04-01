@@ -11,8 +11,42 @@ preload_cards:
   - conditional
   - history-graph
   - map
-  - entities
   - iframe
+
+⚓ anchors:
+  1: &title
+    entity: sensor.placeholder
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+    type: state-label
+  2: &title-style
+    color: '#bcbebf'
+    font-family: SF Text
+    font-size: 2.4vw
+    font-weight: 500
+    max-width: 1px
+    cursor: default
+  3: &circle-sensor
+    type: custom:circle-sensor-card
+    units: '%'
+    fill: none
+    stroke_color: '#aaabad'
+    stroke_width: 6
+    font_style:
+      color: '#7d7e80'
+      font-size: 1.0vw
+      font-weight: 400
+      margin-left: '-0.8%'
+      margin-top: 1.9%
+    gradient: true
+    max: 100
+    min: 0
+  4: &circle-style
+    height: 3.15vw
+    width: 3.15vw
+    opacity: 0.7
 
 title: Hemma
 views:
@@ -32,41 +66,49 @@ views:
               opacity: 0
             type: custom:hui-entities-card
 
-          #################################################################
-          #                                                               #
-          #                            COVID-19                           #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                   COVID-19                    #
+          #                                               #
+          #################################################
       
           - content: >
               <font color='#6a7377'>
-              <b><ha-icon icon="mdi:bacteria-outline"></ha-icon> Coronavirus</b>  ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
-              <b><ha-icon icon="mdi:emoticon-sad"></ha-icon> {{ states('sensor.sweden_coronavirus_current') }}</b> smittade  ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
-              <b><ha-icon icon="mdi:emoticon-happy"></ha-icon> {{ states('sensor.sweden_coronavirus_recovered') }}</b> tillfrisknade  ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
-              <b><ha-icon icon="mdi:grave-stone"></ha-icon> {{ states('sensor.sweden_coronavirus_deaths') }}</b> avlidna  ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
-              <ha-icon icon="mdi:chart-bar"></ha-icon> {{ ((states('sensor.sweden_coronavirus_confirmed') | int / 10327589 ) * 100) | round(4) }}% av Sverige
-              </font>
+              <b><ha-icon icon="mdi:bacteria-outline"></ha-icon> Coronavirus</b>
+              ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
+              <b><ha-icon icon="mdi:emoticon-sad"></ha-icon> 
+              {{ states('sensor.sweden_coronavirus_current') }}</b> smittade
+              ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
+              <b><ha-icon icon="mdi:emoticon-happy"></ha-icon> 
+              {{ states('sensor.sweden_coronavirus_recovered') }}</b> tillfrisknade
+              ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
+              <b><ha-icon icon="mdi:grave-stone"></ha-icon> 
+              {{ states('sensor.sweden_coronavirus_deaths') }}</b> avlidna
+              ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
+              <ha-icon icon="mdi:chart-bar"></ha-icon> 
+              {{ ((states('sensor.sweden_coronavirus_confirmed') 
+              | int / 10327589 ) * 100) | round(3) }}% av Sverige </font>
             style:
-              '--ha-card-background': none
-              '--ha-card-box-shadow': none
-              '--primary-text-color': '#6a7377'
+              top: 91.9%
+              left: 69.3%
+              width: 90vw
+              height: 1px
+              --ha-card-background: none
+              --ha-card-box-shadow: none
+              --primary-text-color: '#6a7377'
               font-family: SF Display
               font-size: 1.15vw
               font-weight: 400
-              height: 1px
-              left: 69.3%
               letter-spacing: 0.06vw
               line-height: 2.05vw
               opacity: 0.5
-              top: 91.9%
-              width: 90vw
             type: custom:hui-markdown-card
 
-          #############################################################################################################################################
-          #                                                                                                                                           #
-          #                                                                  SIDEBAR                                                                  #
-          #                                                                                                                                           #
-          #############################################################################################################################################
+          ##########################################################################
+          #                                                                        #
+          #                              * SIDEBAR *                               #
+          #                                                                        #
+          ##########################################################################
 
           - image: local/sidebar.png
             tap_action:
@@ -74,27 +116,28 @@ views:
             hold_action:
               action: none
             style:
-              left: 10.6%
               top: 50%
+              left: 10.6%
               width: 21.5%
             type: image
+
           - image: local/sidebar_line.svg
             tap_action:
               action: none
             hold_action:
               action: none
             style:
-              left: 10.6%
               top: 50%
+              left: 10.6%
               width: 21.5%
               opacity: 0.75
             type: image
 
-          #################################################################
-          #                                                               #
-          #                             CLOCK                             #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                     CLOCK                     #
+          #                                               #
+          #################################################
 
           - entity: sensor.time
             tap_action:
@@ -102,22 +145,22 @@ views:
             hold_action:
               action: none
             style:
+              top: 10.8%
+              left: 2.8%
               color: 'rgba(255, 255, 255, 0.7)'
               font-family: SF Text
               font-size: 5.41vw
               font-weight: 200
-              left: 2.8%
               letter-spacing: '-0.05vw'
               max-width: 1px
-              top: 10.8%
               cursor: default
             type: state-label
 
-          #################################################################
-          #                                                               #
-          #                           MARKDOWN                            #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                   MARKDOWN                    #
+          #                                               #
+          #################################################
 
           - content: >
               <font color='#6a7377'><b>{{ states('sensor.dag') }}</b><br>
@@ -211,20 +254,26 @@ views:
               {% if is_state('binary_sensor.nas_internet_access', 'off') %}{{'\u26A0\uFE0F'}} Kontrollera NAS internetåtkomst{% endif %}
 
             style:
-              '--ha-card-background': none
-              '--ha-card-box-shadow': none
-              '--primary-text-color': 'rgba(255, 255, 255, 0.9)'
+              top: 16%
+              left: 11%
+              width: 17.5vw
+              height: 1px
+              --ha-card-background: none
+              --ha-card-box-shadow: none
+              --primary-text-color: rgba(255, 255, 255, 0.9)
               font-family: SF Display
               font-size: 1.6vw
               font-weight: 300
-              height: 1px
-              left: 11%
               letter-spacing: 0.06vw
               line-height: 2.05vw
               opacity: 0.75
-              top: 16%
-              width: 17.5vw
             type: custom:hui-markdown-card
+
+          #################################################
+          #                                               #
+          #                KRISINFORMATION                #
+          #                                               #
+          #################################################
 
           - type: conditional
             conditions:
@@ -266,10 +315,10 @@ views:
                       - padding-bottom: 1vw
                       - margin-left: 138%
                 style:
-                  '--ha-card-background': '#5a1f1f'
-                  '--ha-card-box-shadow': none
+                  --ha-card-background: '#5a1f1f'
+                  --ha-card-box-shadow: none
                   filter: 'drop-shadow(0 0 1vw #1e1e1e)'
-                  '--primary-text-color': 'rgba(255, 255, 255, 0.9)'
+                  --primary-text-color: rgba(255, 255, 255, 0.9)
                   font-family: SF Display
                   font-size: 1.3vw
                   font-weight: 300
@@ -284,9 +333,15 @@ views:
                   width: 17.5vw
                   hyphens: auto
                   z-index: 10
-                  '--ha-card-border-radius': 0.7vw
-                  '--ha-card-border': '0.1vw solid #292c2e'
+                  --ha-card-border-radius: 0.7vw
+                  --ha-card-border: '0.1vw solid #292c2e'
                 type: custom:stack-in-card
+
+          #################################################
+          #                                               #
+          #                 LAUNDRY TIMER                 #
+          #                                               #
+          #################################################
 
           - type: conditional
             conditions:
@@ -308,8 +363,6 @@ views:
                   service: input_boolean.turn_off
                   service_data:
                     entity_id: input_boolean.laundry_timer_visibility
-                double_tap_action:
-                  action: none
                 styles:
                   card:
                     - background: '#202a2f30'
@@ -323,78 +376,79 @@ views:
                     - opacity: 0.65
                     - padding: 0.5vw 1vw 0.5vw 1vw
                 style:
-                  left: 10.8%
                   top: 78%
+                  left: 10.8%
                   font-size: 1.6vw
 
-          #################################################################
-          #                                                               #
-          #                        VACUUM BUTTON                          #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                 VACUUM BUTTON                 #
+          #                                               #
+          #################################################
 
           - icon: 'bha:roborock'
             style:
-              '--iron-icon-height': 4vw
-              '--iron-icon-width': 4vw
-              color: 'rgba(255, 255, 255, 0.10)'
-              left: 4.8%
               top: 87.41%
+              left: 4.8%
+              color: rgba(255, 255, 255, 0.10)
+              --iron-icon-height: 4vw
+              --iron-icon-width: 4vw
             tap_action: !include popup/sidebar_vacuum.yaml
             title: null
             type: icon
 
-          #################################################################
-          #                                                               #
-          #                          INFO BUTTON                          #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                  INFO BUTTON                  #
+          #                                               #
+          #################################################
 
           - icon: 'mdi:information-outline'
             style:
-              '--iron-icon-height': 4vw
-              '--iron-icon-width': 4vw
-              color: 'rgba(255, 255, 255, 0.10)'
-              left: 10.7%
               top: 87.41%
+              left: 10.7%
+              color: rgba(255, 255, 255, 0.10)
+              --iron-icon-height: 4vw
+              --iron-icon-width: 4vw
             tap_action: !include popup/sidebar_information.yaml
             title: null
             type: icon
+
           - conditions:
               - entity: sensor.hass_version_template
                 state_not: 'Senaste'
             elements:
               - image: /local/update_available.svg
                 style:
-                  left: 12.2%
                   top: 85%
+                  left: 12.2%
                   width: 1.7%
                   cursor: default
                 type: image
             type: conditional
 
-          #################################################################
-          #                                                               #
-          #                         SCENES BUTTON                         #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                 SCENES BUTTON                 #
+          #                                               #
+          #################################################
 
           - icon: 'mdi:home-heart'
             style:
-              '--iron-icon-height': 4.6vw
-              '--iron-icon-width': 4.6vw
-              color: 'rgba(255, 255, 255, 0.10)'
-              left: 16.55%
               top: 87.55%
+              left: 16.55%
+              color: rgba(255, 255, 255, 0.10)
+              --iron-icon-height: 4.6vw
+              --iron-icon-width: 4.6vw
             tap_action: !include popup/sidebar_scenarier.yaml
             title: null
             type: icon
 
-          #################################################################
-          #                                                               #
-          #                             HACS                              #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                  HACS SENSOR                  #
+          #                                               #
+          #################################################
 
           - conditions:
               - entity: sensor.hacs
@@ -404,11 +458,9 @@ views:
             elements:
               - entity: sensor.hacs
                 prefix: "HACS: "
-                hold_action:
-                  action: none
                 style:
-                  left: 10.45%
                   top: 95.2%
+                  left: 10.45%
                   letter-spacing: 0.06vw
                   font-family: SF Display
                   color: '#6a7377'
@@ -437,48 +489,41 @@ views:
                       box-shadow: none
                       width: 75em
                     title: Stäng
+                hold_action:
+                  action: none
                 type: state-label
             type: conditional
 
-          #############################################################################################################################################
-          #                                                                                                                                           #
-          #                                                                VARDAGSRUM                                                                 #
-          #                                                                                                                                           #
-          #############################################################################################################################################
+          ##########################################################################
+          #                                                                        #
+          #                             * VARDAGSRUM *                             #
+          #                                                                        #
+          ##########################################################################
 
-          - entity: sensor.placeholder
-            prefix: Vardagsrum
-            tap_action:
-              action: none
-            hold_action:
-              action: none
+          - prefix: Vardagsrum
+            <<: *title
             style:
-              color: '#bcbebf'
-              font-family: SF Text
-              font-size: 2.4vw
-              font-weight: 500
-              left: 24.85%
-              max-width: 1px
               top: 9.15%
-              cursor: default
-            type: state-label
+              left: 24.85%
+              <<: *title-style
 
-          #################################################################
-          #                                                               #
-          #                           BELYSNING                           #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                   BELYSNING                   #
+          #                                               #
+          #################################################
 
           - entity: light.belysning
             state_image:
-              'off': /local/btn/var_belysning_off.svg
               'on': /local/btn/var_belysning_on.svg
-              unavailable: /local/unknown.png
-            style:
-              left: 30.31%
+              'off': /local/btn/var_belysning_off.svg
+              unavailable: /local/btn/unavailable.svg
+            style: &var_belysning-pos
               top: 20.35%
+              left: 30.31%
               width: 10%
             type: image
+
           - conditions:
               - entity: light.belysning
                 state_not: unavailable
@@ -486,69 +531,53 @@ views:
               - entity: light.belysning
                 icon: 'bha:hue-bulb'
                 style:
-                  '--iron-icon-height': 1.87vw
-                  '--iron-icon-width': 1.87vw
-                  left: 27.35%
                   top: 15.6%
+                  left: 27.35%
+                  --iron-icon-height: 1.87vw
+                  --iron-icon-width: 1.87vw
                 type: state-icon
             type: conditional
+
           - conditions:
               - entity: light.belysning
                 state: 'on'
             elements:
               - entity: sensor.belysning_percent
-                fill: '#FFFFFF10'
-                font_style:
-                  color: '#7d7e80'
-                  font-size: 1.0vw
-                  font-weight: 400
-                  margin-left: '-0.8%'
-                  margin-top: 1.9%
-                gradient: true
-                max: 100
-                min: 0
-                stroke_color: '#aaabad'
-                stroke_width: 6
+                <<: *circle-sensor
                 style:
-                  height: 3.15vw
-                  left: 32.8%
-                  opacity: 0.7
                   top: 16.3%
-                  width: 3.15vw
-                type: custom:circle-sensor-card
-                units: '%'
+                  left: 32.8%
+                  <<: *circle-style
             type: conditional
-          - hold_action: !include popup/vardagsrum_belysning.yaml
-            image: /local/overlay.svg
-            style:
-              left: 30.31%
-              opacity: 0
-              top: 20.35%
-              width: 10%
+
+          - image: /local/overlay.svg
+            style: *var_belysning-pos
             tap_action:
               action: call-service
               service: light.toggle
               service_data:
                 entity_id: light.belysning
+            hold_action: !include popup/vardagsrum_belysning.yaml
             title: null
             type: image
 
-          #################################################################
-          #                                                               #
-          #                           SKRIVBORD                           #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                   SKRIVBORD                   #
+          #                                               #
+          #################################################
 
           - entity: light.fonsterlampa
             state_image:
-              'off': /local/btn/var_skrivbord_off.svg
               'on': /local/btn/var_skrivbord_on.svg
-              unavailable: /local/unknown.png
-            style:
-              left: 41.31%
+              'off': /local/btn/var_skrivbord_off.svg
+              unavailable: /local/btn/unavailable.svg
+            style: &var_skrivbord-pos
               top: 20.35%
+              left: 41.31%
               width: 10%
             type: image
+
           - conditions:
               - entity: light.fonsterlampa
                 state_not: unavailable
@@ -556,192 +585,172 @@ views:
               - entity: light.fonsterlampa
                 icon: 'bha:skrivbord'
                 style:
-                  '--iron-icon-height': 2.5vw
-                  '--iron-icon-width': 2.5vw
-                  left: 38.45%
                   top: 15.45%
+                  left: 38.45%
+                  --iron-icon-height: 2.5vw
+                  --iron-icon-width: 2.5vw
                 type: state-icon
             type: conditional
+
           - conditions:
               - entity: light.fonsterlampa
                 state: 'on'
             elements:
               - entity: sensor.fonsterlampa_percent
-                fill: '#FFFFFF10'
-                font_style:
-                  color: '#7d7e80'
-                  font-size: 1.0vw
-                  font-weight: 400
-                  margin-left: '-0.8%'
-                  margin-top: 1.9%
-                gradient: true
-                max: 100
-                min: 0
-                stroke_color: '#aaabad'
-                stroke_width: 6
+                <<: *circle-sensor
                 style:
-                  height: 3.15vw
-                  left: 43.8%
-                  opacity: 0.7
                   top: 16.3%
-                  width: 3.15vw
-                type: custom:circle-sensor-card
-                units: '%'
+                  left: 43.8%
+                  <<: *circle-style
             type: conditional
-          - hold_action: !include popup/vardagsrum_skrivbordslampa.yaml
-            image: /local/overlay.svg
-            style:
-              left: 41.31%
-              opacity: 0
-              top: 20.35%
-              width: 10%
+
+          - image: /local/overlay.svg
+            style: *var_skrivbord-pos
             tap_action:
               action: call-service
               service: light.toggle
               service_data:
                 entity_id: light.fonsterlampa
+            hold_action: !include popup/vardagsrum_skrivbordslampa.yaml
             title: null
             type: image
 
-          #################################################################
-          #                                                               #
-          #                              TV                               #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                      TV                       #
+          #                                               #
+          #################################################
 
           - entity: switch.tv_template
-            hold_action: !include popup/vardagsrum_tv.yaml
             state_image:
-              'off': /local/btn/var_tv_off.svg
               'on': /local/btn/var_tv_on.svg
+              'off': /local/btn/var_tv_off.svg
+              unavailable: /local/btn/unavailable.svg
             style:
-              left: 30.31%
               top: 37.9%
+              left: 30.31%
               width: 10%
             tap_action:
               action: toggle
+            hold_action: !include popup/vardagsrum_tv.yaml
             title: null
             type: image
+
           - conditions:
               - entity: input_boolean.sony_bravia_tv
                 state: 'on'
+              - entity: switch.tv_template
+                state: 'off'
             elements:
-              - image: /local/vardagsrum_tv_on.png
+              - image: /local/loader.svg
                 style:
-                  left: 30.31%
-                  cursor: default
-                  top: 37.9%
-                  width: 10%
-                type: image
-              - filter: opacity(45%)
-                image: /local/loader.svg
-                style:
-                  left: 33%
-                  cursor: default
                   top: 33.6%
+                  left: 33%
                   width: 3.5%
+                  filter: opacity(45%) invert(1)
+                  cursor: default
                 type: image
             type: conditional
 
-          #################################################################
-          #                                                               #
-          #                          PLAYSTATION                          #
-          #                                                               #
-          #################################################################
+          - conditions:
+              - entity: input_boolean.sony_bravia_tv
+                state: 'on'
+              - entity: switch.tv_template
+                state: 'on'
+            elements:
+              - image: /local/loader.svg
+                style:
+                  top: 33.6%
+                  left: 33%
+                  width: 3.5%
+                  filter: opacity(45%)
+                  cursor: default
+                type: image
+            type: conditional
+
+          #################################################
+          #                                               #
+          #                  PLAYSTATION                  #
+          #                                               #
+          #################################################
 
           - entity: switch.playstation_template
-            hold_action: !include popup/vardagsrum_playstation.yaml
             state_image:
-              'off': /local/btn/var_playstation_off.svg
               'on': /local/btn/var_playstation_on.svg
-              unavailable: /local/unknown.png
+              'off': /local/btn/var_playstation_off.svg
+              unavailable: /local/btn/unavailable.svg
             style:
-              left: 41.31%
               top: 37.9%
+              left: 41.31%
               width: 10%
             tap_action:
-              action: call-service
-              service: switch.toggle
-              service_data:
-                entity_id: switch.playstation_template
+              action: toggle
+            hold_action: !include popup/vardagsrum_playstation.yaml
             title: null
             type: image
+
           - conditions:
               - entity: input_boolean.playstation_template
                 state: 'on'
+              - entity: switch.playstation_template
+                state: 'off'
             elements:
-              - filter: opacity(45%)
-                image: /local/loader.svg
+              - image: /local/loader.svg
                 style:
-                  left: 44%
-                  cursor: default
-                  top: 34.2%
-                  width: 3.5%
-                type: image
-            type: conditional
-          - conditions:
-              - entity: input_boolean.playstation_template
-                state: 'on'
-            elements:
-              - entity: input_boolean.playstation_template
-                state_image:
-                  'off': /local/vardagsrum_playstation_off.gif
-                  'on': /local/vardagsrum_playstation_on.gif
-                style:
-                  left: 41.31%
-                  cursor: default
-                  top: 37.9%
-                  width: 10%
-                type: image
-              - filter: opacity(45%)
-                image: /local/loader.svg
-                style:
-                  left: 44%
-                  cursor: default
                   top: 33.6%
+                  left: 44%
                   width: 3.5%
+                  filter: opacity(45%) invert(1)
+                  cursor: default
                 type: image
             type: conditional
 
-          #############################################################################################################################################
-          #                                                                                                                                           #
-          #                                                                  STUDIO                                                                   #
-          #                                                                                                                                           #
-          #############################################################################################################################################
+          - conditions:
+              - entity: input_boolean.playstation_template
+                state: 'on'
+              - entity: switch.playstation_template
+                state: 'on'
+            elements:
+              - image: /local/loader.svg
+                style:
+                  top: 33.6%
+                  left: 44%
+                  width: 3.5%
+                  filter: opacity(45%)
+                  cursor: default
+                type: image
+            type: conditional
 
-          - entity: sensor.placeholder
-            prefix: Studio
-            tap_action:
-              action: none
-            hold_action:
-              action: none
+          ##########################################################################
+          #                                                                        #
+          #                               * STUDIO *                               #
+          #                                                                        #
+          ##########################################################################
+
+          - prefix: Studio
+            <<: *title
             style:
-              color: '#bcbebf'
-              font-family: SF Text
-              font-size: 2.4vw
-              font-weight: 500
-              left: 49.65%
-              max-width: 1px
               top: 9.15%
-              cursor: default
-            type: state-label
+              left: 49.65%
+              <<: *title-style
 
-          #################################################################
-          #                                                               #
-          #                          DATORLAMPA                           #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                  DATORLAMPA                   #
+          #                                               #
+          #################################################
 
           - entity: light.datorlampa
             state_image:
-              'off': /local/btn/stu_datorlampa_off.svg
               'on': /local/btn/stu_datorlampa_on.svg
-              unavailable: /local/unknown.png
-            style:
-              left: 55.18%
+              'off': /local/btn/stu_datorlampa_off.svg
+              unavailable: /local/btn/unavailable.svg
+            style: &stu_datorlampa-pos
               top: 20.35%
+              left: 55.18%
               width: 10%
             type: image
+
           - conditions:
               - entity: light.datorlampa
                 state_not: unavailable
@@ -749,69 +758,53 @@ views:
               - entity: light.datorlampa
                 icon: 'bha:hue-bulb'
                 style:
-                  '--iron-icon-height': 1.87vw
-                  '--iron-icon-width': 1.87vw
-                  left: 52.19%
                   top: 15.6%
+                  left: 52.19%
+                  --iron-icon-height: 1.87vw
+                  --iron-icon-width: 1.87vw
                 type: state-icon
             type: conditional
+
           - conditions:
               - entity: light.datorlampa
                 state: 'on'
             elements:
               - entity: sensor.datorlampa_percent
-                fill: '#FFFFFF10'
-                font_style:
-                  color: '#7d7e80'
-                  font-size: 1.0vw
-                  font-weight: 400
-                  margin-left: '-0.8%'
-                  margin-top: 1.9%
-                gradient: true
-                max: 100
-                min: 0
-                stroke_color: '#aaabad'
-                stroke_width: 6
+                <<: *circle-sensor
                 style:
-                  height: 3.15vw
-                  left: 57.65%
-                  opacity: 0.7
                   top: 16.3%
-                  width: 3.15vw
-                type: custom:circle-sensor-card
-                units: '%'
+                  left: 57.65%
+                  <<: *circle-style
             type: conditional
-          - hold_action: !include popup/studio_datorlampa.yaml
-            image: /local/overlay.svg
-            style:
-              left: 55.18%
-              opacity: 0
-              top: 20.35%
-              width: 10%
+
+          - image: /local/overlay.svg
+            style: *stu_datorlampa-pos
             tap_action:
               action: call-service
               service: light.toggle
               service_data:
                 entity_id: light.datorlampa
+            hold_action: !include popup/studio_datorlampa.yaml
             title: null
             type: image
 
-          #################################################################
-          #                                                               #
-          #                          TAKLAMPOR                            #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                   TAKLAMPOR                   #
+          #                                               #
+          #################################################
 
           - entity: light.taklampor
             state_image:
-              'off': /local/btn/stu_taklampor_off.svg
               'on': /local/btn/stu_taklampor_on.svg
-              unavailable: /local/unknown.png
-            style:
-              left: 66.14%
+              'off': /local/btn/stu_taklampor_off.svg
+              unavailable: /local/btn/unavailable.svg
+            style: &stu_taklampor-pos
               top: 20.35%
+              left: 66.14%
               width: 10%
             type: image
+
           - conditions:
               - entity: light.taklampor
                 state_not: unavailable
@@ -819,93 +812,89 @@ views:
               - entity: light.taklampor
                 icon: 'bha:spot'
                 style:
-                  '--iron-icon-height': 2.4vw
-                  '--iron-icon-width': 2.4vw
-                  left: 63.53%
                   top: 17.2%
+                  left: 63.53%
+                  --iron-icon-height: 2.4vw
+                  --iron-icon-width: 2.4vw
                 type: state-icon
             type: conditional
+
           - conditions:
               - entity: light.taklampor
                 state: 'on'
             elements:
               - entity: sensor.taklampor_percent
-                fill: '#FFFFFF10'
-                font_style:
-                  color: '#7d7e80'
-                  font-size: 1.0vw
-                  font-weight: 400
-                  margin-left: '-0.8%'
-                  margin-top: 1.9%
-                gradient: true
-                max: 100
-                min: 0
-                stroke_color: '#aaabad'
-                stroke_width: 6
+                <<: *circle-sensor
                 style:
-                  height: 3.15vw
-                  left: 68.5%
-                  opacity: 0.7
                   top: 16.3%
-                  width: 3.15vw
-                type: custom:circle-sensor-card
-                units: '%'
+                  left: 68.5%
+                  <<: *circle-style
             type: conditional
-          - hold_action: !include popup/studio_taklampor.yaml
-            image: /local/overlay.svg
-            style:
-              left: 66.14%
-              opacity: 0
-              top: 20.35%
-              width: 10%
+
+          - image: /local/overlay.svg
+            style: *stu_taklampor-pos
             tap_action:
               action: call-service
               service: light.toggle
               service_data:
                 entity_id: light.taklampor
+            hold_action: !include popup/studio_taklampor.yaml
             title: null
             type: image
 
-          #################################################################
-          #                                                               #
-          #                             DATOR                             #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                     DATOR                     #
+          #                                               #
+          #################################################
 
           - entity: switch.dator_template
-            hold_action: !include popup/studio_dator.yaml
             state_image:
-              'off': /local/btn/stu_dator_off.svg
               'on': /local/btn/stu_dator_on.svg
-              unavailable: /local/unknown.png
+              'off': /local/btn/stu_dator_off.svg
+              unavailable: /local/btn/unavailable.svg
             style:
-              left: 55.18%
               top: 37.9%
+              left: 55.18%
               width: 10%
             tap_action:
               action: toggle
+            hold_action: !include popup/studio_dator.yaml
             title: null
             type: image
+
           - conditions:
               - entity: input_boolean.dator_template
                 state: 'on'
+              - entity: switch.dator_template
+                state: 'off'
             elements:
-              - image: /local/studio_dator_on.png
+              - image: /local/loader.svg
                 style:
-                  left: 55.18%
-                  cursor: default
-                  top: 37.9%
-                  width: 10%
-                type: image
-              - filter: opacity(45%)
-                image: /local/loader.svg
-                style:
-                  left: 57.8%
-                  cursor: default
                   top: 33.6%
+                  left: 57.8%
                   width: 3.5%
+                  filter: opacity(45%) invert(1)
+                  cursor: default
                 type: image
             type: conditional
+
+          - conditions:
+              - entity: input_boolean.dator_template
+                state: 'on'
+              - entity: switch.dator_template
+                state: 'on'
+            elements:
+              - image: /local/loader.svg
+                style:
+                  top: 33.6%
+                  left: 57.8%
+                  width: 3.5%
+                  filter: opacity(45%)
+                  cursor: default
+                type: image
+            type: conditional
+
           - type: conditional
             conditions:
               - entity: input_boolean.lock_computer
@@ -913,76 +902,67 @@ views:
             elements:
               - icon: 'mdi:lock-alert'
                 style:
-                  '--iron-icon-height': 2.2vw
-                  '--iron-icon-width': 2.2vw
-                  color: '#6e818a60'
-                  left: 57.65%
                   top: 33.58%
+                  left: 57.65%
+                  color: '#6e818a60'
+                  --iron-icon-height: 2.2vw
+                  --iron-icon-width: 2.2vw
                 tap_action:
                   action: none
                 title: null
                 type: icon
 
-          #################################################################
-          #                                                               #
-          #                           MONITORER                           #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                   MONITORER                   #
+          #                                               #
+          #################################################
 
           - entity: switch.wemo_monitorer
-            hold_action: !include popup/studio_monitorer.yaml
             state_image:
-              'off': /local/btn/stu_monitorer_off.svg
               'on': /local/btn/stu_monitorer_on.svg
-              unavailable: /local/unknown.png
+              'off': /local/btn/stu_monitorer_off.svg
+              unavailable: /local/btn/unavailable.svg
             style:
-              left: 66.14%
               top: 37.9%
+              left: 66.14%
               width: 10%
             tap_action:
               action: toggle
+            hold_action: !include popup/studio_monitorer.yaml
             title: null
             type: image
 
-          #############################################################################################################################################
-          #                                                                                                                                           #
-          #                                                                  SOVRUM                                                                   #
-          #                                                                                                                                           #
-          #############################################################################################################################################
+          ##########################################################################
+          #                                                                        #
+          #                               * SOVRUM *                               #
+          #                                                                        #
+          ##########################################################################
 
-          - entity: sensor.placeholder
-            prefix: Sovrum
-            tap_action:
-              action: none
-            hold_action:
-              action: none
+          - prefix: Sovrum
+            <<: *title
             style:
-              color: '#bcbebf'
-              font-family: SF Text
-              font-size: 2.4vw
-              font-weight: 500
-              left: 74.55%
-              max-width: 1px
               top: 9.15%
-              cursor: default
-            type: state-label
+              left: 74.55%
+              <<: *title-style
 
-          #################################################################
-          #                                                               #
-          #                         MATTIAS LIGHT                         #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                 MATTIAS LIGHT                 #
+          #                                               #
+          #################################################
 
           - entity: light.mattias
             state_image:
-              'off': /local/btn/sov_mattias_off.svg
               'on': /local/btn/sov_mattias_on.svg
-              unavailable: /local/unknown.png
-            style:
-              left: 80.05%
+              'off': /local/btn/sov_mattias_off.svg
+              unavailable: /local/btn/unavailable.svg
+            style: &sov_mattias-pos
               top: 20.35%
+              left: 80.05%
               width: 10%
             type: image
+
           - conditions:
               - entity: light.mattias
                 state_not: unavailable
@@ -990,69 +970,53 @@ views:
               - entity: light.mattias
                 icon: 'bha:sovrum'
                 style:
-                  '--iron-icon-height': 1.9vw
-                  '--iron-icon-width': 1.9vw
-                  left: 76.95%
                   top: 15.1%
+                  left: 76.95%
+                  --iron-icon-height: 1.9vw
+                  --iron-icon-width: 1.9vw
                 type: state-icon
             type: conditional
+
           - conditions:
               - entity: light.mattias
                 state: 'on'
             elements:
               - entity: sensor.mattias_percent
-                fill: '#FFFFFF10'
-                font_style:
-                  color: '#7d7e80'
-                  font-size: 1.0vw
-                  font-weight: 400
-                  margin-left: '-0.8%'
-                  margin-top: 1.9%
-                gradient: true
-                max: 100
-                min: 0
-                stroke_color: '#aaabad'
-                stroke_width: 6
+                <<: *circle-sensor
                 style:
-                  height: 3.15vw
-                  left: 82.5%
-                  opacity: 0.7
                   top: 16.3%
-                  width: 3.15vw
-                type: custom:circle-sensor-card
-                units: '%'
+                  left: 82.5%
+                  <<: *circle-style
             type: conditional
-          - hold_action: !include popup/sovrum_mattias.yaml
-            image: /local/overlay.svg
-            style:
-              left: 80.05%
-              opacity: 0
-              top: 20.35%
-              width: 10%
+
+          - image: /local/overlay.svg
+            style: *sov_mattias-pos
             tap_action:
               action: call-service
               service: light.toggle
               service_data:
                 entity_id: light.mattias
+            hold_action: !include popup/sovrum_mattias.yaml
             title: null
             type: image
 
-          #################################################################
-          #                                                               #
-          #                          SANJA LIGHT                          #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                  SANJA LIGHT                  #
+          #                                               #
+          #################################################
 
           - entity: light.sanja
             state_image:
-              'off': /local/btn/sov_sanja_off.svg
               'on': /local/btn/sov_sanja_on.svg
-              unavailable: /local/unknown.png
-            style:
-              left: 91.05%
+              'off': /local/btn/sov_sanja_off.svg
+              unavailable: /local/btn/unavailable.svg
+            style: &sov_sanja-pos
               top: 20.35%
+              left: 91.05%
               width: 10%
             type: image
+
           - conditions:
               - entity: light.sanja
                 state_not: unavailable
@@ -1060,152 +1024,127 @@ views:
               - entity: light.sanja
                 icon: 'bha:sovrum'
                 style:
-                  '--iron-icon-height': 1.9vw
-                  '--iron-icon-width': 1.9vw
-                  left: 87.95%
                   top: 15.1%
+                  left: 87.95%
+                  --iron-icon-height: 1.9vw
+                  --iron-icon-width: 1.9vw
                 type: state-icon
             type: conditional
+
           - conditions:
               - entity: light.sanja
                 state: 'on'
             elements:
               - entity: sensor.sanja_percent
-                fill: '#FFFFFF10'
-                font_style:
-                  color: '#7d7e80'
-                  font-size: 1.0vw
-                  font-weight: 400
-                  margin-left: '-0.8%'
-                  margin-top: 1.9%
-                gradient: true
-                max: 100
-                min: 0
-                stroke_color: '#aaabad'
-                stroke_width: 6
+                <<: *circle-sensor
                 style:
-                  height: 3.15vw
-                  left: 93.5%
-                  opacity: 0.7
                   top: 16.3%
-                  width: 3.15vw
-                type: custom:circle-sensor-card
-                units: '%'
+                  left: 93.5%
+                  <<: *circle-style
             type: conditional
-          - hold_action: !include popup/sovrum_sanja.yaml
-            image: /local/overlay.svg
-            style:
-              left: 91.05%
-              opacity: 0
-              top: 20.35%
-              width: 10%
+
+          - image: /local/overlay.svg
+            style: *sov_sanja-pos
             tap_action:
               action: call-service
               service: light.toggle
               service_data:
                 entity_id: light.sanja
+            hold_action: !include popup/sovrum_sanja.yaml
             title: null
             type: image
 
-          #################################################################
-          #                                                               #
-          #                              FAN                              #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                      FAN                      #
+          #                                               #
+          #################################################
 
           - entity: switch.wemo_flakt
-            hold_action: !include popup/sovrum_flakt.yaml
             state_image:
-              'off': /local/btn/sov_flakt_off.svg
               'on': /local/btn/sov_flakt_on.svg
-              unavailable: /local/unknown.png
+              'off': /local/btn/sov_flakt_off.svg
+              unavailable: /local/btn/unavailable.svg
             style:
-              left: 80.05%
               top: 37.9%
+              left: 80.05%
               width: 10%
             tap_action:
               action: toggle
+            hold_action: !include popup/sovrum_flakt.yaml
             title: null
             type: image
 
-          #################################################################
-          #                                                               #
-          #                              TV2                              #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                      TV2                      #
+          #                                               #
+          #################################################
 
           - entity: switch.tv2_template
-            hold_action: !include popup/sovrum_tv2.yaml
             state_image:
-              'off': /local/btn/sov_tv_off.svg
               'on': /local/btn/sov_tv_on.svg
+              'off': /local/btn/sov_tv_off.svg
+              unavailable: /local/btn/unavailable.svg
             style:
-              left: 91.05%
               top: 37.9%
+              left: 91.05%
               width: 10%
             tap_action:
               action: toggle
+            hold_action: !include popup/sovrum_tv2.yaml
             title: null
             type: image
+
           - conditions:
               - entity: input_boolean.samsung
                 state: 'on'
+              - entity: switch.tv2_template
+                state: 'off'
             elements:
-              - image: /local/sovrum_tv2_on.png
+              - image: /local/loader.svg
                 style:
-                  left: 91.05%
-                  cursor: default
-                  top: 37.9%
-                  width: 10%
-                type: image
-              - filter: opacity(45%)
-                image: /local/loader.svg
-                style:
-                  left: 93.8%
-                  cursor: default
                   top: 33.6%
+                  left: 93.8%
                   width: 3.5%
+                  filter: opacity(45%) invert(1)
+                  cursor: default
                 type: image
             type: conditional
 
-          #############################################################################################################################################
-          #                                                                                                                                           #
-          #                                                                  MEDIA                                                                    #
-          #                                                                                                                                           #
-          #############################################################################################################################################
+          - conditions:
+              - entity: input_boolean.samsung
+                state: 'on'
+              - entity: switch.tv2_template
+                state: 'on'
+            elements:
+              - image: /local/loader.svg
+                style:
+                  top: 33.6%
+                  left: 93.8%
+                  width: 3.5%
+                  filter: opacity(45%)
+                  cursor: default
+                type: image
+            type: conditional
 
-          - entity: sensor.placeholder
-            prefix: Media
-            tap_action:
-              action: none
-            hold_action:
-              action: none
+          ##########################################################################
+          #                                                                        #
+          #                               * MEDIA *                                #
+          #                                                                        #
+          ##########################################################################
+
+          - prefix: Media
+            <<: *title
             style:
-              color: '#bcbebf'
-              font-family: SF Text
-              font-size: 2.4vw
-              font-weight: 500
-              left: 24.75%
-              max-width: 1px
               top: 53.4%
-              cursor: default
-            type: state-label
+              left: 24.75%
+              <<: *title-style
 
-          - image: /local/overlay.svg
-            # temp_fix
-            style:
-              left: 27%
-              top: 54%
-              width: 3.5%
-              cursor: default
-            tap_action:
-              action: toggle
-            title: null
-            type: image
           - cards:
               - type: picture-elements
                 image: /local/overlay.svg
-                style: |
+                style: &media-style |
                   ha-card {
                     {% set text_off = '#6a6d6e' %}
                     {% set text_on = '#e1e1e1' %}
@@ -1238,11 +1177,11 @@ views:
                   }
                 elements:
 
-                  #################################################################
-                  #                                                               #
-                  #                   RECENTLY DOWNLOADED PLEX                    #
-                  #                                                               #
-                  #################################################################
+                  #################################################
+                  #                                               #
+                  #           RECENTLY DOWNLOADED PLEX            #
+                  #                                               #
+                  #################################################
 
                   - conditions:
                       - entity: input_select.conditional_media
@@ -1349,11 +1288,12 @@ views:
                         type: image
                     type: conditional
 
-                  #################################################################
-                  #                                                               #
-                  #              MEDIA PLAYER // APPLE TV VARDAGSRUM              #
-                  #                                                               #
-                  #################################################################
+                  #################################################
+                  #                                               #
+                  #              APPLE TV VARDAGSRUM              #
+                  #                                               #
+                  #################################################
+
                   - conditions:
                       - entity: input_select.conditional_media
                         state: 'Vardagsrum'
@@ -1463,11 +1403,11 @@ views:
                         type: conditional
                     type: conditional
 
-                  #################################################################
-                  #                                                               #
-                  #                MEDIA PLAYER // APPLE TV SOVRUM                #
-                  #                                                               #
-                  #################################################################
+                  #################################################
+                  #                                               #
+                  #                APPLE TV SOVRUM                #
+                  #                                               #
+                  #################################################
 
                   - conditions:
                       - entity: input_select.conditional_media
@@ -1578,11 +1518,11 @@ views:
                         type: conditional
                     type: conditional
 
-                  #################################################################
-                  #                                                               #
-                  #                 MEDIA PLAYER // PLAYSTATION 4                 #
-                  #                                                               #
-                  #################################################################
+                  #################################################
+                  #                                               #
+                  #                 PLAYSTATION 4                 #
+                  #                                               #
+                  #################################################
 
                   - conditions:
                       - entity: input_select.conditional_media
@@ -1694,11 +1634,11 @@ views:
                         type: conditional
                     type: conditional
 
-                  #################################################################
-                  #                                                               #
-                  #               MEDIA PLAYER // GOOGLE NEST MINI                #
-                  #                                                               #
-                  #################################################################
+                  #################################################
+                  #                                               #
+                  #               GOOGLE NEST MINI                #
+                  #                                               #
+                  #################################################
 
                   - conditions:
                       - entity: input_select.conditional_media
@@ -1809,41 +1749,15 @@ views:
                         type: conditional
                     type: conditional
 
-          #################################################################
-          #                                                               #
-          #                      SMALL MEDIA CONTROLS                     #
-          #                                                               #
-          #################################################################
+                  #################################################
+                  #                                               #
+                  #           * SMALL MEDIA CONTROLS *            #
+                  #                                               #
+                  #################################################
 
               - type: picture-elements
                 image: /local/overlay.svg
-                style: |
-                  ha-card {
-                    {% set text_off = '#6a6d6e' %}
-                    {% set text_on = '#e1e1e1' %}
-                    {% set shadow_off = '1px 1px 1px rgba(0,0,0,0.05)' %}
-                    {% set shadow_on = '1px 1px 5px rgba(18,22,23,0.9)' %}
-                    {% set overlay_off = '0' %}
-                    {% set overlay_on = '1.0' %}
-                    {% set icon_off = '0.1' %}
-                    {% set icon_on = '1.0' %}
-                    --vardagsrum-active-text: {% if is_state('sensor.apple_tv_vardagsrum_status', 'Av') %}{{text_off}}{% else %}{{text_on}}{% endif %};
-                    --vardagsrum-active-shadow: {% if is_state('sensor.apple_tv_vardagsrum_status', 'Av') %}{{shadow_off}}{% else %}{{shadow_on}}{% endif %};
-                    --vardagsrum-text-overlay: {% if is_state('sensor.apple_tv_vardagsrum_status', 'Av') %}{{overlay_off}}{% else %}{{overlay_on}}{% endif %};
-                    --vardagsrum-icon-opacity: {% if is_state('sensor.apple_tv_vardagsrum_status', 'Av') %}{{icon_off}}{% else %}{{icon_on}}{% endif %};
-                    --sovrum-active-text: {% if is_state('sensor.apple_tv_sovrum_status', 'Av') %}{{text_off}}{% else %}{{text_on}}{% endif %};
-                    --sovrum-active-shadow: {% if is_state('sensor.apple_tv_sovrum_status', 'Av') %}{{shadow_off}}{% else %}{{shadow_on}}{% endif %};
-                    --sovrum-text-overlay: {% if is_state('sensor.apple_tv_sovrum_status', 'Av') %}{{overlay_off}}{% else %}{{overlay_on}}{% endif %};
-                    --sovrum-icon-opacity: {% if is_state('sensor.apple_tv_sovrum_status', 'Av') %}{{icon_off}}{% else %}{{icon_on}}{% endif %};
-                    --playstation-active-text: {% if is_state('media_player.playstation_4', 'standby') %}{{text_off}}{% else %}{{text_on}}{% endif %};
-                    --playstation-active-shadow: {% if is_state('media_player.playstation_4', 'standby') %}{{shadow_off}}{% else %}{{shadow_on}}{% endif %};
-                    --playstation-text-overlay: {% if is_state('media_player.playstation_4', 'standby') %}{{overlay_off}}{% else %}{{overlay_on}}{% endif %};
-                    --playstation-icon-opacity: {% if is_state('media_player.playstation_4', 'standby') %}{{icon_off}}{% else %}{{icon_on}}{% endif %};
-                    --googlenest-active-text: {% if is_state('media_player.google_nest_mini', 'off') %}{{text_off}}{% else %}{{text_on}}{% endif %};
-                    --googlenest-active-shadow: {% if is_state('media_player.google_nest_mini', 'off') %}{{shadow_off}}{% else %}{{shadow_on}}{% endif %};
-                    --googlenest-text-overlay: {% if is_state('media_player.google_nest_mini', 'off') %}{{overlay_off}}{% else %}{{overlay_on}}{% endif %};
-                    --googlenest-icon-opacity: {% if is_state('media_player.google_nest_mini', 'off') %}{{icon_off}}{% else %}{{icon_on}}{% endif %};
-                  }
+                style: *media-style
                 elements:
                   - image: /local/media_background_s.svg
                     style:
@@ -1858,11 +1772,11 @@ views:
                     title: null
                     type: image
 
-          #################################################################
-          #                                                               #
-          #                   SMALL APPLE TV VARDAGSRUM                   #
-          #                                                               #
-          #################################################################
+                  #################################################
+                  #                                               #
+                  #           SMALL APPLE TV VARDAGSRUM           #
+                  #                                               #
+                  #################################################
 
                   - image: /local/media_appletv1.svg
                     style:
@@ -1951,11 +1865,11 @@ views:
                       action: none
                     type: state-label
 
-          #################################################################
-          #                                                               #
-          #                     SMALL APPLE TV SOVRUM                     #
-          #                                                               #
-          #################################################################
+                  #################################################
+                  #                                               #
+                  #             SMALL APPLE TV SOVRUM             #
+                  #                                               #
+                  #################################################
 
                   - image: /local/media_appletv1.svg
                     style:
@@ -2044,11 +1958,11 @@ views:
                       action: none
                     type: state-label
 
-          #################################################################
-          #                                                               #
-          #                     SMALL PLAYSTATION 4                       #
-          #                                                               #
-          #################################################################
+                  #################################################
+                  #                                               #
+                  #              SMALL PLAYSTATION 4              #
+                  #                                               #
+                  #################################################
 
                   - image: /local/media_playstation.svg
                     style:
@@ -2138,11 +2052,11 @@ views:
                       action: none
                     type: state-label
 
-          #################################################################
-          #                                                               #
-          #                     SMALL GOOGLE NEST MINI                    #
-          #                                                               #
-          #################################################################
+                  #################################################
+                  #                                               #
+                  #            SMALL GOOGLE NEST MINI             #
+                  #                                               #
+                  #################################################
 
                   - image: /local/media_googlenest.svg
                     style:
@@ -2332,472 +2246,332 @@ views:
               font-smoothing: none
             type: custom:swipe-card
 
-          #############################################################################################################################################
-          #                                                                                                                                           #
-          #                                                                 LAMPOR                                                                    #
-          #                                                                                                                                           #
-          #############################################################################################################################################
+          ##########################################################################
+          #                                                                        #
+          #                               * LAMPOR *                               #
+          #                                                                        #
+          ##########################################################################
 
-          - entity: sensor.placeholder
-            prefix: Lampor
-            tap_action:
-              action: none
-            hold_action:
-              action: none
+          - prefix: Lampor
+            <<: *title
             style:
-              color: '#bcbebf'
-              font-family: SF Text
-              font-size: 2.4vw
-              font-weight: 500
-              left: 49.6%
-              max-width: 1px
               top: 53.4%
-              cursor: default
-            type: state-label
+              left: 49.6%
+              <<: *title-style
 
-          #################################################################
-          #                                                               #
-          #                            BADRUM                             #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                    BADRUM                     #
+          #                                               #
+          #################################################
 
           - entity: light.badrum
             state_image:
-              'off': /local/btn/lam_badrum_off.svg
               'on': /local/btn/lam_badrum_on.svg
-              unavailable: /local/unknown.png
-            style:
-              left: 55.18%
+              'off': /local/btn/lam_badrum_off.svg
+              unavailable: /local/btn/unavailable.svg
+            style: &lam_badrum-pos
               top: 64.5%
+              left: 55.18%
               width: 10%
             type: image
+
           - conditions:
               - entity: light.badrum
                 state: 'on'
             elements:
               - entity: sensor.badrum_percent
-                fill: '#FFFFFF10'
-                font_style:
-                  color: '#7d7e80'
-                  font-size: 1.0vw
-                  font-weight: 400
-                  margin-left: '-0.8%'
-                  margin-top: 1.9%
-                gradient: true
-                max: 100
-                min: 0
-                stroke_color: '#aaabad'
-                stroke_width: 6
+                <<: *circle-sensor
                 style:
-                  height: 3.15vw
-                  left: 57.65%
-                  opacity: 0.7
                   top: 60.5%
-                  width: 3.15vw
-                type: custom:circle-sensor-card
-                units: '%'
+                  left: 57.65%
+                  <<: *circle-style
             type: conditional
-          - hold_action: !include popup/lampor_badrum.yaml
-            image: /local/overlay.svg
-            style:
-              left: 55.18%
-              opacity: 0
-              top: 64.5%
-              width: 10%
+
+          - image: /local/overlay.svg
+            style: *lam_badrum-pos
             tap_action:
               action: call-service
               service: light.toggle
               service_data:
                 entity_id: light.badrum
+            hold_action: !include popup/lampor_badrum.yaml
             title: null
             type: image
 
-          #################################################################
-          #                                                               #
-          #                             KÖK                               #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                      KÖK                      #
+          #                                               #
+          #################################################
 
           - entity: light.kok
             state_image:
-              'off': /local/btn/lam_kok_off.svg
               'on': /local/btn/lam_kok_on.svg
-              unavailable: /local/unknown.png
-            style:
-              left: 66.14%
+              'off': /local/btn/lam_kok_off.svg
+              unavailable: /local/btn/unavailable.svg
+            style: &lam_kok-pos
               top: 64.5%
+              left: 66.14%
               width: 10%
             type: image
+
           - conditions:
               - entity: light.kok
                 state: 'on'
             elements:
               - entity: sensor.kok_percent
-                fill: '#FFFFFF10'
-                font_style:
-                  color: '#7d7e80'
-                  font-size: 1.0vw
-                  font-weight: 400
-                  margin-left: '-0.8%'
-                  margin-top: 1.9%
-                gradient: true
-                max: 100
-                min: 0
-                stroke_color: '#aaabad'
-                stroke_width: 6
+                <<: *circle-sensor
                 style:
-                  height: 3.15vw
+                  top: 60.5%
                   left: 68.5%
-                  opacity: 0.7
-                  top: 60.9%
-                  width: 3.15vw
-                type: custom:circle-sensor-card
-                units: '%'
+                  <<: *circle-style
             type: conditional
-          - hold_action: !include popup/lampor_kok.yaml
-            image: /local/overlay.svg
-            style:
-              left: 66.14%
-              opacity: 0
-              top: 64.5%
-              width: 10%
+
+          - image: /local/overlay.svg
+            style: *lam_kok-pos
             tap_action:
               action: call-service
               service: light.toggle
               service_data:
                 entity_id: light.kok
+            hold_action: !include popup/lampor_kok.yaml
             title: null
             type: image
 
-          #################################################################
-          #                                                               #
-          #                           GARDEROB                            #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                   GARDEROB                    #
+          #                                               #
+          #################################################
 
           - entity: light.kladkammare_2
             state_image:
-              'off': /local/btn/lam_garderob_off.svg
               'on': /local/btn/lam_garderob_on.svg
-              unavailable: /local/unknown.png
-            style:
-              left: 55.18%
+              'off': /local/btn/lam_garderob_off.svg
+              unavailable: /local/btn/unavailable.svg
+            style: &lam_garderob-pos
               top: 82.17%
+              left: 55.18%
               width: 10%
             type: image
+
           - conditions:
               - entity: light.kladkammare_2
                 state: 'on'
             elements:
               - entity: sensor.garderob_percent
-                fill: '#FFFFFF10'
-                font_style:
-                  color: '#7d7e80'
-                  font-size: 1.0vw
-                  font-weight: 400
-                  margin-left: '-0.8%'
-                  margin-top: 1.9%
-                gradient: true
-                max: 100
-                min: 0
-                stroke_color: '#aaabad'
-                stroke_width: 6
+                <<: *circle-sensor
                 style:
-                  height: 3.15vw
-                  left: 57.7%
-                  opacity: 0.7
                   top: 78%
-                  width: 3.15vw
-                type: custom:circle-sensor-card
-                units: '%'
+                  left: 57.7%
+                  <<: *circle-style
             type: conditional
-          - hold_action: !include popup/lampor_garderob.yaml
-            image: /local/overlay.svg
-            style:
-              left: 55.18%
-              opacity: 0
-              top: 82.17%
-              width: 10%
+
+          - image: /local/overlay.svg
+            style: *lam_garderob-pos
             tap_action:
               action: call-service
               service: light.toggle
               service_data:
                 entity_id: light.kladkammare_2
+            hold_action: !include popup/lampor_garderob.yaml
             title: null
             type: image
 
-          #################################################################
-          #                                                               #
-          #                             HALL                              #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                     HALL                      #
+          #                                               #
+          #################################################
 
           - entity: light.hall
             state_image:
-              'off': /local/btn/lam_hall_off.svg
               'on': /local/btn/lam_hall_on.svg
-              unavailable: /local/unknown.png
-            style:
-              left: 66.14%
+              'off': /local/btn/lam_hall_off.svg
+              unavailable: /local/btn/unavailable.svg
+            style: &lam_hall-pos
               top: 82.17%
+              left: 66.14%
               width: 10%
             type: image
+
           - conditions:
               - entity: light.hall
                 state: 'on'
             elements:
               - entity: sensor.hall_percent
-                fill: '#FFFFFF10'
-                font_style:
-                  color: '#7d7e80'
-                  font-size: 1.0vw
-                  font-weight: 400
-                  margin-left: '-0.8%'
-                  margin-top: 1.9%
-                gradient: true
-                max: 100
-                min: 0
-                stroke_color: '#aaabad'
-                stroke_width: 6
+                <<: *circle-sensor
                 style:
-                  height: 3.15vw
-                  left: 68.5%
-                  opacity: 0.7
                   top: 78%
-                  width: 3.15vw
-                type: custom:circle-sensor-card
-                units: '%'
+                  left: 68.5%
+                  <<: *circle-style
             type: conditional
-          - hold_action: !include popup/lampor_hall.yaml
-            image: /local/overlay.svg
-            style:
-              left: 66.14%
-              opacity: 0
-              top: 82.17%
-              width: 10%
+
+          - image: /local/overlay.svg
+            style: *lam_hall-pos
             tap_action:
               action: call-service
               service: light.toggle
               service_data:
                 entity_id: light.hall
+            hold_action: !include popup/lampor_hall.yaml
             title: null
             type: image
 
-          #############################################################################################################################################
-          #                                                                                                                                           #
-          #                                                                 HEMMA                                                                     #
-          #                                                                                                                                           #
-          #############################################################################################################################################
+          ##########################################################################
+          #                                                                        #
+          #                               * HEMMA *                                #
+          #                                                                        #
+          ##########################################################################
 
-          - entity: sensor.placeholder
-            prefix: Hemma
-            tap_action:
-              action: none
-            hold_action:
-              action: none
+          - prefix: Hemma
+            <<: *title
             style:
-              color: '#bcbebf'
-              font-family: SF Text
-              font-size: 2.4vw
-              font-weight: 500
-              left: 74.5%
-              max-width: 1px
               top: 53.4%
-              cursor: default
-            type: state-label
+              left: 74.5%
+              <<: *title-style
 
-          #################################################################
-          #                                                               #
-          #                           MATTIAS                             #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                    MATTIAS                    #
+          #                                               #
+          #################################################
 
           - entity: person.mattias
             state_image:
               home: /local/btn/hem_mattias_on.svg
               not_home: /local/btn/hem_mattias_off.svg
-            style:
-              left: 80.05%
+            style: &hem_mattias-pos
               top: 64.5%
+              left: 80.05%
               width: 10%
             type: image
+
           - conditions:
               - entity: person.mattias
                 state: home
             elements:
               - entity: sensor.mattias_last_changed
-                fill: '#FFFFFF10'
-                font_style:
-                  color: '#7d7e80'
-                  font-size: 1.0vw
-                  font-weight: 400
-                  margin-left: '-0.8%'
-                  margin-top: 1.9%
-                gradient: true
-                max: 100
-                min: 0
-                stroke_color: '#aaabad'
-                stroke_width: 6
-                style:
-                  height: 3.15vw
-                  left: 82.35%
-                  opacity: 0.7
+                <<: *circle-sensor
+                units: null
+                style: &hem_mattias-circle-pos
                   top: 60.8%
+                  left: 82.35%
+                  height: 3.15vw
                   width: 3.15vw
-                type: custom:circle-sensor-card
+                  opacity: 0.7
             type: conditional
+
           - conditions:
               - entity: person.mattias
                 state: not_home
             elements:
               - entity: sensor.mattias_last_changed
+                <<: *circle-sensor
                 fill: '#FFFFFF08'
-                font_style:
-                  color: '#7d7e80'
-                  font-size: 1.0vw
-                  font-weight: 400
-                  margin-left: '-0.8%'
-                  margin-top: 1.9%
-                gradient: true
-                max: 100
-                min: 0
                 stroke_color: '#313638'
-                stroke_width: 6
-                style:
-                  height: 3.15vw
-                  left: 82.35%
-                  opacity: 0.7
-                  top: 60.8%
-                  width: 3.15vw
-                type: custom:circle-sensor-card
+                units: null
+                style: *hem_mattias-circle-pos
             type: conditional
-          - hold_action: !include popup/hemma_mattias.yaml
-            image: /local/overlay.svg
-            style:
-              left: 80.05%
-              opacity: 0
-              top: 64.5%
-              width: 10%
+
+          - image: /local/overlay.svg
+            style: *hem_mattias-pos
             tap_action:
               action: none
+            hold_action: !include popup/hemma_mattias.yaml
             title: null
             type: image
 
-          #################################################################
-          #                                                               #
-          #                            SANJA                              #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                     SANJA                     #
+          #                                               #
+          #################################################
 
           - entity: person.sanja
             state_image:
               home: /local/btn/hem_sanja_on.svg
               not_home: /local/btn/hem_sanja_off.svg
-            style:
-              left: 91.05%
+            style: &hem_sanja-pos
               top: 64.5%
+              left: 91.05%
               width: 10%
             type: image
+
           - conditions:
               - entity: person.sanja
                 state: home
             elements:
               - entity: sensor.sanja_last_changed
-                fill: '#FFFFFF10'
-                font_style:
-                  color: '#7d7e80'
-                  font-size: 1.0vw
-                  font-weight: 400
-                  margin-left: '-0.8%'
-                  margin-top: 1.9%
-                gradient: true
-                max: 100
-                min: 0
-                stroke_color: '#aaabad'
-                stroke_width: 6
-                style:
-                  height: 3.15vw
-                  left: 93.35%
-                  opacity: 0.7
+                <<: *circle-sensor
+                units: null
+                style: &hem_sanja-circle-pos
                   top: 60.8%
+                  left: 93.35%
+                  height: 3.15vw
                   width: 3.15vw
-                type: custom:circle-sensor-card
+                  opacity: 0.7
             type: conditional
+
           - conditions:
               - entity: person.sanja
                 state: not_home
             elements:
               - entity: sensor.sanja_last_changed
+                <<: *circle-sensor
                 fill: '#FFFFFF08'
-                font_style:
-                  color: '#7d7e80'
-                  font-size: 1.0vw
-                  font-weight: 400
-                  margin-left: '-0.8%'
-                  margin-top: 1.9%
-                gradient: true
-                max: 100
-                min: 0
                 stroke_color: '#313638'
-                stroke_width: 6
-                style:
-                  height: 3.15vw
-                  left: 93.35%
-                  opacity: 0.7
-                  top: 60.8%
-                  width: 3.15vw
-                type: custom:circle-sensor-card
+                units: null
+                style: *hem_sanja-circle-pos
             type: conditional
-          - hold_action: !include popup/hemma_sanja.yaml
-            image: /local/overlay.svg
-            style:
-              left: 91.05%
-              opacity: 0
-              top: 64.5%
-              width: 10%
+
+          - image: /local/overlay.svg
+            style: *hem_sanja-pos
             tap_action:
               action: none
+            hold_action: !include popup/hemma_sanja.yaml
             title: null
             type: image
 
-          #################################################################
-          #                                                               #
-          #                         STÄNG ALLT                            #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                  STÄNG ALLT                   #
+          #                                               #
+          #################################################
 
           - entity: switch.auto_stangallt_template
-            hold_action:
-              action: none
             state_image:
-              'off': /local/btn/hem_stang_allt_off.svg
               'on': /local/btn/hem_stang_allt_on.svg
+              'off': /local/btn/hem_stang_allt_off.svg
             style:
-              left: 80.05%
               top: 82.17%
+              left: 80.05%
               width: 10%
             tap_action:
               action: toggle
+            hold_action:
+              action: none
             title: null
             type: image
 
-          #################################################################
-          #                                                               #
-          #                             HEMMA                             #
-          #                                                               #
-          #################################################################
+          #################################################
+          #                                               #
+          #                     HEMMA                     #
+          #                                               #
+          #################################################
 
           - entity: switch.auto_hemma_template
-            hold_action: !include popup/hemma_data_kwh.yaml
             state_image:
-              'off': /local/btn/hem_hemma_off.svg
               'on': /local/btn/hem_hemma_on.svg
+              'off': /local/btn/hem_hemma_off.svg
             style:
-              left: 91.05%
               top: 82.17%
+              left: 91.05%
               width: 10%
             tap_action:
               action: toggle
+            hold_action: !include popup/hemma_data_kwh.yaml
             title: null
             type: image
 
@@ -2805,4 +2579,3 @@ views:
         type: picture-elements
     panel: true
     path: default_view
-    title: Home
