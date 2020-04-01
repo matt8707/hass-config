@@ -116,7 +116,7 @@
                                 margin-top: 0.7em
                           type: custom:button-entity-row
                       show_header_toggle: false
-                      style: |
+                      style: &entities-style |
                         ha-card {
                           box-shadow: none;
                           border-radius: 1em;
@@ -125,15 +125,27 @@
                         }
                         .card-header {
                           margin-left: 0.4em;
+                          font-family: sf text;
+                          letter-spacing: 0.005em;
                         }
-                      title: "Home Assistant Core"
+                        ha-card > div.card-header > div {
+                          padding-top: 2px;
+                          margin-bottom: -2px;
+                        }
+                      title: "Home Assistant"
                       type: entities
                     - break
                     - entities:
                         - entity: switch.fullykiosk_screen
                           icon: 'mdi:tablet'
                           name: Display
-                        - entity: input_number.fullykiosk_brightness_slider
+                        - type: custom:slider-entity-row
+                          entity: input_number.fullykiosk_brightness_slider
+                          style: |
+                            div {
+                              max-width: 60%;
+                              margin: auto;
+                            }
                         - entity: switch.fullykiosk_screensaver
                           icon: 'mdi:power-sleep'
                           name: Skärmsläckare
@@ -204,16 +216,7 @@
                                 margin-top: 0.7em
                           type: custom:button-entity-row
                       show_header_toggle: false
-                      style: |
-                        ha-card {
-                          box-shadow: none;
-                          border-radius: 1em;
-                          background: rgba(34, 38, 39, 0.9);
-                          padding-right: 0.7em;
-                        }
-                        .card-header {
-                          margin-left: 0.4em;
-                        }
+                      style: *entities-style
                       title: "Väggplattan"
                       type: entities
                     - break
@@ -335,8 +338,8 @@
                             - color: green
                               entity: sensor.synology_dsm_network_down
                           group: false
-                          points_per_hour: 20
-                          line_width: 2.5
+                          points_per_hour: 15
+                          line_width: 3
                           hour24: true
                           hours_to_show: 1.5
                           show:
@@ -349,11 +352,9 @@
                             legend: false
                           style: |
                             ha-card {
-                              border-radius: 0.35em;
+                              border-radius: 1em;
                               background: none;
                               box-shadow: none;
-                              margin-top: -3.45em;
-                              margin-left: 0.65em;
                               height: 10em;
                             }
                           tap_action:
@@ -369,6 +370,15 @@
                         }
                         .card-header {
                           margin-left: 0.4em;
+                          font-family: sf text;
+                          letter-spacing: 0.005em;
+                        }
+                        ha-card > div.card-header > div {
+                          padding-top: 2px;
+                          margin-bottom: -2px;
+                        }
+                        #states > div:nth-child(9) {
+                          margin: -24.5px -26px -16px -16px;
                         }
                       title: "Synology NAS"
                       type: entities
