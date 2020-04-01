@@ -30,6 +30,7 @@ lovelace:
       {'url':'/hacsfiles/lovelace-card-mod/card-mod.js',                      'type':'module'},
       {'url':'/hacsfiles/lovelace-card-preloader/lovelace-card-preloader.js', 'type':'module'},
       {'url':'/hacsfiles/lovelace-layout-card/layout-card.js',                'type':'module'},
+      {'url':'/hacsfiles/lovelace-slider-entity-row/slider-entity-row.js',    'type':'module'},
       {'url':'/hacsfiles/lovelace-valetudo-map-card/valetudo-map-card.js',    'type':'js'},
       {'url':'/hacsfiles/mini-graph-card/mini-graph-card-bundle.js',          'type':'module'},
       {'url':'/hacsfiles/popup-backdrop-filter/popup-backdrop-filter.js',     'type':'module'},
@@ -346,8 +347,8 @@ input_number:
     unit_of_measurement: "%"
 
   fan_timer:
-    name: Timer
-    icon: 'mdi:timer'
+    name: Stäng efter
+    icon: 'mdi:fan-off'
     initial: 6
     min: 1
     max: 12
