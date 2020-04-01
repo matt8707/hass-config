@@ -2,31 +2,79 @@
               service: browser_mod.popup
               service_data:
                 card:
-                  entities:
-                    - entity: switch.wemo_flakt
-                      secondary_info: last-changed
-                    - entity: automation.turn_on_flakt_temp
-                      icon: 'mdi:hotel'
-                      name: Slå på om temp är över 26 °C
+                  type: custom:stack-in-card
+                  cards:
                     - entities:
-                        - color: '#e74c3c'
-                          entity: sensor.hall_temperature
-                          name: Sovrum
-                      hours_to_show: 24
-                      name: ' '
-                      show:
-                        icon: false
-                      type: custom:mini-graph-card
+                        - entity: switch.wemo_flakt
+                          secondary_info: last-changed
+                        - type: custom:slider-entity-row
+                          entity: input_number.fan_timer
+                          style: |
+                            div {
+                              max-width: 60%;
+                              margin: auto;
+                            }
+                        - entity: automation.turn_on_flakt_temp
+                          icon: 'mdi:hotel'
+                          name: Slå på om temp överstiger 26 °C
                       style: |
                         ha-card {
-                          margin-top: -3.5em;
-                          border-radius: 0.55vw !important;
+                          margin-right: 0.55em;
                         }
-                    - entity: input_number.fan_timer
-                    - entity: sensor.flakt_timer_value
-
-                  show_header_toggle: false
-                  type: entities
+                      show_header_toggle: false
+                      type: entities
+                    - align_state: left
+                      entities:
+                        - color: '#385581'
+                          entity: sensor.hall_temperature
+                      group: false
+                      line_width: 8
+                      hour24: true
+                      group: true
+                      align_icon: left
+                      align_state: right
+                      align_header: left
+                      hours_to_show: 24
+                      show:
+                        fill: fade
+                        icon: true
+                        name: true
+                        state: true
+                        name_adaptive_color: false
+                        labels: hover
+                        legend: false
+                      style: |
+                        ha-card {
+                          border-radius: 0.35em;
+                          background: none;
+                          box-shadow: none;
+                          margin-top: -8px;
+                        }
+                        .name > span, .state > span.state__value.ellipsis, 
+                        .state > span.state__uom.ellipsis {
+                          font-size: 14px !important;
+                          font-weight: 400 !important;
+                          opacity: 1 !important;
+                        }
+                        .name > span {
+                          margin-left: 16px !important;
+                        }
+                        .icon {
+                          margin-left: 24px !important;
+                        }
+                        .state {
+                          margin-top: -35px;
+                          margin-right: 23.5px;
+                        }
+                        .state > span.state__uom.ellipsis {
+                          margin-top: -3px;
+                        }
+                        .state > div {
+                          opacity: 0;
+                        }
+                      tap_action:
+                        action: none
+                      type: custom:mini-graph-card
                 deviceID:
                   - this
                 style:
