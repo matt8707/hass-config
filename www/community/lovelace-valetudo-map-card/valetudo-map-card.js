@@ -1,10 +1,20 @@
 class ValetudoMapCard extends HTMLElement {
   constructor() {
     super();
-    this.drawing = false;
-    this.lastUpdated = "";
+    this.drawingMap = false;
+    this.drawingControls = false;
+    this.lastUpdatedMap = "";
+    this.lastUpdatedControls = "";
     this.attachShadow({ mode: 'open' });
     this.lastValidRobotPosition = [];
+
+    this.entityWarning1 = document.createElement('hui-warning');
+    this.entityWarning1.id = 'lovelaceValetudoWarning1HaCard';
+    this.shadowRoot.appendChild(this.entityWarning1);
+
+    this.entityWarning2 = document.createElement('hui-warning');
+    this.entityWarning2.id = 'lovelaceValetudoWarning2HaCard';
+    this.shadowRoot.appendChild(this.entityWarning2);
 
     this.cardContainer = document.createElement('ha-card');
     this.cardContainer.id = 'lovelaceValetudoHaCard';
@@ -13,13 +23,18 @@ class ValetudoMapCard extends HTMLElement {
     this.shadowRoot.appendChild(this.cardContainerStyle);
 
     this.controlContainer = document.createElement('ha-card');
+    this.controlContainer.id = 'lovelaceValetudoControlHaCard';
     this.controlContainerStyle = document.createElement('style');
     this.shadowRoot.appendChild(this.controlContainer);
     this.shadowRoot.appendChild(this.controlContainerStyle);
   };
 
-  shouldDraw(state) {
-    return !this.drawing && this.lastUpdated != state.last_updated;
+  shouldDrawMap(state) {
+    return !this.drawingMap && this.lastUpdatedMap != state.last_updated;
+  };
+
+  shouldDrawControls(state) {
+    return !this.drawingControls && this.lastUpdatedControls != state.last_updated;
   };
 
   calculateColor(container, ...colors) {
@@ -39,9 +54,6 @@ class ValetudoMapCard extends HTMLElement {
   };
 
   drawMap(cardContainer, mapData, mapHeight, mapWidth, floorColor, obstacleWeakColor, obstacleStrongColor, noGoAreaColor, virtualWallColor, pathColor, chargerColor, vacuumColor) {
-    // We're drawing
-    this.drawing = true;
-
     // Points to pixels
     const widthScale = 50 / this._config.map_scale;
     const heightScale = 50 / this._config.map_scale;
@@ -222,9 +234,6 @@ class ValetudoMapCard extends HTMLElement {
       cardContainer.firstChild.remove();
     };
     cardContainer.appendChild(containerContainer);
-
-    // We're done drawing
-    this.drawing = false;
   };
 
   setConfig(config) {
@@ -249,118 +258,156 @@ class ValetudoMapCard extends HTMLElement {
     this._hass = hass;
     const config = this._config;
     let mapEntity = this._hass.states[this._config.entity];
+    let infoEntity = this._hass.states[this._config.vacuum_entity]
+
+    let canDrawMap = true;
+    let canDrawControls = true;
+
     if (!mapEntity || mapEntity['state'] == 'unavailable' || !mapEntity.attributes || !mapEntity.attributes.image) {
-      let warning = document.createElement('hui-warning');
-      warning.textContent = `Entity not available: ${this._config.entity}`;
-      while (this.shadowRoot.firstChild) {
-        this.shadowRoot.firstChild.remove();
-      };
-      this.shadowRoot.appendChild(warning);
-      return;
-    };
-
-    // Calculate map height and width
-    const mapWidth = mapEntity.attributes.image.dimensions.width - this._config.crop.right;
-    const mapHeight = mapEntity.attributes.image.dimensions.height - this._config.crop.bottom;
-
-    // Calculate desired container height
-    let containerHeight = (mapHeight * this._config.map_scale) - this._config.crop.top
-    let minHeight = this._config.min_height;
-
-    // Want height based on container width
-    if (String(this._config.min_height).endsWith('w')) {
-        minHeight = this._config.min_height.slice(0, -1) * this.cardContainer.offsetWidth;
+      canDrawMap = false;
     }
 
-    let containerMinHeightPadding = minHeight > containerHeight ? (minHeight - containerHeight) / 2 : 0;
+    if (!infoEntity || infoEntity['state'] == 'unavailable' || !infoEntity.attributes) {
+      canDrawControls = false;
+      // Reset last-updated to redraw as soon as element becomes availables
+      this.lastUpdatedControls = ""
+    }
 
-    // Set container CSS
-    this.cardContainerStyle.textContent = `
-      #lovelaceValetudoHaCard {
-        height: ${containerHeight}px;
-        padding-top: ${containerMinHeightPadding}px;
-        padding-bottom: ${containerMinHeightPadding}px;
-        overflow: hidden;
-      }
-      #lovelaceValetudoCard {
-        position: relative;
-        margin-left: auto;
-        margin-right: auto;
-        width: ${mapWidth * this._config.map_scale}px;
-        height: ${mapHeight * this._config.map_scale}px;
-        transform: rotate(${this._config.rotate});
-        top: -${this._config.crop.top}px;
-        left: -${this._config.crop.left}px;
-      }
-      #lovelaceValetudoCard div {
-        position: absolute;
-        background-color: transparent;
-        width: 100%;
-        height: 100%;
-      }
-    `
+    if (!canDrawMap && this._config.entity) {
+      // Remove the map
+      this.cardContainer.style.display = 'none';
 
-    // Set control container CSS
-    this.controlContainerStyle.textContent = `
-      .flex-box {
-        display: flex;
-        justify-content: space-evenly;
+      // Show the warning
+      this.entityWarning1.textContent = `Entity not available: ${this._config.entity}`;
+      this.entityWarning1.style.display = 'block';
+    } else {
+      this.entityWarning1.style.display = 'none';
+      this.cardContainer.style.display = 'block';
+    };
+
+    if (!canDrawControls && this._config.vacuum_entity) {
+      // Remove the controls
+      this.controlContainer.style.display = 'none';
+
+      // Show the warning
+      this.entityWarning2.textContent = `Entity not available: ${this._config.vacuum_entity}`;
+      this.entityWarning2.style.display = 'block';
+    } else {
+      this.entityWarning2.style.display = 'none';
+      this.controlContainer.style.display = 'block';
+    };
+
+    if (canDrawMap) {
+      // Calculate map height and width
+      const mapWidth = mapEntity.attributes.image.dimensions.width - this._config.crop.right;
+      const mapHeight = mapEntity.attributes.image.dimensions.height - this._config.crop.bottom;
+
+      // Calculate desired container height
+      let containerHeight = (mapHeight * this._config.map_scale) - this._config.crop.top
+      let minHeight = this._config.min_height;
+
+      // Want height based on container width
+      if (String(this._config.min_height).endsWith('w')) {
+        minHeight = this._config.min_height.slice(0, -1) * this.cardContainer.offsetWidth;
       }
-      paper-button {
-        cursor: pointer;
-        position: relative;
-        display: inline-flex;
-        align-items: center;
-        padding: 8px;
-      }
-      ha-icon {
-        width: 24px;
-        height: 24px;
-      }
-    `
 
-    // Don't draw unnecessarily often
-    if (!this.shouldDraw(mapEntity)) return;
+      let containerMinHeightPadding = minHeight > containerHeight ? (minHeight - containerHeight) / 2 : 0;
 
-    this.lastUpdated = mapEntity.last_updated;
+      // Set container CSS
+      this.cardContainerStyle.textContent = `
+        #lovelaceValetudoHaCard {
+          height: ${containerHeight}px;
+          padding-top: ${containerMinHeightPadding}px;
+          padding-bottom: ${containerMinHeightPadding}px;
+          overflow: hidden;
+        }
+        #lovelaceValetudoCard {
+          position: relative;
+          margin-left: auto;
+          margin-right: auto;
+          width: ${mapWidth * this._config.map_scale}px;
+          height: ${mapHeight * this._config.map_scale}px;
+          transform: rotate(${this._config.rotate});
+          top: -${this._config.crop.top}px;
+          left: -${this._config.crop.left}px;
+        }
+        #lovelaceValetudoCard div {
+          position: absolute;
+          background-color: transparent;
+          width: 100%;
+          height: 100%;
+        }
+      `
+      // Calculate colours
+      const homeAssistant = document.getElementsByTagName('home-assistant')[0];
+      const floorColor = this.calculateColor(homeAssistant, this._config.floor_color, '--valetudo-map-floor-color', '--secondary-background-color');
+      const obstacleWeakColor = this.calculateColor(homeAssistant, this._config.obstacle_weak_color, '--valetudo-map-obstacle-weak-color', '--divider-color');
+      const obstacleStrongColor = this.calculateColor(homeAssistant, this._config.obstacle_strong_color, '--valetudo-map-obstacle-strong-color', '--accent-color');
+      const noGoAreaColor = this.calculateColor(homeAssistant, this._config.no_go_area_color, '--valetudo-no-go-area-color', '--accent-color');
+      const virtualWallColor = this.calculateColor(homeAssistant, this._config.virtual_wall_color, '--valetudo-virtual-wall-color', '--accent-color');
+      const pathColor = this.calculateColor(homeAssistant, this._config.path_color, '--valetudo-map-path-color', '--primary-text-color');
+      const chargerColor = this.calculateColor(homeAssistant, this._config.dock_color, 'green');
+      const vacuumColor = this.calculateColor(homeAssistant, this._config.vacuum_color, '--primary-text-color');
 
-    // Calculate colours
-    const homeAssistant = document.getElementsByTagName('home-assistant')[0];
-    const floorColor = this.calculateColor(homeAssistant, this._config.floor_color, '--valetudo-map-floor-color', '--secondary-background-color');
-    const obstacleWeakColor = this.calculateColor(homeAssistant, this._config.obstacle_weak_color, '--valetudo-map-obstacle-weak-color', '--divider-color');
-    const obstacleStrongColor = this.calculateColor(homeAssistant, this._config.obstacle_strong_color, '--valetudo-map-obstacle-strong-color', '--accent-color');
-    const noGoAreaColor = this.calculateColor(homeAssistant, this._config.no_go_area_color, '--valetudo-no-go-area-color', '--accent-color');
-    const virtualWallColor = this.calculateColor(homeAssistant, this._config.virtual_wall_color, '--valetudo-virtual-wall-color', '--accent-color');
-    const pathColor = this.calculateColor(homeAssistant, this._config.path_color, '--valetudo-map-path-color', '--primary-text-color');
-    const chargerColor = this.calculateColor(homeAssistant, this._config.dock_color, 'green');
-    const vacuumColor = this.calculateColor(homeAssistant, this._config.vacuum_color, '--primary-text-color');
+      // Don't redraw unnecessarily often
+      if (this.shouldDrawMap(mapEntity)) {
+        // Start drawing map
+        this.drawingMap = true;
 
-    this.drawMap(this.cardContainer, mapEntity, mapHeight, mapWidth, floorColor, obstacleWeakColor, obstacleStrongColor, noGoAreaColor, virtualWallColor, pathColor, chargerColor, vacuumColor);
+        this.drawMap(this.cardContainer, mapEntity, mapHeight, mapWidth, floorColor, obstacleWeakColor, obstacleStrongColor, noGoAreaColor, virtualWallColor, pathColor, chargerColor, vacuumColor);
+
+        // Done drawing map
+        this.lastUpdatedMap = mapEntity.last_updated;
+        this.drawingMap = false;
+      };
+    };
 
     // Draw status and controls
-    if (this._config.vacuum_entity) {
-        let infoEntity = this._hass.states[this._config.vacuum_entity]
+    if (canDrawControls) {
+      // Set control container CSS
+      this.controlContainerStyle.textContent = `
+        .flex-box {
+          display: flex;
+          justify-content: space-evenly;
+        }
+        paper-button {
+          cursor: pointer;
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          padding: 8px;
+        }
+        ha-icon {
+          width: 24px;
+          height: 24px;
+        }
+      `
+
+      let infoEntity = this._hass.states[this._config.vacuum_entity]
+      if (this.shouldDrawControls(infoEntity)) {
+        // Start drawing controls
+        this.drawingControls = true;
 
         this.infoBox = document.createElement('div');
         this.infoBox.classList.add('flex-box');
 
         if (infoEntity && infoEntity.attributes && infoEntity.attributes.status) {
-            const statusInfo = document.createElement('p');
-            statusInfo.innerHTML = infoEntity.attributes.status
-            this.infoBox.appendChild(statusInfo)
+          const statusInfo = document.createElement('p');
+          statusInfo.innerHTML = infoEntity.attributes.status
+          this.infoBox.appendChild(statusInfo)
         };
 
         if (infoEntity && infoEntity.attributes && infoEntity.attributes.battery_icon && infoEntity.attributes.battery_level) {
-            const batteryData = document.createElement('div');
-            batteryData.style.display = "flex"
-            batteryData.style.alignItems = "center"
-            const batteryIcon = document.createElement('ha-icon');
-            const batteryText = document.createElement('span');
-            batteryIcon.icon = infoEntity.attributes.battery_icon
-            batteryText.innerHTML = " " + infoEntity.attributes.battery_level + " %"
-            batteryData.appendChild(batteryIcon);
-            batteryData.appendChild(batteryText);
-            this.infoBox.appendChild(batteryData);
+          const batteryData = document.createElement('div');
+          batteryData.style.display = "flex"
+          batteryData.style.alignItems = "center"
+          const batteryIcon = document.createElement('ha-icon');
+          const batteryText = document.createElement('span');
+          batteryIcon.icon = infoEntity.attributes.battery_icon
+          batteryText.innerHTML = " " + infoEntity.attributes.battery_level + " %"
+          batteryData.appendChild(batteryIcon);
+          batteryData.appendChild(batteryText);
+          this.infoBox.appendChild(batteryData);
         };
 
         this.controlFlexBox = document.createElement('div');
@@ -406,6 +453,11 @@ class ValetudoMapCard extends HTMLElement {
         };
         this.controlContainer.append(this.infoBox);
         this.controlContainer.append(this.controlFlexBox);
+
+        // Done drawing controls
+        this.lastUpdatedControls = infoEntity.last_updated;
+        this.drawingControls = false;
+      };
     };
   };
 
