@@ -145,33 +145,24 @@
         entity_id: input_number.monitorer_volume
         value: "{{ states('sensor.getvolume') }}"
 
-- alias: eq_calibration_headphones 
+- alias: eq_calibration
   initial_state: true
   trigger:
     - platform: state
       entity_id: switch.wemo_monitorer
-      from: 'on'
-      to: 'off'
   action:
     - service: input_number.set_value
       data:
         entity_id: input_number.monitorer_volume
         value: 20
-    - service: script.reference_headphones 
-
-- alias: eq_calibration_monitors
-  initial_state: true
-  trigger:
-    - platform: state
-      entity_id: switch.wemo_monitorer
-      from: 'off'
-      to: 'on'
-  action:
-    - service: input_number.set_value
-      data:
-        entity_id: input_number.monitorer_volume
-        value: 20
-    - service: script.reference_monitors
+    - service: script.turn_on
+      data_template:
+        entity_id: >-
+          {% if trigger.from_state.state == 'off' and trigger.to_state.state == 'on' %}
+          script.reference_monitors
+          {% elif trigger.from_state.state == 'on' and trigger.to_state.state == 'off' %}
+          script.reference_headphones 
+          {% else %} script.dummy {% endif %}
 
 - alias: turn_off_monitorer
   initial_state: true
@@ -212,14 +203,19 @@
     entity_id: sensor.hall_temperature
     above: 26
   condition:
-    condition: or
+    condition: and
     conditions:
-      - condition: state
-        entity_id: person.mattias
-        state: 'home'
-      - condition: state
-        entity_id: person.sanja
-        state: 'home'
+      - condition: time
+        after: '20:00:00'
+        before: '07:00:00'
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: person.mattias
+            state: 'home'
+          - condition: state
+            entity_id: person.sanja
+            state: 'home'
   action:
     - service: switch.turn_on
       entity_id: switch.wemo_flakt
