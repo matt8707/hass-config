@@ -166,92 +166,38 @@ views:
               <font color='#6a7377'><b>{{ states('sensor.dag') }}</b><br>
               <b>{{ states('sensor.datum') }}</b> </font><br> 
 
-              {% set t = now().hour %}
-              {% if t <= 1 %} <b>God natt</b> {{'\U0001F611'}}
-              {% elif t <= 3 %} <b>God natt</b> {{'\U0001F62A'}}
-              {% elif t <= 5 %} <b>God natt</b> {{'\U0001F634'}}
-              {% elif t <= 7 %} <b>God morgon</b> {{'\U0001F4A9'}}
-              {% elif t <= 9 %} <b>God morgon</b> {{'\u2615\uFE0F'}}
-              {% elif t <= 10.5 %} <b>God morgon</b> {{'\U0001F642'}}
-              {% elif t <= 13 %} <b>God dag</b> {{'\U0001F60A'}}
-              {% elif t <= 15 %} <b>God dag</b> {{'\U0001F60E'}}
-              {% elif t <= 17 %} <b>God dag</b> {{'\U0001F44B\U0001F3FB'}}
-              {% elif t <= 19 %} <b>God kväll</b> {{'\U0001F44B\U0001F3FB'}}
-              {% elif t <= 22 %} <b>God kväll</b> {{'\U0001F60C'}}
-              {% elif t <= 23 %} <b>God kväll</b> {{'\U0001F974'}}
-              {% else %} <b>God kväll</b> {{'\U0001F974'}}
-              {% endif %}
 
-              {% set lights = [states.light.tvlampa, states.light.golvlampa, states.light.fonsterlampa, states.light.datorlampa, states.light.vask_hoger, states.light.vask_vanster, 
-               states.light.taklampa, states.light.kladkammare_2, states.light.hallampa_1, states.light.hallampa_2, states.light.hallampa_3, states.light.mattias, states.light.sanja, states.light.spot_1, states.light.spot_2] %}
-              {% set lights_on = lights | selectattr('state','eq','on') | list %}
-              {% set lights_name = lights | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
+              <b>{{ states('sensor.sidebar_greeting') }}</b>
 
-              {% set switches = [states.switch.dator_template, states.switch.tv_template, states.switch.tv2_template, states.switch.playstation_template, states.switch.wemo_monitorer, states.switch.wemo_flakt] %}
-              {% set switches_on = switches | selectattr('state','eq','on') | list %} 
-              {% set switches_name = switches | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
 
-              {% if (lights_on | length ==0 ) and (switches_on | length > 0) %} 
-              <b>{{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på</b>
+              <b>{{ states('sensor.sidebar_active') }}</b>
 
-              {% elif (lights_on | length ==1) and (switches_on | length == 1) %}
-              <b>{{ lights_name }} och {{switches_name }} är på</b>
-
-              {% elif (lights_on | length ==1) and (switches_on | length > 1) %}
-              <b>{{ lights_name }}, {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på</b>
-
-              {% elif (lights_on | length > 1) and (switches_on | length == 1) %}
-              <b>{{ lights_on | length }} lampor och {{ switches_name }} är på</b>
-
-              {% elif (lights_on | length > 1 ) and (switches_on | length > 1) %}
-              <b>{{ lights_on | length }} lampor, {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på</b>
-
-              {% elif (lights_on | length ==1) and (switches_on | length ==0) %}
-              <b>{{ lights_name }} är på</b>
-
-              {% elif (lights_on | length >1 ) and (switches_on | length ==0) %}
-              <b>{{ lights_on | length}} lampor är på</b>
-
-              {% else %} 
-              <font color='#6a7377'><b>Allt är avstängt</b></font> 
-              {% endif %}
 
               <font color='#6a7377'>
+              <b>{{ states('sensor.sidebar_vacuum') }}</b>
 
-              {% if is_state('vacuum.xiaomi_vacuum_cleaner', 'cleaning') %}
-                <b>Morty dammsuger</b>
-              {% elif is_state('vacuum.xiaomi_vacuum_cleaner', 'returning') %}
-                <b>Morty är färdig</b>
-              {% endif %}
 
-              {% if states('sensor.dark_sky_temperature') == 'unknown' %}
-              Kan inte läsa in väderinformation...
-              {% else %}
-                {% if states('sensor.dark_sky_temperature') | float <= 0.0 %}
-                Känns som {{ states('sensor.dark_sky_apparent_temperature') | round }}° med {{ states('sensor.dark_sky_precip_probability') | round }}% risk för snö {{'\u2744\uFE0F'}}
+              {{ states('sensor.sidebar_weather') }}
 
-                {% elif states('sensor.dark_sky_temperature') | float > 0.0 %} 
-                Känns som {{ states('sensor.dark_sky_apparent_temperature') | round }}° med {{ states('sensor.dark_sky_precip_probability') | round }}% risk för regn {% if states('sensor.dark_sky_precip_probability') | float > 30.0 %} {{'\u2614\uFE0F' }} {% endif %}
 
-                {% elif states('sensor.dark_sky_temperature') | float > 19.0 and states('sensor.dark_sky_precip_probability') | float < 5.0 %}
-                Känns som {{ states('sensor.dark_sky_apparent_temperature') | round }}° {{'\U0001F60E' }} med {{ states('sensor.dark_sky_precip_probability') | round }}% risk för regn
-                {% endif %}
-              {% endif %}
-
-              {% if states('sensor.skanetrafiken') != 'från' %}
-                Nästa buss går {{ states('sensor.skanetrafiken') }}
-              {% endif %}
+              {{ states('sensor.sidebar_skanetrafiken') }}
 
 
               {{ states('sensor.tvatta_countdown') }}
 
-              {% if states('sensor.imac_get_ip') == states('sensor.public_ip') or states('sensor.myip') == states('sensor.public_ip') %}
-                {{'\u26A0\uFE0F'}} Kontrollera VPN-anslutning.
-              {% endif %}
-              
-              {% if is_state('binary_sensor.check_plex', 'off') %}{{'\u26A0\uFE0F'}} Plex är nere...{% endif %}
 
-              {% if is_state('binary_sensor.nas_internet_access', 'off') %}{{'\u26A0\uFE0F'}} Kontrollera NAS internetåtkomst{% endif %}
+              {% if states('sensor.imac_get_ip') == states('sensor.public_ip') 
+                 or states('sensor.myip') == states('sensor.public_ip') %}
+              {{'\u26A0\uFE0F'}} Kontrollera VPN-anslutning. {% endif %}
+              
+
+              {% if is_state('binary_sensor.check_plex', 'off') %}
+              {{'\u26A0\uFE0F'}} Plex är nere...{% endif %}
+
+
+              {% if is_state('binary_sensor.nas_internet_access', 'off') %}
+              {{'\u26A0\uFE0F'}} Kontrollera NAS internetåtkomst{% endif %}
+              </font>
 
             style:
               top: 16%
@@ -283,8 +229,10 @@ views:
               - cards:
                 - content: >
                     {{'\u26A0\uFE0F'}} <b>Krisinformation</b><br><br>
-                    {{ as_timestamp(state_attr('sensor.krisinformation_sverige', 'messages')[0]["Published"]) | timestamp_custom('%Y-%m-%d') }}<br>
-                    {{ state_attr('sensor.krisinformation_sverige', 'messages')[0]["Message"] | truncate(280, True, '...', 0) }}
+                    {{ as_timestamp(state_attr('sensor.krisinformation_sverige', 
+                    'messages')[0]["Published"]) | timestamp_custom('%Y-%m-%d') }}<br>
+                    {{ state_attr('sensor.krisinformation_sverige', 
+                    'messages')[0]["Message"] | truncate(280, True, '...', 0) }}
                   style: |
                     ha-card {
                       padding: 0.4vw;
@@ -1162,6 +1110,7 @@ views:
               --ha-card-background: none
               --ha-card-border-radius: 0.75vw
               --ha-card-box-shadow: none
+              image-rendering: crisp-edges
               padding: 0
             type: custom:swipe-card
 
