@@ -3,7 +3,7 @@
     image: /local/overlay.svg
     style: &media-style |
       ha-card {
-        {% set text_off = '#6a6d6e' %}
+        {% set text_off = '#878a8b' %}
         {% set text_on = '#e1e1e1' %}
         {% set shadow_off = '1px 1px 1px rgba(0,0,0,0.05)' %}
         {% set shadow_on = '1px 1px 5px rgba(18,22,23,0.9)' %}
@@ -36,10 +36,11 @@
     anchors:
       ⚓₁: &media-text-style
         max-width: 1px
-        font-family: Roboto
-        font-size: 1.29vw
-        font-weight: 400
-        letter-spacing: 0.031vw
+        font-family: SF Text
+        font-size: 1.31vw
+        font-weight: 300
+        letter-spacing: 0.035vw
+        text-rendering: optimizeLegibility
         cursor: default
       ⚓₂: &media-common
         tap_action:
@@ -113,7 +114,7 @@
             style:
               top: 50%
               left: 50%
-              width: 100%
+              width: 105%
               opacity: var(--plexrecent-text-overlay)
             <<: *media-common
 
@@ -182,7 +183,7 @@
             style:
               top: 50%
               left: 50%
-              width: 100%
+              width: 105%
               opacity: var(--vardagsrum-text-overlay)
             <<: *media-common
 
@@ -257,7 +258,7 @@
             style:
               top: 50%
               left: 50%
-              width: 100%
+              width: 105%
               opacity: var(--sovrum-text-overlay)
             <<: *media-common
 
@@ -332,7 +333,7 @@
             style:
               top: 50%
               left: 50%
-              width: 100%
+              width: 105%
               opacity: var(--playstation-text-overlay)
             <<: *media-common
 
@@ -407,7 +408,7 @@
             style:
               top: 50%
               left: 50%
-              width: 100%
+              width: 105%
               opacity: var(--googlenest-text-overlay)
             <<: *media-common
 
@@ -520,26 +521,6 @@
         <<: *media-common
         type: state-label
 
-      - conditions:
-          - entity: sensor.apple_tv_vardagsrum_status
-            state_not: Av
-        elements:
-          - image: /local/overlay.svg
-            style:
-              top: 23.8%
-              left: 23.7%
-              width: 47.5%
-            tap_action:
-              action: call-service
-              service: media_player.media_play_pause
-              service_data:
-                entity_id: media_player.vardagsrum
-            hold_action:
-              action: none
-            title: null
-            type: image
-        type: conditional
-
       #################################################
       #                                               #
       #             SMALL APPLE TV SOVRUM             #
@@ -591,26 +572,6 @@
           <<: *media-text-style
         <<: *media-common
         type: state-label
-
-      - conditions:
-          - entity: sensor.apple_tv_sovrum_status
-            state_not: Av
-        elements:
-          - image: /local/overlay.svg
-            style:
-              top: 23.8%
-              left: 76.3%
-              width: 47.5%
-            tap_action:
-              action: call-service
-              service: media_player.media_play_pause
-              service_data:
-                entity_id: media_player.sovrum
-            hold_action:
-              action: none
-            title: null
-            type: image
-        type: conditional
 
       #################################################
       #                                               #
@@ -664,26 +625,6 @@
         <<: *media-common
         type: state-label
 
-      - conditions:
-          - entity: media_player.playstation_4
-            state_not: standby
-        elements:
-          - image: /local/overlay.svg
-            style:
-              top: 76.5%
-              left: 23.7%
-              width: 47.5%
-            tap_action:
-              action: call-service
-              service: script.turn_on
-              service_data:
-                entity_id: script.media_ps4_ps_button
-            hold_action:
-              action: none
-            title: null
-            type: image
-        type: conditional
-
       #################################################
       #                                               #
       #            SMALL GOOGLE NEST MINI             #
@@ -735,6 +676,70 @@
           <<: *media-text-style
         <<: *media-common
         type: state-label
+
+
+
+##### small play/pause
+
+      - conditions:
+          - entity: sensor.apple_tv_vardagsrum_status
+            state_not: Av
+        elements:
+          - image: /local/overlay.svg
+            style:
+              top: 23.8%
+              left: 23.7%
+              width: 47.5%
+            tap_action:
+              action: call-service
+              service: media_player.media_play_pause
+              service_data:
+                entity_id: media_player.vardagsrum
+            hold_action:
+              action: none
+            title: null
+            type: image
+        type: conditional
+
+      - conditions:
+          - entity: sensor.apple_tv_sovrum_status
+            state_not: Av
+        elements:
+          - image: /local/overlay.svg
+            style:
+              top: 23.8%
+              left: 76.3%
+              width: 47.5%
+            tap_action:
+              action: call-service
+              service: media_player.media_play_pause
+              service_data:
+                entity_id: media_player.sovrum
+            hold_action:
+              action: none
+            title: null
+            type: image
+        type: conditional
+
+      - conditions:
+          - entity: media_player.playstation_4
+            state_not: standby
+        elements:
+          - image: /local/overlay.svg
+            style:
+              top: 76.5%
+              left: 23.7%
+              width: 47.5%
+            tap_action:
+              action: call-service
+              service: script.turn_on
+              service_data:
+                entity_id: script.media_ps4_ps_button
+            hold_action:
+              action: none
+            title: null
+            type: image
+        type: conditional
 
       - conditions:
           - entity: media_player.google_nest_mini
