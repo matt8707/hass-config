@@ -200,6 +200,100 @@
 
   - platform: template
     sensors:
+      sidebar_greeting:
+        entity_id: sensor.time
+        value_template: >-
+          {% set t = now().hour %}
+          {% if t <= 1 %} God natt {{'\U0001F611'}}
+          {% elif t <= 3 %} God natt {{'\U0001F62A'}}
+          {% elif t <= 5 %} God natt {{'\U0001F634'}}
+          {% elif t <= 7 %} God morgon {{'\U0001F4A9'}}
+          {% elif t <= 9 %} God morgon {{'\u2615\uFE0F'}}
+          {% elif t <= 10.5 %} God morgon {{'\U0001F642'}}
+          {% elif t <= 13 %} God dag {{'\U0001F60A'}}
+          {% elif t <= 15 %} God dag {{'\U0001F60E'}}
+          {% elif t <= 17 %} God dag {{'\U0001F44B\U0001F3FB'}}
+          {% elif t <= 19 %} God kväll {{'\U0001F44B\U0001F3FB'}}
+          {% elif t <= 22 %} God kväll {{'\U0001F60C'}}
+          {% elif t <= 23 %} God kväll {{'\U0001F974'}}
+          {% else %} God kväll {{'\U0001F974'}}
+          {% endif %}
+
+      sidebar_active:
+        value_template: >-
+          {% set lights = [states.light.tvlampa, states.light.golvlampa, states.light.fonsterlampa, states.light.datorlampa, 
+          states.light.vask_hoger, states.light.vask_vanster, states.light.taklampa, states.light.kladkammare_2, 
+          states.light.hallampa_1, states.light.hallampa_2, states.light.hallampa_3, states.light.mattias, states.light.sanja, 
+          states.light.spot_1, states.light.spot_2] %}
+          {% set lights_on = lights | selectattr('state','eq','on') | list %}
+          {% set lights_name = lights | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
+
+          {% set switches = [states.switch.dator_template, states.switch.tv_template, states.switch.tv2_template, 
+          states.switch.playstation_template, states.switch.wemo_monitorer, states.switch.wemo_flakt] %}
+          {% set switches_on = switches | selectattr('state','eq','on') | list %} 
+          {% set switches_name = switches | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
+
+          {% if (lights_on | length ==0 ) and (switches_on | length > 0) %} 
+          {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på
+
+          {% elif (lights_on | length ==1) and (switches_on | length == 1) %}
+          {{ lights_name }} och {{switches_name }} är på
+
+          {% elif (lights_on | length ==1) and (switches_on | length > 1) %}
+          {{ lights_name }}, {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på
+
+          {% elif (lights_on | length > 1) and (switches_on | length == 1) %}
+          {{ lights_on | length }} lampor och {{ switches_name }} är på
+
+          {% elif (lights_on | length > 1 ) and (switches_on | length > 1) %}
+          {{ lights_on | length }} lampor, {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på
+
+          {% elif (lights_on | length ==1) and (switches_on | length ==0) %}
+          {{ lights_name }} är på
+
+          {% elif (lights_on | length >1 ) and (switches_on | length ==0) %}
+          {{ lights_on | length}} lampor är på
+
+          {% else %} 
+          <font color='#6a7377'>Allt är avstängt</font> 
+          {% endif %}
+
+      sidebar_vacuum:
+        value_template: >-
+          {% if is_state('vacuum.xiaomi_vacuum_cleaner', 'cleaning') %}
+            Morty dammsuger
+          {% elif is_state('vacuum.xiaomi_vacuum_cleaner', 'returning') %}
+            Morty är färdig
+          {% endif %}
+
+      sidebar_weather:
+        value_template: >-
+          {% if states('sensor.dark_sky_temperature') == 'unknown' %}
+          Kan inte läsa in väderinformation...
+          {% else %}
+            {% if states('sensor.dark_sky_temperature') | float <= 0.0 %}
+            Känns som {{ states('sensor.dark_sky_apparent_temperature') | round }}° med 
+            {{ states('sensor.dark_sky_precip_probability') | round }}% risk för snö {{'\u2744\uFE0F'}}
+
+            {% elif states('sensor.dark_sky_temperature') | float > 0.0 %} 
+            Känns som {{ states('sensor.dark_sky_apparent_temperature') | round }}° med 
+            {{ states('sensor.dark_sky_precip_probability') | round }}% risk för regn 
+            {% if states('sensor.dark_sky_precip_probability') | float > 30.0 %} {{'\u2614\uFE0F' }}
+            {% endif %}
+
+            {% elif states('sensor.dark_sky_temperature') | float > 19.0 and 
+            states('sensor.dark_sky_precip_probability') | float < 5.0 %}
+            Känns som {{ states('sensor.dark_sky_apparent_temperature') | round }}° {{'\U0001F60E' }} med 
+            {{ states('sensor.dark_sky_precip_probability') | round }}% risk för regn
+            {% endif %}
+          {% endif %}
+
+      sidebar_skanetrafiken:
+        value_template: >-
+          {% if states('sensor.skanetrafiken') != 'från' %}
+            Nästa buss går {{ states('sensor.skanetrafiken') }}
+          {% endif %}
+
       public_ip:
         value_template: !secret public_ip
 
