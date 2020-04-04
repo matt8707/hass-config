@@ -23,11 +23,9 @@
                         }
                       show_header_toggle: false
                       type: entities
-                    - align_state: left
-                      entities:
+                    - entities:
                         - color: '#385581'
                           entity: sensor.hall_temperature
-                      group: false
                       line_width: 8
                       hour24: true
                       group: true
