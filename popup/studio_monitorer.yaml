@@ -5,8 +5,13 @@
                   entities:
                     - entity: switch.wemo_monitorer
                       secondary_info: last-changed
-                    - entity: input_number.monitorer_volume
+                    - type: custom:slider-entity-row
+                      entity: input_number.monitorer_volume
                       style: |
+                        div {
+                          max-width: 60%;
+                          margin: auto;
+                        }
                         :host {
                         --paper-item-icon-color: 
                           {% if is_state('sensor.monitorer_mute_check', 'true') %}
