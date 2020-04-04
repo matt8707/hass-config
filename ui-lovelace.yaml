@@ -30,9 +30,6 @@ anchors:
     cursor: default
   ⚓₃: &circle-sensor
     type: custom:circle-sensor-card
-    units: '%'
-    fill: none
-    stroke_color: '#aaabad'
     stroke_width: 6
     font_style:
       color: '#7d7e80'
@@ -43,7 +40,12 @@ anchors:
     gradient: true
     max: 100
     min: 0
-  ⚓₄: &circle-style
+  ⚓₄: &circle-sensor-light
+    units: '%'
+    fill: none
+    stroke_color: '#aaabad'
+    <<: *circle-sensor
+  ⚓₅: &circle-style
     height: 3.15vw
     width: 3.15vw
     opacity: 0.7
@@ -480,7 +482,7 @@ views:
                 state: 'on'
             elements:
               - entity: sensor.belysning_percent
-                <<: *circle-sensor
+                <<: *circle-sensor-light
                 style:
                   top: 16.3%
                   left: 32.8%
@@ -534,7 +536,7 @@ views:
                 state: 'on'
             elements:
               - entity: sensor.fonsterlampa_percent
-                <<: *circle-sensor
+                <<: *circle-sensor-light
                 style:
                   top: 16.3%
                   left: 43.8%
@@ -707,7 +709,7 @@ views:
                 state: 'on'
             elements:
               - entity: sensor.datorlampa_percent
-                <<: *circle-sensor
+                <<: *circle-sensor-light
                 style:
                   top: 16.3%
                   left: 57.65%
@@ -761,7 +763,7 @@ views:
                 state: 'on'
             elements:
               - entity: sensor.taklampor_percent
-                <<: *circle-sensor
+                <<: *circle-sensor-light
                 style:
                   top: 16.3%
                   left: 68.5%
@@ -919,7 +921,7 @@ views:
                 state: 'on'
             elements:
               - entity: sensor.mattias_percent
-                <<: *circle-sensor
+                <<: *circle-sensor-light
                 style:
                   top: 16.3%
                   left: 82.5%
@@ -973,7 +975,7 @@ views:
                 state: 'on'
             elements:
               - entity: sensor.sanja_percent
-                <<: *circle-sensor
+                <<: *circle-sensor-light
                 style:
                   top: 16.3%
                   left: 93.5%
@@ -1138,7 +1140,7 @@ views:
                 state: 'on'
             elements:
               - entity: sensor.badrum_percent
-                <<: *circle-sensor
+                <<: *circle-sensor-light
                 style:
                   top: 60.5%
                   left: 57.65%
@@ -1178,7 +1180,7 @@ views:
                 state: 'on'
             elements:
               - entity: sensor.kok_percent
-                <<: *circle-sensor
+                <<: *circle-sensor-light
                 style:
                   top: 60.5%
                   left: 68.5%
@@ -1218,7 +1220,7 @@ views:
                 state: 'on'
             elements:
               - entity: sensor.garderob_percent
-                <<: *circle-sensor
+                <<: *circle-sensor-light
                 style:
                   top: 78%
                   left: 57.7%
@@ -1258,7 +1260,7 @@ views:
                 state: 'on'
             elements:
               - entity: sensor.hall_percent
-                <<: *circle-sensor
+                <<: *circle-sensor-light
                 style:
                   top: 78%
                   left: 68.5%
@@ -1311,13 +1313,12 @@ views:
             elements:
               - entity: sensor.mattias_last_changed
                 <<: *circle-sensor
-                units: null
+                fill: none
+                stroke_color: '#aaabad'
                 style: &hem_mattias-circle-pos
                   top: 60.8%
                   left: 82.35%
-                  height: 3.15vw
-                  width: 3.15vw
-                  opacity: 0.7
+                  <<: *circle-style
             type: conditional
 
           - conditions:
@@ -1328,7 +1329,6 @@ views:
                 <<: *circle-sensor
                 fill: '#FFFFFF08'
                 stroke_color: '#313638'
-                units: null
                 style: *hem_mattias-circle-pos
             type: conditional
 
@@ -1362,13 +1362,12 @@ views:
             elements:
               - entity: sensor.sanja_last_changed
                 <<: *circle-sensor
-                units: null
+                fill: none
+                stroke_color: '#aaabad'
                 style: &hem_sanja-circle-pos
                   top: 60.8%
                   left: 93.35%
-                  height: 3.15vw
-                  width: 3.15vw
-                  opacity: 0.7
+                  <<: *circle-style
             type: conditional
 
           - conditions:
@@ -1379,7 +1378,6 @@ views:
                 <<: *circle-sensor
                 fill: '#FFFFFF08'
                 stroke_color: '#313638'
-                units: null
                 style: *hem_sanja-circle-pos
             type: conditional
 
