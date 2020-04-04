@@ -19,8 +19,6 @@
                         controls: true
                         power: true
                         info: true
-                      style:
-                        --paper-item-icon-color: red
                   type: entities
                 deviceID:
                   - this
