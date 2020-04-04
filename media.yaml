@@ -1,47 +1,16 @@
 
   - type: picture-elements
     image: /local/overlay.svg
-    style: &media-style |
-      ha-card {
-        {% set text_off = '#878a8b' %}
-        {% set text_on = '#e1e1e1' %}
-        {% set shadow_off = '1px 1px 1px rgba(0,0,0,0.05)' %}
-        {% set shadow_on = '1px 1px 5px rgba(18,22,23,0.9)' %}
-        {% set overlay_off = '0' %}
-        {% set overlay_on = '1.0' %}
-        {% set icon_off = '0.1' %}
-        {% set icon_on = '1.0' %}
-        --plexrecent-active-text: {{text_on}};
-        --plexrecent-active-shadow: {{shadow_on}};
-        --plexrecent-text-overlay: {{overlay_on}};
-        --plexrecent-icon-opacity: {{icon_on}};
-        --vardagsrum-active-text: {% if is_state('sensor.apple_tv_vardagsrum_status', 'Av') %}{{text_off}}{% else %}{{text_on}}{% endif %};
-        --vardagsrum-active-shadow: {% if is_state('sensor.apple_tv_vardagsrum_status', 'Av') %}{{shadow_off}}{% else %}{{shadow_on}}{% endif %};
-        --vardagsrum-text-overlay: {% if is_state('sensor.apple_tv_vardagsrum_status', 'Av') %}{{overlay_off}}{% else %}{{overlay_on}}{% endif %};
-        --vardagsrum-icon-opacity: {% if is_state('sensor.apple_tv_vardagsrum_status', 'Av') %}{{icon_off}}{% else %}{{icon_on}}{% endif %};
-        --sovrum-active-text: {% if is_state('sensor.apple_tv_sovrum_status', 'Av') %}{{text_off}}{% else %}{{text_on}}{% endif %};
-        --sovrum-active-shadow: {% if is_state('sensor.apple_tv_sovrum_status', 'Av') %}{{shadow_off}}{% else %}{{shadow_on}}{% endif %};
-        --sovrum-text-overlay: {% if is_state('sensor.apple_tv_sovrum_status', 'Av') %}{{overlay_off}}{% else %}{{overlay_on}}{% endif %};
-        --sovrum-icon-opacity: {% if is_state('sensor.apple_tv_sovrum_status', 'Av') %}{{icon_off}}{% else %}{{icon_on}}{% endif %};
-        --playstation-active-text: {% if is_state('media_player.playstation_4', 'standby') %}{{text_off}}{% else %}{{text_on}}{% endif %};
-        --playstation-active-shadow: {% if is_state('media_player.playstation_4', 'standby') %}{{shadow_off}}{% else %}{{shadow_on}}{% endif %};
-        --playstation-text-overlay: {% if is_state('media_player.playstation_4', 'standby') %}{{overlay_off}}{% else %}{{overlay_on}}{% endif %};
-        --playstation-icon-opacity: {% if is_state('media_player.playstation_4', 'standby') %}{{icon_off}}{% else %}{{icon_on}}{% endif %};
-        --googlenest-active-text: {% if is_state('media_player.google_nest_mini', 'off') %}{{text_off}}{% else %}{{text_on}}{% endif %};
-        --googlenest-active-shadow: {% if is_state('media_player.google_nest_mini', 'off') %}{{shadow_off}}{% else %}{{shadow_on}}{% endif %};
-        --googlenest-text-overlay: {% if is_state('media_player.google_nest_mini', 'off') %}{{overlay_off}}{% else %}{{overlay_on}}{% endif %};
-        --googlenest-icon-opacity: {% if is_state('media_player.google_nest_mini', 'off') %}{{icon_off}}{% else %}{{icon_on}}{% endif %};
-      }
-
     anchors:
       ⚓₁: &media-text-style
         max-width: 1px
         font-family: SF Text
-        font-size: 1.31vw
-        font-weight: 300
-        letter-spacing: 0.035vw
+        font-size: 1.32vw
+        font-weight: 400
         text-rendering: optimizeLegibility
         cursor: default
+        color: '#fff'
+        text-shadow: 1px 1px 5px rgba(18,22,23,0.9)
       ⚓₂: &media-common
         tap_action:
           action: none
@@ -62,11 +31,9 @@
           source: true
         tap_action: none
       ⚓₄: &media-player-style
-        height: 1px
         --ha-card-background: none
-        --ha-card-border-radius: 0.75vw
         --ha-card-box-shadow: none
-        padding: 0
+        --ha-card-border-radius: 0.64vw
 
     elements:
 
@@ -97,44 +64,38 @@
               left: -36%
               width: 360%
               height: 1px
-              --ha-card-background: none
-              --ha-card-box-shadow: none
-              padding: 0
             type: custom:upcoming-media-card
 
           - image: /local/media_plex.svg
-            style:
+            style: &large-icon-pos
               top: 12.85%
               left: 13.3%
               width: 15%
-              opacity: var(--plexrecent-icon-opacity)
             <<: *media-common
 
-          - image: /local/media_overlay_large.svg
-            style:
-              top: 50%
+          - image: /local/overlay.svg
+            style: &large-overlay
+              top: 133%
               left: 50%
-              width: 105%
-              opacity: var(--plexrecent-text-overlay)
+              width: 110%
+              backdrop-filter: blur(5px)
             <<: *media-common
 
           - prefix: Senast Nedladdat
             entity: sensor.placeholder
-            style:
-              top: 84.8%
-              left: 2%
-              color: var(--plexrecent-active-text)
-              text-shadow: var(--plexrecent-active-shadow)
+            style: &large-title
+              top: 85%
+              left: 2.1%
+              color: '#e1e1e1'
               <<: *media-text-style
             <<: *media-common
             type: state-label
 
           - entity: sensor.plex_title_truncate
-            style:
-              top: 92.5%
-              left: 2%
-              color: var(--plexrecent-active-text)
-              text-shadow: var(--plexrecent-active-shadow)
+            style: &large-state
+              top: 92.4%
+              left: 2.1%
+              color: '#e1e1e1'
               <<: *media-text-style
             <<: *media-common
             type: state-label
@@ -144,11 +105,12 @@
           - entity: input_select.conditional_media
             state_not: Senast nedladdat
         elements:
-          - image: /local/media_background_large.svg
+          - image: /local/overlay.svg
             style:
               top: 50%
               left: 50%
               width: 100%
+              background: rgba(116,116,116,0.2)
             <<: *media-common
         type: conditional
 
@@ -162,48 +124,43 @@
           - entity: input_select.conditional_media
             state: Vardagsrum
         elements:
-          - entity: media_player.vardagsrum
-            <<: *media-player-config
-            style:
-              top: 0%
-              left: 50%
-              width: 100%
-              <<: *media-player-style
-            type: custom:mini-media-player
 
-          - image: /local/media_appletv.svg
-            style:
-              top: 12.85%
-              left: 13.3%
-              width: 15%
-              opacity: var(--vardagsrum-icon-opacity)
-            <<: *media-common
-
-          - image: /local/media_overlay_large.svg
+          - type: custom:mod-card
             style:
               top: 50%
               left: 50%
-              width: 105%
-              opacity: var(--vardagsrum-text-overlay)
+              width: 100%
+              <<: *media-player-style
+            card:
+              entity: media_player.vardagsrum
+              <<: *media-player-config
+              style: |
+                ha-card > div.mmp__bg > div {
+                  background-image: linear-gradient(0deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 60%), 
+                  url("{{ states.media_player.vardagsrum.attributes.entity_picture }}") !important;
+                  background-size: cover !important;
+                }
+              type: custom:mini-media-player
+
+          - image: /local/media_appletv.svg
+            style: *large-icon-pos
+            <<: *media-common
+
+          - image: /local/overlay.svg
+            style: *large-overlay
             <<: *media-common
 
           - prefix: Apple Tv - Vardagsrum
             entity: sensor.placeholder
             style:
-              top: 84.8%
-              left: 2%
-              color: var(--vardagsrum-active-text)
-              text-shadow: var(--vardagsrum-active-shadow)
+              <<: *large-title
               <<: *media-text-style
             <<: *media-common
             type: state-label
 
           - entity: sensor.apple_tv_vardagsrum_title_truncate
             style:
-              top: 92.5%
-              left: 2%
-              color: var(--vardagsrum-active-text)
-              text-shadow: var(--vardagsrum-active-shadow)
+              <<: *large-state
               <<: *media-text-style
             <<: *media-common
             type: state-label
@@ -214,8 +171,8 @@
             elements:
               - entity: switch.media_play_pause_vardagsrum
                 state_image:
-                  'on': /local/mediapause.gif
-                  'off': /local/mediaplay.gif
+                  'on': /local/pause.svg
+                  'off': /local/play.svg
                 style:
                   top: 50%
                   left: 50%
@@ -237,48 +194,43 @@
           - entity: input_select.conditional_media
             state: Sovrum
         elements:
-          - entity: media_player.sovrum
-            <<: *media-player-config
-            style:
-              top: 0%
-              left: 50%
-              width: 100%
-              <<: *media-player-style
-            type: custom:mini-media-player
 
-          - image: /local/media_appletv.svg
-            style:
-              top: 12.85%
-              left: 13.3%
-              width: 15%
-              opacity: var(--sovrum-icon-opacity)
-            <<: *media-common
-
-          - image: /local/media_overlay_large.svg
+          - type: custom:mod-card
             style:
               top: 50%
               left: 50%
-              width: 105%
-              opacity: var(--sovrum-text-overlay)
+              width: 100%
+              <<: *media-player-style
+            card:
+              entity: media_player.sovrum
+              <<: *media-player-config
+              style: |
+                ha-card > div.mmp__bg > div {
+                  background-image: linear-gradient(0deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 60%), 
+                  url("{{ states.media_player.sovrum.attributes.entity_picture }}") !important;
+                  background-size: cover !important;
+                }
+              type: custom:mini-media-player
+
+          - image: /local/media_appletv.svg
+            style: *large-icon-pos
+            <<: *media-common
+
+          - image: /local/overlay.svg
+            style: *large-overlay
             <<: *media-common
 
           - prefix: Apple Tv - Sovrum
             entity: sensor.placeholder
             style:
-              top: 84.8%
-              left: 2%
-              color: var(--sovrum-active-text)
-              text-shadow: var(--sovrum-active-shadow)
+              <<: *large-title
               <<: *media-text-style
             <<: *media-common
             type: state-label
 
           - entity: sensor.apple_tv_sovrum_title_truncate
             style:
-              top: 92.5%
-              left: 2%
-              color: var(--sovrum-active-text)
-              text-shadow: var(--sovrum-active-shadow)
+              <<: *large-state
               <<: *media-text-style
             <<: *media-common
             type: state-label
@@ -289,8 +241,8 @@
             elements:
               - entity: switch.media_play_pause_sovrum
                 state_image:
-                  'on': /local/mediapause.gif
-                  'off': /local/mediaplay.gif
+                  'on': /local/pause.svg
+                  'off': /local/play.svg
                 style:
                   top: 50%
                   left: 50%
@@ -312,48 +264,43 @@
           - entity: input_select.conditional_media
             state: Playstation 4
         elements:
-          - entity: media_player.playstation_4
-            <<: *media-player-config
-            style:
-              top: 0%
-              left: 50%
-              width: 100%
-              <<: *media-player-style
-            type: custom:mini-media-player
 
-          - image: /local/media_playstation.svg
-            style:
-              top: 12.85%
-              left: 13.3%
-              width: 15%
-              opacity: var(--playstation-icon-opacity)
-            <<: *media-common
-
-          - image: /local/media_overlay_large.svg
+          - type: custom:mod-card
             style:
               top: 50%
               left: 50%
-              width: 105%
-              opacity: var(--playstation-text-overlay)
+              width: 100%
+              <<: *media-player-style
+            card:
+              entity: media_player.playstation_4
+              <<: *media-player-config
+              style: |
+                ha-card > div.mmp__bg > div {
+                  background-image: linear-gradient(0deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 60%), 
+                  url("{{ states.media_player.playstation_4.attributes.entity_picture }}") !important;
+                  background-size: cover !important;
+                }
+              type: custom:mini-media-player
+
+          - image: /local/media_playstation.svg
+            style: *large-icon-pos
+            <<: *media-common
+
+          - image: /local/overlay.svg
+            style: *large-overlay
             <<: *media-common
 
           - prefix: Playstation 4
             entity: sensor.placeholder
             style:
-              top: 84.8%
-              left: 2%
-              color: var(--playstation-active-text)
-              text-shadow: var(--playstation-active-shadow)
+              <<: *large-title
               <<: *media-text-style
             <<: *media-common
             type: state-label
 
           - entity: sensor.playstation_title_truncate
             style:
-              top: 92.5%
-              left: 2%
-              color: var(--playstation-active-text)
-              text-shadow: var(--playstation-active-shadow)
+              <<: *large-state
               <<: *media-text-style
             <<: *media-common
             type: state-label
@@ -364,8 +311,8 @@
             elements:
               - entity: switch.media_play_pause_playstation_4
                 state_image:
-                  'on': /local/mediapause.gif
-                  'off': /local/mediaplay.gif
+                  'on': /local/pause.svg
+                  'off': /local/play.svg
                 style:
                   top: 50%
                   left: 50%
@@ -387,48 +334,43 @@
           - entity: input_select.conditional_media
             state: Google Nest Mini
         elements:
-          - entity: media_player.google_nest_mini
-            <<: *media-player-config
-            style:
-              top: 0%
-              left: 50%
-              width: 100%
-              <<: *media-player-style
-            type: custom:mini-media-player
 
-          - image: /local/media_googlenest.svg
-            style:
-              top: 12.85%
-              left: 13.3%
-              width: 15%
-              opacity: var(--googlenest-icon-opacity)
-            <<: *media-common
-
-          - image: /local/media_overlay_large.svg
+          - type: custom:mod-card
             style:
               top: 50%
               left: 50%
-              width: 105%
-              opacity: var(--googlenest-text-overlay)
+              width: 100%
+              <<: *media-player-style
+            card:
+              entity: media_player.google_nest_mini
+              <<: *media-player-config
+              style: |
+                ha-card > div.mmp__bg > div {
+                  background-image: linear-gradient(0deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 60%), 
+                  url("{{ states.media_player.google_nest_mini.attributes.entity_picture }}") !important;
+                  background-size: cover !important;
+                }
+              type: custom:mini-media-player
+
+          - image: /local/media_googlenest.svg
+            style: *large-icon-pos
+            <<: *media-common
+
+          - image: /local/overlay.svg
+            style: *large-overlay
             <<: *media-common
 
           - prefix: Google Nest Mini
             entity: sensor.placeholder
             style:
-              top: 84.8%
-              left: 2%
-              color: var(--googlenest-active-text)
-              text-shadow: var(--googlenest-active-shadow)
+              <<: *large-title
               <<: *media-text-style
             <<: *media-common
             type: state-label
 
           - entity: sensor.google_nest_mini_title_truncate
             style:
-              top: 92.5%
-              left: 2%
-              color: var(--googlenest-active-text)
-              text-shadow: var(--googlenest-active-shadow)
+              <<: *large-state
               <<: *media-text-style
             <<: *media-common
             type: state-label
@@ -439,8 +381,8 @@
             elements:
               - entity: switch.media_play_pause_google_nest_mini
                 state_image:
-                  'on': /local/mediapause.gif
-                  'off': /local/mediaplay.gif
+                  'on': /local/pause.svg
+                  'off': /local/play.svg
                 style:
                   top: 50%
                   left: 50%
@@ -460,14 +402,7 @@
 
   - type: picture-elements
     image: /local/overlay.svg
-    style: *media-style
     elements:
-      - image: /local/media_background_s.svg
-        style:
-          top: 50%
-          left: 50%
-          width: 100%
-        <<: *media-common
 
       #################################################
       #                                               #
@@ -475,221 +410,61 @@
       #                                               #
       #################################################
 
-      - image: /local/media_appletv.svg
-        style:
-          top: 11%
-          left: 11%
-          width: 12.5%
-          opacity: var(--vardagsrum-icon-opacity)
-        <<: *media-common
-
-      - entity: media_player.vardagsrum
-        <<: *media-player-config
-        style:
-          top: 0%
-          left: 23.85%
-          width: 47.4%
-          <<: *media-player-style
-        type: custom:mini-media-player
-
-      - image: /local/media_overlay_small.svg
-        style:
-          top: 23.7%
-          left: 23.7%
-          width: 100%
-          opacity: var(--vardagsrum-text-overlay)
-        <<: *media-common
-
-      - prefix: Vardagsrum
-        entity: sensor.placeholder
-        style:
-          top: 31.95%
-          left: 2%
-          color: var(--vardagsrum-active-text)
-          text-shadow: var(--vardagsrum-active-shadow)
-          <<: *media-text-style
-        <<: *media-common
-        type: state-label
-
-      - entity: sensor.apple_tv_vardagsrum_status
-        style:
-          top: 39.8%
-          left: 2%
-          color: var(--vardagsrum-active-text)
-          text-shadow: var(--vardagsrum-active-shadow)
-          <<: *media-text-style
-        <<: *media-common
-        type: state-label
-
-      #################################################
-      #                                               #
-      #             SMALL APPLE TV SOVRUM             #
-      #                                               #
-      #################################################
-
-      - image: /local/media_appletv.svg
-        style:
-          top: 11%
-          left: 63%
-          width: 12.5%
-          opacity: var(--sovrum-icon-opacity)
-        <<: *media-common
-
-      - entity: media_player.sovrum
-        <<: *media-player-config
-        style:
-          top: 0%
-          left: 76.3%
-          width: 47.4%
-          <<: *media-player-style
-        type: custom:mini-media-player
-
-      - image: /local/media_overlay_small.svg
-        style:
-          top: 23.7%
-          left: 76.2%
-          width: 100%
-          opacity: var(--sovrum-text-overlay)
-        <<: *media-common
-
-      - prefix: Sovrum
-        entity: sensor.placeholder
-        style:
-          top: 31.95%
-          left: 54.5%
-          color: var(--sovrum-active-text)
-          text-shadow: var(--sovrum-active-shadow)
-          <<: *media-text-style
-        <<: *media-common
-        type: state-label
-
-      - entity: sensor.apple_tv_sovrum_status
-        style:
-          top: 39.8%
-          left: 54.5%
-          color: var(--sovrum-active-text)
-          text-shadow: var(--sovrum-active-shadow)
-          <<: *media-text-style
-        <<: *media-common
-        type: state-label
-
-      #################################################
-      #                                               #
-      #              SMALL PLAYSTATION 4              #
-      #                                               #
-      #################################################
-
-      - image: /local/media_playstation.svg
-        style:
-          top: 64%
-          left: 11%
-          width: 12.5%
-          opacity: var(--playstation-icon-opacity)
-        <<: *media-common
-
-      - entity: media_player.playstation_4
-        <<: *media-player-config
-        style:
-          top: 52.8%
-          left: 23.85%
-          width: 47.4%
-          <<: *media-player-style
-        type: custom:mini-media-player
-
-      - image: /local/media_overlay_small.svg
-        style:
-          top: 76.5%
-          left: 23.7%
-          width: 100%
-          opacity: var(--playstation-text-overlay)
-        <<: *media-common
-
-      - prefix: Playstation
-        entity: sensor.placeholder
-        style:
-          top: 84.8%
-          left: 2%
-          color: var(--playstation-active-text)
-          text-shadow: var(--playstation-active-shadow)
-          <<: *media-text-style
-        <<: *media-common
-        type: state-label
-
-      - entity: sensor.playstation_status
-        style:
-          top: 92.5%
-          left: 2%
-          color: var(--playstation-active-text)
-          text-shadow: var(--playstation-active-shadow)
-          <<: *media-text-style
-        <<: *media-common
-        type: state-label
-
-      #################################################
-      #                                               #
-      #            SMALL GOOGLE NEST MINI             #
-      #                                               #
-      #################################################
-
-      - image: /local/media_googlenest.svg
-        style:
-          top: 64%
-          left: 63%
-          width: 12.5%
-          opacity: var(--googlenest-icon-opacity)
-        <<: *media-common
-
-      - entity: media_player.google_nest_mini
-        <<: *media-player-config
-        style:
-          top: 52.8%
-          left: 76.3%
-          width: 47.4%
-          <<: *media-player-style
-        type: custom:mini-media-player
-
-      - image: /local/media_overlay_small.svg
-        style:
-          top: 76.5%
-          left: 76.2%
-          width: 100%
-          opacity: var(--googlenest-text-overlay)
-        <<: *media-common
-
-      - prefix: Google Nest
-        entity: sensor.placeholder
-        style:
-          top: 84.8%
-          left: 54.5%
-          color: var(--googlenest-active-text)
-          text-shadow: var(--googlenest-active-shadow)
-          <<: *media-text-style
-        <<: *media-common
-        type: state-label
-
-      - entity: sensor.google_nest_mini_status
-        style:
-          top: 92.5%
-          left: 54.5%
-          color: var(--googlenest-active-text)
-          text-shadow: var(--googlenest-active-shadow)
-          <<: *media-text-style
-        <<: *media-common
-        type: state-label
-
-
-
-##### small play/pause
-
+      # on
       - conditions:
           - entity: sensor.apple_tv_vardagsrum_status
             state_not: Av
         elements:
-          - image: /local/overlay.svg
-            style:
+
+          - image: /local/btn/med_small.svg
+            style: &small-vardagsrum-pos
               top: 23.8%
-              left: 23.7%
-              width: 47.5%
+              left: 23.8%
+              width: 47.86%
+            <<: *media-common
+
+          - type: custom:mod-card
+            style:
+              <<: *small-vardagsrum-pos
+              <<: *media-player-style
+            card:
+              entity: media_player.vardagsrum
+              <<: *media-player-config
+              style: |
+                ha-card > div.mmp__bg > div {
+                  background-image: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%), 
+                  url("{{ states.media_player.vardagsrum.attributes.entity_picture }}") !important;
+                  background-size: cover !important;
+                }
+              type: custom:mini-media-player
+
+          - image: /local/media_appletv.svg
+            style: &icon-vardagsrum-pos
+              top: 11%
+              left: 11%
+              width: 12.5%
+              opacity: 0.9
+            <<: *media-common
+
+          - prefix: Vardagsrum
+            entity: sensor.placeholder
+            style: &small-title-vardagsrum-pos
+              top: 32.2%
+              left: 2.1%
+              <<: *media-text-style
+            <<: *media-common
+            type: state-label
+
+          - entity: sensor.apple_tv_vardagsrum_status
+            style: &small-state-vardagsrum-pos
+              top: 39.9%
+              left: 2.1%
+              <<: *media-text-style
+            <<: *media-common
+            type: state-label
+
+          - image: /local/overlay.svg
+            style: *small-vardagsrum-pos
             tap_action:
               action: call-service
               service: media_player.media_play_pause
@@ -699,17 +474,107 @@
               action: none
             title: null
             type: image
+
         type: conditional
 
+      # off
+      - conditions:
+          - entity: sensor.apple_tv_vardagsrum_status
+            state: Av
+        elements:
+
+          - image: /local/btn/med_small.svg
+            style: *small-vardagsrum-pos
+            <<: *media-common
+
+          - image: /local/media_appletv.svg
+            style:
+              <<: *icon-vardagsrum-pos
+              opacity: .07
+            <<: *media-common
+
+          - prefix: Vardagsrum
+            entity: sensor.placeholder
+            style:
+              <<: *small-title-vardagsrum-pos
+              color: '#717777'
+              text-shadow: none
+              <<: *media-text-style
+            <<: *media-common
+            type: state-label
+
+          - entity: sensor.apple_tv_vardagsrum_status
+            style:
+              <<: *small-state-vardagsrum-pos
+              color: '#717777'
+              text-shadow: none
+              <<: *media-text-style
+            <<: *media-common
+            type: state-label
+
+        type: conditional
+
+      #################################################
+      #                                               #
+      #             SMALL APPLE TV SOVRUM             #
+      #                                               #
+      #################################################
+
+      # on
       - conditions:
           - entity: sensor.apple_tv_sovrum_status
             state_not: Av
         elements:
-          - image: /local/overlay.svg
-            style:
+
+          - image: /local/btn/med_small.svg
+            style: &small-sovrum-pos
               top: 23.8%
-              left: 76.3%
-              width: 47.5%
+              left: 76.2%
+              width: 47.86%
+            <<: *media-common
+
+          - type: custom:mod-card
+            style:
+              <<: *small-sovrum-pos
+              <<: *media-player-style
+            card:
+              entity: media_player.sovrum
+              <<: *media-player-config
+              style: |
+                ha-card > div.mmp__bg > div {
+                  background-image: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%), 
+                  url("{{ states.media_player.sovrum.attributes.entity_picture }}") !important;
+                  background-size: cover !important;
+                }
+              type: custom:mini-media-player
+
+          - image: /local/media_appletv.svg
+            style: &icon-sovrum-pos
+              top: 11%
+              left: 63%
+              width: 12.5%
+              opacity: 0.9
+            <<: *media-common
+
+          - prefix: Sovrum
+            entity: sensor.placeholder
+            style: &small-title-sovrum-pos
+              top: 32.2%
+              left: 54.6%
+              <<: *media-text-style
+            <<: *media-common
+            type: state-label
+
+          - entity: sensor.apple_tv_sovrum_status
+            style: &small-state-sovrum-pos
+              top: 39.9%
+              left: 54.6%
+              <<: *media-text-style
+            <<: *media-common
+            type: state-label
+
+          - image: /local/overlay.svg
+            style: *small-sovrum-pos
             tap_action:
               action: call-service
               service: media_player.media_play_pause
@@ -719,17 +584,107 @@
               action: none
             title: null
             type: image
+
         type: conditional
 
+      # off
       - conditions:
-          - entity: media_player.playstation_4
-            state_not: standby
+          - entity: sensor.apple_tv_sovrum_status
+            state: Av
         elements:
-          - image: /local/overlay.svg
+
+          - image: /local/btn/med_small.svg
+            style: *small-sovrum-pos
+            <<: *media-common
+
+          - image: /local/media_appletv.svg
             style:
-              top: 76.5%
-              left: 23.7%
-              width: 47.5%
+              <<: *icon-sovrum-pos
+              opacity: .07
+            <<: *media-common
+
+          - prefix: Sovrum
+            entity: sensor.placeholder
+            style:
+              <<: *small-title-sovrum-pos
+              color: '#717777'
+              text-shadow: none
+              <<: *media-text-style
+            <<: *media-common
+            type: state-label
+
+          - entity: sensor.apple_tv_vardagsrum_status
+            style:
+              <<: *small-state-sovrum-pos
+              color: '#717777'
+              text-shadow: none
+              <<: *media-text-style
+            <<: *media-common
+            type: state-label
+
+        type: conditional
+
+      #################################################
+      #                                               #
+      #              SMALL PLAYSTATION 4              #
+      #                                               #
+      #################################################
+
+      # on
+      - conditions:
+          - entity: sensor.playstation_status
+            state_not: Av
+        elements:
+
+          - image: /local/btn/med_small.svg
+            style: &small-playstation-pos
+              top: 76.2%
+              left: 23.8%
+              width: 47.86%
+            <<: *media-common
+
+          - type: custom:mod-card
+            style:
+              <<: *small-playstation-pos
+              <<: *media-player-style
+            card:
+              entity: media_player.playstation_4
+              <<: *media-player-config
+              style: |
+                ha-card > div.mmp__bg > div {
+                  background-image: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%), 
+                  url("{{ states.media_player.playstation_4.attributes.entity_picture }}") !important;
+                  background-size: cover !important;
+                }
+              type: custom:mini-media-player
+
+          - image: /local/media_playstation.svg
+            style: &icon-playstation-pos
+              top: 64%
+              left: 11%
+              width: 12.5%
+              opacity: 0.9
+            <<: *media-common
+
+          - prefix: Playstation
+            entity: sensor.placeholder
+            style: &small-title-playstation-pos
+              top: 85%
+              left: 2.1%
+              <<: *media-text-style
+            <<: *media-common
+            type: state-label
+
+          - entity: sensor.playstation_status
+            style: &small-state-playstation-pos
+              top: 92.4%
+              left: 2.1%
+              <<: *media-text-style
+            <<: *media-common
+            type: state-label
+
+          - image: /local/overlay.svg
+            style: *small-playstation-pos
             tap_action:
               action: call-service
               service: script.turn_on
@@ -739,17 +694,107 @@
               action: none
             title: null
             type: image
+
         type: conditional
 
+      # off
       - conditions:
-          - entity: media_player.google_nest_mini
-            state_not: 'off'
+          - entity: sensor.playstation_status
+            state: Av
         elements:
-          - image: /local/overlay.svg
+
+          - image: /local/btn/med_small.svg
+            style: *small-playstation-pos
+            <<: *media-common
+
+          - image: /local/media_playstation.svg
             style:
-              top: 76.5%
+              <<: *icon-playstation-pos
+              opacity: .07
+            <<: *media-common
+
+          - prefix: Playstation
+            entity: sensor.placeholder
+            style:
+              <<: *small-title-playstation-pos
+              color: '#717777'
+              text-shadow: none
+              <<: *media-text-style
+            <<: *media-common
+            type: state-label
+
+          - entity: sensor.playstation_status
+            style:
+              <<: *small-state-playstation-pos
+              color: '#717777'
+              text-shadow: none
+              <<: *media-text-style
+            <<: *media-common
+            type: state-label
+
+        type: conditional
+
+      #################################################
+      #                                               #
+      #            SMALL GOOGLE NEST MINI             #
+      #                                               #
+      #################################################
+
+      # on
+      - conditions:
+          - entity: sensor.google_nest_mini_status
+            state_not: Av
+        elements:
+
+          - image: /local/btn/med_small.svg
+            style: &small-nest-pos
+              top: 76.2%
               left: 76.2%
-              width: 47.5%
+              width: 47.86%
+            <<: *media-common
+
+          - type: custom:mod-card
+            style:
+              <<: *small-nest-pos
+              <<: *media-player-style
+            card:
+              entity: media_player.google_nest_mini
+              <<: *media-player-config
+              style: |
+                ha-card > div.mmp__bg > div {
+                  background-image: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%), 
+                  url("{{ states.media_player.google_nest_mini.attributes.entity_picture }}") !important;
+                  background-size: cover !important;
+                }
+              type: custom:mini-media-player
+
+          - image: /local/media_googlenest.svg
+            style: &icon-nest-pos
+              top: 64%
+              left: 63%
+              width: 12.5%
+              opacity: 0.9
+            <<: *media-common
+
+          - prefix: Nest Mini
+            entity: sensor.placeholder
+            style: &small-title-nest-pos
+              top: 85%
+              left: 54.6%
+              <<: *media-text-style
+            <<: *media-common
+            type: state-label
+
+          - entity: sensor.google_nest_mini_status
+            style: &small-state-nest-pos
+              top: 92.4%
+              left: 54.6%
+              <<: *media-text-style
+            <<: *media-common
+            type: state-label
+
+          - image: /local/overlay.svg
+            style: *small-nest-pos
             tap_action:
               action: call-service
               service: media_player.media_play_pause
@@ -759,4 +804,42 @@
               action: none
             title: null
             type: image
+
+        type: conditional
+
+      # off
+      - conditions:
+          - entity: sensor.google_nest_mini_status
+            state: Av
+        elements:
+
+          - image: /local/btn/med_small.svg
+            style: *small-nest-pos
+            <<: *media-common
+
+          - image: /local/media_appletv.svg
+            style:
+              <<: *icon-nest-pos
+              opacity: .07
+            <<: *media-common
+
+          - prefix: Nest Mini
+            entity: sensor.placeholder
+            style:
+              <<: *small-title-nest-pos
+              color: '#717777'
+              text-shadow: none
+              <<: *media-text-style
+            <<: *media-common
+            type: state-label
+
+          - entity: sensor.google_nest_mini_status
+            style:
+              <<: *small-state-nest-pos
+              color: '#717777'
+              text-shadow: none
+              <<: *media-text-style
+            <<: *media-common
+            type: state-label
+
         type: conditional
