@@ -33,13 +33,13 @@ lovelace:
       {'url':'/hacsfiles/lovelace-slider-entity-row/slider-entity-row.js',    'type':'module'},
       {'url':'/hacsfiles/lovelace-valetudo-map-card/valetudo-map-card.js',    'type':'js'},
       {'url':'/hacsfiles/mini-graph-card/mini-graph-card-bundle.js',          'type':'module'},
+      {'url':'/hacsfiles/mini-media-player/mini-media-player-bundle.js',      'type':'module'},
       {'url':'/hacsfiles/popup-backdrop-filter/popup-backdrop-filter.js',     'type':'module'},
       {'url':'/hacsfiles/stack-in-card/stack-in-card.js',                     'type':'module'},
       {'url':'/hacsfiles/swipe-card/swipe-card.js',                           'type':'module'},
       {'url':'/hacsfiles/upcoming-media-card/upcoming-media-card.js',         'type':'js'},
 
       {'url':'/hacsfiles/mod/circle-sensor-card.js?v=1.2.0',                  'type':'module'},
-      {'url':'/hacsfiles/mod/mini-media-player-bundle.js?v=1.7.0',            'type':'module'},
       {'url':'/hacsfiles/mod/light-slider-card.js?v=3.2.2',                   'type':'js'},
       {'url':'/hacsfiles/mod/hass-bha-icons.js?v=f015ee3',                    'type':'js'},
       {'url':'/local/font.css',                                               'type':'css'} ]
