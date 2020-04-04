@@ -119,18 +119,7 @@ views:
               top: 50%
               left: 10.6%
               width: 21.5%
-            type: image
-
-          - image: local/sidebar_line.svg
-            tap_action:
-              action: none
-            hold_action:
-              action: none
-            style:
-              top: 50%
-              left: 10.6%
-              width: 21.5%
-              opacity: 0.75
+              border-right: 1.5px solid rgba(58,69,73,0.2)
             type: image
 
           #################################################
@@ -1105,7 +1094,7 @@ views:
             style:
               top: 56.6%
               left: 35.8%
-              width: 20.95%
+              width: 20.97%
               height: 1px
               --ha-card-background: none
               --ha-card-border-radius: 0.75vw
