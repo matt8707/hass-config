@@ -40,7 +40,7 @@ lovelace:
       {'url':'/hacsfiles/upcoming-media-card/upcoming-media-card.js',         'type':'js'},
 
       {'url':'/hacsfiles/mod/circle-sensor-card.js?v=1.2.0',                  'type':'module'},
-      {'url':'/hacsfiles/mod/light-slider-card.js?v=3.2.2',                   'type':'js'},
+      {'url':'/hacsfiles/mod/light-slider-card.js?v=3.2.3',                   'type':'js'},
       {'url':'/hacsfiles/mod/hass-bha-icons.js?v=f015ee3',                    'type':'js'},
       {'url':'/local/font.css',                                               'type':'css'} ]
 
