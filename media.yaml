@@ -29,6 +29,23 @@
           progress: true
           source: true
         tap_action: none
+      ⚓₅: &overlay-fallback
+        image: /local/overlay.svg
+        style:
+          top: 132%
+          left: 50%
+          width: 110%
+          background: rgba(0,0,0,.6)
+          box-shadow: inset 0 10px 10px -10px rgba(13,18,21,.2)
+        type: image
+      ⚓₆: &overlay-blur
+        image: /local/overlay.svg
+        style:
+          top: 132%
+          left: 50%
+          width: 110%
+          backdrop-filter: blur(4px)
+        type: image
 
     elements:
 
@@ -61,20 +78,15 @@
               height: 1px
             type: custom:upcoming-media-card
 
+          - <<: *overlay-fallback
+
+          - <<: *overlay-blur
+
           - image: /local/media_plex.svg
             style: &large-icon-pos
               top: 12.85%
               left: 13.3%
               width: 15%
-            type: image
-
-          - image: /local/overlay.svg
-            style: &large-overlay
-              top: 133%
-              left: 50%
-              width: 110%
-              backdrop-filter: blur(3px) brightness(80%)
-              box-shadow: inset 0 10px 10px -10px rgba(12,15,17,.2)
             type: image
 
           - prefix: Senast Nedladdat
@@ -142,12 +154,12 @@
                 }
               type: custom:mini-media-player
 
+          - <<: *overlay-fallback
+
+          - <<: *overlay-blur
+
           - image: /local/media_appletv.svg
             style: *large-icon-pos
-            type: image
-
-          - image: /local/overlay.svg
-            style: *large-overlay
             type: image
 
           - prefix: Apple Tv - Vardagsrum
@@ -206,12 +218,12 @@
                 }
               type: custom:mini-media-player
 
+          - <<: *overlay-fallback
+
+          - <<: *overlay-blur
+
           - image: /local/media_appletv.svg
             style: *large-icon-pos
-            type: image
-
-          - image: /local/overlay.svg
-            style: *large-overlay
             type: image
 
           - prefix: Apple Tv - Sovrum
@@ -266,12 +278,12 @@
                 }
               type: custom:mini-media-player
 
+          - <<: *overlay-fallback
+
+          - <<: *overlay-blur
+
           - image: /local/media_playstation.svg
             style: *large-icon-pos
-            type: image
-
-          - image: /local/overlay.svg
-            style: *large-overlay
             type: image
 
           - prefix: Playstation 4
@@ -326,12 +338,12 @@
                 }
               type: custom:mini-media-player
 
+          - <<: *overlay-fallback
+
+          - <<: *overlay-blur
+
           - image: /local/media_googlenest.svg
             style: *large-icon-pos
-            type: image
-
-          - image: /local/overlay.svg
-            style: *large-overlay
             type: image
 
           - prefix: Google Nest Mini
