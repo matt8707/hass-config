@@ -12,7 +12,7 @@ preload_cards:
   - history-graph
   - map
   - iframe
-
+      
 anchors:
   ⚓₁: &title
     entity: sensor.placeholder
@@ -32,11 +32,11 @@ anchors:
     type: custom:circle-sensor-card
     stroke_width: 6
     font_style:
+      font-family: SF Text
       color: '#7d7e80'
-      font-size: 1.0vw
-      font-weight: 400
-      margin-left: -0.8%
-      margin-top: 1.9%
+      font-size: 1vw
+      letter-spacing: -0.02vw
+      margin-top: 1.8%
     gradient: true
     max: 100
     min: 0
@@ -58,11 +58,8 @@ views:
 
           - title: preload_popup
             entities:
-              - input_number.monitorer_volume
               - group.automation_system_reference
               - input_select.hdmi
-              - person.mattias
-              - person.sanja
             style:
               left: -50%
               opacity: 0
@@ -76,7 +73,7 @@ views:
       
           - content: >
               <font color='#6a7377'>
-              <b><ha-icon icon="mdi:bacteria-outline"></ha-icon> Coronavirus</b>
+              <b><ha-icon icon="bha:virus"></ha-icon> Coronavirus</b>
               ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
               <b><ha-icon icon="mdi:emoticon-sad"></ha-icon> 
               {{ states('sensor.sweden_coronavirus_current') }}</b> smittade
@@ -95,6 +92,8 @@ views:
               left: 69.3%
               width: 90vw
               height: 1px
+              --iron-icon-height: 1.2vw
+              --iron-icon-width: 1.2vw
               --ha-card-background: none
               --ha-card-box-shadow: none
               --primary-text-color: '#6a7377'
