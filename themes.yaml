@@ -84,7 +84,7 @@ slate:
   # mini-media-player
   mini-media-player-base-color: '#d7d7d6'
   mini-media-player-accent-color: '#d7d7d6'
-  mini-media-player-icon-color: '#d7d7d6'
+  mini-media-player-icon-color: '#9e9e9e'
   mini-media-player-overlay-color: 'rgba(0,0,0,0)'
   mini-media-player-overlay-color-stop: '100%'
   mini-media-player-overlay-base-color: '#d7d7d6'
