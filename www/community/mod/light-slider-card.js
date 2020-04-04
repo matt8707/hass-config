@@ -12,7 +12,7 @@
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-var s="{{lit-".concat(String(Math.random()).slice(2),"}}"),f="\x3c!--".concat(s,"--\x3e"),l=new RegExp("".concat(s,"|").concat(f)),h=function t(e,n){!function(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}(this,t),this.parts=[],this.element=n;for(var r=[],i=[],o=document.createTreeWalker(n.content,133,null,!1),a=0,u=-1,c=0,f=e.strings,h=e.values.length;c<h;){var v=o.nextNode();if(null!==v){if(u++,1===v.nodeType){if(v.hasAttributes()){for(var g=v.attributes,m=g.length,_=0,b=0;b<m;b++)p(g[b].name,"$lit$")&&_++;for(;_-- >0;){var w=f[c],S=y.exec(w)[2],x=S.toLowerCase()+"$lit$",E=v.getAttribute(x);v.removeAttribute(x);var k=E.split(l);this.parts.push({type:"attribute",index:u,name:S,strings:k}),c+=k.length-1}}"TEMPLATE"===v.tagName&&(i.push(v),o.currentNode=v.content)}else if(3===v.nodeType){var P=v.data;if(P.indexOf(s)>=0){for(var O=v.parentNode,A=P.split(l),N=A.length-1,j=0;j<N;j++){var T=void 0,C=A[j];if(""===C)T=d();else{var F=y.exec(C);null!==F&&p(F[2],"$lit$")&&(C=C.slice(0,F.index)+F[1]+F[2].slice(0,-"$lit$".length)+F[3]),T=document.createTextNode(C)}O.insertBefore(T,v),this.parts.push({type:"node",index:++u})}""===A[N]?(O.insertBefore(d(),v),r.push(v)):v.data=A[N],c+=N}}else if(8===v.nodeType)if(v.data===s){var M=v.parentNode;null!==v.previousSibling&&u!==a||(u++,M.insertBefore(d(),v)),a=u,this.parts.push({type:"node",index:u}),null===v.nextSibling?v.data="":(r.push(v),u--),c++}else for(var I=-1;-1!==(I=v.data.indexOf(s,I+1));)this.parts.push({type:"node",index:-1}),c++}else o.currentNode=i.pop()}for(var R=0,$=r;R<$.length;R++){var L=$[R];L.parentNode.removeChild(L)}},p=function(t,e){var n=t.length-e.length;return n>=0&&t.slice(n)===e},v=function(t){return-1!==t.index},d=function(){return document.createComment("")},y=/([ \x09\x0a\x0c\x0d])([^\0-\x1F\x7F-\x9F "'>=/]+)([ \x09\x0a\x0c\x0d]*=[ \x09\x0a\x0c\x0d]*(?:[^ \x09\x0a\x0c\x0d"'`<>=]*|"[^"]*|'[^']*))$/;function g(t){return function(t){if(Array.isArray(t)){for(var e=0,n=new Array(t.length);e<t.length;e++)n[e]=t[e];return n}}(t)||function(t){if(Symbol.iterator in Object(t)||"[object Arguments]"===Object.prototype.toString.call(t))return Array.from(t)}(t)||function(){throw new TypeError("Invalid attempt to spread non-iterable instance")}()}function m(t,e){for(var n=0;n<e.length;n++){var r=e[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(t,r.key,r)}}
+var s="{{lit-".concat(String(Math.random()).slice(2),"}}"),f="\x3c!--".concat(s,"--\x3e"),l=new RegExp("".concat(s,"|").concat(f)),h=function t(e,n){!function(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}(this,t),this.parts=[],this.element=n;for(var r=[],i=[],o=document.createTreeWalker(n.content,133,null,!1),a=0,u=-1,c=0,f=e.strings,h=e.values.length;c<h;){var v=o.nextNode();if(null!==v){if(u++,1===v.nodeType){if(v.hasAttributes()){for(var g=v.attributes,m=g.length,_=0,b=0;b<m;b++)p(g[b].name,"$lit$")&&_++;for(;_-- >0;){var w=f[c],S=y.exec(w)[2],x=S.toLowerCase()+"$lit$",E=v.getAttribute(x);v.removeAttribute(x);var k=E.split(l);this.parts.push({type:"attribute",index:u,name:S,strings:k}),c+=k.length-1}}"TEMPLATE"===v.tagName&&(i.push(v),o.currentNode=v.content)}else if(3===v.nodeType){var P=v.data;if(P.indexOf(s)>=0){for(var O=v.parentNode,A=P.split(l),N=A.length-1,j=0;j<N;j++){var T=void 0,C=A[j];if(""===C)T=d();else{var F=y.exec(C);null!==F&&p(F[2],"$lit$")&&(C=C.slice(0,F.index)+F[1]+F[2].slice(0,-"$lit$".length)+F[3]),T=document.createTextNode(C)}O.insertBefore(T,v),this.parts.push({type:"node",index:++u})}""===A[N]?(O.insertBefore(d(),v),r.push(v)):v.data=A[N],c+=N}}else if(8===v.nodeType)if(v.data===s){var M=v.parentNode;null!==v.previousSibling&&u!==a||(u++,M.insertBefore(d(),v)),a=u,this.parts.push({type:"node",index:u}),null===v.nextSibling?v.data="":(r.push(v),u--),c++}else for(var I=-1;-1!==(I=v.data.indexOf(s,I+1));)this.parts.push({type:"node",index:-1}),c++}else o.currentNode=i.pop()}for(var R=0,$=r;R<$.length;R++){var L=$[R];L.parentNode.removeChild(L)}},p=function(t,e){var n=t.length-e.length;return n>=0&&t.slice(n)===e},v=function(t){return-1!==t.index},d=function(){return document.createComment("")},y=/([ \x09\x0a\x0c\x0d])([^\0-\x1F\x7F-\x9F "'>=\/]+)([ \x09\x0a\x0c\x0d]*=[ \x09\x0a\x0c\x0d]*(?:[^ \x09\x0a\x0c\x0d"'`<>=]*|"[^"]*|'[^']*))$/;function g(t){return function(t){if(Array.isArray(t)){for(var e=0,n=new Array(t.length);e<t.length;e++)n[e]=t[e];return n}}(t)||function(t){if(Symbol.iterator in Object(t)||"[object Arguments]"===Object.prototype.toString.call(t))return Array.from(t)}(t)||function(){throw new TypeError("Invalid attempt to spread non-iterable instance")}()}function m(t,e){for(var n=0;n<e.length;n++){var r=e[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(t,r.key,r)}}
 /**
  * @license
  * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
@@ -326,60 +326,59 @@ var xt="adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prot
     `}createBrightnessSlider(t){return!1===this.config.brightness?K``:this.dontShowFeature("brightness",t)?K``:K`
 
 
-
     <!--################################################################################################################################################################################################################-->
 
-  <style>
-  ha-card {
-    box-shadow: none;
-    padding: 0;
-    margin: 0;
-    }
-  .light-slider-card-center {
-      display: flex;
-      justify-content:center;
-      padding: 0;
-      height: 17em;
-      padding-top: 6.5em;
-    }
-  input[type='range'] {
-    -webkit-appearance: none;
-    background-color: rgba(25, 25, 25, 0.9);
-    height: 8em;
-    overflow: hidden;
-    width: 100%;
-    border-radius: 1.5em;
-    transform: rotate(-90deg);
-    font-size: 0.9em; 
-    }
-  input[type='range']::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    box-shadow: -210px 0 0 210px rgba(255, 255, 255, 0.8);
-    cursor: pointer;
-    height: 0;
-    width: 0;
-    border: 0;
-    }
-  .slider-center {
-    display: flex;
-    justify-content:center;
-    margin-top: 1vw;
-    }
-  .percent {
-    color:rgba(255, 255, 255, 0.7); 
-    margin-top: -0.3em;
-    font-size: 1.7em; 
-    z-index: 1; 
-    display: flex; 
-    justify-content: center; 
-    font-family: SF Display; 
-    letter-spacing: 0.04em; 
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
-    }
-  textarea:focus, input:focus{
-    outline: none;
-    }
-  </style>
+    <style>
+    ha-card {
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+        }
+    .light-slider-card-center {
+        display: flex;
+        justify-content:center;
+        padding: 0;
+        height: 17em;
+        padding-top: 6.5em;
+        }
+    input[type='range'] {
+        -webkit-appearance: none;
+        background-color: rgba(25, 25, 25, 0.9);
+        height: 8em;
+        overflow: hidden;
+        width: 100%;
+        border-radius: 1.5em;
+        transform: rotate(-90deg);
+        font-size: 0.9em; 
+        }
+    input[type='range']::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        box-shadow: -210px 0 0 210px rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+        height: 0;
+        width: 0;
+        border: 0;
+        }
+    .slider-center {
+        display: flex;
+        justify-content:center;
+        margin-top: 1vw;
+        }
+    .percent {
+        color:rgba(255, 255, 255, 0.7); 
+        margin-top: -0.3em;
+        font-size: 1.7em; 
+        z-index: 1; 
+        display: flex; 
+        justify-content: center; 
+        font-family: SF Display; 
+        letter-spacing: 0.04em; 
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+        }
+    textarea:focus, input:focus{
+        outline: none;
+        }
+    </style>
 
     <form>
     <div class='light-slider-card-center'>
@@ -393,8 +392,6 @@ var xt="adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prot
     <!--################################################################################################################################################################################################################-->
 
 
-
-
     `}showPercent(t,e,n){if(!this.config.show_slider_percent)return K``;let r=parseInt(100*(t-e)/(n-e),0);return isNaN(r)&&(r=0),K`
 
     `}createColorTemperature(t){return!1===this.config.color_temp?K``:this.dontShowFeature("colorTemp",t)?K``:K`
@@ -405,4 +402,4 @@ var xt="adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prot
 
     `}createColorPicker(t){return!1===this.config.color_picker?K``:this.dontShowFeature("color",t)?K``:K`
 
-    `}dontShowFeature(t,e){return!(Dt.featureNames[t]&e.attributes.supported_features)||(!this.config.persist_features&&!this.isEntityOn(e)||void 0)}generateColorPickerId(t){return`light-slider-card-${t.entity_id.replace(".","-")}`}setColorPicker(t,e){this.callEntityService({hs_color:[t.detail.hs.h,100*t.detail.hs.s]},e)}setBrightness(t,e){const n=parseInt(t.target.value,0);isNaN(n)||parseInt(e.attributes.brightness,0)===n||this.callEntityService({brightness:n},e)}setColorTemp(t,e){const n=parseInt(t.target.value,0);isNaN(n)||parseInt(e.attributes.color_temp,0)===n||this.callEntityService({color_temp:n},e)}setWhiteValue(t,e){const n=parseInt(t.target.value,0);isNaN(n)||parseInt(e.attributes.white_value,0)===n||this.callEntityService({white_value:n},e)}setToggle(t,e){const n=this.isEntityOn(e)?Dt.cmdToggle.off:Dt.cmdToggle.on;this.callEntityService({},e,n)}setEffect(t,e){this.callEntityService({effect:t.detail.value},e)}callEntityService(t,e,n){if(this._isUpdating)return;const r=e.entity_id.split(".")[0];this.hass.callService(r,n||Dt.cmdToggle.on,{entity_id:e.entity_id,...t})}}customElements.define("light-slider-card",Dt)}]);
+    `}dontShowFeature(t,e){return!(Dt.featureNames[t]&e.attributes.supported_features)||(!this.config.persist_features&&!this.isEntityOn(e)||void 0)}generateColorPickerId(t){return`light-slider-card-${t.entity_id.replace(".","-")}`}setColorPicker(t,e){this.callEntityService({hs_color:[t.detail.hs.h,100*t.detail.hs.s]},e)}setBrightness(t,e){const n=parseInt(t.target.value,0);isNaN(n)||parseInt(e.attributes.brightness,0)===n||this.callEntityService({brightness:n},e)}setColorTemp(t,e){const n=parseInt(t.target.value,0);isNaN(n)||parseInt(e.attributes.color_temp,0)===n||this.callEntityService({color_temp:n},e)}setWhiteValue(t,e){const n=parseInt(t.target.value,0);isNaN(n)||parseInt(e.attributes.white_value,0)===n||this.callEntityService({white_value:n},e)}setToggle(t,e){const n=this.isEntityOn(e)?Dt.cmdToggle.off:Dt.cmdToggle.on;this.callEntityService({},e,n)}setEffect(t,e){this.callEntityService({effect:t.detail.value},e)}callEntityService(t,e,n){if(this._isUpdating)return;let r=e.entity_id.split(".")[0];"group"===r&&(r="homeassistant"),this.hass.callService(r,n||Dt.cmdToggle.on,{entity_id:e.entity_id,...t})}}customElements.define("light-slider-card",Dt)}]);
