@@ -6,6 +6,15 @@
                     - entity: switch.dator_template
                       name: iMac
                       secondary_info: last-changed
+                      style: |
+                        :host {
+                        --paper-item-icon-color: 
+                          {% if is_state('switch.dator_template', 'on') %}
+                            #3182b7
+                          {% else %}
+                            #9e9e9e
+                          {% endif %};
+                          }
                     - entity: sensor.imac_cpu_per
                       title: Processor
                       icon: 'mdi:chip'
@@ -113,7 +122,7 @@
                           {% if is_state('automation.notification_motion_hall', 'on') %}
                             #3182b7
                           {% else %}
-                            #9da0a2
+                            #9e9e9e
                           {% endif %};
                           }
                     - entity: sensor.macos_uptime_template
@@ -127,10 +136,10 @@
                       style: |
                         :host {
                         --paper-item-icon-color: 
-                          {% if is_state('sensor.vpn_imac', 'Ansluten') %}
-                            #9e9e9e
-                          {% else %}
+                          {% if not is_state('sensor.vpn_imac', 'Ansluten') %}
                             red
+                          {% else %}
+                            #9e9e9e
                           {% endif %};
                           }
                     - entity: input_boolean.lock_computer
@@ -142,7 +151,7 @@
                           {% if is_state('input_boolean.lock_computer', 'on') %}
                             #3182b7
                           {% else %}
-                            #9da0a2
+                            #9e9e9e
                           {% endif %};
                           }
                     - entity: sensor.imac_system_ssd
