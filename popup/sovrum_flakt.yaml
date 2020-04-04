@@ -7,6 +7,15 @@
                     - entities:
                         - entity: switch.wemo_flakt
                           secondary_info: last-changed
+                          style: |
+                            :host {
+                            --paper-item-icon-color: 
+                              {% if is_state('switch.wemo_flakt', 'on') %}
+                                #3182b7
+                              {% else %}
+                                #9e9e9e
+                              {% endif %};
+                              }
                         - type: custom:slider-entity-row
                           entity: input_number.fan_timer
                           style: |
