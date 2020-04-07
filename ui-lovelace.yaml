@@ -1,3 +1,10 @@
+
+##########################################################################
+#                                                                        #
+#                              * SETTINGS *                              #
+#                                                                        #
+##########################################################################
+
 custom_header:
   kiosk_mode: true
   exceptions:
@@ -12,7 +19,7 @@ preload_cards:
   - history-graph
   - map
   - iframe
-      
+
 anchors:
   ⚓₁: &title
     entity: sensor.placeholder
@@ -28,27 +35,65 @@ anchors:
     font-weight: 500
     max-width: 1px
     cursor: default
-  ⚓₃: &circle-sensor
-    type: custom:circle-sensor-card
-    stroke_width: 6
-    font_style:
-      font-family: SF Text
-      color: '#7d7e80'
-      font-size: 1vw
-      letter-spacing: -0.02vw
-      margin-top: 1.8%
-    gradient: true
-    max: 100
-    min: 0
-  ⚓₄: &circle-sensor-light
-    units: '%'
-    fill: none
-    stroke_color: '#aaabad'
-    <<: *circle-sensor
-  ⚓₅: &circle-style
-    height: 3.15vw
-    width: 3.15vw
-    opacity: 0.7
+
+button_card_templates:
+  light:
+    aspect_ratio: 1/1
+    show_state: true
+    show_icon: false
+    state: &button_card_state
+      - value: 'on'
+        styles:
+          card:
+            - background-color: rgba(255, 255, 255, 0.8)
+          name:
+            - color: rgba(0, 0, 0, 0.6)
+          state:
+            - color: rgba(0, 0, 0, 0.6)
+    custom_fields:
+      info: >
+        [[[ var brightness = Math.round( entity.attributes.brightness / 2.54 ); if (entity.state === 'on') 
+        return '<svg viewBox="0 0 50 50"><circle id="c_brightness" cx="25" cy="25" r="20.5" stroke="#b2b2b2" stroke-width="1.5" fill="none" /><text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">' + brightness + '<tspan font-size="10">%</tspan></text></svg>'; ]]]
+    extra_styles: |
+      [[[ var radius = 20.5; 
+      var circumference = radius * 2 * Math.PI; 
+      var brightness = Math.round( entity.attributes.brightness / 2.54 );
+      return "#c_brightness { transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: " + circumference + "; stroke-dashoffset: " + (circumference - brightness / 100 * circumference) + ";}"; ]]]
+    styles:
+      name: &button_style_name
+        - justify-self: start
+        - padding-bottom: 0.05vw
+      state: &button_style_state
+        - justify-self: start
+        - padding-bottom: 0.05vw
+      custom_fields:
+        info: &circle_pos
+          - top: 8.5%
+          - left: 56.2%
+          - width: 3.5vw
+          - position: absolute
+          - letter-spacing: 0.03vw
+      card: &button_style_card
+        - font-family: Sf Display
+        - letter-spacing: 0.05vw
+        - text-rendering: optimizeLegibility
+        - font-weight: 400
+        - color: rgba(255, 255, 255, 0.3)
+        - font-size: 1.34vw
+        - background-color: rgba(115, 115, 115, 0.2)
+        - padding: 6.1vw 0.9vw 0.9vw 1.1vw
+        - border-radius: 0.8vw
+        - box-shadow: none
+        - transition: none
+  switch:
+    aspect_ratio: 1/1
+    show_state: true
+    show_icon: false
+    state: *button_card_state
+    styles:
+      name: *button_style_name
+      state: *button_style_state
+      card: *button_style_card
 
 title: Hemma
 views:
@@ -72,6 +117,8 @@ views:
           #################################################
       
           - content: >
+              {% if is_state('sensor.sweden_coronavirus_current', 
+              'unavailable') %} {% else %}
               <font color='#6a7377'>
               <b><ha-icon icon="bha:virus"></ha-icon> Coronavirus</b>
               ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
@@ -87,6 +134,7 @@ views:
               <ha-icon icon="mdi:chart-bar"></ha-icon> 
               {{ ((states('sensor.sweden_coronavirus_confirmed') 
               | int / 10327589 ) * 100) | round(3) }}% av Sverige </font>
+              {% endif %}
             style:
               top: 91.9%
               left: 69.3%
@@ -452,52 +500,25 @@ views:
           #################################################
 
           - entity: light.belysning
-            state_image:
-              'on': /local/btn/var_belysning_on.svg
-              'off': /local/btn/var_belysning_off.svg
-              unavailable: /local/btn/unavailable.svg
-            style: &var_belysning-pos
+            style:
               top: 20.35%
               left: 30.31%
               width: 10%
-            type: image
-
-          - conditions:
-              - entity: light.belysning
-                state_not: unavailable
-            elements:
-              - entity: light.belysning
-                icon: 'bha:hue-bulb'
-                style:
-                  top: 15.6%
-                  left: 27.35%
-                  --iron-icon-height: 1.87vw
-                  --iron-icon-width: 1.87vw
-                type: state-icon
-            type: conditional
-
-          - conditions:
-              - entity: light.belysning
-                state: 'on'
-            elements:
-              - entity: sensor.belysning_percent
-                <<: *circle-sensor-light
-                style:
-                  top: 16.3%
-                  left: 32.8%
-                  <<: *circle-style
-            type: conditional
-
-          - image: /local/overlay.svg
-            style: *var_belysning-pos
             tap_action:
-              action: call-service
-              service: light.toggle
-              service_data:
-                entity_id: light.belysning
+              action: toggle
             hold_action: !include popup/vardagsrum_belysning.yaml
-            title: null
-            type: image
+            custom_fields:
+              icon_hue: &icon_hue >
+                <svg viewBox="0 0 50 50"><path d="M27.4 47.3h-4.9s-.7.1-.7.8.4.9.7.9h4.9c.3 0 .7-.1.7-.9s-.7-.8-.7-.8zm3.3-2.9H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9-.1-.8-.9-.8-.9-.8zm0-3H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9-.1-.8-.9-.8-.9-.8zm0-2.9H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9s-.9-.8-.9-.8zm5.2-23.2c-3.3-5.3-7-5.6-10.9-5.6-3.8 0-8.4.4-10.9 5.6-.1.1-.1.3.1.7.4.8 3.3 7.2 3.2 18.8 0 1.1-.1 1.6 0 1.7 0 .1 0 .7 1.1.7h13c1 0 1-.5 1.1-.7v-1.7c-.1-11.6 2.8-18 3.2-18.8.1-.4.1-.5.1-.7" fill="#9da0a2"/><path d="M14.1 15.3c3.4-.3 7-.4 10.9-.4 3.8 0 7.5.2 10.9.4.4-.4.7-.8.9-1.1C39 8.5 38.9 6.5 38.9 6c-.2-4.4-8.4-5-12.1-5h0-3.4c-3.7 0-12 .5-12.1 5 0 .5-.1 2.5 2.1 8.2 0 .3.3.8.7 1.1z" fill="var(--button-card-light-color-no-temperature)"/></svg>
+            styles: &icon_hue_styles
+              custom_fields:
+                icon_hue:
+                  - top: 11%
+                  - left: 4.5%
+                  - width: 3.05vw
+                  - position: absolute
+            template: light
+            type: custom:button-card
 
           #################################################
           #                                               #
@@ -506,52 +527,26 @@ views:
           #################################################
 
           - entity: light.fonsterlampa
-            state_image:
-              'on': /local/btn/var_skrivbord_on.svg
-              'off': /local/btn/var_skrivbord_off.svg
-              unavailable: /local/btn/unavailable.svg
-            style: &var_skrivbord-pos
+            name: Skrivbord
+            style:
               top: 20.35%
               left: 41.31%
               width: 10%
-            type: image
-
-          - conditions:
-              - entity: light.fonsterlampa
-                state_not: unavailable
-            elements:
-              - entity: light.fonsterlampa
-                icon: 'bha:skrivbord'
-                style:
-                  top: 15.45%
-                  left: 38.45%
-                  --iron-icon-height: 2.5vw
-                  --iron-icon-width: 2.5vw
-                type: state-icon
-            type: conditional
-
-          - conditions:
-              - entity: light.fonsterlampa
-                state: 'on'
-            elements:
-              - entity: sensor.fonsterlampa_percent
-                <<: *circle-sensor-light
-                style:
-                  top: 16.3%
-                  left: 43.8%
-                  <<: *circle-style
-            type: conditional
-
-          - image: /local/overlay.svg
-            style: *var_skrivbord-pos
             tap_action:
-              action: call-service
-              service: light.toggle
-              service_data:
-                entity_id: light.fonsterlampa
+              action: toggle
             hold_action: !include popup/vardagsrum_skrivbordslampa.yaml
-            title: null
-            type: image
+            custom_fields:
+              icon_shade: >
+                <svg viewBox="0 0 50 50"><path d="M26.4 25.6c.6-.3 1.1-.7 1.1-1.3L25 17.9l-2.5 6.4c0 .7.6 1.1 1.1 1.3v20.8h-5.5v2.7h13.7v-2.7h-5.5V25.6z" fill="#9da0a2"/><path d="M24.6.9l-9.4.5c-.6.1-1.9 0-2.5 2.1s-2.4 9.1-4 16.9c-.2.7-.5 2-.5 2.3s-.4 1.6.9 1.6c.8.1 7.4.3 15.9.3 8.6 0 15.1-.3 15.9-.3 1.3-.1.9-1.3.9-1.6s-.3-1.6-.5-2.3c-1.6-7.8-3.4-14.8-4-16.9s-1.9-2-2.5-2.1c-1.6-.2-6.9-.4-9.4-.5" fill="var(--button-card-light-color-no-temperature)"/></svg>
+            styles:
+              custom_fields:
+                icon_shade:
+                  - top: 11%
+                  - left: 4.6%
+                  - width: 3.05vw
+                  - position: absolute
+            template: light
+            type: custom:button-card
 
           #################################################
           #                                               #
@@ -560,10 +555,6 @@ views:
           #################################################
 
           - entity: switch.tv_template
-            state_image:
-              'on': /local/btn/var_tv_on.svg
-              'off': /local/btn/var_tv_off.svg
-              unavailable: /local/btn/unavailable.svg
             style:
               top: 37.9%
               left: 30.31%
@@ -571,40 +562,31 @@ views:
             tap_action:
               action: toggle
             hold_action: !include popup/vardagsrum_tv.yaml
-            title: null
-            type: image
-
-          - conditions:
-              - entity: input_boolean.sony_bravia_tv
-                state: 'on'
-              - entity: switch.tv_template
-                state: 'off'
-            elements:
-              - image: /local/loader.svg
-                style:
-                  top: 33.6%
-                  left: 33%
-                  width: 3.5%
-                  filter: opacity(45%) invert(1)
-                  cursor: default
-                type: image
-            type: conditional
-
-          - conditions:
-              - entity: input_boolean.sony_bravia_tv
-                state: 'on'
-              - entity: switch.tv_template
-                state: 'on'
-            elements:
-              - image: /local/loader.svg
-                style:
-                  top: 33.6%
-                  left: 33%
-                  width: 3.5%
-                  filter: opacity(45%)
-                  cursor: default
-                type: image
-            type: conditional
+            custom_fields:
+              icon_tv: &icon_tv >
+                [[[ var fill_color = entity.state === 'on' ? '#616161' : '#9da0a2';
+                var gradient = entity.state === 'on' ? '<linearGradient id="A" gradientUnits="userSpaceOnUse" x1="5.401" y1="34.714" x2="43.817" y2="11.74"><stop offset="0" stop-color="#64acb7"/><stop offset="1" stop-color="#7fdbe9"/></linearGradient><path d="M2.9,8h44.3v29.9H2.9V8z" fill="url(#A)"/>' : ' '; 
+                return '<svg viewBox="0 0 50 50">' + gradient + '<path d="M46 9.2v27.5H4.1V9.2H46m2.4-2.4H1.6v32.3h46.7c.1 0 .1-32.3.1-32.3zM11.9 43.2h26.3c.6 0 1.1-.4 1.1-1v-.3c0-.6-.4-1.1-1-1.1H11.9c-.6 0-1.1.4-1.1 1v.3a1.11 1.11 0 0 0 1.1 1.1z" fill="' + fill_color + '"/></svg>'; ]]]
+              loading: >
+                [[[ var boolean = states['input_boolean.sony_bravia_tv'].state; 
+                var invert = (entity.state === 'off') ? 'invert(1)' : 'none';
+                var loader = '<object type="image/svg+xml" data="/local/loader.svg" width="100%" style="filter:' + invert + '"></object>';
+                if (boolean === 'on' && entity.state === 'off' || boolean === 'on' && entity.state === 'on') return loader; ]]]
+            styles: &icon_tv_styles
+              custom_fields:
+                icon_tv:
+                  - top: 7%
+                  - left: 10.7%
+                  - width: 3.5vw
+                  - position: absolute
+                loading: &loading
+                  - top: 3%
+                  - left: 60%
+                  - width: 3.7vw
+                  - position: absolute
+                  - opacity: 0.5
+            template: switch
+            type: custom:button-card
 
           #################################################
           #                                               #
@@ -613,10 +595,6 @@ views:
           #################################################
 
           - entity: switch.playstation_template
-            state_image:
-              'on': /local/btn/var_playstation_on.svg
-              'off': /local/btn/var_playstation_off.svg
-              unavailable: /local/btn/unavailable.svg
             style:
               top: 37.9%
               left: 41.31%
@@ -624,40 +602,26 @@ views:
             tap_action:
               action: toggle
             hold_action: !include popup/vardagsrum_playstation.yaml
-            title: null
-            type: image
-
-          - conditions:
-              - entity: input_boolean.playstation_template
-                state: 'on'
-              - entity: switch.playstation_template
-                state: 'off'
-            elements:
-              - image: /local/loader.svg
-                style:
-                  top: 33.6%
-                  left: 44%
-                  width: 3.5%
-                  filter: opacity(45%) invert(1)
-                  cursor: default
-                type: image
-            type: conditional
-
-          - conditions:
-              - entity: input_boolean.playstation_template
-                state: 'on'
-              - entity: switch.playstation_template
-                state: 'on'
-            elements:
-              - image: /local/loader.svg
-                style:
-                  top: 33.6%
-                  left: 44%
-                  width: 3.5%
-                  filter: opacity(45%)
-                  cursor: default
-                type: image
-            type: conditional
+            custom_fields:
+              icon_ps4: >
+                [[[ if (entity.state === 'on') 
+                return '<svg viewBox="0 0 50 50"><path d="M19.2 26.8l-3.8 1.4L31.6 34l4.8-1.6a9.93 9.93 0 0 1 3-.5c.4 0 .8.1 1.2.2.2.1.6.3.6.5.1.2-.2.5-.5.7-.4.2-.8.5-1.3.6l-3.8 1.4 6 2.2 3.4-1.3c.9-.3 1.6-.9 2.4-1.6.9-.7.8-1.5.1-2.4l-.7-.7c-.9-.7-2-1.3-3.1-1.6-3.3-.9-6.7-1.3-10.2-.8-1.4.2-2.9.6-4.3 1-.2.1-.5.2-.8.2-.9.3-1.3.5-1.8.7" fill="#336db3"/><path d="M17 34.8l-1.3.5L32.2 41l9.8-3.6-6.2-2.2-1.3.5-5.4 2-2.5 1v-3.1l2.6-.8 2.7-.9-16.3-5.8-9.3 3.4-.5.2L12 34l5.1-2 2.2-.8V34c0 .1-2.3.8-2.3.8z" fill="#00aa9e"/><path d="M15.8 35.2l-1.3.5c-1 .4-2.1.6-3.3.5-.5 0-1.1-.2-1.6-.3-.2-.1-.4-.3-.5-.5 0-.2.2-.4.4-.5.4-.2.7-.4 1.1-.5l1.4-.5-6.3-2.2c-1 .4-2 .9-2.8 1.5-1.2.7-1.3 2.1-.2 3.1.3.3.8.7 1.3.9 3.3 1.3 6.7 2 10.2 1.8l2.6-.3c.4-.1 1.6-.3 2.4-.6v1.6c0 .9 0 .9.9 1.3l5.3 1.8 1.1.3 2.4-.8L32 41l-16.2-5.8z" fill="#f3c202"/><path d="M26.7 14c0-.5.2-.9.7-1.2.5-.2.9-.1 1.4.2.7.5.9 1.2.9 2v11.1c0 .8.2 1 .9 1.3.4.2.8.2 1.2.3 2.7.5 4.6-.5 5.6-3.1.1-.2.1-.3.2-.5.5-1.6.5-3.3.5-5-.1-2-.8-3.8-2.1-5.4-1.5-1.8-3.4-3-5.6-3.7L19.9 7.1c-.2 0-.3 0-.5-.1 0 .3-.1.5-.1.8v31.8c0 .9 0 .9.9 1.3l5.3 1.8 1.1.3v-1c-.1 0 .1-28 .1-28z" fill="#de0029"/></svg>'; 
+                else return '<svg viewBox="0 0 50 50"><path d="M26.7 14c0-.5.2-.9.7-1.2.5-.2.9-.1 1.4.2.7.5.9 1.2.9 2v11.1c0 .8.2 1 .9 1.3.4.2.8.2 1.2.3 2.7.5 4.6-.5 5.6-3.1.1-.2.1-.3.2-.5.5-1.6.5-3.3.5-5-.1-2-.8-3.8-2.1-5.4-1.5-1.8-3.4-3-5.6-3.7L19.9 7.1c-.2 0-.3 0-.5-.1 0 .3-.1.5-.1.8v31.8c0 .9 0 .9.9 1.3l5.3 1.8 1.1.3v-1c-.1 0 .1-28 .1-28zm-9 13.4l-.9.2-10.6 3.9c-1.2.5-2.3 1-3.3 1.7-1.2.7-1.3 2.1-.2 3.1.4.4.9.7 1.4.9 3.3 1.3 6.7 2 10.2 1.8l2.6-.3c.6-.1.8-.3.9-.9.1-1 0-2 0-3.2h0c-.3.1-.5.2-.7.2l-2.6.9c-1 .4-2.1.6-3.3.5-.5 0-1.1-.2-1.6-.3-.2-.1-.4-.3-.5-.5 0-.2.2-.4.4-.5.4-.2.7-.4 1.1-.5l6.5-2.5c.5-.2.8-.5.8-1.1-.1-.9 0-2 0-2.9-.1-.1-.2-.3-.2-.5zm27.4 8.9c.9-.3 1.6-.9 2.4-1.6.9-.7.8-1.5.1-2.4l-.7-.7c-.9-.7-2-1.3-3.1-1.6-3.3-.9-6.7-1.3-10.2-.8-1.6.2-3.1.7-4.7 1.1-.5.1-.7.4-.7.9v3.5c0 .1.1.2.2.3.3-.1.5-.2.9-.2l7.3-2.5a9.93 9.93 0 0 1 3-.5c.4 0 .8.1 1.2.2.2.1.6.3.6.5.1.2-.2.5-.5.7-.4.2-.8.4-1.3.6l-5 1.9-5.4 2c-.5.2-.9.5-.8 1.2v3.4c.3-.1.5-.1.6-.2l16.1-5.8z" fill="#9da0a2"/></svg>'; ]]]
+              loading: >
+                [[[ var boolean = states['input_boolean.playstation_template'].state; 
+                var invert = (entity.state === 'off') ? 'invert(1)' : 'none';
+                var loader = '<object type="image/svg+xml" data="/local/loader.svg" width="100%" style="filter:' + invert + '"></object>';
+                if (boolean === 'on' && entity.state === 'off' || boolean === 'on' && entity.state === 'on') return loader; ]]]
+            styles:
+              custom_fields:
+                icon_ps4:
+                  - top: 7%
+                  - left: 10%
+                  - width: 3.5vw
+                  - position: absolute
+                loading: *loading
+            template: switch
+            type: custom:button-card
 
           ##########################################################################
           #                                                                        #
@@ -679,52 +643,18 @@ views:
           #################################################
 
           - entity: light.datorlampa
-            state_image:
-              'on': /local/btn/stu_datorlampa_on.svg
-              'off': /local/btn/stu_datorlampa_off.svg
-              unavailable: /local/btn/unavailable.svg
-            style: &stu_datorlampa-pos
-              top: 20.35%
+            style:
               left: 55.18%
+              top: 20.35%
               width: 10%
-            type: image
-
-          - conditions:
-              - entity: light.datorlampa
-                state_not: unavailable
-            elements:
-              - entity: light.datorlampa
-                icon: 'bha:hue-bulb'
-                style:
-                  top: 15.6%
-                  left: 52.19%
-                  --iron-icon-height: 1.87vw
-                  --iron-icon-width: 1.87vw
-                type: state-icon
-            type: conditional
-
-          - conditions:
-              - entity: light.datorlampa
-                state: 'on'
-            elements:
-              - entity: sensor.datorlampa_percent
-                <<: *circle-sensor-light
-                style:
-                  top: 16.3%
-                  left: 57.65%
-                  <<: *circle-style
-            type: conditional
-
-          - image: /local/overlay.svg
-            style: *stu_datorlampa-pos
             tap_action:
-              action: call-service
-              service: light.toggle
-              service_data:
-                entity_id: light.datorlampa
+              action: toggle
             hold_action: !include popup/studio_datorlampa.yaml
-            title: null
-            type: image
+            custom_fields:
+              icon_hue: *icon_hue
+            styles: *icon_hue_styles
+            template: light
+            type: custom:button-card
 
           #################################################
           #                                               #
@@ -733,52 +663,25 @@ views:
           #################################################
 
           - entity: light.taklampor
-            state_image:
-              'on': /local/btn/stu_taklampor_on.svg
-              'off': /local/btn/stu_taklampor_off.svg
-              unavailable: /local/btn/unavailable.svg
-            style: &stu_taklampor-pos
+            style:
               top: 20.35%
               left: 66.14%
               width: 10%
-            type: image
-
-          - conditions:
-              - entity: light.taklampor
-                state_not: unavailable
-            elements:
-              - entity: light.taklampor
-                icon: 'bha:spot'
-                style:
-                  top: 17.2%
-                  left: 63.53%
-                  --iron-icon-height: 2.4vw
-                  --iron-icon-width: 2.4vw
-                type: state-icon
-            type: conditional
-
-          - conditions:
-              - entity: light.taklampor
-                state: 'on'
-            elements:
-              - entity: sensor.taklampor_percent
-                <<: *circle-sensor-light
-                style:
-                  top: 16.3%
-                  left: 68.5%
-                  <<: *circle-style
-            type: conditional
-
-          - image: /local/overlay.svg
-            style: *stu_taklampor-pos
             tap_action:
-              action: call-service
-              service: light.toggle
-              service_data:
-                entity_id: light.taklampor
+              action: toggle
             hold_action: !include popup/studio_taklampor.yaml
-            title: null
-            type: image
+            custom_fields:
+              icon_spot: &icon_spot >
+                <svg viewBox="0 0 50 50"><path d="M26.3 49.2s1.5.5 11-8.7c.5-.4 6.7-6.7 6.2-7.5-.7-.8-19.7-20.7-19.7-20.7s-.6-1-9.1 6.8c-.6.5-9.2 8.5-8.2 9.6l19.8 20.5z" fill="var(--button-card-light-color-no-temperature)"/><path d="M42.2.8H17.4c-.1 0-.1 0-.1.1a3.33 3.33 0 0 0 3.3 3.3h6.5c.1 0 .1 0 .1.1v7.9l3.6 3.7 1-1a2.84 2.84 0 0 0 .7-1.7v-9c0-.1 0-.1.1-.1H39c1.8.1 3.3-1.4 3.2-3.3h0z" fill="#9da0a2"/></svg>
+            styles: &icon_spot_styles
+              custom_fields:
+                icon_spot:
+                  - top: 11.5%
+                  - left: 8%
+                  - width: 2.7vw
+                  - position: absolute
+            template: light
+            type: custom:button-card
 
           #################################################
           #                                               #
@@ -787,10 +690,6 @@ views:
           #################################################
 
           - entity: switch.dator_template
-            state_image:
-              'on': /local/btn/stu_dator_on.svg
-              'off': /local/btn/stu_dator_off.svg
-              unavailable: /local/btn/unavailable.svg
             style:
               top: 37.9%
               left: 55.18%
@@ -798,57 +697,34 @@ views:
             tap_action:
               action: toggle
             hold_action: !include popup/studio_dator.yaml
-            title: null
-            type: image
-
-          - conditions:
-              - entity: input_boolean.dator_template
-                state: 'on'
-              - entity: switch.dator_template
-                state: 'off'
-            elements:
-              - image: /local/loader.svg
-                style:
-                  top: 33.6%
-                  left: 57.8%
-                  width: 3.5%
-                  filter: opacity(45%) invert(1)
-                  cursor: default
-                type: image
-            type: conditional
-
-          - conditions:
-              - entity: input_boolean.dator_template
-                state: 'on'
-              - entity: switch.dator_template
-                state: 'on'
-            elements:
-              - image: /local/loader.svg
-                style:
-                  top: 33.6%
-                  left: 57.8%
-                  width: 3.5%
-                  filter: opacity(45%)
-                  cursor: default
-                type: image
-            type: conditional
-
-          - type: conditional
-            conditions:
-              - entity: input_boolean.lock_computer
-                state: 'on'
-            elements:
-              - icon: 'mdi:lock-alert'
-                style:
-                  top: 33.58%
-                  left: 57.65%
-                  color: '#6e818a60'
-                  --iron-icon-height: 2.2vw
-                  --iron-icon-width: 2.2vw
-                tap_action:
-                  action: none
-                title: null
-                type: icon
+            custom_fields:
+              icon_imac: >
+                [[[ var fill_color = entity.state === 'on' ? '#797a7b' : '#9da0a2';
+                return '<svg viewBox="0 0 50 50"><path d="M31.9 44.5c-1-.3-1.9.4-1.9-3.7h-9.9c0 4.2-.9 3.4-1.9 3.7s-.2.7-.2.7h14.1s.8-.3-.2-.7zM47.6 4.8H2.5c-1.1 0-2 .9-2 2v30.1c0 1.1.9 2 2 2h45c1.1 0 2-.9 2-2v-30a1.95 1.95 0 0 0-1.9-2.1zm-.7 26.4H3.2V7.6H47v23.6z" fill="' + fill_color + '"/></svg>'; ]]]
+              loading: >
+                [[[ var boolean = states['input_boolean.dator_template'].state; 
+                var invert = (entity.state === 'off') ? 'invert(1)' : 'none';
+                var loader = '<object type="image/svg+xml" data="/local/loader.svg" width="100%" style="filter:' + invert + '"></object>';
+                if (boolean === 'on' && entity.state === 'off' || boolean === 'on' && entity.state === 'on') return loader; ]]]
+              icon_lock: >
+                [[[ if (states['input_boolean.lock_computer'].state === 'on' && states['input_boolean.dator_template'].state === 'off') 
+                return '<svg viewBox="0 0 50 50"><path d="M8.2 22.6h2.4v-7.2C10.6 7.5 17.1 1 25 1s14.4 6.4 14.4 14.4v7.2h2.4V49H8.2m26.4-26.4v-7.2c0-5.3-4.3-9.6-9.6-9.6s-9.6 4.3-9.6 9.6v7.2"/></svg>'; ]]]
+            styles:
+              custom_fields:
+                icon_imac:
+                  - top: 8.5%
+                  - left: 11%
+                  - width: 3.3vw
+                  - position: absolute
+                loading: *loading
+                icon_lock:
+                  - top: 11%
+                  - left: 73%
+                  - width: 1.8vw
+                  - position: absolute
+                  - fill: '#9da0a2'
+            template: switch
+            type: custom:button-card
 
           #################################################
           #                                               #
@@ -857,10 +733,6 @@ views:
           #################################################
 
           - entity: switch.wemo_monitorer
-            state_image:
-              'on': /local/btn/stu_monitorer_on.svg
-              'off': /local/btn/stu_monitorer_off.svg
-              unavailable: /local/btn/unavailable.svg
             style:
               top: 37.9%
               left: 66.14%
@@ -868,8 +740,32 @@ views:
             tap_action:
               action: toggle
             hold_action: !include popup/studio_monitorer.yaml
-            title: null
-            type: image
+            custom_fields:
+              icon_monitors: >
+                [[[ if (entity.state === 'on') 
+                return '<svg viewBox="0 0 50 50"><path d="M35.8 46.9H14.2c-1.1 0-2-1-2-2.3V6.7c0-1.3.9-2.3 2-2.3h21.5c1.1 0 2 1 2 2.3v37.9c0 1.2-.9 2.3-1.9 2.3z" fill="#686868"/><path d="M39.2 1H10.8C9.4 1 8.3 2.1 8.2 3.5v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3c1.4 0 2.5-1.2 2.6-2.6V3.5c0-1.4-1.1-2.5-2.5-2.5zM25 7c1.3 0 2.4 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4C22.5 8 23.6 7 25 7zm10.2 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6s-.1-1.1-.4-1.9.6-.9.6-.9h19.3c0-.1.8-.1.5.9z" fill="#2a2a2a"/><path class="cone animated" d="M25 15.7c-6.2 0-11.3 5.1-11.3 11.3S18.8 38.3 25 38.3 36.3 33.2 36.3 27c-.1-6.3-5.1-11.3-11.3-11.3zm0 14.5a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c-.1 1.9-1.5 3.3-3.3 3.3z" fill="#e5dd00"/></svg>'; 
+                else return '<object type="image/svg+xml" data="/local/monitors.svg"></object>'; ]]]
+            styles:
+              custom_fields:
+                icon_monitors:
+                  - top: 11%
+                  - left: 7%
+                  - width: 2.8vw
+                  - position: absolute
+            extra_styles: |
+              @keyframes scale {
+                  0%   { transform:scale(0.9); }
+                  25%  { transform:scale(1.4); }
+                  50%  { transform:scale(1); }
+                  75%  { transform:scale(1.3); }
+                  100% { transform:scale(0.9); }
+              } 
+              .cone.animated {
+                  animation: scale 0.6s linear 1;
+                  animation-delay: 0.3s;
+                  transform-origin: center center; }
+            template: switch
+            type: custom:button-card
 
           ##########################################################################
           #                                                                        #
@@ -891,52 +787,25 @@ views:
           #################################################
 
           - entity: light.mattias
-            state_image:
-              'on': /local/btn/sov_mattias_on.svg
-              'off': /local/btn/sov_mattias_off.svg
-              unavailable: /local/btn/unavailable.svg
-            style: &sov_mattias-pos
+            style:
               top: 20.35%
               left: 80.05%
               width: 10%
-            type: image
-
-          - conditions:
-              - entity: light.mattias
-                state_not: unavailable
-            elements:
-              - entity: light.mattias
-                icon: 'bha:sovrum'
-                style:
-                  top: 15.1%
-                  left: 76.95%
-                  --iron-icon-height: 1.9vw
-                  --iron-icon-width: 1.9vw
-                type: state-icon
-            type: conditional
-
-          - conditions:
-              - entity: light.mattias
-                state: 'on'
-            elements:
-              - entity: sensor.mattias_percent
-                <<: *circle-sensor-light
-                style:
-                  top: 16.3%
-                  left: 82.5%
-                  <<: *circle-style
-            type: conditional
-
-          - image: /local/overlay.svg
-            style: *sov_mattias-pos
             tap_action:
-              action: call-service
-              service: light.toggle
-              service_data:
-                entity_id: light.mattias
+              action: toggle
             hold_action: !include popup/sovrum_mattias.yaml
-            title: null
-            type: image
+            custom_fields:
+              icon_lamp: &icon_lamp >
+                <svg viewBox="0 0 50 50"><path d="M26.5 21.8l3.8-6.1H19.7l3.8 6.1c-5 .7-6.3 5.8-5.7 10.2.7 5.1 3.2 10.1 5.7 14.4H19v2.5h11.8v-2.5h-4.5C29 42 31.4 37 32.1 32c.6-4.4-.6-9.4-5.6-10.2zm3.1 9.1c-.3 4.3-2.3 8.7-4.4 12.4l-.2.1v.1-.1c-1.8-3-3.3-6.4-4.1-9.7-.7-3.1-1-7.2 2.7-8.4 1.4-.5 3.1-.1 4.2.8 1.6 1 1.8 3 1.8 4.8z" fill="#9da0a2"/><path d="M38.1 20L35.7 3.8c-.3-1.9-.4-1.7-.6-2-.9-.6-2.3-.7-2.3-.7H17.4s-1.4 0-2.3.7c-.2.3-.3.1-.6 2C14 5.7 11.9 20 11.9 20s5.8.3 13.4.3h0c7.3 0 12.8-.3 12.8-.3z" fill="var(--button-card-light-color-no-temperature)"/></svg>
+            styles: &icon_lamp_styles
+              custom_fields:
+                icon_lamp:
+                  - top: 11%
+                  - left: 4.5%
+                  - width: 3.05vw
+                  - position: absolute
+            template: light
+            type: custom:button-card
 
           #################################################
           #                                               #
@@ -945,52 +814,18 @@ views:
           #################################################
 
           - entity: light.sanja
-            state_image:
-              'on': /local/btn/sov_sanja_on.svg
-              'off': /local/btn/sov_sanja_off.svg
-              unavailable: /local/btn/unavailable.svg
-            style: &sov_sanja-pos
+            style:
               top: 20.35%
               left: 91.05%
               width: 10%
-            type: image
-
-          - conditions:
-              - entity: light.sanja
-                state_not: unavailable
-            elements:
-              - entity: light.sanja
-                icon: 'bha:sovrum'
-                style:
-                  top: 15.1%
-                  left: 87.95%
-                  --iron-icon-height: 1.9vw
-                  --iron-icon-width: 1.9vw
-                type: state-icon
-            type: conditional
-
-          - conditions:
-              - entity: light.sanja
-                state: 'on'
-            elements:
-              - entity: sensor.sanja_percent
-                <<: *circle-sensor-light
-                style:
-                  top: 16.3%
-                  left: 93.5%
-                  <<: *circle-style
-            type: conditional
-
-          - image: /local/overlay.svg
-            style: *sov_sanja-pos
             tap_action:
-              action: call-service
-              service: light.toggle
-              service_data:
-                entity_id: light.sanja
+              action: toggle
             hold_action: !include popup/sovrum_sanja.yaml
-            title: null
-            type: image
+            custom_fields:
+              icon_lamp: *icon_lamp
+            styles: *icon_lamp_styles
+            template: light
+            type: custom:button-card
 
           #################################################
           #                                               #
@@ -999,10 +834,6 @@ views:
           #################################################
 
           - entity: switch.wemo_flakt
-            state_image:
-              'on': /local/btn/sov_flakt_on.svg
-              'off': /local/btn/sov_flakt_off.svg
-              unavailable: /local/btn/unavailable.svg
             style:
               top: 37.9%
               left: 80.05%
@@ -1010,8 +841,27 @@ views:
             tap_action:
               action: toggle
             hold_action: !include popup/sovrum_flakt.yaml
-            title: null
-            type: image
+            custom_fields:
+              icon_fan: >
+                [[[ if (entity.state === 'on') return '<object type="image/svg+xml" data="/local/fan.svg"></object>'; 
+                else return '<svg viewBox="0 0 50 50" fill="#9ca2a5"><g class="spin animated"><circle cx="25" cy="25" r="6.6"/><path d="M31.9 30.4c-.5.6-1.1 1.1-1.7 1.5-1.4 1.1-3.2 1.7-5.2 1.7-2.3 0-4.5-.9-6-2.4-.9 1.1-1.6 2.3-2.3 3.2l-4.9 5.4c-1.8 2.7.3 5.6 2.5 7 3.9 2.4 9.8 3.1 14.1 1.9 4.6-1.3 7.9-4.7 7.4-9.7-.2-3.4-1.9-6-3.9-8.6zM17 28.3c-.4-1-.6-2.1-.6-3.3a8.7 8.7 0 0 1 6.4-8.4l-1.6-3.5L19 6.2c-1.5-2.8-5-2.5-7.3-1.2-4 2.2-7.5 6.9-8.7 11.3-1.2 4.6.2 9.2 4.7 11.3 3.1 1.3 6.1 1.2 9.3.7zm26.9-17.6c-3.3-3.4-8-4.6-12.1-1.8-2.8 1.8-4.2 4.6-5.5 7.5 4.2.6 7.4 4.2 7.4 8.6 0 .9-.1 1.7-.4 2.5 1.3.2 2.8.3 3.8.4 2.3.4 4.7 1.3 7.1 1.7 3.2.3 4.7-3 4.8-5.6.3-4.6-1.9-10.1-5.1-13.3z"/></g></svg>'; ]]]
+            styles:
+              custom_fields:
+                icon_fan:
+                  - top: 9%
+                  - left: 10%
+                  - width: 3vw
+                  - position: absolute
+            extra_styles: |
+              @keyframes spin {
+                  from { transform:rotate(0deg); }
+                  to { transform:rotate(720deg); }
+              }
+              .spin.animated {
+                  animation: spin 1.7s ease-out 1;
+                  transform-origin: center center; }
+            template: switch
+            type: custom:button-card
 
           #################################################
           #                                               #
@@ -1020,10 +870,6 @@ views:
           #################################################
 
           - entity: switch.tv2_template
-            state_image:
-              'on': /local/btn/sov_tv_on.svg
-              'off': /local/btn/sov_tv_off.svg
-              unavailable: /local/btn/unavailable.svg
             style:
               top: 37.9%
               left: 91.05%
@@ -1031,40 +877,16 @@ views:
             tap_action:
               action: toggle
             hold_action: !include popup/sovrum_tv2.yaml
-            title: null
-            type: image
-
-          - conditions:
-              - entity: input_boolean.samsung
-                state: 'on'
-              - entity: switch.tv2_template
-                state: 'off'
-            elements:
-              - image: /local/loader.svg
-                style:
-                  top: 33.6%
-                  left: 93.8%
-                  width: 3.5%
-                  filter: opacity(45%) invert(1)
-                  cursor: default
-                type: image
-            type: conditional
-
-          - conditions:
-              - entity: input_boolean.samsung
-                state: 'on'
-              - entity: switch.tv2_template
-                state: 'on'
-            elements:
-              - image: /local/loader.svg
-                style:
-                  top: 33.6%
-                  left: 93.8%
-                  width: 3.5%
-                  filter: opacity(45%)
-                  cursor: default
-                type: image
-            type: conditional
+            custom_fields:
+              icon_tv: *icon_tv
+              loading: >
+                [[[ var boolean = states['input_boolean.samsung'].state; 
+                var invert = (entity.state === 'off') ? 'invert(1)' : 'none';
+                var loader = '<object type="image/svg+xml" data="/local/loader.svg" width="100%" style="filter:' + invert + '"></object>';
+                if (boolean === 'on' && entity.state === 'off' || boolean === 'on' && entity.state === 'on') return loader; ]]]
+            styles: *icon_tv_styles
+            template: switch
+            type: custom:button-card
 
           ##########################################################################
           #                                                                        #
@@ -1093,12 +915,12 @@ views:
                 modifier: 1
                 slideShadows : true
             style:
-              top: 56.6%
+              top: 56.55%
               left: 35.8%
               width: 20.97%
               height: 1px
               --ha-card-background: none
-              --ha-card-border-radius: 0.75vw
+              --ha-card-border-radius: .88vw
               --ha-card-box-shadow: none
               image-rendering: crisp-edges
               padding: 0
@@ -1124,38 +946,25 @@ views:
           #################################################
 
           - entity: light.badrum
-            state_image:
-              'on': /local/btn/lam_badrum_on.svg
-              'off': /local/btn/lam_badrum_off.svg
-              unavailable: /local/btn/unavailable.svg
-            style: &lam_badrum-pos
+            style:
               top: 64.5%
               left: 55.18%
               width: 10%
-            type: image
-
-          - conditions:
-              - entity: light.badrum
-                state: 'on'
-            elements:
-              - entity: sensor.badrum_percent
-                <<: *circle-sensor-light
-                style:
-                  top: 60.5%
-                  left: 57.65%
-                  <<: *circle-style
-            type: conditional
-
-          - image: /local/overlay.svg
-            style: *lam_badrum-pos
             tap_action:
-              action: call-service
-              service: light.toggle
-              service_data:
-                entity_id: light.badrum
+              action: toggle
             hold_action: !include popup/lampor_badrum.yaml
-            title: null
-            type: image
+            custom_fields:
+              icon_bathroom: >
+                <svg viewBox="0 0 50 50" fill="var(--button-card-light-color-no-temperature)"><path d="M12.9 1.2h2.5c1.6 0 2.9 1.3 2.9 2.9v18.6c0 1.4 1.1 2.5 2.4 2.5h20.5c.5 0 1 .4.9 1-.1 2.6-1.2 9.6-10.2 11v7.6c0 .2.2.4.4.4h1.5a1.58 1.58 0 0 1 1.6 1.6v.3a1.58 1.58 0 0 1-1.6 1.6H11a1.58 1.58 0 0 1-1.6-1.6v-.3a1.58 1.58 0 0 1 1.6-1.6h1.6c.2 0 .4-.2.4-.4v-7.6s-5.2-.3-5.2-5.9V4.2c0-1.6 1.3-2.9 2.9-2.9h2.2v-.1zm9.4 17.6h18.3a1.58 1.58 0 0 1 1.6 1.6v.6a1.58 1.58 0 0 1-1.6 1.6h-19c-.4 0-.7-.3-.8-.7v-2.3c0-.4.3-.7.7-.8h.8z"/></svg>
+            styles:
+              custom_fields:
+                icon_bathroom:
+                  - top: 11%
+                  - left: 6.5%
+                  - width: 3vw
+                  - position: absolute
+            template: light
+            type: custom:button-card
 
           #################################################
           #                                               #
@@ -1164,38 +973,25 @@ views:
           #################################################
 
           - entity: light.kok
-            state_image:
-              'on': /local/btn/lam_kok_on.svg
-              'off': /local/btn/lam_kok_off.svg
-              unavailable: /local/btn/unavailable.svg
-            style: &lam_kok-pos
+            style:
               top: 64.5%
               left: 66.14%
               width: 10%
-            type: image
-
-          - conditions:
-              - entity: light.kok
-                state: 'on'
-            elements:
-              - entity: sensor.kok_percent
-                <<: *circle-sensor-light
-                style:
-                  top: 60.5%
-                  left: 68.5%
-                  <<: *circle-style
-            type: conditional
-
-          - image: /local/overlay.svg
-            style: *lam_kok-pos
             tap_action:
-              action: call-service
-              service: light.toggle
-              service_data:
-                entity_id: light.kok
+              action: toggle
             hold_action: !include popup/lampor_kok.yaml
-            title: null
-            type: image
+            custom_fields:
+              icon_kitchen: >
+                <svg viewBox="0 0 50 50"><path d="M13.3 37.1V29c0-.3 0-.5.1-.8.1-.2.3-.4.5-.6.4-.4.8-.7 1-1.1.1-.3.1-.6.1-.9V23c0-.3 0-.6-.1-.9-.1-.5-.4-.9-.7-1.2s-.6-.5-.9-.7c-.7-.5-1.2-1-1.7-1.5-1-1.2-1.6-2.9-1.6-4.4v-10c0-2.2 3.4-2.1 3.4.1v8.5c0 .4.2.7.6.8s.7 0 1-.4V4.4c0-2.2 3.4-2.2 3.4 0V13c0 .4.3.7.6.8.4.1.8-.1 1-.4.1-.1.1-.3.1-.4V4.5a1.69 1.69 0 0 1 .3-1c.9-1.4 3.1-.6 3.1 1v9.9c0 .4 0 .8-.1 1.2-.2 1-.6 1.9-1.2 2.8-.5.7-1.1 1.2-1.8 1.7-.2.1-.3.2-.5.3-.5.4-.9.9-1.2 1.4-.2.4-.3.8-.2 1.2v3c0 .5.2.9.5 1.2l.6.6c.2.2.3.3.4.6s.2.6.2.9v16c0 1.9-1.5 3.7-3.6 3.6s-3.2-1.8-3.2-3.7c0 .2-.1-8.1-.1-8.1zM40 24.8v20.3c0 1.9-1.5 3.7-3.6 3.6-1.8-.1-3.3-1.7-3.3-3.6V26.6c0-.7-.4-1.2-1-1.6-.2-.1-.4-.2-.6-.2s-.4 0-.6-.1c-.4-.1-.7-.4-.8-.7s-.2-.5-.2-.8V12.7c0-3.8.8-9.7 4.8-11.3 2.7-1.1 5.4.3 5.4 3.4 0-.1-.1 20-.1 20z" fill="var(--button-card-light-color-no-temperature)"/></svg>
+            styles:
+              custom_fields:
+                icon_kitchen:
+                  - top: 11%
+                  - left: 6%
+                  - width: 3vw
+                  - position: absolute
+            template: light
+            type: custom:button-card
 
           #################################################
           #                                               #
@@ -1204,38 +1000,26 @@ views:
           #################################################
 
           - entity: light.kladkammare_2
-            state_image:
-              'on': /local/btn/lam_garderob_on.svg
-              'off': /local/btn/lam_garderob_off.svg
-              unavailable: /local/btn/unavailable.svg
-            style: &lam_garderob-pos
-              top: 82.17%
+            style:
+              top: 82.1%
               left: 55.18%
               width: 10%
-            type: image
-
-          - conditions:
-              - entity: light.kladkammare_2
-                state: 'on'
-            elements:
-              - entity: sensor.garderob_percent
-                <<: *circle-sensor-light
-                style:
-                  top: 78%
-                  left: 57.7%
-                  <<: *circle-style
-            type: conditional
-
-          - image: /local/overlay.svg
-            style: *lam_garderob-pos
             tap_action:
-              action: call-service
-              service: light.toggle
-              service_data:
-                entity_id: light.kladkammare_2
+              action: toggle
             hold_action: !include popup/lampor_garderob.yaml
-            title: null
-            type: image
+            custom_fields:
+              icon_closet: >
+                [[[ if (entity.state === 'on') return '<svg viewBox="0 0 50 50"><path d="M11.4,1.4h27.2v43.1H11.4V1.4z" fill="#bcbcbc"/><path d="M11.4 1.4v43.1l21.5 4.1-.2-43.4-21.3-3.8zm18.1 26.8c0 1.1-.7 1.8-1.5 1.7h0c-.8-.2-1.5-1.1-1.5-2.2v-3.9c0-1.1.7-1.8 1.5-1.7h0c.8.2 1.5 1.1 1.5 2.2v3.9z" fill="#b68349"/></svg>'; 
+                else return '<svg viewBox="0 0 50 50"><path d="M11.4 1.4v43.1h27.2V1.4H11.4zm23 23.4c0 1.1-.9 1.9-1.9 1.9h0c-1.1 0-1.9-.9-1.9-1.9V21c0-1.1.9-1.9 1.9-1.9h0c1.1 0 1.9.9 1.9 1.9v3.8z" fill="#9da0a2"/></svg>'; ]]]
+            styles:
+              custom_fields:
+                icon_closet:
+                  - top: 11%
+                  - left: 4.1%
+                  - width: 3.2vw
+                  - position: absolute
+            template: light
+            type: custom:button-card
 
           #################################################
           #                                               #
@@ -1244,38 +1028,18 @@ views:
           #################################################
 
           - entity: light.hall
-            state_image:
-              'on': /local/btn/lam_hall_on.svg
-              'off': /local/btn/lam_hall_off.svg
-              unavailable: /local/btn/unavailable.svg
-            style: &lam_hall-pos
-              top: 82.17%
+            style:
+              top: 82.1%
               left: 66.14%
               width: 10%
-            type: image
-
-          - conditions:
-              - entity: light.hall
-                state: 'on'
-            elements:
-              - entity: sensor.hall_percent
-                <<: *circle-sensor-light
-                style:
-                  top: 78%
-                  left: 68.5%
-                  <<: *circle-style
-            type: conditional
-
-          - image: /local/overlay.svg
-            style: *lam_hall-pos
             tap_action:
-              action: call-service
-              service: light.toggle
-              service_data:
-                entity_id: light.hall
+              action: toggle
             hold_action: !include popup/lampor_hall.yaml
-            title: null
-            type: image
+            custom_fields:
+              icon_spot: *icon_spot
+            styles: *icon_spot_styles
+            template: light
+            type: custom:button-card
 
           ##########################################################################
           #                                                                        #
@@ -1297,47 +1061,47 @@ views:
           #################################################
 
           - entity: person.mattias
-            state_image:
-              home: /local/btn/hem_mattias_on.svg
-              not_home: /local/btn/hem_mattias_off.svg
-            style: &hem_mattias-pos
+            state_display: >
+              [[[ return entity.state == 'home' ? 'Ja' : 'Nej'; ]]]
+            show_entity_picture: true
+            state: &button_home_state
+              - value: 'home'
+                styles:
+                  card:
+                    - background-color: rgba(255, 255, 255, 0.8)
+                  name:
+                    - color: rgba(0, 0, 0, 0.6)
+                  state:
+                    - color: rgba(0, 0, 0, 0.6)
+                  custom_fields:
+                    info:
+                      - color: '#959698'
+            styles: &button_home_styles
+              card:
+                - padding: 0.9vw 0.9vw 0.77vw 1.1vw # 6.1vw 0.9vw 0.9vw 1.1vw
+              entity_picture:
+                - clip-path: circle(50% at center)
+                - top: 3.9%
+                - left: 0.5%
+                - width: 3vw
+                - position: absolute
+              custom_fields:
+                sensor: *circle_pos
+            style:
               top: 64.5%
               left: 80.05%
               width: 10%
-            type: image
-
-          - conditions:
-              - entity: person.mattias
-                state: home
-            elements:
-              - entity: sensor.mattias_last_changed
-                <<: *circle-sensor
-                fill: none
-                stroke_color: '#aaabad'
-                style: &hem_mattias-circle-pos
-                  top: 60.8%
-                  left: 82.35%
-                  <<: *circle-style
-            type: conditional
-
-          - conditions:
-              - entity: person.mattias
-                state: not_home
-            elements:
-              - entity: sensor.mattias_last_changed
-                <<: *circle-sensor
-                fill: '#FFFFFF08'
-                stroke_color: '#313638'
-                style: *hem_mattias-circle-pos
-            type: conditional
-
-          - image: /local/overlay.svg
-            style: *hem_mattias-pos
-            tap_action:
-              action: none
+            tap_action: !include popup/hemma_mattias.yaml
             hold_action: !include popup/hemma_mattias.yaml
-            title: null
-            type: image
+            custom_fields:
+              sensor: >
+                [[[ var last_changed = states['sensor.mattias_last_changed'].state; 
+                var home = (entity.state === 'home'); 
+                var stroke_color = home ? '#b2b2b2' : '#313638'; 
+                var fill_color = home ? 'none' : '#FFFFFF08';
+                return '<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="20.5" stroke="' + stroke_color+ '" stroke-width="1.5" fill="' + fill_color + '" /><text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">' + last_changed + '</text></svg>'; ]]]
+            template: switch
+            type: custom:button-card
 
           #################################################
           #                                               #
@@ -1346,47 +1110,26 @@ views:
           #################################################
 
           - entity: person.sanja
-            state_image:
-              home: /local/btn/hem_sanja_on.svg
-              not_home: /local/btn/hem_sanja_off.svg
-            style: &hem_sanja-pos
+            state_display: >
+              [[[ return entity.state == 'home' ? 'Ja' : 'Nej'; ]]]
+            show_entity_picture: true
+            state: *button_home_state
+            styles: *button_home_styles
+            style:
               top: 64.5%
               left: 91.05%
               width: 10%
-            type: image
-
-          - conditions:
-              - entity: person.sanja
-                state: home
-            elements:
-              - entity: sensor.sanja_last_changed
-                <<: *circle-sensor
-                fill: none
-                stroke_color: '#aaabad'
-                style: &hem_sanja-circle-pos
-                  top: 60.8%
-                  left: 93.35%
-                  <<: *circle-style
-            type: conditional
-
-          - conditions:
-              - entity: person.sanja
-                state: not_home
-            elements:
-              - entity: sensor.sanja_last_changed
-                <<: *circle-sensor
-                fill: '#FFFFFF08'
-                stroke_color: '#313638'
-                style: *hem_sanja-circle-pos
-            type: conditional
-
-          - image: /local/overlay.svg
-            style: *hem_sanja-pos
-            tap_action:
-              action: none
+            tap_action: !include popup/hemma_sanja.yaml
             hold_action: !include popup/hemma_sanja.yaml
-            title: null
-            type: image
+            custom_fields:
+              sensor: >
+                [[[ var last_changed = states['sensor.sanja_last_changed'].state; 
+                var home = (entity.state === 'home'); 
+                var stroke_color = home ? '#b2b2b2' : '#313638'; 
+                var fill_color = home ? 'none' : '#FFFFFF08';
+                return '<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="20.5" stroke="' + stroke_color+ '" stroke-width="1.5" fill="' + fill_color + '" /><text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">' + last_changed + '</text></svg>'; ]]]
+            template: switch
+            type: custom:button-card
 
           #################################################
           #                                               #
@@ -1395,19 +1138,26 @@ views:
           #################################################
 
           - entity: switch.auto_stangallt_template
-            state_image:
-              'on': /local/btn/hem_stang_allt_on.svg
-              'off': /local/btn/hem_stang_allt_off.svg
             style:
-              top: 82.17%
+              top: 82.1%
               left: 80.05%
               width: 10%
             tap_action:
               action: toggle
             hold_action:
               action: none
-            title: null
-            type: image
+            custom_fields:
+              icon_away: >
+                <svg viewBox="0 0 50 50"><path d="M32.1 18.4s.3-1.6.7-2.1c.3-.6.9-1.4 1.6-1.8.6-.4 1.1-.7 1.4-.7s.7-.1 1 .1.6.4.8 1.3l.3 2.7.1 2.4.2 4.1c0 .3.2 3.1.2 3.3s.2 2.7.2 3.2l-.1 2.5c.1 1.6.5 3.1-.2 4.6-.6 1.4-1.7 2.7-2.9 3.6-.5.4-1.9 1.3-2.9 1.7-1.1.5-2.2.8-3.3 1.1-.5.1-1.4.4-2.3.3s-1.8-.6-2.1-1l-1.6-2.3c-.6-.8-2.1-2.3-2.3-2.5l-2.7-2.8c-.2-.2-2.7-3.5-2.9-3.8l-3.1-4.7-1.8-3.2-1.5-2.8-.9-1.8c-.1-.2-.3-1.1-.2-1.4.3-1.2 1.4-1.4 2.3-.7.3.2.9 1 1.1 1.3s6.1 8.1 6.1 8.1c.2.3.7.3.9 0s-.1-.7-.2-.9c-.4-.6-8.3-11.5-8.3-11.5s-.6-.9-.7-1.1c-.3-1.1 0-2.3 1.1-2.7s1.9.3 2.6 1.1c.3.3 8.3 11.5 8.3 11.5.2.2.3.3.5.3.3 0 .5-.4.4-.7-.1-.2-.5-.9-.5-.9L11.8 9c-.6-1-.9-2-.1-3 .7-.8 2.2-1.3 3-.2.3.3 10.1 14.3 10.1 14.3.2.2.5.4.7.3.5-.1.3-.7.1-1-.1-.2-8.4-11.8-8.4-11.8-.4-.9-.6-2 .2-2.8 1-1.1 2.5-.5 3.3.5.2.3 1 1.4 1 1.4l2.7 3.7c.1.2 3.4 4.4 3.8 4.8.9 1.1 1.8 2.2 2.7 3.2l.5.5c.1.1.1.4.1.8 0 1.3.1 2.6.1 3.9 0 .2.1.4.2.6.3.3.6.1.7-.2.1-.2 0-2.4 0-2.7-.3-.3-.5-1.3-.4-2.9zM12.2 46.9s-2.8-.8-4.8-2.7-2.6-2.7-2.8-3-1.8-3-2-3.6c-.2-.5-.2-.7.2-1 .4-.4 1-.5 1.3.1.1.2.4 1 .5 1.2s1 1.9 1.7 2.8 1.6 2.2 4.4 3.8c.6.3 1.2.6 1.9.9.3.1.6.2.8.4.1.2.1.6-.1.8-.2.4-.7.4-1.1.3zM7.1 30.7l.9 3.1c.3.7 1.1 2.3 1.9 3.3s2.4 2.6 3.4 3.2 2 1.1 3 1.5c1 .3 1.1.4 1.2.5.3.4.2 1.2-.4 1.3-.2 0-1.2 0-1.8-.3L12 41.7c-.5-.4-3.9-3.1-5.1-6S5.3 31 5.2 30.4s-.2-1.1 0-1.4c.3-.4.9-.8 1.3-.3.2.3.3.6.3.9.1 0 .2.8.3 1.1zm26.8-25s.2-.1.5-.1.8.3 1.4.7 1.9 1 3.6 2.9 2.9 3.9 3.4 5.8c.5 1.8.8 3.1.9 5.5 0 .5.1 1.6 0 1.7-.2.5-.5.7-1 .7-.6 0-.7-.5-.7-1l-.1-2.9c-.1-.6-.3-1.9-.7-2.9-.3-1-.7-2.3-1.7-3.6-.9-1.3-2.1-2.8-3.2-3.5l-2.4-1.5c-.6-.6-.7-1.2 0-1.8zm4.9-2.5s.3-.2.5-.1c.2 0 .7.3.9.4s2.1 1.3 3.6 3c1.5 1.6 3.5 5.1 3.7 7.4.1.4.2.9 0 1-.2.2-.4.4-.7.4-.2 0-.5 0-.7-.1-.1-.2-.4-1.1-.4-1.3s-.6-2-1.1-3.1C44 9.7 43.5 8.5 42 7.1s-2.2-1.9-2.8-2.2-1.1-.6-1.1-1c.1-.3.3-.6.7-.7z" fill="#9da0a2"/></svg>
+            styles:
+              custom_fields:
+                icon_away:
+                  - top: 10%
+                  - left: 10.1%
+                  - width: 3.1vw
+                  - position: absolute
+            template: switch
+            type: custom:button-card
 
           #################################################
           #                                               #
@@ -1416,18 +1166,25 @@ views:
           #################################################
 
           - entity: switch.auto_hemma_template
-            state_image:
-              'on': /local/btn/hem_hemma_on.svg
-              'off': /local/btn/hem_hemma_off.svg
             style:
-              top: 82.17%
+              top: 82.1%
               left: 91.05%
               width: 10%
             tap_action:
               action: toggle
             hold_action: !include popup/hemma_data_kwh.yaml
-            title: null
-            type: image
+            custom_fields:
+              icon_home: >
+                <svg viewBox="0 0 50 50"><path d="M42.2 28.3c0-.8-.2-1-.2-1L26 12.1s-.5-.4-1-.4-1 .3-1 .3L8.2 27.1c-.4.5-.4.9-.4.9v18.3c0 1.1.9 2 1.9 2h8.2a1.47 1.47 0 0 0 1.5-1.5v-14a1.47 1.47 0 0 1 1.5-1.5h8.4a1.47 1.47 0 0 1 1.5 1.5v14a1.47 1.47 0 0 0 1.5 1.5h8.2c1.1 0 2-.9 2-1.9 0-.2-.3-18.1-.3-18.1zM7.3 25l-1.6 1.5s-.3.3-.5.3-.5 0-.8-.2c-.2-.2-2-2.8-2-2.8s-.1-.4-.1-.7c.1-.3.2-.7.3-.8.4-.1 21.5-20.1 21.5-20.1s.4-.3.9-.3c.4 0 .8.1.9.2s.5.4.5.4l8.9 8.5V6s.1-.4.2-.7c.1-.2.3-.3.4-.3s.3-.1.3-.1h3s.3.1.4.3a1.08 1.08 0 0 1 .3.7v9.8l7.2 6.9s.2.3.3.4c.1.2.1.7.1.7 0 .1-.1.4-.2.5s-1.6 2.5-1.6 2.5-.1.3-.3.3c-.2.1-.4.1-.7 0-.2-.1-.5-.4-.5-.4L26.4 9.4s-.3-.3-.5-.4-.4-.2-.8-.2-.5.1-.8.1c-.1.1-.4.3-.7.5C23.3 9.8 7.3 25 7.3 25z" fill="#9da0a2"/></svg>
+            styles:
+              custom_fields:
+                icon_home:
+                  - top: 10.5%
+                  - left: 10.1%
+                  - width: 2.9vw
+                  - position: absolute
+            template: switch
+            type: custom:button-card
 
         image: /local/uibg.png
         type: picture-elements
