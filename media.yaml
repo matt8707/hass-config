@@ -35,7 +35,7 @@
           top: 132%
           left: 50%
           width: 110%
-          background: rgba(0,0,0,.6)
+          background: rgba(0,0,0,.4)
           box-shadow: inset 0 10px 10px -10px rgba(13,18,21,.2)
         type: image
       ⚓₆: &overlay-blur
