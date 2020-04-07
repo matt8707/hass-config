@@ -361,6 +361,7 @@
           'start_time')) - as_timestamp(now())) / 86400) %}
           {% if d < -1 %} Släppt
           {% elif d < 0 %} Idag 
+          {% elif d < 1 %} Imorgon 
           {% elif d > 20 %} Ingen
           {% else %} {{ d | int + 1 }} dagar
           {% endif %}
@@ -446,62 +447,6 @@
           {% else %}
             on
           {% endif %}
-
-    ####################################################
-    #                                                  #
-    #                  LIGHT PERCENT                   #
-    #                                                  #
-    ####################################################
-
-      belysning_percent:
-        value_template: >-
-          {% if is_state('light.belysning', 'on') %} 
-          {{ (state_attr('light.belysning', 'brightness') / 2.54) | round }}{% endif %}
-
-      taklampor_percent:
-        value_template: >-
-          {% if is_state('light.taklampor', 'on') %} 
-          {{ (state_attr('light.taklampor', 'brightness') / 2.54) | round }}{% endif %}
-
-      fonsterlampa_percent:
-        value_template: >-
-          {% if is_state('light.fonsterlampa', 'on') %} 
-          {{ (state_attr('light.fonsterlampa', 'brightness') / 2.54) | round }}{% endif %}
-
-      datorlampa_percent:
-        value_template: >-
-          {% if is_state('light.datorlampa', 'on') %} 
-          {{ (state_attr('light.datorlampa', 'brightness') / 2.54) | round }}{% endif %}
-
-      mattias_percent:
-        value_template: >-
-          {% if is_state('light.mattias', 'on') %} 
-          {{ (state_attr('light.mattias', 'brightness') / 2.54) | round }}{% endif %}
-
-      sanja_percent:
-        value_template: >-
-          {% if is_state('light.sanja', 'on') %} 
-          {{ (state_attr('light.sanja', 'brightness') / 2.54) | round }}{% endif %}
-
-      badrum_percent:
-        value_template: >-
-          {% if is_state('light.badrum', 'on') %} 
-          {{ (state_attr('light.badrum', 'brightness') / 2.54) | round }}{% endif %}
-
-      kok_percent:
-        value_template: >-
-          {% if is_state('light.kok', 'on') %} 
-          {{ (state_attr('light.kok', 'brightness') / 2.54) | round }}{% endif %}
-          
-      garderob_percent:
-        value_template: >-
-          {% if is_state('light.kladkammare_2', 'on') %} 
-          {{ (state_attr('light.kladkammare_2', 'brightness') / 2.54) | round }}{% endif %}
-
-      hall_percent:
-        value_template: >-
-          {% if is_state('light.hall', 'on') %} 
-          {{ (state_attr('light.hall', 'brightness') / 2.54) | round }}{% endif %}
 
     ####################################################
     #                                                  #
@@ -1022,7 +967,7 @@
             {% set ore_energiskatt = kwh * 0.3530 %}
               {% set eon = (eon_solkraft + eon_arsavgift + (0.2373 * kwh * 1.25)) | round(2) %}
               {% set ore = ((ore_abonnemang + ore_elöverföring + ore_energiskatt) * 1.25) | round(2) %}
-          {{ eon + ore }}
+          {{ (eon + ore) | round }}
         unit_of_measurement: 'kr'
 
       total_year_kwh:
