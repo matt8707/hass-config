@@ -4,7 +4,7 @@
 
 If you like anything here, Be sure to :star2: my repo!
 
-![screen.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/screen2.png)
+![s_main.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/s_main.png)
 
 ## Features
 
@@ -37,7 +37,7 @@ The three icons at the bottom in order
 * Monitor [Home Assistant](https://home-assistant.io/), [tablet](https://www.samsung.com/us/mobile/tablets/galaxy-tab-a/galaxy-tab-a-10-1-2019-32gb-black-wi-fi-sm-t510nzkaxar/) and [Network Attached Storage](https://www.synology.com/products/DS918+).
 * A list of [scenes](https://www.home-assistant.io/integrations/scene/) with a legend.
 
-![info3.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/info3.png)
+![s_info.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/s_info.png)
 
 ### Lights and sensors
 
@@ -45,8 +45,8 @@ All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.m
 
 * Modified (CSS+JS) vertical [Light Entity Card](https://github.com/ljmerza/light-entity-card) for easier touch control.
 * If applicable, show a Light Entity Card color wheel.
-* [Custom SVG](https://github.com/matt8707/hass-config/blob/master/www/community/mod/hass-bha-icons.js) icons to reflect current color.
-* Brightness percentage in a [Circle sensor](https://github.com/custom-cards/circle-sensor-card).
+* Injecting current lamp color to only parts of an icon.
+* Brightness percentage in a ~~circle sensor~~ custom field (SVG+JS).
 
 ***
 
@@ -56,9 +56,11 @@ All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.m
 * [Belkin WeMo Switch](https://www.belkin.com/) to control studio monitors (speakers) with automations to apply [EQ calibration](https://www.sonarworks.com/reference) and volume control through AppleScript.
 * Control a pedestal fan, using [Belkin WeMo Switch](https://www.belkin.com/) and hue motion sensor temperature data to automate on summer nights.
 
-![lights_switches.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/lights_switches.png)
+![s_light_switch.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/s_light_switch.png)
 
-![vacuum.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/vacuum.png)
+![s_misc.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/s_misc.png)
+
+![s_vacuum.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/s_vacuum.png)
 
 ***
 
