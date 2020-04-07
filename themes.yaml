@@ -98,3 +98,5 @@ slate:
   iron-overlay-backdrop-filter: 'blur(15px)'
   iron-overlay-backdrop-background-color: 'rgba(0,0,0,.6)'
   iron-overlay-backdrop-opacity: '1'
+  # barcard
+  bar-card-border-radius: '0.3em'
