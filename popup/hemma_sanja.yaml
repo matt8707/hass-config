@@ -39,77 +39,61 @@
                         - entity: sensor.printer_status_template
                           name: Status
                           icon: 'mdi:printer'
-                        - entity: sensor.hp_printer_inkcartridge_black
-                          title: Svart
-                          icon: 'mdi:water-outline'
-                          icon_position: left
-                          width: 45%
-                          height: 2em
-                          max: 100
-                          min: 0
+                        - entities:
+                            - entity: sensor.hp_printer_inkcartridge_black
+                              name: Svart
+                              icon: 'mdi:water-outline'
+                              tap_action: service
+                              service_options:
+                                domain: homeassistant
+                                service: update_entity
+                                data:
+                                  entity_id: sensor.hp_printer_inkcartridge_black
+                            - entity: sensor.hp_printer_inkcartridge_cyanmagentayellow
+                              name: Färg
+                              icon: 'mdi:water'
+                              tap_action: service
+                              service_options:
+                                domain: homeassistant
+                                service: update_entity
+                                data:
+                                  entity_id: sensor.hp_printer_inkcartridge_cyanmagentayellow
+                          positions:
+                            icon: outside
+                            indicator: inside
+                            title: outside
                           severity:
                             - color: '#303435'
-                              value: 90
+                              from: 11
+                              to: 100
                             - color: '#6d2525'
-                              value: 100
-                          style: &bar-card-style |
+                              from: 0
+                              to: 10
+                          decimal: 0
+                          entity_row: true
+                          style: |
                             ha-card {
-                              box-shadow: none;
-                              margin: 12px 0px 16px 0px;
-                            }
-                            ha-icon {
-                              color: #9e9e9e;
-                              filter: none;
-                            }
-                            bar-card-title {
-                              color: #e0e1e1;
-                              margin-left: 1em;
-                            }
-                            bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, 
-                            bar-card-indicatorcontainer, bar-card-indicator {
-                              border-radius: 0.3em;
+                              margin-bottom: -0.51em;
                             }
                             bar-card-value {
+                              margin-right: auto;
                               color: #e0e1e1;
                               text-shadow: none;
-                              font-size: 0.95em;
+                              font-size: 1em;
                               font-weight: 400;
+                              letter-spacing: 0.01em;
                             }
                             bar-card-background {
-                              background: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(17,18,18,0.3) 75%);
-                              box-shadow: inset 0 0 25px #00000030;
+                              background: radial-gradient(circle, rgba(52, 57, 58, 0.1) 0%, rgba(17,18,18,0.2) 75%);
+                              box-shadow: inset 0 0 25px #00000045;
                               border-radius: 0.3em;
                             }
                             bar-card-backgroundbar {
                               background: none;
                             }
-                          tap_action: service
-                          service_options:
-                            domain: homeassistant
-                            service: update_entity
-                            data:
-                              entity_id: sensor.hp_printer_inkcartridge_black
-                          type: custom:bar-card
-                        - entity: sensor.hp_printer_inkcartridge_cyanmagentayellow
-                          title: Färg
-                          icon: 'mdi:water'
-                          icon_position: left
-                          width: 45%
+                          unit_of_measurement: '%'
                           height: 2em
-                          max: 100
-                          min: 0
-                          severity:
-                            - color: '#303435'
-                              value: 90
-                            - color: '#6d2525'
-                              value: 100
-                          style: *bar-card-style
-                          tap_action: service
-                          service_options:
-                            domain: homeassistant
-                            service: update_entity
-                            data:
-                              entity_id: sensor.hp_printer_inkcartridge_cyanmagentayellow
+                          width: 45%
                           type: custom:bar-card
                       style: |
                         ha-card {
