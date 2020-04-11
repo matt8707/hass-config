@@ -639,9 +639,12 @@
       krisinformation_time_trigger:
         entity_id: sensor.time
         value_template: >-
-          {% set date = state_attr('sensor.krisinformation_sverige', 'messages')[0]["Published"] %}
-          {% if ((as_timestamp(date) - as_timestamp(now())) / 86400) <= -0.5 %}
-          false {% else %} true
+          {% if is_state_attr('sensor.krisinformation_sverige', 'messages', []) %}
+          {% else %}
+            {% set date = state_attr('sensor.krisinformation_sverige', 'messages')[0]["Published"] %}
+            {% if ((as_timestamp(date) - as_timestamp(now())) / 86400) <= -0.5 %}
+            false {% else %} true
+            {% endif %}
           {% endif %}
 
       mattias_last_changed:
@@ -672,35 +675,35 @@
           {% elif time > 86400 %} {{ days }}d 
           {% endif %}
 
-      mattias_last_changed_h:
-        entity_id: sensor.time
-        value_template: >-
-          {%- set time = (as_timestamp(now()) - 
-          as_timestamp(states.person.mattias.last_changed)) | int %}
-          {%- set minutes = ((time % 3600) // 60) %}
-          {%- set hours = ((time % 86400) // 3600) %}
-          {%- set days = (time // 86400) %}
-          {% if time <= 60 %} mindre än 1m
-          {% elif time <= 3600 %} {{ minutes }}m
-          {% elif time <= 86400 and minutes == 0 %} {{ hours }}h
-          {% elif time <= 86400 %} {{ hours }}h och {{ minutes }}m
-          {% elif time > 86400 %} {{ days }}d 
-          {% endif %}
+      # mattias_last_changed_h:
+      #   entity_id: sensor.time
+      #   value_template: >-
+      #     {%- set time = (as_timestamp(now()) - 
+      #     as_timestamp(states.person.mattias.last_changed)) | int %}
+      #     {%- set minutes = ((time % 3600) // 60) %}
+      #     {%- set hours = ((time % 86400) // 3600) %}
+      #     {%- set days = (time // 86400) %}
+      #     {% if time <= 60 %} mindre än 1m
+      #     {% elif time <= 3600 %} {{ minutes }}m
+      #     {% elif time <= 86400 and minutes == 0 %} {{ hours }}h
+      #     {% elif time <= 86400 %} {{ hours }}h och {{ minutes }}m
+      #     {% elif time > 86400 %} {{ days }}d 
+      #     {% endif %}
 
-      sanja_last_changed_h:
-        entity_id: sensor.time
-        value_template: >-
-          {%- set time = (as_timestamp(now()) - 
-          as_timestamp(states.person.sanja.last_changed)) | int %}
-          {%- set minutes = ((time % 3600) // 60) %}
-          {%- set hours = ((time % 86400) // 3600) %}
-          {%- set days = (time // 86400) %}
-          {% if time <= 60 %} mindre än 1m
-          {% elif time <= 3600 %} {{ minutes }}m
-          {% elif time <= 86400 and minutes == 0 %} {{ hours }}h
-          {% elif time <= 86400 %} {{ hours }}h och {{ minutes }}m
-          {% elif time > 86400 %} {{ days }}d 
-          {% endif %}
+      # sanja_last_changed_h:
+      #   entity_id: sensor.time
+      #   value_template: >-
+      #     {%- set time = (as_timestamp(now()) - 
+      #     as_timestamp(states.person.sanja.last_changed)) | int %}
+      #     {%- set minutes = ((time % 3600) // 60) %}
+      #     {%- set hours = ((time % 86400) // 3600) %}
+      #     {%- set days = (time // 86400) %}
+      #     {% if time <= 60 %} mindre än 1m
+      #     {% elif time <= 3600 %} {{ minutes }}m
+      #     {% elif time <= 86400 and minutes == 0 %} {{ hours }}h
+      #     {% elif time <= 86400 %} {{ hours }}h och {{ minutes }}m
+      #     {% elif time > 86400 %} {{ days }}d 
+      #     {% endif %}
 
     ####################################################
     #                                                  #
@@ -776,71 +779,76 @@
           {% if data[1].number is none %} ({{ data[1].aired.split('-')[0] }})
           {% else %} {{ data[1].number }} {% endif %}
 
-      plex_title_truncate:
+      plex_poster:
         value_template: >
-          {{ states('sensor.plex_title') | truncate(30, True, '...', 0) }}
+          {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
+          {{ data[1].fanart }}
 
-      apple_tv_vardagsrum_status:
-        value_template: >
-          {% if is_state('media_player.vardagsrum','playing') %} Spelar
-          {% elif is_state_attr('media_player.vardagsrum','media_title', 'No title') %} Av
-          {% elif is_state('media_player.vardagsrum','paused') %} Pausad
-          {% else %} Av {% endif %}
+      # plex_title_truncate:
+      #   value_template: >
+      #     {{ states('sensor.plex_title') | truncate(30, True, '...', 0) }}
 
-      apple_tv_sovrum_status:
-        value_template: >
-          {% if is_state('media_player.sovrum','playing') %} Spelar
-          {% elif is_state_attr('media_player.sovrum','media_title', 'No title') %} Av
-          {% elif is_state('media_player.sovrum','paused') %} Pausad
-          {% else %} Av {% endif %}
+      # apple_tv_vardagsrum_status:
+      #   value_template: >
+      #     {% if is_state('media_player.vardagsrum','playing') %} Spelar
+      #     {% elif is_state_attr('media_player.vardagsrum','media_title', 'No title') %} Av
+      #     {% elif is_state('media_player.vardagsrum','paused') %} Pausad
+      #     {% else %} Av {% endif %}
 
-      playstation_status:
-        value_template: >
-          {% if is_state('media_player.playstation_4','playing') %} Spelar
-          {% elif is_state('media_player.playstation_4','paused') %} Pausad
-          {% else %} Av {% endif %}
+      # apple_tv_sovrum_status:
+      #   value_template: >
+      #     {% if is_state('media_player.sovrum','playing') %} Spelar
+      #     {% elif is_state_attr('media_player.sovrum','media_title', 'No title') %} Av
+      #     {% elif is_state('media_player.sovrum','paused') %} Pausad
+      #     {% else %} Av {% endif %}
 
-      google_nest_mini_status:
-        value_template: >
-          {% if is_state('media_player.google_nest_mini','playing') %} Spelar
-          {% elif is_state('media_player.google_nest_mini','paused') %} Pausad
-          {% else %} Av {% endif %}
+      # playstation_status:
+      #   value_template: >
+      #     {% if is_state('media_player.playstation_4','playing') %} Spelar
+      #     {% elif is_state('media_player.playstation_4','paused') %} Pausad
+      #     {% else %} Av {% endif %}
 
-      apple_tv_vardagsrum_title_truncate:
-        value_template: >
-          {% if states('media_player.vardagsrum') == null %} {% else %}
-            {% if is_state_attr('media_player.vardagsrum', 'media_title', 'Nothing playing') %} Inget spelas
-            {% elif is_state_attr('media_player.vardagsrum', 'media_title', 'No title') %} Ingen titel
-            {% elif is_state('media_player.vardagsrum', 'idle') %} Viloläge
-            {% else %} {{ state_attr('media_player.vardagsrum', 'media_title') 
-            | truncate(30, True, '...', 0) }} {% endif %}
-          {% endif %}
+      # google_nest_mini_status:
+      #   value_template: >
+      #     {% if is_state('media_player.google_nest_mini','playing') %} Spelar
+      #     {% elif is_state('media_player.google_nest_mini','paused') %} Pausad
+      #     {% else %} Av {% endif %}
 
-      apple_tv_sovrum_title_truncate:
-        value_template: >
-          {% if states('media_player.sovrum') == null %} {% else %}
-            {% if is_state_attr('media_player.sovrum', 'media_title', 'Nothing playing') %} Inget spelas
-            {% elif is_state('media_player.sovrum', 'idle') %} Viloläge
-            {% else %} {{ state_attr('media_player.sovrum', 'media_title') 
-            | truncate(30, True, '...', 0) }} {% endif %}
-          {% endif %}
+      # apple_tv_vardagsrum_title_truncate:
+      #   value_template: >
+      #     {% if states('media_player.vardagsrum') == null %} {% else %}
+      #       {% if is_state_attr('media_player.vardagsrum', 'media_title', 'Nothing playing') %} Inget spelas
+      #       {% elif is_state_attr('media_player.vardagsrum', 'media_title', 'No title') %} Ingen titel
+      #       {% elif is_state('media_player.vardagsrum', 'idle') %} Viloläge
+      #       {% else %} {{ state_attr('media_player.vardagsrum', 'media_title') 
+      #       | truncate(30, True, '...', 0) }} {% endif %}
+      #     {% endif %}
 
-      playstation_title_truncate:
-        value_template: >
-          {% if is_state('media_player.playstation_4', 'standby') %} Viloläge
-          {% elif state_attr('media_player.playstation_4', 'media_title') == None %} Inget spelas
-          {% else %} {{ state_attr('media_player.playstation_4', 'media_title') 
-          | truncate(30, True, '...', 0) }} {% endif %} 
+      # apple_tv_sovrum_title_truncate:
+      #   value_template: >
+      #     {% if states('media_player.sovrum') == null %} {% else %}
+      #       {% if is_state_attr('media_player.sovrum', 'media_title', 'Nothing playing') %} Inget spelas
+      #       {% elif is_state('media_player.sovrum', 'idle') %} Viloläge
+      #       {% else %} {{ state_attr('media_player.sovrum', 'media_title') 
+      #       | truncate(30, True, '...', 0) }} {% endif %}
+      #     {% endif %}
 
-      google_nest_mini_title_truncate:
-        value_template: >
-          {% if is_state('media_player.google_nest_mini', 'off') or 
-          is_state('media_player.google_nest_mini', 'idle') %} Viloläge
-          {% elif state_attr('media_player.google_nest_mini', 'media_artist') == None or 
-          state_attr('media_player.google_nest_mini', 'media_title') == None %} Ingen titel
-          {% else %} {% set artist_title = state_attr('media_player.google_nest_mini', 'media_artist') 
-          + ' - ' + state_attr('media_player.google_nest_mini', 'media_title') %}
-          {{ artist_title | truncate(30, True, '...', 0) }} {% endif %}
+      # playstation_title_truncate:
+      #   value_template: >
+      #     {% if is_state('media_player.playstation_4', 'standby') %} Viloläge
+      #     {% elif state_attr('media_player.playstation_4', 'media_title') == None %} Inget spelas
+      #     {% else %} {{ state_attr('media_player.playstation_4', 'media_title') 
+      #     | truncate(30, True, '...', 0) }} {% endif %} 
+
+      # google_nest_mini_title_truncate:
+      #   value_template: >
+      #     {% if is_state('media_player.google_nest_mini', 'off') or 
+      #     is_state('media_player.google_nest_mini', 'idle') %} Viloläge
+      #     {% elif state_attr('media_player.google_nest_mini', 'media_artist') == None or 
+      #     state_attr('media_player.google_nest_mini', 'media_title') == None %} Ingen titel
+      #     {% else %} {% set artist_title = state_attr('media_player.google_nest_mini', 'media_artist') 
+      #     + ' - ' + state_attr('media_player.google_nest_mini', 'media_title') %}
+      #     {{ artist_title | truncate(30, True, '...', 0) }} {% endif %}
 
     ####################################################
     #                                                  #
