@@ -543,7 +543,7 @@
     - platform: state
       entity_id: 
         ['media_player.vardagsrum', 'media_player.sovrum', 
-         'media_player.google_nest_mini']
+         'media_player.playstation_4', 'media_player.google_nest_mini']
       to: paused
       for:
         minutes: 10
@@ -616,41 +616,41 @@
 
 ### Apple Tv - No title temp fix ###
 
-- alias: conditional_media_fall_back_1
-  initial_state: true
-  trigger:
-    - platform: template
-      value_template: >
-        {{ is_state_attr('media_player.vardagsrum', 'media_title', 'No title') }}
-      for:
-        seconds: 5
-  action:
-    - service: input_select.select_option
-      data_template:
-        entity_id: input_select.conditional_media
-        option: >-
-          {% set media_players = [states.media_player.sovrum, states.media_player.playstation_4, 
-          states.media_player.google_nest_mini] %} {% if media_players | selectattr('state','eq','playing') 
-          | list | count == 0 %} {% if media_players | selectattr('state','eq','paused') | list | count == 0 %}
-          Senast nedladdat {% else %} {{ media_players | selectattr('state','eq','paused') | map(attribute='name') 
-          | max }} {% endif %} {% else %} {{ media_players | selectattr('state','eq','playing') 
-          | map(attribute='name') | max }}{% endif %}
-- alias: conditional_media_fall_back_2
-  initial_state: true
-  trigger:
-    - platform: template
-      value_template: >
-        {{ is_state_attr('media_player.sovrum', 'media_title', 'No title') }}
-      for:
-        seconds: 5
-  action:
-    - service: input_select.select_option
-      data_template:
-        entity_id: input_select.conditional_media
-        option: >-
-          {% set media_players = [states.media_player.vardagsrum, states.media_player.playstation_4, 
-          states.media_player.google_nest_mini] %} {% if media_players | selectattr('state','eq','playing') 
-          | list | count == 0 %} {% if media_players | selectattr('state','eq','paused') | list | count == 0 %}
-          Senast nedladdat {% else %} {{ media_players | selectattr('state','eq','paused') | map(attribute='name') 
-          | max }} {% endif %} {% else %} {{ media_players | selectattr('state','eq','playing') 
-          | map(attribute='name') | max }}{% endif %}
+# - alias: conditional_media_fall_back_1
+#   initial_state: true
+#   trigger:
+#     - platform: template
+#       value_template: >
+#         {{ is_state_attr('media_player.vardagsrum', 'media_title', 'No title') }}
+#       for:
+#         seconds: 5
+#   action:
+#     - service: input_select.select_option
+#       data_template:
+#         entity_id: input_select.conditional_media
+#         option: >-
+#           {% set media_players = [states.media_player.sovrum, states.media_player.playstation_4, 
+#           states.media_player.google_nest_mini] %} {% if media_players | selectattr('state','eq','playing') 
+#           | list | count == 0 %} {% if media_players | selectattr('state','eq','paused') | list | count == 0 %}
+#           Senast nedladdat {% else %} {{ media_players | selectattr('state','eq','paused') | map(attribute='name') 
+#           | max }} {% endif %} {% else %} {{ media_players | selectattr('state','eq','playing') 
+#           | map(attribute='name') | max }}{% endif %}
+# - alias: conditional_media_fall_back_2
+#   initial_state: true
+#   trigger:
+#     - platform: template
+#       value_template: >
+#         {{ is_state_attr('media_player.sovrum', 'media_title', 'No title') }}
+#       for:
+#         seconds: 5
+#   action:
+#     - service: input_select.select_option
+#       data_template:
+#         entity_id: input_select.conditional_media
+#         option: >-
+#           {% set media_players = [states.media_player.vardagsrum, states.media_player.playstation_4, 
+#           states.media_player.google_nest_mini] %} {% if media_players | selectattr('state','eq','playing') 
+#           | list | count == 0 %} {% if media_players | selectattr('state','eq','paused') | list | count == 0 %}
+#           Senast nedladdat {% else %} {{ media_players | selectattr('state','eq','paused') | map(attribute='name') 
+#           | max }} {% endif %} {% else %} {{ media_players | selectattr('state','eq','playing') 
+#           | map(attribute='name') | max }}{% endif %}
