@@ -389,7 +389,7 @@ input_select:
   conditional_media:
     initial: Senast nedladdat
     options:
-      ['Senast nedladdat', 'Vardagsrum', 'Sovrum', 'Playstation 4', 'Google Nest Mini']
+      ['Senast nedladdat', 'Vardagsrum', 'Sovrum', 'PlayStation 4', 'Google Nest Mini']
 
 switch:
   - platform: wake_on_lan
