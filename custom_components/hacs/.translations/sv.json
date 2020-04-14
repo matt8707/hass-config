@@ -148,6 +148,7 @@
     "store": {
         "ascending": "stigande",
         "clear_new": "Rensa alla nya förvar",
+        "descending": "fallande",
         "last_updated": "Senast uppdaterad",
         "name": "Namn",
         "new_repositories": "Nya förvar",

@@ -124,6 +124,7 @@
     },
     "settings": {
         "add_custom_repository": "ΠΡΟΣΘΕΣΤΕ ΕΝΑ ΕΙΔΙΚΟ ΑΠΟΘΕΤΗΡΙΟ",
+        "adding_new_repo": "Προσθήκη νέου αποθετηρίου '{repo}'",
         "adding_new_repo_category": "Με κατηγορία '{category}'.",
         "category": "Κατηγορία",
         "compact_mode": "Συμπαγής λειτουργία",
