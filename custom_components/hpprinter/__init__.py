@@ -3,15 +3,19 @@ This component provides support for HP Printers.
 For more details about this component, please refer to the documentation at
 https://home-assistant.io/components/hpprinter/
 """
-import logging
+from custom_components.hpprinter.helpers import (
+    async_set_ha,
+    clear_ha,
+    get_ha,
+    handle_log_level,
+)
 
 from homeassistant.config_entries import ConfigEntry
-
+from homeassistant.const import CONF_NAME
 from homeassistant.core import HomeAssistant
 
-from .const import *
-from .HPDeviceData import *
-from .home_assistant import HPPrinterHomeAssistant, _get_printer
+from .helpers.const import *
+from .managers.HPDeviceData import *
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -21,56 +25,50 @@ async def async_setup(hass, config):
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up a HPPrinter component."""
-    _LOGGER.debug(f"Loading HP Printer domain")
+    """Set up a EdgeOS component."""
+    initialized = False
 
-    _LOGGER.debug(f"Starting async_setup_entry of {DOMAIN}")
-    entry_data = entry.data
+    try:
+        await handle_log_level(hass, entry)
 
-    host = entry_data.get(CONF_HOST)
+        _LOGGER.debug(f"Starting async_setup_entry of {DOMAIN}")
+        entry.add_update_listener(async_options_updated)
+        name = entry.data.get(CONF_NAME)
 
-    if DATA_HP_PRINTER not in hass.data:
-        hass.data[DATA_HP_PRINTER] = {}
+        await async_set_ha(hass, name, entry)
 
-    name = entry_data.get(CONF_NAME)
+        initialized = True
 
-    if host is None:
-        _LOGGER.info("Invalid hostname")
-        return False
+    except Exception as ex:
+        exc_type, exc_obj, tb = sys.exc_info()
+        line_number = tb.tb_lineno
 
-    if name in hass.data:
-        _LOGGER.info(f"Printer {name} already defined")
-        return False
+        _LOGGER.error(f"Failed to load BlueIris, error: {ex}, line: {line_number}")
 
-    ha = HPPrinterHomeAssistant(hass, name, host, entry)
-    ha.initialize()
-
-    hass.data[DATA_HP_PRINTER][name] = ha
-
-    return True
+    return initialized
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
-    entry_data = entry.data
-    name = entry_data.get(CONF_NAME)
-    printer = _get_printer(hass, name)
+    name = entry.data.get(CONF_NAME)
+    ha = get_ha(hass, name)
 
-    if printer is not None:
-        await printer.async_remove()
+    if ha is not None:
+        await ha.async_remove()
 
-        del hass.data[DATA_HP_PRINTER][name]
+    clear_ha(hass, name)
 
-        return True
-
-    return False
+    return True
 
 
 async def async_options_updated(hass: HomeAssistant, entry: ConfigEntry):
     """Triggered by config entry options updates."""
-    entry_data = entry.data
-    name = entry_data.get(CONF_NAME)
-    printer = _get_printer(hass, name)
+    await handle_log_level(hass, entry)
 
-    if printer is not None:
-        printer.options = entry.options
+    _LOGGER.info(f"async_options_updated, Entry: {entry.as_dict()} ")
+
+    name = entry.data.get(CONF_NAME)
+    ha = get_ha(hass, name)
+
+    if ha is not None:
+        await ha.async_update_entry(entry)

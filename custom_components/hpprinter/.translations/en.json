@@ -10,8 +10,25 @@
         }
       }
     },
+    "abort": {
+      "already_configured": "HP Printer integration ({name}) already configured"
+    },
     "error": {
-      "cannot_reach_printer": "Cannot access HP Printer from one of the following reasons: hostname is incorrect or printer is offline or printer doesn't support the API used in this integration"
+      "error_400": "Invalid server details",
+      "error_404": "Unsupported API"
     }
+  },
+  "options": {
+      "step": {
+          "hp_printer_additional_settings": {
+              "title": "Options for HP Printer.",
+              "description": "Define additional settings for HP Printer integration",
+              "data": {
+                  "update_interval": "Update interval (Seconds)",
+                  "log_level": "Log level",
+                  "store_data": "Should store responses?"
+              }
+          }
+      }
   }
 }

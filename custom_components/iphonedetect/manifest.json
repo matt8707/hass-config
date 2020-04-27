@@ -4,6 +4,5 @@
   "documentation": "https://github.com/mudape/iphonedetect",
   "dependencies": [],
   "codeowners": ["@mudape"],
-  "requirements": [],
-  "homeassistant":"0.94.0"
+  "requirements": []
 } 

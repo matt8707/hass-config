@@ -192,7 +192,7 @@ class ValetudoMapCard extends HTMLElement {
       };
     };
     
-    if (mapData.attributes.path.points) {
+    if (mapData.attributes.path && mapData.attributes.path.points) {
       const pathCtx = pathCanvas.getContext("2d");
       pathCtx.strokeStyle = pathColor;
       pathCtx.lineWidth = this._config.path_width || 1;

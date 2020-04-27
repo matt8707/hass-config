@@ -1,29 +1,30 @@
-import sys
 import json
 import logging
+import sys
+from typing import Optional
 
 import aiohttp
 import xmltodict
 
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
-from .const import *
+from . import LoginError
+from ..helpers.const import *
+from ..managers.configuration_manager import ConfigManager
+from ..models.config_data import ConfigData
 
 _LOGGER = logging.getLogger(__name__)
 
 
 class HPPrinterAPI:
-    def __init__(self, hass, host, port=80, is_ssl=False, data_type=None, reader=None):
+    def __init__(self, hass, config_manager: ConfigManager, data_type=None):
+        self._config_manager = config_manager
+
         self._hass = hass
-        self._host = host
-        self._port = port
-        self._protocol = "https" if is_ssl else "http"
         self._data_type = data_type
         self._data = None
-        self._reader = reader
+        self._reader = None
         self._session = None
-
-        self._url = f'{self._protocol}://{self._host}:{self._port}/DevMgmt/{self._data_type}.xml'
 
         self.initialize()
 
@@ -31,24 +32,43 @@ class HPPrinterAPI:
     def data(self):
         return self._data
 
-    def initialize(self):
+    @property
+    def config_data(self) -> Optional[ConfigData]:
+        if self._config_manager is not None:
+            return self._config_manager.data
+
+        return None
+
+    @property
+    def url(self):
+        config_data = self.config_data
+
+        url = f"{config_data.protocol}://{config_data.host}:{config_data.port}/DevMgmt/{self._data_type}.xml"
+
+        return url
+
+    def initialize(self, reader=None):
         try:
             self._session = async_create_clientsession(hass=self._hass)
+
+            self._reader = reader
 
         except Exception as ex:
             exc_type, exc_obj, tb = sys.exc_info()
             line_number = tb.tb_lineno
 
-            _LOGGER.error(f"Failed to initialize BlueIris API, error: {ex}, line: {line_number}")
+            _LOGGER.error(
+                f"Failed to initialize BlueIris API, error: {ex}, line: {line_number}"
+            )
 
-    async def get_data(self, store=None):
+    async def get_data(self):
         try:
             self._data = None
 
-            _LOGGER.debug(f"Updating {self._data_type} from {self._host}")
+            _LOGGER.debug(f"Updating {self._data_type} from {self.config_data.host}")
 
             if self._reader is None:
-                printer_data = await self.async_get(store)
+                printer_data = await self.async_get()
             else:
                 printer_data = self._reader(self._data_type)
 
@@ -65,37 +85,49 @@ class HPPrinterAPI:
 
                 self._data = result
 
-                if store is not None:
-                    json_data = json.dumps(self._data)
+                json_data = json.dumps(self._data)
 
-                    store(f"{self._data_type}.json", json_data)
+                self.save_file("json", json_data)
 
         except Exception as ex:
             exc_type, exc_obj, tb = sys.exc_info()
             line_number = tb.tb_lineno
 
-            _LOGGER.error(f'Failed to update data ({self._data_type}) and parse it, Error: {ex}, Line: {line_number}')
+            _LOGGER.error(
+                f"Failed to update data ({self._data_type}) and parse it, Error: {ex}, Line: {line_number}"
+            )
 
         return self._data
 
-    async def async_get(self, store=None):
+    def save_file(self, extension, content, file_name: Optional[str] = None):
+        if self.config_data.should_store:
+            if file_name is None:
+                file_name = self._data_type
+
+            with open(f"{self.config_data.name}-{file_name}.{extension}", "w") as file:
+                file.write(content)
+
+    async def async_get(self, throw_exception: bool = False):
         result = None
+        status_code = 400
 
         try:
-            _LOGGER.debug(f"Retrieving {self._data_type} from {self._host}")
+            _LOGGER.debug(f"Retrieving {self._data_type} from {self.config_data.host}")
 
-            async with self._session.get(self._url, ssl=False, timeout=aiohttp.ClientTimeout(total=10)) as response:
+            async with self._session.get(
+                self.url, ssl=False, timeout=aiohttp.ClientTimeout(total=10)
+            ) as response:
+                status_code = response.status
                 response.raise_for_status()
 
                 content = await response.text()
 
-                if store is not None:
-                    store(f"{self._data_type}.xml", content)
+                self.save_file("xml", content)
 
                 for ns in NAMESPACES_TO_REMOVE:
-                    content = content.replace(f'{ns}:', '')
+                    content = content.replace(f"{ns}:", "")
 
-                json_data = await self._hass.async_add_executor_job(xmltodict.parse, content)
+                json_data = xmltodict.parse(content)
 
                 result = json_data
 
@@ -103,7 +135,12 @@ class HPPrinterAPI:
             exc_type, exc_obj, tb = sys.exc_info()
             line_number = tb.tb_lineno
 
-            _LOGGER.info(f'Cannot retrieve data ({self._data_type}) from printer, Error: {ex}, Line: {line_number}')
+            _LOGGER.info(
+                f"Cannot retrieve data ({self._data_type}) from printer, Error: {ex}, Line: {line_number}"
+            )
+
+        if throw_exception and status_code > 399:
+            raise LoginError(status_code)
 
         return result
 
@@ -127,7 +164,9 @@ class HPPrinterAPI:
             exc_type, exc_obj, tb = sys.exc_info()
             line_number = tb.tb_lineno
 
-            _LOGGER.error(f'Failed to extract {data_item_key} of {data_item}, Error: {ex}, Line: {line_number}')
+            _LOGGER.error(
+                f"Failed to extract {data_item_key} of {data_item}, Error: {ex}, Line: {line_number}"
+            )
 
     def extract_ordered_dictionary(self, data_item, item_key):
         try:
@@ -147,7 +186,9 @@ class HPPrinterAPI:
             line_number = tb.tb_lineno
             error_details = f"Error: {ex}, Line: {line_number}"
 
-            _LOGGER.error(f'Failed to extract from dictionary {item_key} of {data_item}, {error_details}')
+            _LOGGER.error(
+                f"Failed to extract from dictionary {item_key} of {data_item}, {error_details}"
+            )
 
     def extract_array(self, data_item, item_key):
         try:
@@ -167,10 +208,10 @@ class HPPrinterAPI:
                         item[key] = item_data
 
                         if key in keys:
-                            next_item_key = f'{next_item_key}_{item[key]}'
+                            next_item_key = f"{next_item_key}_{item[key]}"
 
                 if len(keys) == 0:
-                    next_item_key = f'{next_item_key}_{index}'
+                    next_item_key = f"{next_item_key}_{index}"
 
                 result[next_item_key] = item
 
@@ -181,7 +222,9 @@ class HPPrinterAPI:
             exc_type, exc_obj, tb = sys.exc_info()
             line_number = tb.tb_lineno
 
-            _LOGGER.error(f'Failed to extract from array {item_key} of {data_item}, Error: {ex}, Line: {line_number}')
+            _LOGGER.error(
+                f"Failed to extract from array {item_key} of {data_item}, Error: {ex}, Line: {line_number}"
+            )
 
     @staticmethod
     def clean_parameter(data_item, data_key, default_value="N/A"):
@@ -197,28 +240,28 @@ class HPPrinterAPI:
 
 
 class ConsumableConfigDynPrinterDataAPI(HPPrinterAPI):
-    def __init__(self, hass, host, port=80, is_ssl=False, reader=None):
+    def __init__(self, hass, config_manager: ConfigManager):
         data_type = "ConsumableConfigDyn"
 
-        super().__init__(hass, host, port, is_ssl, data_type, reader)
+        super().__init__(hass, config_manager, data_type)
 
 
 class ProductUsageDynPrinterDataAPI(HPPrinterAPI):
-    def __init__(self, hass, host, port=80, is_ssl=False, reader=None):
+    def __init__(self, hass, config_manager: ConfigManager):
         data_type = "ProductUsageDyn"
 
-        super().__init__(hass, host, port, is_ssl, data_type, reader)
+        super().__init__(hass, config_manager, data_type)
 
 
 class ProductStatusDynDataAPI(HPPrinterAPI):
-    def __init__(self, hass, host, port=80, is_ssl=False, reader=None):
+    def __init__(self, hass, config_manager: ConfigManager):
         data_type = "ProductStatusDyn"
 
-        super().__init__(hass, host, port, is_ssl, data_type, reader)
+        super().__init__(hass, config_manager, data_type)
 
 
 class ProductConfigDynDataAPI(HPPrinterAPI):
-    def __init__(self, hass, host, port=80, is_ssl=False, reader=None):
+    def __init__(self, hass, config_manager: ConfigManager):
         data_type = "ProductConfigDyn"
 
-        super().__init__(hass, host, port, is_ssl, data_type, reader)
+        super().__init__(hass, config_manager, data_type)

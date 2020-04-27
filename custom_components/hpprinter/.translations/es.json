@@ -9,9 +9,6 @@
           "name": "Nombre"
         }
       }
-    },
-    "error": {
-      "cannot_reach_printer": "No se puede acceder a la impresora HP por una de las siguientes razones: el nombre de host es incorrecto o la impresora está fuera de línea o la impresora no admite la API utilizada en esta integración"
     }
   }
 }
