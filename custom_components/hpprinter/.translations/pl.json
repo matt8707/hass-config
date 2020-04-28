@@ -9,6 +9,26 @@
           "name": "Nazwa"
         }
       }
+    },
+    "abort": {
+      "already_configured": "Integracja drukarki HP ({name}) jest już skonfigurowana"
+    },
+    "error": {
+      "error_400": "Nieprawidłowe dane serwera",
+      "error_404": "Niewspierane API"
     }
+  },
+  "options": {
+      "step": {
+          "hp_printer_additional_settings": {
+              "title": "Opcje dla drukarki HP.",
+              "description": "Zdefiniuj dodatkowe ustawienia dla integracji drukarki HP",
+              "data": {
+                  "update_interval": "Interwał aktualizacji (sekundy)",
+                  "log_level": "Poziom logowania",
+                  "store_data": "Czy należy przechowywać odpowiedzi?"
+              }
+          }
+      }
   }
 }

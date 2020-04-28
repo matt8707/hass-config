@@ -9,6 +9,9 @@ SIGNAL_UPDATE_HP_PRINTER = f"updates_{DOMAIN}"
 NOTIFICATION_ID = f"{DOMAIN}_notification"
 NOTIFICATION_TITLE = f"{DEFAULT_NAME} Setup"
 
+DOMAIN_LOGGER = "logger"
+SERVICE_SET_LEVEL = "set_level"
+
 SENSOR_ENTITY_ID = "sensor.{}_{}"
 BINARY_SENSOR_ENTITY_ID = "binary_sensor.{}_{}"
 
@@ -46,6 +49,8 @@ ENTITY_STATUS_CREATED = f"{ENTITY_STATUS}-created"
 ENTITY_STATUS_MODIFIED = f"{ENTITY_STATUS}-modified"
 ENTITY_STATUS_IGNORE = f"{ENTITY_STATUS}-ignore"
 ENTITY_STATUS_CANCELLED = f"{ENTITY_STATUS}-cancelled"
+
+ENTITY_DISABLED = "disabled"
 
 PRINTER_CURRENT_STATUS = "status"
 PRINTER_SENSOR = "Printer"
@@ -106,6 +111,8 @@ HP_DEVICE_IS_ONLINE = "IsOnline"
 
 HP_HEAD_TYPE_INK = "ink"
 HP_HEAD_TYPE_PRINT_HEAD = "printhead"
+HP_ORGANIC_PHOTO_CONDUCTOR = "OPC"
+HP_ORGANIC_PHOTO_CONDUCTOR_NAME = "Organic Photo Conductor"
 
 HP_INK_MAPPING = {"C": "Cyan", "Y": "Yellow", "M": "Magenta", "K": "Black"}
 

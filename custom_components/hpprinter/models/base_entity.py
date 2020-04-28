@@ -134,12 +134,15 @@ class HPPrinterEntity(Entity):
             if self.entity is not None:
                 previous_state = self.entity.state
 
-                self.entity = self.entity_manager.get_entity(
-                    self.current_domain, self.name
-                )
+                entity = self.entity_manager.get_entity(self.current_domain, self.name)
 
-                if self.entity is not None:
-                    self._immediate_update(previous_state)
+                if entity.disabled:
+                    _LOGGER.debug(f"Skip updating {self.name}, Entity is disabled")
+
+                else:
+                    self.entity = entity
+                    if self.entity is not None:
+                        self._immediate_update(previous_state)
 
     async def async_added_to_hass_local(self):
         pass

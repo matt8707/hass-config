@@ -9,6 +9,7 @@ class EntityData:
     icon: str
     device_name: str
     status: str
+    disabled: bool
 
     def __init__(self):
         self.unique_id = ""
@@ -18,6 +19,7 @@ class EntityData:
         self.icon = ""
         self.device_name = ""
         self.status = ENTITY_STATUS_CREATED
+        self.disabled = False
 
     def __repr__(self):
         obj = {
@@ -28,6 +30,7 @@ class EntityData:
             ENTITY_ICON: self.icon,
             ENTITY_DEVICE_NAME: self.device_name,
             ENTITY_STATUS: self.status,
+            ENTITY_DISABLED: self.disabled,
         }
 
         to_string = f"{obj}"

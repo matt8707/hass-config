@@ -83,6 +83,8 @@ class HPDeviceData:
                 self.set_consumable_data()
                 self.set_product_config_data()
                 self.set_product_status_data()
+            else:
+                self.device_data[PRINTER_CURRENT_STATUS] = PRINTER_STATUS[""]
 
             self.device_data[HP_DEVICE_IS_ONLINE] = is_online
 
@@ -347,17 +349,21 @@ class HPDeviceData:
                 color = consumable_label_code
             else:
                 color_map = []
-                for color_letter in consumable_label_code:
-                    mapped_color = HP_INK_MAPPING.get(color_letter, color_letter)
 
-                    color_map.append(mapped_color)
+                if consumable_label_code == HP_ORGANIC_PHOTO_CONDUCTOR:
+                    color = HP_ORGANIC_PHOTO_CONDUCTOR_NAME
+                else:
+                    for color_letter in consumable_label_code:
+                        mapped_color = HP_INK_MAPPING.get(color_letter, color_letter)
 
-                color = "".join(color_map)
+                        color_map.append(mapped_color)
 
-                if color == consumable_label_code:
-                    _LOGGER.warning(
-                        f"Head type {head_type} color mapping for {consumable_label_code} not available"
-                    )
+                    color = "".join(color_map)
+
+                    if color == consumable_label_code:
+                        _LOGGER.warning(
+                            f"Head type {head_type} color mapping for {consumable_label_code} not available"
+                        )
 
             cartridge_key = f"{head_type} {color}"
 

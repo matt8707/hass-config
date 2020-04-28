@@ -165,6 +165,8 @@ class EntityManager:
                     )
 
                     if entity.status == ENTITY_STATUS_CREATED:
+                        entity_item = self.entity_registry.async_get(entity_id)
+
                         if entity.unique_id in entities_to_delete:
                             entities_to_delete.remove(entity.unique_id)
 
@@ -190,14 +192,15 @@ class EntityManager:
                                     )
 
                             if restored:
-                                entity_item = self.entity_registry.async_get(entity_id)
-
                                 if entity_item is None or not entity_item.disabled:
                                     entities_to_add.append(entity_component)
                         else:
                             entities_to_add.append(entity_component)
 
                         entity.status = ENTITY_STATUS_READY
+
+                        if entity_item is not None:
+                            entity.disabled = entity_item.disabled
 
                 step = f"Add entities to {domain}"
 
