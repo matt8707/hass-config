@@ -21,6 +21,7 @@ from homeassistant.const import (
 from homeassistant.core import callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
+import homeassistant.helpers.device_registry as dr
 
 from .const import (
     CONF_CREDENTIALS,
@@ -164,6 +165,7 @@ class AppleTVManager:
         """Device was unexpectedly disconnected."""
         _LOGGER.warning('Connection lost to Apple TV "%s"', self.atv.name)
         if self.atv:
+            self.atv.listener = None
             self.atv.close()
             self.atv = None
         self._connection_was_lost = True
@@ -173,6 +175,7 @@ class AppleTVManager:
     def connection_closed(self):
         """Device connection was (intentionally) closed."""
         if self.atv:
+            self.atv.listener = None
             self.atv.close()
             self.atv = None
         self._update_state(disconnected=True)
@@ -189,9 +192,8 @@ class AppleTVManager:
         self._is_on = False
         try:
             if self.atv:
-                self.atv.push_updater.listener = None
                 self.atv.push_updater.stop()
-                await self.atv.close()
+                self.atv.close()
                 self.atv = None
             if self._task:
                 self._task.cancel()
@@ -310,12 +312,38 @@ class AppleTVManager:
 
         self.address_updated(str(conf.address))
 
+        await self._setup_device_registry()
+
         self._connection_attempts = 0
         if self._connection_was_lost:
             _LOGGER.info(
                 'Connection was re-established to Apple TV "%s"', self.atv.service.name
             )
             self._connection_was_lost = False
+
+    async def _setup_device_registry(self):
+        attrs = {
+            "identifiers": {(DOMAIN, self.config_entry.unique_id)},
+            "manufacturer": "Apple",
+            "name": self.config_entry.data.get(CONF_NAME),
+            "model": "Unknown model",
+            "sw_version": "Unknown version",
+            "via_device": (DOMAIN, self.config_entry.unique_id),
+        }
+
+        if self.atv:
+            attrs.update(
+                {
+                    "model": "Apple TV "
+                    + self.atv.device_info.model.name.replace("Gen", ""),
+                    "sw_version": self.atv.device_info.version,
+                }
+            )
+
+        device_registry = await dr.async_get_registry(self.hass)
+        device_registry.async_get_or_create(
+            config_entry_id=self.config_entry.entry_id, **attrs
+        )
 
     @property
     def is_connecting(self):

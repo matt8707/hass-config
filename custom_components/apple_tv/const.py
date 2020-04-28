@@ -2,6 +2,8 @@
 
 DOMAIN = "apple_tv"
 
+ATTR_MEDIA_GENRE = "genre"
+
 CONF_IDENTIFIER = "identifier"
 CONF_CREDENTIALS = "credentials"
 CONF_CREDENTIALS_MRP = "mrp"

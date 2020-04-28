@@ -1,11 +1,11 @@
 {
+  "title": "Apple TV",
   "config": {
-    "title": "Apple TV",
     "flow_title": "Apple TV: {name}",
     "step": {
       "user": {
         "title": "Setup a new Apple TV",
-        "description": "Start by entering the device name (e.g. Kitchen or Bedroom) or IP address of the Apple TV you want to add. If any devices were automatically found on your network, they are shown below.\n\nIf you cannot see your device or experience any issues, try specifying the device IP address.\n\n{devices}",
+        "description": "Start by entering the device name (e.g. Kitchen or Bedroom) or IP address of the Apple TV you want to add. If any devices were automatically found on your network, they are shown below.\n\nIf you cannot see your device or experience any issues, try specifying the device IP address. If the device is sleeping, it will be woken up. This might take up to 30 seconds.\n\n{devices}",
         "data": {
           "identifier": "Device"
         }
@@ -32,9 +32,6 @@
       "confirm": {
         "title": "Confirm Adding Apple TV",
         "description": "You are about to add the Apple TV named `{name}` to Home Assistant.\n\n**To complete the process, you may have to enter multiple PIN codes.**\n\nPlease note that you will *not* be able to power off your Apple TV with this integration. Only the media player in Home Assistant will turn off!"
-      },
-      "zeroconf": {
-        "lookup_id_failed": "Failed to look up device id for device."
       }
     },
     "error": {

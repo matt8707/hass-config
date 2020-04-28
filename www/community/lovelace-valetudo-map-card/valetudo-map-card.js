@@ -8,25 +8,38 @@ class ValetudoMapCard extends HTMLElement {
     this.attachShadow({ mode: 'open' });
     this.lastValidRobotPosition = [];
 
-    this.entityWarning1 = document.createElement('hui-warning');
-    this.entityWarning1.id = 'lovelaceValetudoWarning1HaCard';
-    this.shadowRoot.appendChild(this.entityWarning1);
-
-    this.entityWarning2 = document.createElement('hui-warning');
-    this.entityWarning2.id = 'lovelaceValetudoWarning2HaCard';
-    this.shadowRoot.appendChild(this.entityWarning2);
-
     this.cardContainer = document.createElement('ha-card');
     this.cardContainer.id = 'lovelaceValetudoHaCard';
     this.cardContainerStyle = document.createElement('style');
     this.shadowRoot.appendChild(this.cardContainer);
     this.shadowRoot.appendChild(this.cardContainerStyle);
 
-    this.controlContainer = document.createElement('ha-card');
-    this.controlContainer.id = 'lovelaceValetudoControlHaCard';
+    this.cardHeader = document.createElement('div');
+    this.cardHeader.setAttribute('class', 'card-header');
+    this.cardTitle = document.createElement('div');
+    this.cardTitle.setAttribute('class', 'name');
+    this.cardHeader.appendChild(this.cardTitle);
+    this.cardContainer.appendChild(this.cardHeader);
+
+    this.entityWarning1 = document.createElement('hui-warning');
+    this.entityWarning1.id = 'lovelaceValetudoWarning1HaCard';
+    this.cardContainer.appendChild(this.entityWarning1);
+
+    this.entityWarning2 = document.createElement('hui-warning');
+    this.entityWarning2.id = 'lovelaceValetudoWarning2HaCard';
+    this.cardContainer.appendChild(this.entityWarning2);
+
+    this.mapContainer = document.createElement('div');
+    this.mapContainer.id = 'lovelaceValetudoMapCard';
+    this.mapContainerStyle = document.createElement('style');
+    this.cardContainer.appendChild(this.mapContainer);
+    this.cardContainer.appendChild(this.mapContainerStyle);
+
+    this.controlContainer = document.createElement('div');
+    this.controlContainer.id = 'lovelaceValetudoControlCard';
     this.controlContainerStyle = document.createElement('style');
-    this.shadowRoot.appendChild(this.controlContainer);
-    this.shadowRoot.appendChild(this.controlContainerStyle);
+    this.cardContainer.appendChild(this.controlContainer);
+    this.cardContainer.appendChild(this.controlContainerStyle);
   };
 
   shouldDrawMap(state) {
@@ -49,11 +62,11 @@ class ValetudoMapCard extends HTMLElement {
     };
   };
 
-  isOutsideBounds(x, y, mapCanvas, config) {
-    return (x < this._config.crop.left) || (x > mapCanvas.width) || (y < config.crop.top) || (y > mapCanvas.height);
+  isOutsideBounds(x, y, drawnMapCanvas, config) {
+    return (x < this._config.crop.left) || (x > drawnMapCanvas.width) || (y < config.crop.top) || (y > drawnMapCanvas.height);
   };
 
-  drawMap(cardContainer, mapData, mapHeight, mapWidth, floorColor, obstacleWeakColor, obstacleStrongColor, noGoAreaColor, virtualWallColor, pathColor, chargerColor, vacuumColor) {
+  drawMap(mapContainer, mapData, mapHeight, mapWidth, floorColor, obstacleWeakColor, obstacleStrongColor, noGoAreaColor, virtualWallColor, pathColor, chargerColor, vacuumColor) {
     // Points to pixels
     const widthScale = 50 / this._config.map_scale;
     const heightScale = 50 / this._config.map_scale;
@@ -64,12 +77,12 @@ class ValetudoMapCard extends HTMLElement {
     const containerContainer = document.createElement('div');
     containerContainer.id = 'lovelaceValetudoCard';
 
-    const mapContainer = document.createElement('div');
-    const mapCanvas = document.createElement('canvas');
-    mapCanvas.width = mapWidth * this._config.map_scale;
-    mapCanvas.height = mapHeight * this._config.map_scale;
-    mapContainer.style.zIndex = 1;
-    mapContainer.appendChild(mapCanvas);
+    const drawnMapContainer = document.createElement('div');
+    const drawnMapCanvas = document.createElement('canvas');
+    drawnMapCanvas.width = mapWidth * this._config.map_scale;
+    drawnMapCanvas.height = mapHeight * this._config.map_scale;
+    drawnMapContainer.style.zIndex = 1;
+    drawnMapContainer.appendChild(drawnMapCanvas);
 
     const chargerContainer = document.createElement('div');
     const chargerHTML = document.createElement('ha-icon');
@@ -110,12 +123,12 @@ class ValetudoMapCard extends HTMLElement {
     vacuumContainer.appendChild(vacuumHTML);
 
     // Put objects in container
-    containerContainer.appendChild(mapContainer);
+    containerContainer.appendChild(drawnMapContainer);
     containerContainer.appendChild(chargerContainer);
     containerContainer.appendChild(pathContainer);
     containerContainer.appendChild(vacuumContainer);
 
-    const mapCtx = mapCanvas.getContext("2d");
+    const mapCtx = drawnMapCanvas.getContext("2d");
     mapCtx.strokeStyle = floorColor;
     mapCtx.lineWidth = 1;
     mapCtx.fillStyle = floorColor;
@@ -124,7 +137,7 @@ class ValetudoMapCard extends HTMLElement {
       for (let item of mapData.attributes.image.pixels.floor) {
         let x = item[0] * this._config.map_scale;
         let y = item[1] * this._config.map_scale;
-        if (this.isOutsideBounds(x, y, mapCanvas, this._config)) continue;
+        if (this.isOutsideBounds(x, y, drawnMapCanvas, this._config)) continue;
         mapCtx.fillRect(x, y, this._config.map_scale, this._config.map_scale);
       };
     };
@@ -137,7 +150,7 @@ class ValetudoMapCard extends HTMLElement {
       for (let item of mapData.attributes.image.pixels.obstacle_weak) {
         let x = item[0] * this._config.map_scale;
         let y = item[1] * this._config.map_scale;
-        if (this.isOutsideBounds(x, y, mapCanvas, this._config)) continue;
+        if (this.isOutsideBounds(x, y, drawnMapCanvas, this._config)) continue;
         mapCtx.fillRect(x, y, this._config.map_scale, this._config.map_scale);
       };
     };
@@ -150,7 +163,7 @@ class ValetudoMapCard extends HTMLElement {
       for (let item of mapData.attributes.image.pixels.obstacle_strong) {
         let x = item[0] * this._config.map_scale;
         let y = item[1] * this._config.map_scale;
-        if (this.isOutsideBounds(x, y, mapCanvas, this._config)) continue;
+        if (this.isOutsideBounds(x, y, drawnMapCanvas, this._config)) continue;
         mapCtx.fillRect(x, y, this._config.map_scale, this._config.map_scale);
       };
     };
@@ -169,7 +182,7 @@ class ValetudoMapCard extends HTMLElement {
           } else {
             mapCtx.lineTo(x, y);
           }
-          if (this.isOutsideBounds(x, y, mapCanvas, this._config)) continue;
+          if (this.isOutsideBounds(x, y, drawnMapCanvas, this._config)) continue;
         };
         mapCtx.fill();
       };
@@ -184,8 +197,8 @@ class ValetudoMapCard extends HTMLElement {
         let fromY = Math.floor(item[1] / heightScale) - topOffset;
         let toX = Math.floor(item[2] / widthScale) - leftOffset;
         let toY = Math.floor(item[3] / heightScale) - topOffset;
-        if (this.isOutsideBounds(fromX, fromY, mapCanvas, this._config)) continue;
-        if (this.isOutsideBounds(toX, toY, mapCanvas, this._config)) continue;
+        if (this.isOutsideBounds(fromX, fromY, drawnMapCanvas, this._config)) continue;
+        if (this.isOutsideBounds(toX, toY, drawnMapCanvas, this._config)) continue;
         mapCtx.moveTo(fromX, fromY);
         mapCtx.lineTo(toX, toY);
         mapCtx.stroke();
@@ -211,7 +224,7 @@ class ValetudoMapCard extends HTMLElement {
         };
         x = Math.floor((item[0]) / widthScale) - leftOffset;
         y = Math.floor((item[1]) / heightScale) - topOffset;
-        if (this.isOutsideBounds(x, y, mapCanvas, this._config)) continue;
+        if (this.isOutsideBounds(x, y, drawnMapCanvas, this._config)) continue;
         if (first) {
           pathCtx.moveTo(x, y);
           first = false;
@@ -230,15 +243,16 @@ class ValetudoMapCard extends HTMLElement {
     };
 
     // Put our newly generated map in there
-    while (cardContainer.firstChild) {
-      cardContainer.firstChild.remove();
+    while (mapContainer.firstChild) {
+      mapContainer.firstChild.remove();
     };
-    cardContainer.appendChild(containerContainer);
+    mapContainer.appendChild(containerContainer);
   };
 
   setConfig(config) {
     this._config = Object.assign({}, config);
 
+    if (this._config.title === undefined) this._config.title = "Vacuum";
     if (this._config.show_dock === undefined) this._config.show_dock = true;
     if (this._config.show_vacuum === undefined) this._config.show_vacuum = true;
     if (this._config.show_path === undefined) this._config.show_path = true;
@@ -252,6 +266,9 @@ class ValetudoMapCard extends HTMLElement {
     if (this._config.crop.left === undefined) this._config.crop.left = 0;
     if (this._config.crop.right === undefined) this._config.crop.right = 0;
     if (this._config.min_height === undefined) this._config.min_height = 0;
+
+    // Set card title
+    this.cardTitle.textContent = this._config.title;
   };
 
   set hass(hass) {
@@ -275,14 +292,14 @@ class ValetudoMapCard extends HTMLElement {
 
     if (!canDrawMap && this._config.entity) {
       // Remove the map
-      this.cardContainer.style.display = 'none';
+      this.mapContainer.style.display = 'none';
 
       // Show the warning
       this.entityWarning1.textContent = `Entity not available: ${this._config.entity}`;
       this.entityWarning1.style.display = 'block';
     } else {
       this.entityWarning1.style.display = 'none';
-      this.cardContainer.style.display = 'block';
+      this.mapContainer.style.display = 'block';
     };
 
     if (!canDrawControls && this._config.vacuum_entity) {
@@ -308,14 +325,14 @@ class ValetudoMapCard extends HTMLElement {
 
       // Want height based on container width
       if (String(this._config.min_height).endsWith('w')) {
-        minHeight = this._config.min_height.slice(0, -1) * this.cardContainer.offsetWidth;
+        minHeight = this._config.min_height.slice(0, -1) * this.mapContainer.offsetWidth;
       }
 
       let containerMinHeightPadding = minHeight > containerHeight ? (minHeight - containerHeight) / 2 : 0;
 
       // Set container CSS
-      this.cardContainerStyle.textContent = `
-        #lovelaceValetudoHaCard {
+      this.mapContainerStyle.textContent = `
+        #lovelaceValetudoMapCard {
           height: ${containerHeight}px;
           padding-top: ${containerMinHeightPadding}px;
           padding-bottom: ${containerMinHeightPadding}px;
@@ -354,7 +371,7 @@ class ValetudoMapCard extends HTMLElement {
         // Start drawing map
         this.drawingMap = true;
 
-        this.drawMap(this.cardContainer, mapEntity, mapHeight, mapWidth, floorColor, obstacleWeakColor, obstacleStrongColor, noGoAreaColor, virtualWallColor, pathColor, chargerColor, vacuumColor);
+        this.drawMap(this.mapContainer, mapEntity, mapHeight, mapWidth, floorColor, obstacleWeakColor, obstacleStrongColor, noGoAreaColor, virtualWallColor, pathColor, chargerColor, vacuumColor);
 
         // Done drawing map
         this.lastUpdatedMap = mapEntity.last_updated;

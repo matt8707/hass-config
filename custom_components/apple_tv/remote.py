@@ -49,11 +49,8 @@ class AppleTVRemote(remote.RemoteDevice):
     def device_info(self):
         """Return the device info."""
         return {
+            "name": self._name,
             "identifiers": {(DOMAIN, self._identifier)},
-            "manufacturer": "Apple",
-            "model": "Remote",
-            "name": self.name,
-            "sw_version": "0.0",
             "via_device": (DOMAIN, self._identifier),
         }
 

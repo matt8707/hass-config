@@ -1,10 +1,12 @@
 """Support for Apple TV media player."""
 import logging
 
-from pyatv.const import DeviceState, MediaType
+from pyatv.const import DeviceState, FeatureName, FeatureState, MediaType
 
 from homeassistant.components.media_player import MediaPlayerDevice
 from homeassistant.components.media_player.const import (
+    ATTR_MEDIA_ALBUM_NAME,
+    ATTR_MEDIA_ARTIST,
     MEDIA_TYPE_MUSIC,
     MEDIA_TYPE_TVSHOW,
     MEDIA_TYPE_VIDEO,
@@ -30,7 +32,7 @@ from homeassistant.const import (
 from homeassistant.core import callback
 import homeassistant.util.dt as dt_util
 
-from .const import DOMAIN
+from .const import ATTR_MEDIA_GENRE, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -90,21 +92,25 @@ class AppleTvDevice(MediaPlayerDevice):
         self.atv = None
 
     @property
-    def device_info(self):
-        """Return the device info."""
-        return {
-            "identifiers": {(DOMAIN, self._identifier)},
-            "manufacturer": "Apple",
-            "model": "Media Player",
-            "name": self.name,
-            "sw_version": "0.0",
-            "via_device": (DOMAIN, self._identifier),
-        }
-
-    @property
     def name(self):
         """Return the name of the device."""
         return self._name
+
+    @property
+    def app_id(self):
+        """ID of the current running app."""
+        if self.atv:
+            if self.atv.features.in_state(FeatureState.Available, FeatureName.App):
+                return self.atv.metadata.app.identifier
+        return None
+
+    @property
+    def app_name(self):
+        """Name of the current running app."""
+        if self.atv:
+            if self.atv.features.in_state(FeatureState.Available, FeatureName.App):
+                return self.atv.metadata.app.name
+        return None
 
     @property
     def unique_id(self):
@@ -127,11 +133,16 @@ class AppleTvDevice(MediaPlayerDevice):
         if self._playing:
 
             state = self._playing.device_state
-            if state in (DeviceState.Idle, DeviceState.Loading):
+            if state == DeviceState.Idle:
                 return STATE_IDLE
             if state == DeviceState.Playing:
                 return STATE_PLAYING
-            if state in (DeviceState.Paused, DeviceState.Seeking, DeviceState.Stopped):
+            if state in (
+                DeviceState.Paused,
+                DeviceState.Seeking,
+                DeviceState.Stopped,
+                DeviceState.Loading,
+            ):
                 return STATE_PAUSED
             return STATE_STANDBY  # Bad or unknown state?
 
@@ -139,14 +150,14 @@ class AppleTvDevice(MediaPlayerDevice):
     def playstatus_update(self, _, playing):
         """Print what is currently playing when it changes."""
         self._playing = playing
-        self.async_schedule_update_ha_state()
+        self.async_write_ha_state()
 
     @callback
     def playstatus_error(self, _, exception):
         """Inform about an error and restart push updates."""
         _LOGGER.warning("A %s error occurred: %s", exception.__class__, exception)
         self._playing = None
-        self.async_schedule_update_ha_state()
+        self.async_write_ha_state()
 
     @property
     def media_content_type(self):
@@ -212,6 +223,32 @@ class AppleTvDevice(MediaPlayerDevice):
     def supported_features(self):
         """Flag media player features that are supported."""
         return SUPPORT_APPLE_TV
+
+    @property
+    def device_info(self):
+        """Return the device info."""
+        return {
+            "name": self._name,
+            "identifiers": {(DOMAIN, self._identifier)},
+            "via_device": (DOMAIN, self._identifier),
+        }
+
+    @property
+    def device_state_attributes(self):
+        """Return the state attributes."""
+        attrs = {}
+
+        if self.atv and self._playing:
+            all_features = self.atv.features.all_features(include_unsupported=True)
+
+            if all_features[FeatureName.Album].state == FeatureState.Available:
+                attrs[ATTR_MEDIA_ALBUM_NAME] = self._playing.album
+            if all_features[FeatureName.Artist].state == FeatureState.Available:
+                attrs[ATTR_MEDIA_ARTIST] = self._playing.artist
+            if all_features[FeatureName.Genre].state == FeatureState.Available:
+                attrs[ATTR_MEDIA_GENRE] = self._playing.genre
+
+        return attrs
 
     async def async_turn_on(self):
         """Turn the media player on."""

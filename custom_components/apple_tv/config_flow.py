@@ -36,6 +36,9 @@ INPUT_PIN_SCHEMA = vol.Schema({vol.Required(CONF_PIN, default=None): int})
 DEFAULT_START_OFF = False
 PROTOCOL_PRIORITY = [const.Protocol.MRP, const.Protocol.DMAP, const.Protocol.AirPlay]
 
+SCAN_TIMEOUT = 5
+UNICAST_SCAN_TIMEOUT = 30
+
 # Mapping between config entry format and pyatv
 CREDENTIAL_MAPPING = {
     CONF_CREDENTIALS_MRP: const.Protocol.MRP.value,
@@ -68,7 +71,8 @@ async def device_scan(identifier, loop, cache=None):
             return cache, matches[0]
 
     for hosts in [_host_filter(), None]:
-        scan_result = await scan(loop, timeout=3, hosts=hosts)
+        timeout = SCAN_TIMEOUT if hosts is None else UNICAST_SCAN_TIMEOUT
+        scan_result = await scan(loop, hosts=hosts, timeout=timeout)
         matches = [atv for atv in scan_result if _filter_device(atv)]
 
         if matches:
@@ -137,6 +141,9 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             await self.async_set_unique_id(user_input[CONF_IDENTIFIER])
             try:
                 await self.async_find_device()
+                await self.async_set_unique_id(
+                    self.atv.main_service().identifier, raise_on_progress=False
+                )
                 return await self.async_step_confirm()
             except DeviceNotFound:
                 errors["base"] = "device_not_found"
@@ -178,7 +185,7 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         else:
             return self.async_abort(reason="unrecoverable_error")
 
-        await self.async_set_unique_id(identifier, raise_on_progress=True)
+        await self.async_set_unique_id(identifier)
         self._abort_if_unique_id_configured()
 
         # pylint: disable=no-member # https://github.com/PyCQA/pylint/issues/3167
@@ -227,6 +234,7 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_confirm(self, user_input=None):
         """Handle user-confirmation of discovered node."""
         if user_input is not None:
+
             return await self.async_begin_pairing()
         return self.async_show_form(
             step_id="confirm", description_placeholders={"name": self.atv.name}
@@ -243,7 +251,6 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         # Any more protocols to pair? Else bail out here
         if not self.protocol:
-            await self.async_set_unique_id(self.atv.main_service().identifier)
             return await self._async_get_entry(
                 self.atv.main_service().protocol,
                 self.atv.name,
