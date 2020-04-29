@@ -78,16 +78,16 @@
       | replace ('About an hour', '1 timme')  | replace ('seconds', 'sekunder') | replace ('minutes', 'minuter') 
       | replace ('hours', 'timmar') | replace ('days', 'dagar') + ' sedan' }}
 
-  - platform: synologydsm_custom
-    # changed timedelta, updates every 30 seconds instead of 15min
-    host: !secret synologydsm_host
-    port: !secret synologydsm_port
-    ssl: false
-    username: !secret synologydsm_username
-    password: !secret synologydsm_password
-    monitored_conditions:
-      ['cpu_total_load', 'memory_real_usage', 'volume_status', 
-      'volume_percentage_used', 'network_up', 'network_down', 'disk_temp']
+  # - platform: synologydsm_custom
+  #   # changed timedelta, updates every 30 seconds instead of 15min
+  #   host: !secret synologydsm_host
+  #   port: !secret synologydsm_port
+  #   ssl: false
+  #   username: !secret synologydsm_username
+  #   password: !secret synologydsm_password
+  #   monitored_conditions:
+  #     ['cpu_total_load', 'memory_real_usage', 'volume_status', 
+  #     'volume_percentage_used', 'network_up', 'network_down', 'disk_temp']
 
   - platform: snmp
     host: !secret synologydsm_host
@@ -465,6 +465,8 @@
         value_template: >-
           {% if is_state('vacuum.xiaomi_vacuum_cleaner', 'docked') %}
           Dockad
+          {% elif is_state('vacuum.xiaomi_vacuum_cleaner', 'paused') %}
+          Pausad
           {% elif is_state('vacuum.xiaomi_vacuum_cleaner', 'cleaning') %}
           Städar
           {% elif is_state('vacuum.xiaomi_vacuum_cleaner', 'returning') %}
@@ -535,16 +537,24 @@
         icon_template: 'mdi:sd'
         unit_of_measurement: '%'
         value_template: >
+          {% if is_state('sensor.fullykiosk', 'unavailable') %}
+          {% else %}
           {{ 100 - ( state_attr('sensor.fullykiosk', 'internalStorageFreeSpace') / 
           state_attr('sensor.fullykiosk', 'internalStorageTotalSpace') * 100 ) | int }}
+          {% endif %}
+
 
       fullykiosk_memory_percentage:
         friendly_name: Minne
         icon_template: 'mdi:memory'
         unit_of_measurement: '%'
         value_template: >
+          {% if is_state('sensor.fullykiosk', 'unavailable') %}
+          {% else %}
           {{ 100 - ( state_attr('sensor.fullykiosk', 'ramFreeMemory') / 
           state_attr('sensor.fullykiosk', 'ramTotalMemory') * 100 ) | int }}
+          {% endif %}
+
 
       fullykiosk_motion_detector_state:
         friendly_name: Kamera
@@ -675,36 +685,6 @@
           {% elif time > 86400 %} {{ days }}d 
           {% endif %}
 
-      # mattias_last_changed_h:
-      #   entity_id: sensor.time
-      #   value_template: >-
-      #     {%- set time = (as_timestamp(now()) - 
-      #     as_timestamp(states.person.mattias.last_changed)) | int %}
-      #     {%- set minutes = ((time % 3600) // 60) %}
-      #     {%- set hours = ((time % 86400) // 3600) %}
-      #     {%- set days = (time // 86400) %}
-      #     {% if time <= 60 %} mindre än 1m
-      #     {% elif time <= 3600 %} {{ minutes }}m
-      #     {% elif time <= 86400 and minutes == 0 %} {{ hours }}h
-      #     {% elif time <= 86400 %} {{ hours }}h och {{ minutes }}m
-      #     {% elif time > 86400 %} {{ days }}d 
-      #     {% endif %}
-
-      # sanja_last_changed_h:
-      #   entity_id: sensor.time
-      #   value_template: >-
-      #     {%- set time = (as_timestamp(now()) - 
-      #     as_timestamp(states.person.sanja.last_changed)) | int %}
-      #     {%- set minutes = ((time % 3600) // 60) %}
-      #     {%- set hours = ((time % 86400) // 3600) %}
-      #     {%- set days = (time // 86400) %}
-      #     {% if time <= 60 %} mindre än 1m
-      #     {% elif time <= 3600 %} {{ minutes }}m
-      #     {% elif time <= 86400 and minutes == 0 %} {{ hours }}h
-      #     {% elif time <= 86400 %} {{ hours }}h och {{ minutes }}m
-      #     {% elif time > 86400 %} {{ days }}d 
-      #     {% endif %}
-
     ####################################################
     #                                                  #
     #                       NAS                        #
@@ -716,14 +696,13 @@
         unit_of_measurement: '°C'
         icon_template: 'mdi:thermometer'
         value_template: >
-          {{ (states('sensor.synology_dsm_temperature_sda'), states('sensor.synology_dsm_temperature_sdb'), 
-          states('sensor.synology_dsm_temperature_sdc'), states('sensor.synology_dsm_temperature_sdd')) | max }}
+          {{ states('sensor.synology_average_disk_temp_volume_1') | round }}
 
       nas_net_down:
         value_template: ' '
         icon_template: 'mdi:arrow-down-bold'
         friendly_name_template: >
-          {% set down = states('sensor.synology_dsm_network_down') | float %}
+          {% set down = states('sensor.synology_network_down') | float %}
           {% if down < 1000 %}
           {{ down | round(0) }} kb/s
           {% elif down >= 1000 %}
@@ -734,7 +713,7 @@
         value_template: ' '
         icon_template: 'mdi:arrow-up-bold'
         friendly_name_template: >
-          {% set up = states('sensor.synology_dsm_network_up') | float %}
+          {% set up = states('sensor.synology_network_up') | float %}
           {% if up < 1000 %}
           {{ up | round(0) }} kb/s
           {% elif up >= 1000 %}
@@ -745,10 +724,10 @@
         friendly_name: Systemhälsa
         icon_template: 'mdi:nas'
         value_template: >-
-          {% if is_state("sensor.synology_dsm_status_volume_1", "normal") %}
+          {% if is_state("sensor.synology_status_volume_1", "normal") %}
             Bra
           {% else %}
-            {{ states('sensor.synology_dsm_status_volume_1') }}
+            {{ states('sensor.synology_status_volume_1') }}
           {% endif %}
 
       vpn_nas:
@@ -783,72 +762,6 @@
         value_template: >
           {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
           {{ data[1].fanart }}
-
-      # plex_title_truncate:
-      #   value_template: >
-      #     {{ states('sensor.plex_title') | truncate(30, True, '...', 0) }}
-
-      # apple_tv_vardagsrum_status:
-      #   value_template: >
-      #     {% if is_state('media_player.vardagsrum','playing') %} Spelar
-      #     {% elif is_state_attr('media_player.vardagsrum','media_title', 'No title') %} Av
-      #     {% elif is_state('media_player.vardagsrum','paused') %} Pausad
-      #     {% else %} Av {% endif %}
-
-      # apple_tv_sovrum_status:
-      #   value_template: >
-      #     {% if is_state('media_player.sovrum','playing') %} Spelar
-      #     {% elif is_state_attr('media_player.sovrum','media_title', 'No title') %} Av
-      #     {% elif is_state('media_player.sovrum','paused') %} Pausad
-      #     {% else %} Av {% endif %}
-
-      # playstation_status:
-      #   value_template: >
-      #     {% if is_state('media_player.playstation_4','playing') %} Spelar
-      #     {% elif is_state('media_player.playstation_4','paused') %} Pausad
-      #     {% else %} Av {% endif %}
-
-      # google_nest_mini_status:
-      #   value_template: >
-      #     {% if is_state('media_player.google_nest_mini','playing') %} Spelar
-      #     {% elif is_state('media_player.google_nest_mini','paused') %} Pausad
-      #     {% else %} Av {% endif %}
-
-      # apple_tv_vardagsrum_title_truncate:
-      #   value_template: >
-      #     {% if states('media_player.vardagsrum') == null %} {% else %}
-      #       {% if is_state_attr('media_player.vardagsrum', 'media_title', 'Nothing playing') %} Inget spelas
-      #       {% elif is_state_attr('media_player.vardagsrum', 'media_title', 'No title') %} Ingen titel
-      #       {% elif is_state('media_player.vardagsrum', 'idle') %} Viloläge
-      #       {% else %} {{ state_attr('media_player.vardagsrum', 'media_title') 
-      #       | truncate(30, True, '...', 0) }} {% endif %}
-      #     {% endif %}
-
-      # apple_tv_sovrum_title_truncate:
-      #   value_template: >
-      #     {% if states('media_player.sovrum') == null %} {% else %}
-      #       {% if is_state_attr('media_player.sovrum', 'media_title', 'Nothing playing') %} Inget spelas
-      #       {% elif is_state('media_player.sovrum', 'idle') %} Viloläge
-      #       {% else %} {{ state_attr('media_player.sovrum', 'media_title') 
-      #       | truncate(30, True, '...', 0) }} {% endif %}
-      #     {% endif %}
-
-      # playstation_title_truncate:
-      #   value_template: >
-      #     {% if is_state('media_player.playstation_4', 'standby') %} Viloläge
-      #     {% elif state_attr('media_player.playstation_4', 'media_title') == None %} Inget spelas
-      #     {% else %} {{ state_attr('media_player.playstation_4', 'media_title') 
-      #     | truncate(30, True, '...', 0) }} {% endif %} 
-
-      # google_nest_mini_title_truncate:
-      #   value_template: >
-      #     {% if is_state('media_player.google_nest_mini', 'off') or 
-      #     is_state('media_player.google_nest_mini', 'idle') %} Viloläge
-      #     {% elif state_attr('media_player.google_nest_mini', 'media_artist') == None or 
-      #     state_attr('media_player.google_nest_mini', 'media_title') == None %} Ingen titel
-      #     {% else %} {% set artist_title = state_attr('media_player.google_nest_mini', 'media_artist') 
-      #     + ' - ' + state_attr('media_player.google_nest_mini', 'media_title') %}
-      #     {{ artist_title | truncate(30, True, '...', 0) }} {% endif %}
 
     ####################################################
     #                                                  #
