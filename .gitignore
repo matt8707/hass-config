@@ -8,6 +8,7 @@
 .ssh
 .storage
 .vscode
+.pip_progress
 bravia.conf
 google_calendars.yaml
 known_devices.yaml
