@@ -8,23 +8,6 @@ dator_on:
       entity_id: 
         ['light.datorlampa', 'light.taklampor']
 
-# Switchbot integration stopped working
-# dator_on:
-#   sequence:
-#     - service: input_boolean.turn_on
-#       entity_id: input_boolean.dator_template
-#     - service: switch.toggle
-#       entity_id: switch.switchbot
-#     - condition: template
-#       value_template: "{{ is_state_attr('switch.switchbot', 'last_run_success', false) }}"
-#     - service: script.turn_on
-#       entity_id: script.dator_on_retry
-
-# dator_on_retry:
-#   sequence:
-#     - service: script.turn_on
-#       entity_id: script.dator_on
-
 dator_off:
   sequence:
     - service_template: >-
@@ -60,15 +43,6 @@ tv_off:
     - service: media_player.turn_off
       entity_id: media_player.sony_bravia_tv
 
-tv_mute_toggle:
-  sequence:
-    - service: media_player.volume_mute
-      data_template:
-        entity_id: media_player.sony_bravia_tv
-        is_volume_muted: >-
-          {% if is_state_attr('media_player.sony_bravia_tv', 'is_volume_muted', false) %}
-          true {% else %} false {% endif %}
-
 tv2_on:
   sequence:
     - service: input_boolean.turn_on
@@ -84,15 +58,6 @@ tv2_off:
       entity_id: input_boolean.samsung
     - service: media_player.turn_off
       entity_id: media_player.samsung
-
-tv2_mute_toggle:
-  sequence:
-    - service: media_player.volume_mute
-      data_template:
-        entity_id: media_player.samsung
-        is_volume_muted: >-
-          {% if is_state_attr('media_player.samsung', 'is_volume_muted', false) %}
-          true {% else %} false {% endif %}
 
 playstation_on:
   sequence:
@@ -199,20 +164,20 @@ reference_monitors:
   sequence:
     - service: shell_command.reference_click
     - delay:
-        seconds: 0.5
+        seconds: 0.1
     - service: shell_command.reference_kill
     - delay:
-        seconds: 0.5
+        seconds: 0.1
     - service: shell_command.reference_monitors
 
 reference_headphones:
   sequence:
     - service: shell_command.reference_click
     - delay:
-        seconds: 0.5
+        seconds: 0.1
     - service: shell_command.reference_kill
     - delay:
-        seconds: 0.5
+        seconds: 0.1
     - service: shell_command.reference_headphones
 
 monitorer_mute_toggle:
@@ -236,32 +201,6 @@ homeassistant_restart:
         message: 'Startar om Home Assistant...'
     - service: shell_command.restart_hass_docker
 
-homekit_restart:
-  sequence:
-    - service: browser_mod.toast
-      data:
-        duration: 8000
-        message: 'Startar om Homekit...'
-    - service: homekit.start
-
-restart_laundry_timer:
-  sequence:
-    - service: timer.cancel
-      entity_id: timer.laundry
-    - service: timer.start
-      entity_id: timer.laundry
-
-vacuum_start_pause:
-  sequence:
-    - service_template: >-
-        {% if is_state('vacuum.xiaomi_vacuum_cleaner', 'docked') or 
-        is_state('vacuum.xiaomi_vacuum_cleaner', 'paused') %}
-          vacuum.start
-        {% else %}
-          vacuum.pause
-        {% endif %}
-      entity_id: vacuum.xiaomi_vacuum_cleaner
-
 zoned_cleanup:
   sequence:
     - condition: template
@@ -272,3 +211,20 @@ zoned_cleanup:
         command: zoned_cleanup
         params:
           zone_ids: ["{{ states('input_select.roborock_zone') }}"]
+
+# Switchbot integration stopped working
+# dator_on:
+#   sequence:
+#     - service: input_boolean.turn_on
+#       entity_id: input_boolean.dator_template
+#     - service: switch.toggle
+#       entity_id: switch.switchbot
+#     - condition: template
+#       value_template: "{{ is_state_attr('switch.switchbot', 'last_run_success', false) }}"
+#     - service: script.turn_on
+#       entity_id: script.dator_on_retry
+
+# dator_on_retry:
+#   sequence:
+#     - service: script.turn_on
+#       entity_id: script.dator_on
