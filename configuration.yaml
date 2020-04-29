@@ -22,13 +22,14 @@ sensor: !include sensors.yaml
 lovelace:
   mode: yaml
   resources:
-    [ {'url':'/hacsfiles/bar-card/bar-card.js',                               'type':'js'},
+    [ {'url':'/hacsfiles/bar-card/bar-card.js',                               'type':'module'},
       {'url':'/hacsfiles/button-card/button-card.js',                         'type':'module'},
-      {'url':'/hacsfiles/button-entity-row/button-entity-row.js',             'type':'module'},
       {'url':'/hacsfiles/custom-header/custom-header.js',                     'type':'module'},
       {'url':'/hacsfiles/light-entity-card/light-entity-card.js',             'type':'js'},
+      {'url':'/hacsfiles/light-popup-card/light-popup-card.js',               'type':'module'},
       {'url':'/hacsfiles/lovelace-card-mod/card-mod.js',                      'type':'module'},
       {'url':'/hacsfiles/lovelace-card-preloader/lovelace-card-preloader.js', 'type':'module'},
+      {'url':'/hacsfiles/lovelace-hui-element/hui-element.js',                'type':'module'},
       {'url':'/hacsfiles/lovelace-layout-card/layout-card.js',                'type':'module'},
       {'url':'/hacsfiles/lovelace-slider-entity-row/slider-entity-row.js',    'type':'module'},
       {'url':'/hacsfiles/lovelace-valetudo-map-card/valetudo-map-card.js',    'type':'js'},
@@ -37,9 +38,7 @@ lovelace:
       {'url':'/hacsfiles/popup-backdrop-filter/popup-backdrop-filter.js',     'type':'module'},
       {'url':'/hacsfiles/stack-in-card/stack-in-card.js',                     'type':'module'},
       {'url':'/hacsfiles/swipe-card/swipe-card.js',                           'type':'module'},
-      {'url':'/hacsfiles/upcoming-media-card/upcoming-media-card.js',         'type':'js'},
 
-      {'url':'/hacsfiles/mod/light-slider-card.js?v=3.2.3',                   'type':'js'},
       {'url':'/hacsfiles/mod/hass-bha-icons.js?v=f015ee3',                    'type':'js'},
       {'url':'/local/font.css',                                               'type':'css'} ]
 
@@ -68,7 +67,7 @@ recorder:
        'sensor.tvatta_countdown',
        'sensor.imac_cpu_per', 'sensor.imac_mem_per', 'sensor.imac_system_ssd',
        'sensor.imac_macintosh_hd', 'sensor.imac_time_machine',
-       'sensor.synology_dsm_network_up', 'sensor.synology_dsm_network_down', 'sensor.aktuellt_spotpris']
+       'sensor.synology_network_up', 'sensor.synology_network_down', 'sensor.aktuellt_spotpris']
 
 person:
   - name: Mattias
@@ -135,11 +134,6 @@ mqtt:
   discovery: true
   discovery_prefix: homeassistant
 
-plex:
-  host: !secret plex_host
-  port: !secret plex_port
-  token: !secret plex_token
-
 browser_mod:
   devices:
     918296e3-e2a54976:
@@ -199,12 +193,6 @@ shell_command:
   update_data_kwh: !secret update_data_kwh
 
 group:
-  automation_system_reference:
-    name: Automatisk kalibrationsprofil
-    icon: 'mdi:tune-vertical'
-    entities:
-      ['automation.reference_monitors', 'automation.reference_headphones']
-
   ui_sound:
     entities:
       ['automation.ui_sound_on', 'automation.ui_sound_off', 'automation.ui_sound_popup']
@@ -468,43 +456,3 @@ switch:
           service: shell_command.fullykiosk_screensaver_on
         turn_off:
           service: shell_command.fullykiosk_screensaver_off
-
-      media_play_pause_vardagsrum:
-        value_template: "{% if is_state('media_player.vardagsrum', 'playing') %} on {% else %} off {% endif %}"
-        turn_on:
-          service: media_player.media_play
-          entity_id: media_player.vardagsrum
-        turn_off:
-          service: media_player.media_pause
-          entity_id: media_player.vardagsrum
-
-      media_play_pause_sovrum:
-        value_template: "{% if is_state('media_player.sovrum', 'playing') %}on{% else %}off{% endif %}"
-        turn_on:
-          service: media_player.media_play
-          entity_id: media_player.sovrum
-        turn_off:
-          service: media_player.media_pause
-          entity_id: media_player.sovrum
-
-      media_play_pause_playstation_4:
-        value_template: "{% if is_state('media_player.playstation_4', 'playing') %}on{% else %}off{% endif %}"
-        turn_on:
-          service: ps4.send_command
-          data:
-            entity_id: media_player.playstation_4
-            command: ps
-        turn_off:
-          service: ps4.send_command
-          data:
-            entity_id: media_player.playstation_4
-            command: ps
-
-      media_play_pause_google_nest_mini:
-        value_template: "{% if is_state('media_player.google_nest_mini', 'playing') %}on{% else %}off{% endif %}"
-        turn_on:
-          service: media_player.media_play
-          entity_id: media_player.google_nest_mini
-        turn_off:
-          service: media_player.media_pause
-          entity_id: media_player.google_nest_mini
