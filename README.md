@@ -8,7 +8,7 @@ If you like anything here, Be sure to :star2: my repo!
 
 ### New April 2020
 
-The configuration is now fully configuarble with code and easier to maintain. I've transitioned from using images to [button-card](https://github.com/custom-cards/button-card). 
+The configuration is now fully configurable with code and easier to maintain. I've transitioned from using images to [button-card](https://github.com/custom-cards/button-card). 
 
 ## Features
 
