@@ -6,16 +6,20 @@ If you like anything here, Be sure to :star2: my repo!
 
 ![s_main.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/s_main.png)
 
+### New April 2020
+
+The configuration is now fully configuarble with code and easier to maintain. I've transitioned from using images to [button-card](https://github.com/custom-cards/button-card). 
+
 ## Features
 
 * A different take on designing a [Lovelace UI](https://www.home-assistant.io/lovelace/) using a [Picture Elements Card](https://www.home-assistant.io/lovelace/picture-elements/) in [panel mode](https://www.home-assistant.io/lovelace/views/#panel-mode).
 * Achieving a less cluttered interface by displaying [more information](https://github.com/thomasloven/hass-browser_mod#popup) on a [long press](https://www.home-assistant.io/lovelace/picture-elements/#hold_action).
-* Fake on-state and loading wheel for slow responding entities such as booting a computer.
+* Loading wheel for slow responding entities such as booting a computer.
 * Animations and [applying sound](https://github.com/thomasloven/hass-browser_mod#media_player) to UI using automations listening for events.
 
 ### Media
 
-Conditionally display media player controls based on last active device such as [Apple TV](https://www.home-assistant.io/integrations/apple_tv/), [Playstation 4](https://www.home-assistant.io/integrations/ps4/), [Google Nest Mini](https://www.home-assistant.io/integrations/cast/). If nothing is active for 15 minutes then a poster of last downloaded movie/episode is shown ([Radarr](https://github.com/Radarr/Radarr)/[Sonarr](https://github.com/Sonarr/Sonarr)). But what if I want to control the second last active device? Swipe to reveal...
+Conditionally display media player controls based on last active device such as [Apple TV](https://www.home-assistant.io/integrations/apple_tv/), [Playstation 4](https://www.home-assistant.io/integrations/ps4/), [Google Nest Mini](https://www.home-assistant.io/integrations/cast/). If nothing is active for 15 minutes then a poster of last downloaded movie/episode is shown ([Radarr](https://github.com/Radarr/Radarr)/[Sonarr](https://github.com/Sonarr/Sonarr)). Swipe to reveal other than last active media players.
 
 ![lights_switches.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/con_media.gif)
 
@@ -27,7 +31,7 @@ Conditionally display media player controls based on last active device such as 
 * Lights and switches that are on, using natural language.
 * Temperature with emojis based on weather conditions.
 * Important calendar information.
-* Time since a person left home.
+* Other conditional alerts
 
 ### Sidebar footer
 
@@ -43,8 +47,7 @@ The three icons at the bottom in order
 
 All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.meethue.com/en-gb/p/hue-motion-sensor/8718696743171) in hallway, bathroom and walk-in closet.
 
-* Modified (CSS+JS) vertical [Light Entity Card](https://github.com/ljmerza/light-entity-card) for easier touch control.
-* If applicable, show a Light Entity Card color wheel.
+* Now using [light-popup-card](https://github.com/DBuit/light-popup-card).
 * Injecting current lamp color to only parts of an icon.
 * Brightness percentage in a ~~circle sensor~~ custom field (SVG+JS).
 
