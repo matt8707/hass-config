@@ -1,28 +1,39 @@
               action: call-service
               service: browser_mod.popup
               service_data:
+                title: Mattias
+                deviceID: this
+                style:
+                  --ha-card-border-radius: 0 0 1em 1em
+                  border-radius: 1em
+                  opacity: 0.9
                 card:
+                  type: custom:stack-in-card
                   cards:
-                    - entities:
+
+                    - type: entities
+                      entities:
                         - entity: person.mattias
                           secondary_info: last-changed
                       style: |
                         ha-card {
-                          margin-right: 0.55em;
-                          margin-left: 0.55em;
+                          padding: 0.3em 1.2em 0.4em 1em;
                         }
-                      type: entities
-                    - entities:
+
+                    - type: history-graph
+                      entities:
                         - entity: person.mattias
                       hours_to_show: 24
                       refresh_interval: 0
                       style: |
                         ha-card {
-                          margin-top: -1.5em;
-                          margin-left: 0.5em;
+                          padding: 0.3em 1.2em 0 1em;
+                          margin: -1em -0.6em 0 0;
+                          z-index: 1;
                         }
-                      type: history-graph
-                    - entities:
+
+                    - type: entities
+                      entities:
                         - entity: device_tracker.mattias
                           name: Router
                           icon: 'mdi:router-wireless'
@@ -34,25 +45,17 @@
                           icon: 'mdi:cellphone'
                       style: |
                         ha-card {
-                          margin-top: -2.8em;
-                          margin-right: 0.55em;
+                          margin-top: -2em;
+                          padding: 0 1.2em 0.4em 0.5em;
                         }
-                      type: entities
+
                     - type: map
-                      default_zoom: 15
                       entities:
                         - device_tracker.iphone
+                      default_zoom: 15
                       style: |
                         ha-card {
                           height: 24.9em;
                           border-top: 1px solid #FFFFFF !important;
                           filter: invert(1) contrast(80%) hue-rotate(250deg);
                         }
-                  type: custom:stack-in-card
-                deviceID:
-                  - this
-                style:
-                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
-                  border-radius: 0.8vw
-                  opacity: 0.9
-                title: Mattias

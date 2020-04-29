@@ -1,28 +1,43 @@
               action: call-service
               service: browser_mod.popup
               service_data:
+                title: Sanja
+                deviceID: this
+                style:
+                  --ha-card-border-radius: 0 0 1em 1em
+                  border-radius: 1em
+                  opacity: 0.9
                 card:
+                  type: custom:stack-in-card
+                  style: |
+                    ha-card {
+                      padding: 0.3em 1.2em 0.4em 0.5em;
+                    }
                   cards:
-                    - entities:
+
+                    - type: entities
+                      entities:
                         - entity: person.sanja
                           secondary_info: last-changed
                       style: |
                         ha-card {
-                          margin-right: 0.55em;
-                          margin-left: 0.55em;
+                          padding: 0.3em 1.2em 0.4em 1em;
                         }
-                      type: entities
-                    - entities:
+
+                    - type: history-graph
+                      entities:
                         - entity: person.sanja
                       hours_to_show: 24
                       refresh_interval: 0
                       style: |
                         ha-card {
-                          margin-top: -1.5em;
-                          margin-left: 0.5em;
+                          padding: 0.3em 0 0 0;
+                          margin: -1em -0.6em 0 0.5em;
+                          z-index: 1;
                         }
-                      type: history-graph
-                    - entities:
+
+                    - type: entities
+                      entities:
                         - entity: device_tracker.sanja
                           name: Router
                           icon: 'mdi:router-wireless'
@@ -31,37 +46,52 @@
                           icon: 'mdi:bluetooth'
                       style: |
                         ha-card {
-                          margin-top: -2.8em;
-                          margin-right: 0.55em;
+                          margin-top: -2em;
                         }
-                      type: entities
-                    - entities:
+
+                    - type: entities
+                      title: Skrivare
+                      show_header_toggle: false
+                      style: |
+                        ha-card {
+                          margin-top: -1.4em;
+                        }
+                        .card-header {
+                          margin-left: 0.45em;
+                          padding-bottom: 0.7em;
+                          font-size: 1.5em;
+                        }
+                      entities:
+
                         - entity: sensor.printer_status_template
                           name: Status
                           icon: 'mdi:printer'
-                        - entities:
+
+                        - type: custom:bar-card
+                          entities:
+
                             - entity: sensor.hp_printer_inkcartridge_black
                               name: Svart
                               icon: 'mdi:water-outline'
-                              tap_action: service
-                              service_options:
-                                domain: homeassistant
-                                service: update_entity
-                                data:
+                              tap_action:
+                                action: call-service
+                                service: homeassistant.update_entity
+                                service_data:
                                   entity_id: sensor.hp_printer_inkcartridge_black
+
                             - entity: sensor.hp_printer_inkcartridge_cyanmagentayellow
                               name: Färg
                               icon: 'mdi:water'
-                              tap_action: service
-                              service_options:
-                                domain: homeassistant
-                                service: update_entity
-                                data:
+                              tap_action:
+                                action: call-service
+                                service: homeassistant.update_entity
+                                service_data:
                                   entity_id: sensor.hp_printer_inkcartridge_cyanmagentayellow
+
                           positions:
                             icon: outside
-                            indicator: inside
-                            title: outside
+                            indicator: 'off'
+                            name: outside
                           severity:
                             - color: '#303435'
                               from: 11
@@ -72,8 +102,11 @@
                           decimal: 0
                           entity_row: true
                           style: |
-                            ha-card {
-                              margin-bottom: -0.51em;
+                            bar-card-iconbar {
+                              padding-left: 0.23em;
+                            }
+                            bar-card-name {
+                              padding-left: 0.25em;
                             }
                             bar-card-value {
                               margin-right: auto;
@@ -93,26 +126,4 @@
                             }
                           unit_of_measurement: '%'
                           height: 2em
-                          width: 45%
-                          type: custom:bar-card
-                      style: |
-                        ha-card {
-                          margin-top: -1.4em;
-                          margin-right: 0.55em;
-                        }
-                        .card-header {
-                          margin-left: 0.45em;
-                          padding-bottom: 0.7em;
-                          font-size: 1.5em;
-                        }
-                      title: "Skrivare"
-                      show_header_toggle: false
-                      type: entities
-                  type: custom:stack-in-card
-                deviceID:
-                  - this
-                style:
-                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
-                  border-radius: 0.8vw
-                  opacity: 0.9
-                title: Sanja
+                          width: 55%

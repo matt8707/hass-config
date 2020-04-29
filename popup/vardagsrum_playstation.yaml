@@ -1,11 +1,21 @@
               action: call-service
               service: browser_mod.popup
               service_data:
+                title: Playstation 4
+                deviceID: this
+                style:
+                  --ha-card-border-radius: 0 0 1em 1em
+                  border-radius: 1em
+                  opacity: 0.9
                 card:
+                  type: entities
+                  style: "ha-card {padding: 0.3em 1.2em 0.4em 0.5em;}"
                   entities:
+
                     - entity: switch.playstation_template
                       icon: 'mdi:playstation'
                       name: Playstation 4
+
                     - entity: media_player.playstation_4
                       type: custom:mini-media-player
                       artwork: none
@@ -19,11 +29,3 @@
                         controls: true
                         power: true
                         info: true
-                  type: entities
-                deviceID:
-                  - this
-                style:
-                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
-                  border-radius: 0.8vw
-                  opacity: 0.9
-                title: Playstation 4

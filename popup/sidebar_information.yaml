@@ -1,9 +1,35 @@
               action: call-service
               service: browser_mod.popup
               service_data:
+                title: Stäng
+                deviceID: this
+                style:
+                  background: none
+                  box-shadow: none
+                  width: calc(400px + 400px + 400px)
                 card:
+                  type: custom:layout-card
+                  column_num: 3
+                  column_width: [400, 400, 400]
+                  layout: vertical
                   cards:
-                    - entities:
+                    - type: entities
+                      title: Home Assistant
+                      show_header_toggle: false
+                      style: &entities-style |
+                        ha-card {
+                          box-shadow: none;
+                          border-radius: 1em;
+                          background: rgba(34, 38, 39, 0.9);
+                          padding: 0.3em 1.25em 0.4em 0.5em;
+                        }
+                        .card-header {
+                          margin-left: 0.4em;
+                          margin-bottom: 0.1em;
+                          font-family: sf text;
+                          letter-spacing: 0.005em;
+                        }
+                      entities:
 
                         - entity: sensor.hass_version_template
 
@@ -28,25 +54,23 @@
                             - entity: sensor.docker_cpu
                               name: Processor
                               icon: 'mdi:chip'
-                              tap_action: service
-                              service_options:
-                                domain: homeassistant
-                                service: update_entity
-                                data:
+                              tap_action:
+                                action: call-service
+                                service: homeassistant.update_entity
+                                service_data:
                                   entity_id: sensor.docker_cpu
                             - entity: sensor.docker_mem
                               name: Minne
                               icon: 'mdi:memory'
-                              tap_action: service
-                              service_options:
-                                domain: homeassistant
-                                service: update_entity
-                                data:
+                              tap_action:
+                                action: call-service
+                                service: homeassistant.update_entity
+                                service_data:
                                   entity_id: sensor.docker_mem
                           positions: &bar_card_positions
                             icon: outside
-                            indicator: inside
-                            title: outside
+                            indicator: 'off'
+                            name: outside
                           severity: &bar_card_severity
                             - color: '#303435'
                               from: 0
@@ -57,8 +81,11 @@
                           decimal: 0
                           entity_row: true
                           style: &bar_card_style |
-                            ha-card {
-                              margin-bottom: -0.51em;
+                            bar-card-iconbar {
+                              padding-left: 0.23em;
+                            }
+                            bar-card-name {
+                              padding-left: 0.25em;
                             }
                             bar-card-value {
                               margin-right: auto;
@@ -78,56 +105,48 @@
                             }
                           unit_of_measurement: '%'
                           height: 2em
-                          width: 45%
+                          width: 55%
                           type: custom:bar-card
 
-                        - buttons:
-                            - icon: 'mdi:reload'
-                              name: Home Assistant
+                        - type: custom:hui-horizontal-stack-card
+                          style: &horizontal-style |
+                            #root {
+                              justify-content: space-evenly;
+                              margin: 1.4em -0.7em 0.7em 0;
+                            }
+                          cards:
+
+                          - type: custom:button-card
+                            name: >
+                              [[[ return 
+                              '<ha-icon icon="mdi:reload">
+                              </ha-icon> Home Assistant'; ]]]
+                            tap_action:
+                              action: call-service
                               service: script.turn_on
                               service_data:
                                 entity_id: script.homeassistant_restart
-                              style:
-                                background: '#FFFFFF10'
-                                border-radius: 0.7em
-                                font-weight: 500
-                                padding: 1.2em 1.5em 1.2em 1.2em
-                                margin-top: 0.7em
-                            - entity: script.homekit_restart
-                              icon: 'mdi:reload'
-                              name: Homekit
-                              style:
-                                background: '#FFFFFF10'
-                                border-radius: 0.7em
-                                font-weight: 500
-                                padding: 1.2em 1.5em 1.2em 1.2em
-                                margin-right: -0.7em
-                                margin-top: 0.7em
-                          type: custom:button-entity-row
+                            template: name_action
 
-                      show_header_toggle: false
-                      style: &entities-style |
-                        ha-card {
-                          box-shadow: none;
-                          border-radius: 1em;
-                          background: rgba(34, 38, 39, 0.9);
-                          padding-right: 0.7em;
-                        }
-                        .card-header {
-                          margin-left: 0.4em;
-                          font-family: sf text;
-                          letter-spacing: 0.005em;
-                        }
-                        ha-card > div.card-header > div {
-                          padding-top: 2px;
-                          margin-bottom: -2px;
-                        }
-                      title: "Home Assistant"
-                      type: entities
+
+                          - type: custom:button-card
+                            name: >
+                              [[[ return 
+                              '<ha-icon icon="mdi:reload">
+                              </ha-icon> Homekit'; ]]]
+                            tap_action:
+                              services: |
+                                [[[ hass.callService('browser_mod', 'toast', {message: 'Startar om Homekit...'});
+                                hass.callService('homekit', 'start'); ]]]
+                            template: name_action
 
                     - break
 
-                    - entities:
+                    - type: entities
+                      title: Väggplattan
+                      show_header_toggle: false
+                      style: *entities-style
+                      entities:
 
                         - entity: switch.fullykiosk_screen
                           icon: 'mdi:tablet'
@@ -140,7 +159,9 @@
                               max-width: 60%;
                               margin: auto;
                             }
-
+                            hui-generic-entity-row > div > span {
+                              display: block;
+                            }
                         - entity: switch.fullykiosk_screensaver
                           icon: 'mdi:power-sleep'
                           name: Skärmsläckare
@@ -155,20 +176,18 @@
                             - entity: sensor.fullykiosk_memory_percentage
                               name: Minne - 2GB
                               icon: 'mdi:memory'
-                              tap_action: service
-                              service_options:
-                                domain: homeassistant
-                                service: update_entity
-                                data:
+                              tap_action:
+                                action: call-service
+                                service: homeassistant.update_entity
+                                service_data:
                                   entity_id: sensor.fullykiosk_memory_percentage
                             - entity: sensor.fullykiosk_storage_percentage
                               name: Lagring - 32GB
                               icon: 'mdi:sd'
-                              tap_action: service
-                              service_options:
-                                domain: homeassistant
-                                service: update_entity
-                                data:
+                              tap_action:
+                                action: call-service
+                                service: homeassistant.update_entity
+                                service_data:
                                   entity_id: sensor.fullykiosk_storage_percentage
                           positions: *bar_card_positions
                           severity: *bar_card_severity
@@ -177,39 +196,57 @@
                           style: *bar_card_style
                           unit_of_measurement: '%'
                           height: 2em
-                          width: 45%
+                          width: 55%
                           type: custom:bar-card
 
-                        - buttons:
-                            - icon: 'mdi:reload'
-                              name: Startsidan
-                              service: shell_command.fullykiosk_load_start_url
-                              style:
-                                background: '#FFFFFF10'
-                                border-radius: 0.7em
-                                font-weight: 500
-                                padding: 1.2em 1.5em 1.2em 1.2em
-                                margin-top: 0.7em
-                            - icon: 'mdi:reload'
-                              name: Hela appen
-                              service: shell_command.fullykiosk_restart_app
-                              style:
-                                background: '#FFFFFF10'
-                                border-radius: 0.7em
-                                font-weight: 500
-                                padding: 1.2em 1.5em 1.2em 1.2em
-                                margin-right: -0.7em
-                                margin-top: 0.7em
-                          type: custom:button-entity-row
+                        - type: custom:hui-horizontal-stack-card
+                          style: *horizontal-style
+                          cards:
 
-                      show_header_toggle: false
-                      style: *entities-style
-                      title: "Väggplattan"
-                      type: entities
+                          - type: custom:button-card
+                            name: >
+                              [[[ return 
+                              '<ha-icon icon="mdi:reload">
+                              </ha-icon> Startsidan'; ]]]
+                            tap_action:
+                              services: |
+                                [[[ hass.callService('browser_mod', 'toast', {message: 'Laddar om startsidan...'});
+                                hass.callService('shell_command', 'fullykiosk_load_start_url'); ]]]
+                            template: name_action
+
+                          - type: custom:button-card
+                            name: >
+                              [[[ return 
+                              '<ha-icon icon="mdi:reload">
+                              </ha-icon> Hela appen'; ]]]
+                            tap_action:
+                              services: |
+                                [[[ hass.callService('browser_mod', 'toast', {message: 'Startar om Fully Kiosk Browser...'});
+                                hass.callService('shell_command', 'fullykiosk_restart_app'); ]]]
+                            template: name_action
 
                     - break
 
-                    - entities:
+                    - type: entities
+                      title: Synology NAS
+                      show_header_toggle: false
+                      style: |
+                        ha-card {
+                          box-shadow: none;
+                          border-radius: 1em;
+                          background: rgba(34, 38, 39, 0.9);
+                          padding: 0.3em 1.25em 0.4em 0.5em;
+                        }
+                        .card-header {
+                          margin-left: 0.4em;
+                          margin-bottom: 0.1em;
+                          font-family: sf text;
+                          letter-spacing: 0.005em;
+                        }
+                        #states > div:nth-child(7) {
+                          margin: 0 -34px -21px -23px;
+                        }
+                      entities:
                         - entity: sensor.synology_dsm_status
                         - entity: sensor.nas_disk_temp
                         - entity: sensor.drifttid
@@ -224,34 +261,30 @@
                                 red
                               {% endif %};
                               }
-
                         - entities:
                             - entity: sensor.processor_use
                               name: Processor
                               icon: 'mdi:chip'
-                              tap_action: service
-                              service_options:
-                                domain: homeassistant
-                                service: update_entity
-                                data:
+                              tap_action:
+                                action: call-service
+                                service: homeassistant.update_entity
+                                service_data:
                                   entity_id: sensor.processor_use
                             - entity: sensor.memory_use_percent
                               name: Minne - 4GB
                               icon: 'mdi:memory'
-                              tap_action: service
-                              service_options:
-                                domain: homeassistant
-                                service: update_entity
-                                data:
+                              tap_action:
+                                action: call-service
+                                service: homeassistant.update_entity
+                                service_data:
                                   entity_id: sensor.memory_use_percent
                             - entity: sensor.disk_use_percent
                               name: Lagring - 10.5TB
                               icon: 'mdi:harddisk'
-                              tap_action: service
-                              service_options:
-                                domain: homeassistant
-                                service: update_entity
-                                data:
+                              tap_action:
+                                action: call-service
+                                service: homeassistant.update_entity
+                                service_data:
                                   entity_id: sensor.disk_use_percent
                           positions: *bar_card_positions
                           severity: *bar_card_severity
@@ -260,7 +293,7 @@
                           style: *bar_card_style
                           unit_of_measurement: '%'
                           height: 2em
-                          width: 45%
+                          width: 55%
                           type: custom:bar-card
 
                         - type: custom:hui-horizontal-stack-card
@@ -275,7 +308,7 @@
                                 ha-card {
                                   box-shadow: none;
                                   background: none;
-                                  margin-top: -1.4em;
+                                  margin-top: -0.7em;
                                   max-height: 1px;
                                   z-index: 2;
                                 }
@@ -290,19 +323,20 @@
                                 ha-card {
                                   box-shadow: none;
                                   background: none;
-                                  margin-top: -1.4em;
+                                  margin-top: -0.7em;
                                   max-height: 1px;
                                   z-index: 2;
                                 } 
                               z-index: 2;
                               type: entities
 
-                        - align_state: left
+                        - type: custom:mini-graph-card
                           entities:
                             - color: '#385581'
-                              entity: sensor.synology_dsm_network_up
+                              entity: sensor.synology_network_up
                             - color: green
-                              entity: sensor.synology_dsm_network_down
+                              entity: sensor.synology_network_down
+                          align_state: left
                           group: false
                           points_per_hour: 15
                           line_width: 3
@@ -321,41 +355,7 @@
                               border-radius: 1em;
                               background: none;
                               box-shadow: none;
-                              height: 10em;
+                              height: 8.65em;
                             }
                           tap_action:
                             action: none
-                          type: custom:mini-graph-card
-
-                      show_header_toggle: false
-                      style: |
-                        ha-card {
-                          box-shadow: none;
-                          border-radius: 1em;
-                          background: rgba(34, 38, 39, 0.9);
-                          padding-right: 0.7em;
-                        }
-                        .card-header {
-                          margin-left: 0.4em;
-                          font-family: sf text;
-                          letter-spacing: 0.005em;
-                        }
-                        ha-card > div.card-header > div {
-                          padding-top: 2px;
-                          margin-bottom: -2px;
-                        }
-                        #states > div:nth-child(7) {
-                          margin: -24.5px -26px -16px -16px;
-                        }
-                      title: "Synology NAS"
-                      type: entities
-                  column_num: 3
-                  layout: vertical
-                  type: custom:layout-card
-                deviceID:
-                  - this
-                style:
-                  background: none
-                  box-shadow: none
-                  width: 85em
-                title: Stäng

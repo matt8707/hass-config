@@ -1,108 +1,101 @@
               action: call-service
               service: browser_mod.popup
               service_data:
+                title: Stäng
+                deviceID: this
+                style:
+                  background: none
+                  box-shadow: none
+                  width: 28em
                 card:
-                  cards:
-                    - type: custom:button-entity-row
-                      buttons:
-                        - - entity: script.auto_hemma
-                            name: "\U0001F3E0 Hemma"
-                            style:
-                              background: '#FFFFFF10'
-                              color: '#d2d3d3'
-                              border-radius: 0.7em
-                              font-weight: 500
-                              font-size: 1.1em
-                              padding: 1.2em 1.5em 1.2em 1.2em
-                              margin-top: 1.75em
-                              margin-bottom: 1.1em
-                              font-family: SF Text
-                              word-spacing: 0.4em
-                              width: 6.72em
-                              height: 1.9em
-                              justify-content: center
-                              margin-left: 0.8em
-                          - entity: script.auto_stang_allt
-                            name: "\U0001F44B\U0001F3FB Lämna"
-                            style:
-                              background: '#FFFFFF10'
-                              color: '#d2d3d3'
-                              border-radius: 0.7em
-                              font-weight: 500
-                              font-size: 1.1em
-                              padding: 1.2em 1.5em 1.2em 1.2em
-                              margin-top: 1.75em
-                              margin-bottom: 1.1em
-                              font-family: SF Text
-                              word-spacing: 0.4em
-                              width: 6.72em
-                              height: 1.9em
-                              justify-content: center
-                              margin-right: 0.7em
-                        - - entity: scene.filmdags
-                            name: "\U0001F37F Filmdags"
-                            style:
-                              background: '#FFFFFF10'
-                              color: '#d2d3d3'
-                              border-radius: 0.7em
-                              font-weight: 500
-                              font-size: 1.1em
-                              padding: 1.2em 1.5em 1.2em 1.2em
-                              margin-bottom: 1.1em
-                              font-family: SF Text
-                              word-spacing: 0.4em
-                              width: 6.72em
-                              height: 1.9em
-                              justify-content: center
-                              margin-left: 0.8em
-                          - entity: scene.party
-                            name: "\U0001F389 Party"
-                            style:
-                              background: '#FFFFFF10'
-                              color: '#d2d3d3'
-                              border-radius: 0.7em
-                              font-weight: 500
-                              font-size: 1.1em
-                              padding: 1.2em 1.5em 1.2em 1.2em
-                              margin-bottom: 1.1em
-                              font-family: SF Text
-                              word-spacing: 0.4em
-                              width: 6.72em
-                              height: 1.9em
-                              justify-content: center
-                              margin-right: 0.7em
-                        - - entity: scene.x
-                            name: "\U0001F525 Bemysa"
-                            style:
-                              background: '#FFFFFF10'
-                              color: '#d2d3d3'
-                              border-radius: 0.7em
-                              font-weight: 500
-                              font-size: 1.1em
-                              padding: 1.2em 1.5em 1.2em 1.2em
-                              margin-bottom: 0em
-                              font-family: SF Text
-                              word-spacing: 0.4em
-                              width: 6.72em
-                              height: 1.9em
-                              justify-content: center
-                              margin-left: 0.8em
-                          - entity: scene.laggdags
-                            name: "\U0001F6CC Läggdags"
-                            style:
-                              background: '#FFFFFF10'
-                              color: '#d2d3d3'
-                              border-radius: 0.7em
-                              font-weight: 500
-                              font-size: 1.1em
-                              padding: 1.2em 1.5em 1.2em 1.2em
-                              margin-bottom: 0em
-                              font-family: SF Text
-                              word-spacing: 0.4em
-                              width: 6.72em
-                              height: 1.9em
-                              justify-content: center
-                              margin-right: 0.7em
+                  type: entities
+                  title: Scenarier
+                  show_header_toggle: false
+                  style: |
+                    ha-card {
+                      box-shadow: none;
+                      border-radius: 1em;
+                      background: rgba(34, 38, 39, 0.9);
+                      padding: 0.3em 1.25em 0.4em 0.5em;
+                    }
+                    .card-header {
+                      margin-left: 0.4em;
+                      margin-bottom: 0.1em;
+                      font-family: sf text;
+                      letter-spacing: 0.005em;
+                    }
+                  entities:
+
+                    - type: custom:hui-horizontal-stack-card
+                      style: |
+                        #root {
+                          justify-content: space-evenly;
+                          margin: 0.5em -0.7em 0.7em 0;
+                        }
+                      cards:
+
+                      - type: custom:button-card
+                        name: "\U0001F3E0 Hemma"
+                        tap_action:
+                          action: call-service
+                          service: script.auto_hemma
+                        styles: &scenes-button-width
+                          card:
+                            [width: 9.8em, word-spacing: 0.4em]
+                        template: name_action
+
+                      - type: custom:button-card
+                        name: "\U0001F44B\U0001F3FB Lämna"
+                        tap_action:
+                          action: call-service
+                          service: script.auto_stang_allt
+                        styles: *scenes-button-width
+                        template: name_action
+
+                    - type: custom:hui-horizontal-stack-card
+                      style: &horizontal-style |
+                        #root {
+                          justify-content: space-evenly;
+                          margin: 1.4em -0.7em 0.7em 0;
+                        }
+                      cards:
+
+                      - type: custom:button-card
+                        name: "\U0001F37F Filmdags"
+                        tap_action:
+                          action: call-service
+                          service: scene.filmdags
+                        styles: *scenes-button-width
+                        template: name_action
+
+                      - type: custom:button-card
+                        name: "\U0001F389 Party"
+                        tap_action:
+                          action: call-service
+                          service: scene.party
+                        styles: *scenes-button-width
+                        template: name_action
+
+                    - type: custom:hui-horizontal-stack-card
+                      style: *horizontal-style
+                      cards:
+
+                      - type: custom:button-card
+                        name: "\U0001F525 Bemysa"
+                        tap_action:
+                          action: call-service
+                          service: scene.x
+                        styles: *scenes-button-width
+                        template: name_action
+
+                      - type: custom:button-card
+                        name: "\U0001F6CC Läggdags"
+                        tap_action:
+                          action: call-service
+                          service: scene.laggdags
+                        styles: *scenes-button-width
+                        template: name_action
+
                     - content: >
                         <font size="3em" color="#abadad">{{'\U0001F3E0'}}  ‍ **Hemma** </font><br>
                         <font color="#595c5d">Standardbelysning baserat på klockslag.</font><br>
@@ -126,19 +119,12 @@
                           line-height: 1.52em;
                           font-size: 1em;
                           background: none;
-                          margin-left: 1.1em;
-                          margin-top: 0.65em;
+                          justify-content: center;
+                          display: flex;
                           box-shadow: none;
                           height: 28.75em;
                           cursor: default;
+                          margin: 0.8em 0 -1.2em 0;
                         }
-                      type: custom:hui-markdown-card
-                  type: custom:stack-in-card
-                deviceID:
-                  - this
-                style:
-                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
-                  '--ha-card-box-shadow': none
-                  border-radius: 0.8vw
-                  opacity: 0.9
-                title: Scenarier
+                      type: custom:hui-element
+                      card_type: markdown

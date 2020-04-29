@@ -1,71 +1,57 @@
               action: call-service
               service: browser_mod.popup
               service_data:
-                card:
-                  cards:
-                    - entities:
-                        - entity: switch.tv_template
-                          name: Sony Bravia
-                          secondary_info: last-changed
-                        - entity: input_select.hdmi
-                      style: |
-                        ha-card {
-                          margin-bottom: -1em;
-                        }
-                      type: entities
-                    - entities:
-                        - buttons:
-                            - icon: 'mdi:volume-mute'
-                              icon_style:
-                                '--iron-icon-height': 1.7em
-                                '--iron-icon-width': 1.7em
-                              service: script.turn_on
-                              service_data:
-                                entity_id: script.tv_mute_toggle
-                              style:
-                                background: '#FFFFFF10'
-                                border-radius: 0.7em
-                                font-size: 1.1em
-                                font-weight: 500
-                                padding: 1.2em 1.4em 1.2em 1.4em
-                            - icon: 'mdi:volume-minus'
-                              icon_style:
-                                '--iron-icon-height': 1.7em
-                                '--iron-icon-width': 1.7em
-                              service: media_player.volume_down
-                              service_data:
-                                entity_id: media_player.sony_bravia_tv
-                              style:
-                                background: '#FFFFFF10'
-                                border-radius: 0.7em
-                                font-size: 1.1em
-                                font-weight: 500
-                                padding: 1.2em 1.4em 1.2em 1.4em
-                            - icon: 'mdi:volume-plus'
-                              icon_style:
-                                '--iron-icon-height': 1.7em
-                                '--iron-icon-width': 1.7em
-                              service: media_player.volume_up
-                              service_data:
-                                entity_id: media_player.sony_bravia_tv
-                              style:
-                                background: '#FFFFFF10'
-                                border-radius: 0.7em
-                                font-size: 1.1em
-                                font-weight: 500
-                                padding: 1.2em 1.4em 1.2em 1.4em
-                          type: custom:button-entity-row
-                      style: |
-                        ha-card {
-                          margin-top: -1.5em;
-                          padding-bottom: 0.4em;
-                        }
-                      type: entities
-                  type: vertical-stack
-                deviceID:
-                  - this
-                style:
-                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
-                  border-radius: 0.8vw
-                  opacity: 0.9
                 title: Tv
+                deviceID: this
+                style:
+                  --ha-card-border-radius: 0 0 1em 1em
+                  border-radius: 1em
+                  opacity: 0.9
+                card:
+                  type: entities
+                  style: "ha-card {padding: 0.3em 1.2em 0.4em 0.5em;}"
+                  entities:
+
+                    - entity: switch.tv_template
+                      name: Sony Bravia
+                      secondary_info: last-changed
+
+                    - entity: input_select.hdmi
+
+                    - type: custom:hui-horizontal-stack-card
+                      style: |
+                        #root { justify-content: space-evenly;
+                        margin: 1.4em -0.7em 0.7em 0; }
+                      cards:
+
+                      - type: custom:button-card
+                        icon: mdi:volume-mute
+                        triggers_update:
+                          ['media_player.sony_bravia_tv']
+                        tap_action:
+                          action: call-service
+                          service: media_player.volume_mute
+                          service_data:
+                            entity_id: media_player.sony_bravia_tv
+                            is_volume_muted: >
+                              [[[ if (states['media_player.sony_bravia_tv'].attributes.is_volume_muted === 'false')
+                              return 'true'; else return 'false'; ]]]
+                        template: icon_action
+
+                      - type: custom:button-card
+                        icon: mdi:volume-minus
+                        tap_action:
+                          action: call-service
+                          service: media_player.volume_down
+                          service_data:
+                            entity_id: media_player.sony_bravia_tv
+                        template: icon_action
+
+                      - type: custom:button-card
+                        icon: mdi:volume-plus
+                        tap_action:
+                          action: call-service
+                          service: media_player.volume_up
+                          service_data:
+                            entity_id: media_player.sony_bravia_tv
+                        template: icon_action

@@ -1,16 +1,30 @@
               action: call-service
               service: browser_mod.popup
               service_data:
+                title: Monitorer
+                deviceID: this
+                style:
+                  --ha-card-border-radius: 0 0 1em 1em
+                  border-radius: 1em
+                  opacity: 0.9
                 card:
+                  type: entities
+                  show_header_toggle: false
+                  style: "ha-card {padding: 0.3em 1.2em 0.4em 0.5em;}"
                   entities:
+
                     - entity: switch.wemo_monitorer
                       secondary_info: last-changed
+
                     - type: custom:slider-entity-row
                       entity: input_number.monitorer_volume
                       style: |
                         div {
                           max-width: 60%;
                           margin: auto;
+                        }
+                        hui-generic-entity-row > div > span {
+                          display: block;
                         }
                         :host {
                         --paper-item-icon-color: 
@@ -24,60 +38,46 @@
                             red
                           {% endif %};
                           }
+
                     - entity: automation.turn_off_monitorer
                       icon: 'mdi:speaker-off'
                       name: Stäng av när dator stängs av
-                    - entity: group.automation_system_reference
-                    - buttons:
-                        - icon: 'mdi:volume-mute'
-                          icon_style:
-                            '--iron-icon-height': 1.7em
-                            '--iron-icon-width': 1.7em
+
+                    - entity: automation.eq_calibration
+                      name: Automatisk kalibrationsprofil
+                      icon: 'mdi:tune-vertical'
+
+                    - type: custom:hui-horizontal-stack-card
+                      style: |
+                        #root {
+                          justify-content: space-evenly;
+                          margin: 1.4em -0.7em 0.7em 0;
+                        }
+                      cards:
+
+                      - type: custom:button-card
+                        icon: mdi:volume-mute
+                        tap_action:
+                          action: call-service
                           service: script.turn_on
                           service_data:
                             entity_id: script.monitorer_mute_toggle
-                          style:
-                            background: '#FFFFFF10'
-                            border-radius: 0.7em
-                            font-size: 1.1em
-                            font-weight: 500
-                            padding: 1.2em 1.4em 1.2em 1.4em
-                            margin: 0.8em 0 0.5em 0
-                        - icon: 'mdi:volume-minus'
-                          icon_style:
-                            '--iron-icon-height': 1.7em
-                            '--iron-icon-width': 1.7em
+                        template: icon_action
+
+                      - type: custom:button-card
+                        icon: mdi:volume-minus
+                        tap_action:
+                          action: call-service
                           service: input_number.decrement
                           service_data:
                             entity_id: input_number.monitorer_volume
-                          style:
-                            background: '#FFFFFF10'
-                            border-radius: 0.7em
-                            font-size: 1.1em
-                            font-weight: 500
-                            padding: 1.2em 1.4em 1.2em 1.4em
-                            margin: 0.8em 0 0.5em 0
-                        - icon: 'mdi:volume-plus'
-                          icon_style:
-                            '--iron-icon-height': 1.7em
-                            '--iron-icon-width': 1.7em
+                        template: icon_action
+
+                      - type: custom:button-card
+                        icon: mdi:volume-plus
+                        tap_action:
+                          action: call-service
                           service: input_number.increment
                           service_data:
                             entity_id: input_number.monitorer_volume
-                          style:
-                            background: '#FFFFFF10'
-                            border-radius: 0.7em
-                            font-size: 1.1em
-                            font-weight: 500
-                            padding: 1.2em 1.4em 1.2em 1.4em
-                            margin: 0.8em 0 0.5em 0
-                      type: custom:button-entity-row
-                  show_header_toggle: false
-                  type: entities
-                deviceID:
-                  - this
-                style:
-                  '--ha-card-border-radius': 0vw 0vw 0.8vw 0.8vw
-                  border-radius: 0.8vw
-                  opacity: 0.9
-                title: Monitorer
+                        template: icon_action

@@ -1,55 +1,80 @@
               action: call-service
               service: browser_mod.popup
               service_data:
+                title: Stäng
+                deviceID: this
+                style:
+                  background: none
+                  box-shadow: none
+                  width: calc(400px + 555px)
                 card:
+                  type: custom:layout-card
+                  column_num: 2
+                  column_width: [400, 555]
+                  layout: vertical
                   cards:
-                    - cards:
-                        - entities:
+                    - type: custom:hui-vertical-stack-card
+                      cards:
+                        - type: entities
+                          title: Dammsugare
+                          show_header_toggle: false
+                          style: &entities-style |
+                            ha-card {
+                              box-shadow: none;
+                              border-radius: 1em;
+                              background: rgba(34, 38, 39, 0.9);
+                              padding: 0.3em 1.25em 0.4em 0.5em;
+                            }
+                            .card-header {
+                              margin-left: 0.4em;
+                              margin-bottom: 0.1em;
+                              font-family: sf text;
+                              letter-spacing: 0.005em;
+                            }
+                          entities:
+
                           - entity: sensor.roborock_state
                           - entity: sensor.roborock_battery_level
                           - entity: sensor.roborock_last_clean
 
-                          - entities:
+                          - type: custom:bar-card
+                            entities:
                               - entity: sensor.roborock_filter
                                 name: Filter
                                 icon: 'mdi:filter-variant'
-                                tap_action: service
-                                service_options:
-                                  domain: homeassistant
-                                  service: update_entity
-                                  data:
+                                tap_action:
+                                  action: call-service
+                                  service: homeassistant.update_entity
+                                  service_data:
                                     entity_id: sensor.roborock_filter
                               - entity: sensor.roborock_huvudborste
                                 name: Huvudborste
                                 icon: 'mdi:broom'
-                                tap_action: service
-                                service_options:
-                                  domain: homeassistant
-                                  service: update_entity
-                                  data:
+                                tap_action:
+                                  action: call-service
+                                  service: homeassistant.update_entity
+                                  service_data:
                                     entity_id: sensor.roborock_huvudborste
                               - entity: sensor.roborock_sidoborste
                                 name: Sidoborste
                                 icon: 'mdi:tools'
-                                tap_action: service
-                                service_options:
-                                  domain: homeassistant
-                                  service: update_entity
-                                  data:
+                                tap_action:
+                                  action: call-service
+                                  service: homeassistant.update_entity
+                                  service_data:
                                     entity_id: sensor.roborock_sidoborste
                               - entity: sensor.roborock_sensorer
                                 name: Sensorer
                                 icon: 'mdi:spray-bottle'
-                                tap_action: service
-                                service_options:
-                                  domain: homeassistant
-                                  service: update_entity
-                                  data:
+                                tap_action:
+                                  action: call-service
+                                  service: homeassistant.update_entity
+                                  service_data:
                                     entity_id: sensor.roborock_sensorer
                             positions:
                               icon: outside
-                              indicator: inside
-                              title: outside
+                              indicator: 'off'
+                              name: outside
                             severity:
                               - color: '#303435'
                                 from: 11
@@ -60,8 +85,11 @@
                             decimal: 0
                             entity_row: true
                             style: |
-                              ha-card {
-                                margin-bottom: -0.51em;
+                              bar-card-iconbar {
+                                padding-left: 0.23em;
+                              }
+                              bar-card-name {
+                                padding-left: 0.25em;
                               }
                               bar-card-value {
                                 margin-right: auto;
@@ -81,76 +109,74 @@
                               }
                             unit_of_measurement: '%'
                             height: 2em
-                            width: 45%
-                            type: custom:bar-card
+                            width: 55%
 
                           - entity: input_select.roborock_fan_speed
 
-                          - buttons:
-                              - icon: 'mdi:play-pause'
-                                icon_style:
-                                  '--iron-icon-height': 1.7em
-                                  '--iron-icon-width': 4em
-                                service: script.vacuum_start_pause
-                                style: &button-style
-                                  background: '#FFFFFF10'
-                                  border-radius: 0.7em
-                                  font-size: 1.1em
-                                  font-weight: 500
-                                  padding: 1.2em 1.4em 1.2em 1.4em
-                                  margin-top: 0.9em
-                                  margin-bottom: 0.2em
-                              - icon: 'mdi:home-map-marker'
-                                icon_style:
-                                  '--iron-icon-height': 2em
-                                  '--iron-icon-width': 2em
+                          - type: custom:hui-horizontal-stack-card
+                            style: |
+                              #root {
+                                justify-content: space-evenly;
+                                margin: 3.2em -0.7em 0.7em 0;
+                              }
+                            cards:
+
+                            - type: custom:button-card
+                              icon: mdi:play-pause
+                              triggers_update:
+                                ['vacuum.xiaomi_vacuum_cleaner']
+                              tap_action:
+                                action: call-service
+                                service: >
+                                  [[[ if (states['vacuum.xiaomi_vacuum_cleaner'].state === 'docked' || 
+                                  states['vacuum.xiaomi_vacuum_cleaner'].state === 'paused') 
+                                  return 'vacuum.start';
+                                  else return 'vacuum.pause'; ]]]
+                                service_data:
+                                  entity_id: vacuum.xiaomi_vacuum_cleaner
+                              styles:
+                                icon:
+                                  [width: 1.8em]
+                                card:
+                                  [width: 6em]
+                              template: icon_action
+
+                            - type: custom:button-card
+                              icon: mdi:home-map-marker
+                              color: '#9da0a2'
+                              tap_action:
+                                action: call-service
                                 service: vacuum.return_to_base
                                 service_data:
                                   entity_id: vacuum.xiaomi_vacuum_cleaner
-                                style: *button-style
-                              - icon: 'mdi:map-marker-question'
-                                icon_style:
-                                  '--iron-icon-height': 1.9em
-                                  '--iron-icon-width': 1.9em
+                              template: icon_action
+
+                            - type: custom:button-card
+                              icon: mdi:map-marker-question
+                              color: '#9da0a2'
+                              tap_action:
+                                action: call-service
                                 service: vacuum.locate
                                 service_data:
                                   entity_id: vacuum.xiaomi_vacuum_cleaner
-                                style: *button-style
-                            type: custom:button-entity-row
-
-                          show_header_toggle: false
-                          style: |
-                            ha-card {
-                              box-shadow: none;
-                              border-radius: 1em;
-                              background: rgba(34, 38, 39, 0.9);
-                              padding-right: 0.7em;
-                            }
-                            .card-header {
-                              margin-left: 0.4em;
-                              font-family: sf text;
-                              letter-spacing: 0.005em;
-                            }
-                            ha-card > div.card-header > div {
-                              padding-top: 2px;
-                              margin-bottom: -2px;
-                            }
-                          title: "Dammsugare"
-                          type: entities
-                      type: custom:hui-vertical-stack-card
+                              template: icon_action
 
                     - break
 
                     - type: picture-elements
+                      title: Kartläggning
                       image: /local/overlay.svg
+                      style: *entities-style
                       elements:
+
                         - type: custom:valetudo-map-card
                           entity: sensor.xiaomi_map
+                          title: null
                           rotate: 0
                           crop:
-                            top: 170
+                            top: 175
                             bottom: 88
-                            left: 170
+                            left: 180
                             right: 0
                           min_height: 0
                           map_scale: 2
@@ -171,6 +197,7 @@
                             box-shadow: none
                             '--ha-card-background': none
                             '--ha-card-box-shadow': none
+
                         - type: "custom:button-card"
                           name: Sovrum
                           show_label: false
@@ -179,17 +206,14 @@
                             action: none
                           styles: &button-card-styles
                             card:
-                              - background: '#191c1d80'
-                              - border-radius: 0.6em
-                              - box-shadow: none
-                              - padding: 0.41em 0.7em 0.4em 0.7em
+                              [background: '#191c1d80', border-radius: 0.6em, 
+                              box-shadow: none, padding: 0.41em 0.7em 0.4em 0.7em]
                             name:
-                              - font-size: 0.83em
-                              - letter-spacing: 0.003em
-                              - color: '#aeb0b0'
+                              [font-size: 0.83em, letter-spacing: 0.003em, color: '#aeb0b0']
                           style:
                             left: 22.5%
                             top: 76%
+
                         - type: "custom:button-card"
                           name: Kök
                           show_label: false
@@ -200,6 +224,7 @@
                           style:
                             left: 17%
                             top: 51%
+
                         - type: "custom:button-card"
                           name: Studio
                           show_label: false
@@ -210,6 +235,7 @@
                           style:
                             left: 39.5%
                             top: 22%
+
                         - type: "custom:button-card"
                           name: Vardagsrum
                           show_label: false
@@ -220,6 +246,7 @@
                           style:
                             left: 77%
                             top: 9%
+
                         - type: "custom:button-card"
                           name: Hall
                           show_label: false
@@ -230,6 +257,7 @@
                           style:
                             left: 59%
                             top: 49%
+
                         - type: image
                           tap_action:
                             action: call-service
@@ -244,6 +272,7 @@
                             left: 50%
                             width: 100%
                             cursor: default
+
                         - type: image
                           tap_action:
                             action: call-service
@@ -257,6 +286,7 @@
                             top: 8%
                             left: 59.5%
                             transform: scale(1.6,1.2)
+
                         - type: image
                           tap_action:
                             action: call-service
@@ -271,6 +301,7 @@
                             left: 35%
                             transform: scale(1.4,1.1)
                             opacity: 10%
+
                         - type: image
                           tap_action:
                             action: call-service
@@ -284,6 +315,7 @@
                             top: 36.5%
                             left: 3.5%
                             transform: scale(0.9,0.9)
+
                         - type: image
                           tap_action:
                             action: call-service
@@ -297,6 +329,7 @@
                             top: 61%
                             left: 10.5%
                             transform: scale(1.4,0.9)
+
                         - type: image
                           tap_action:
                             action: call-service
@@ -310,6 +343,7 @@
                             top: 8%
                             left: 24%
                             transform: scale(1,1.2)
+
                         - type: "custom:button-card"
                           entity: input_select.roborock_zone
                           name: Rengöringszon
@@ -323,51 +357,14 @@
                               entity_id: script.zoned_cleanup
                           styles:
                             card:
-                              - background: '#FFFFFF10'
-                              - border-radius: 0.7em
-                              - box-shadow: none
+                              [background: '#FFFFFF10', border-radius: 0.6em, box-shadow: none]
                             name:
-                              - font-size: 0.75em
-                              - color: '#FFFFFF40'
-                              - margin-bottom: 0.05em
+                              [font-size: 0.75em, color: '#FFFFFF40', margin-bottom: 0.05em]
                             label:
-                              - font-size: 1.05em
-                              - padding: 0.02em 0.8em 0.6em 0.8em
-                              - color: >
-                                  [[[
-                                    if (states['input_select.roborock_zone'].state == 'Ingen vald')
-                                      return "#e0e1e170";
-                                    return "#e0e1e1";
-                                  ]]]
+                              [font-size: 1.05em, padding: 0.02em 0.8em 0.6em 0.8em, 
+                              color: "[[[ if (states['input_select.roborock_zone'].state == 'Ingen vald') 
+                              return '#e0e1e170'; return '#e0e1e1';]]]"]
                           style:
                             left: 80%
-                            top: 82.7%
+                            top: 88%
                             width: 10.2em
-                      style: |
-                        ha-card {
-                          background: rgba(34, 38, 39, 0.9);
-                          box-shadow: none;
-                          border-radius: 1em;
-                          height: 41.95em;
-                        }
-                        .card-header {
-                          margin-left: 0.4em;
-                          font-family: sf text;
-                          letter-spacing: 0.005em;
-                        }
-                        ha-card > div.card-header > div {
-                          padding-top: 2px;
-                          margin-bottom: -2px;
-                        }
-                      title: "Kartläggning"
-                  column_num: 2
-                  column_width: [390, 555]
-                  layout: vertical
-                  type: custom:layout-card
-                deviceID:
-                  - this
-                style:
-                  background: none
-                  box-shadow: none
-                  width: auto
-                title: Stäng
