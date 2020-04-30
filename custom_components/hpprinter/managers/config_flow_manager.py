@@ -11,9 +11,11 @@ from .. import LoginError
 from ..api.HPPrinterAPI import ProductConfigDynDataAPI
 from ..helpers.const import *
 from ..managers.configuration_manager import ConfigManager
+from ..models import AlreadyExistsError
 from ..models.config_data import ConfigData
 
 _LOGGER = logging.getLogger(__name__)
+_CONF_ARR = [CONF_NAME, CONF_HOST]
 
 
 class ConfigFlowManager:
@@ -33,7 +35,6 @@ class ConfigFlowManager:
             self._pre_config = True
 
             self.update_data(self.config_entry.data)
-            self.update_options(self.config_entry.options)
 
         self._is_initialized = True
         self._auth_error = False
@@ -54,18 +55,60 @@ class ConfigFlowManager:
     def config_data(self) -> ConfigData:
         return self.config_manager.data
 
-    def update_options(self, options: dict, update_entry: bool = False):
-        if options is not None:
+    async def update_options(self, options: dict, update_entry: bool = False):
+        new_options = {}
+        validate_login = False
+        config_entries = None
+
+        if update_entry:
+            config_entries = self._hass.config_entries
+
+            data = self.config_entry.data
+            name_changed = False
+
+            for conf in _CONF_ARR:
+                if data.get(conf) != options.get(conf):
+                    validate_login = True
+
+                    if conf == CONF_NAME:
+                        name_changed = True
+
+            if name_changed:
+                entries = config_entries.async_entries(DOMAIN)
+
+                for entry in entries:
+                    entry_item: ConfigEntry = entry
+
+                    if entry_item.unique_id == self.config_entry.unique_id:
+                        continue
+
+                    if options.get(CONF_NAME) == entry_item.data.get(CONF_NAME):
+                        raise AlreadyExistsError(entry_item)
+
             new_options = {}
             for key in options:
                 new_options[key] = options[key]
 
-            self.options = new_options
-        else:
-            self.options = {}
-
         if update_entry:
+            for conf in _CONF_ARR:
+                if conf in new_options:
+                    self.data[conf] = new_options[conf]
+
+                    del new_options[conf]
+
+            self.options = new_options
+
             self._update_entry()
+
+            if validate_login:
+                errors = await self.valid_login()
+
+                if errors is None:
+                    config_entries.async_update_entry(self.config_entry, data=self.data)
+                else:
+                    raise LoginError(errors)
+
+            return new_options
 
     def update_data(self, data: dict, update_entry: bool = False):
         new_data = None
@@ -100,6 +143,8 @@ class ConfigFlowManager:
         config_data = self.config_data
 
         fields = {
+            vol.Required(CONF_NAME, default=config_data.name): str,
+            vol.Required(CONF_HOST, default=config_data.host): str,
             vol.Optional(CONF_STORE_DATA, default=config_data.should_store): bool,
             vol.Required(
                 CONF_UPDATE_INTERVAL, default=config_data.update_interval
@@ -135,4 +180,4 @@ class ConfigFlowManager:
 
             errors = {"base": f"error_{status_code}"}
 
-        return {"logged-in": errors is None, "errors": errors}
+        return errors

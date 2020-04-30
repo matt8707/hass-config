@@ -1,6 +1,5 @@
 {
   "config": {
-    "title": "HP Printer",
     "step": {
       "user": {
         "title": "Set up HP Printer",
@@ -24,11 +23,18 @@
               "title": "Options for HP Printer.",
               "description": "Define additional settings for HP Printer integration",
               "data": {
+                  "host": "Host",
+                  "name": "Name",
                   "update_interval": "Update interval (Seconds)",
                   "log_level": "Log level",
                   "store_data": "Should store responses?"
               }
           }
-      }
+      },
+    "error": {
+      "error_400": "Invalid server details",
+      "error_404": "Unsupported API",
+        "already_configured": "HP Printer integration ({name}) already configured"
+    }
   }
 }

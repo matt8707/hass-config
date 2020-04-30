@@ -1,12 +1,11 @@
 {
   "config": {
-    "title": "HP Drucker",
     "step": {
       "user": {
-        "title": "HP Drucker einrichten ",
+        "title": "Configurar impresora HP",
         "data": {
           "host": "Host",
-          "name": "Name"
+          "name": "Nombre"
         }
       }
     }

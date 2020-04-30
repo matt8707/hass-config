@@ -51,7 +51,6 @@ const removeNodes = (container, start, end = null) => {
         start = n;
     }
 };
-//# sourceMappingURL=dom.js.map
 
 /**
  * @license
@@ -267,7 +266,6 @@ const createMarker = () => document.createComment('');
 const lastAttributeNameRegex = 
 // eslint-disable-next-line no-control-regex
 /([ \x09\x0a\x0c\x0d])([^\0-\x1F\x7F-\x9F "'>=/]+)([ \x09\x0a\x0c\x0d]*=[ \x09\x0a\x0c\x0d]*(?:[^ \x09\x0a\x0c\x0d"'`<>=]*|"[^"]*|'[^']*))$/;
-//# sourceMappingURL=template.js.map
 
 /**
  * @license
@@ -392,7 +390,6 @@ function insertNodeIntoTemplate(template, node, refNode = null) {
         }
     }
 }
-//# sourceMappingURL=modify-template.js.map
 
 /**
  * @license
@@ -456,7 +453,6 @@ const directive = (f) => ((...args) => {
 const isDirective = (o) => {
     return typeof o === 'function' && directives.has(o);
 };
-//# sourceMappingURL=directive.js.map
 
 /**
  * @license
@@ -480,7 +476,6 @@ const noChange = {};
  * A sentinel value that signals a NodePart to fully clear its content.
  */
 const nothing = {};
-//# sourceMappingURL=part.js.map
 
 /**
  * @license
@@ -613,7 +608,6 @@ class TemplateInstance {
         return fragment;
     }
 }
-//# sourceMappingURL=template-instance.js.map
 
 /**
  * @license
@@ -702,7 +696,6 @@ class TemplateResult {
         return template;
     }
 }
-//# sourceMappingURL=template-result.js.map
 
 /**
  * @license
@@ -1150,7 +1143,6 @@ const getOptions = (o) => o &&
     (eventOptionsSupported ?
         { capture: o.capture, passive: o.passive, once: o.once } :
         o.capture);
-//# sourceMappingURL=parts.js.map
 
 /**
  * @license
@@ -1198,7 +1190,6 @@ function templateFactory(result) {
     return template;
 }
 const templateCaches = new Map();
-//# sourceMappingURL=template-factory.js.map
 
 /**
  * @license
@@ -1239,7 +1230,6 @@ const render = (result, container, options) => {
     part.setValue(result);
     part.commit();
 };
-//# sourceMappingURL=render.js.map
 
 /**
  * @license
@@ -1291,7 +1281,6 @@ class DefaultTemplateProcessor {
     }
 }
 const defaultTemplateProcessor = new DefaultTemplateProcessor();
-//# sourceMappingURL=default-template-processor.js.map
 
 /**
  * @license
@@ -1317,7 +1306,6 @@ if (typeof window !== 'undefined') {
  * render to and update a container.
  */
 const html = (strings, ...values) => new TemplateResult(strings, values, 'html', defaultTemplateProcessor);
-//# sourceMappingURL=lit-html.js.map
 
 /**
  * @license
@@ -1587,7 +1575,6 @@ const render$1 = (result, container, options) => {
         window.ShadyCSS.styleElement(container.host);
     }
 };
-//# sourceMappingURL=shady-render.js.map
 
 /**
  * @license
@@ -2258,7 +2245,6 @@ _a = finalized;
  * Marks class as having finished creating properties.
  */
 UpdatingElement[_a] = true;
-//# sourceMappingURL=updating-element.js.map
 
 /**
  * @license
@@ -2377,7 +2363,6 @@ function property(options) {
         legacyProperty(options, protoOrDescriptor, name) :
         standardProperty(options, protoOrDescriptor);
 }
-//# sourceMappingURL=decorators.js.map
 
 /**
 @license
@@ -2441,7 +2426,6 @@ const css = (strings, ...values) => {
     const cssText = values.reduce((acc, v, idx) => acc + textFromCSSResult(v) + strings[idx + 1], strings[0]);
     return new CSSResult(cssText, constructionToken);
 };
-//# sourceMappingURL=css-tag.js.map
 
 /**
  * @license
@@ -2635,7 +2619,6 @@ LitElement['finalized'] = true;
  * @nocollapse
  */
 LitElement.render = render$1;
-//# sourceMappingURL=lit-element.js.map
 
 /**
  * Parse or format dates
@@ -2964,7 +2947,7 @@ fecha.parse = function (dateStr, format, i18nSettings) {
   return date;
 };
 
-var a=function(){try{(new Date).toLocaleDateString("i");}catch(e){return "RangeError"===e.name}return !1}()?function(e,t){return e.toLocaleDateString(t,{year:"numeric",month:"long",day:"numeric"})}:function(t){return fecha.format(t,"mediumDate")},n=function(){try{(new Date).toLocaleString("i");}catch(e){return "RangeError"===e.name}return !1}()?function(e,t){return e.toLocaleString(t,{year:"numeric",month:"long",day:"numeric",hour:"numeric",minute:"2-digit"})}:function(t){return fecha.format(t,"haDateTime")},r=function(){try{(new Date).toLocaleTimeString("i");}catch(e){return "RangeError"===e.name}return !1}()?function(e,t){return e.toLocaleTimeString(t,{hour:"numeric",minute:"2-digit"})}:function(t){return fecha.format(t,"shortTime")};function f(e){return e.substr(0,e.indexOf("."))}var w="hass:bookmark",E=["closed","locked","off"],A=function(e,t,a,n){n=n||{},a=null==a?{}:a;var r=new Event(t,{bubbles:void 0===n.bubbles||n.bubbles,cancelable:Boolean(n.cancelable),composed:void 0===n.composed||n.composed});return r.detail=a,e.dispatchEvent(r),r},j={alert:"hass:alert",automation:"hass:playlist-play",calendar:"hass:calendar",camera:"hass:video",climate:"hass:thermostat",configurator:"hass:settings",conversation:"hass:text-to-speech",device_tracker:"hass:account",fan:"hass:fan",group:"hass:google-circles-communities",history_graph:"hass:chart-line",homeassistant:"hass:home-assistant",homekit:"hass:home-automation",image_processing:"hass:image-filter-frames",input_boolean:"hass:drawing",input_datetime:"hass:calendar-clock",input_number:"hass:ray-vertex",input_select:"hass:format-list-bulleted",input_text:"hass:textbox",light:"hass:lightbulb",mailbox:"hass:mailbox",notify:"hass:comment-alert",person:"hass:account",plant:"hass:flower",proximity:"hass:apple-safari",remote:"hass:remote",scene:"hass:google-pages",script:"hass:file-document",sensor:"hass:eye",simple_alarm:"hass:bell",sun:"hass:white-balance-sunny",switch:"hass:flash",timer:"hass:timer",updater:"hass:cloud-upload",vacuum:"hass:robot-vacuum",water_heater:"hass:thermometer",weblink:"hass:open-in-new"};function I(e,t){if(e in j)return j[e];switch(e){case"alarm_control_panel":switch(t){case"armed_home":return "hass:bell-plus";case"armed_night":return "hass:bell-sleep";case"disarmed":return "hass:bell-outline";case"triggered":return "hass:bell-ring";default:return "hass:bell"}case"binary_sensor":return t&&"off"===t?"hass:radiobox-blank":"hass:checkbox-marked-circle";case"cover":return "closed"===t?"hass:window-closed":"hass:window-open";case"lock":return t&&"unlocked"===t?"hass:lock-open":"hass:lock";case"media_player":return t&&"off"!==t&&"idle"!==t?"hass:cast-connected":"hass:cast";case"zwave":switch(t){case"dead":return "hass:emoticon-dead";case"sleeping":return "hass:sleep";case"initializing":return "hass:timer-sand";default:return "hass:z-wave"}default:return console.warn("Unable to find icon for domain "+e+" ("+t+")"),w}}var F=function(e){A(window,"haptic",e);},B=function(e,t,a){void 0===a&&(a=!1),a?history.replaceState(null,"",t):history.pushState(null,"",t),A(window,"location-changed",{replace:a});},U=function(e,t,a){void 0===a&&(a=!0);var n,r=f(t),i="group"===r?"homeassistant":r;switch(r){case"lock":n=a?"unlock":"lock";break;case"cover":n=a?"open_cover":"close_cover";break;default:n=a?"turn_on":"turn_off";}return e.callService(i,n,{entity_id:t})},V=function(e,t){var a=E.includes(e.states[t].state);return U(e,t,a)},W=function(e,t,a,n){var r;if("double_tap"===n&&a.double_tap_action?r=a.double_tap_action:"hold"===n&&a.hold_action?r=a.hold_action:"tap"===n&&a.tap_action&&(r=a.tap_action),r||(r={action:"more-info"}),!r.confirmation||r.confirmation.exemptions&&r.confirmation.exemptions.some(function(e){return e.user===t.user.id})||(F("warning"),confirm(r.confirmation.text||"Are you sure you want to "+r.action+"?")))switch(r.action){case"more-info":(a.entity||a.camera_image)&&A(e,"hass-more-info",{entityId:a.entity?a.entity:a.camera_image});break;case"navigate":r.navigation_path&&B(0,r.navigation_path);break;case"url":r.url_path&&window.open(r.url_path);break;case"toggle":a.entity&&(V(t,a.entity),F("success"));break;case"call-service":if(!r.service)return void F("failure");var i=r.service.split(".",2);t.callService(i[0],i[1],r.service_data),F("success");}};function G(e){return void 0!==e&&"none"!==e.action}//# sourceMappingURL=index.m.js.map
+var a=function(){try{(new Date).toLocaleDateString("i");}catch(e){return "RangeError"===e.name}return !1}()?function(e,t){return e.toLocaleDateString(t,{year:"numeric",month:"long",day:"numeric"})}:function(t){return fecha.format(t,"mediumDate")},n=function(){try{(new Date).toLocaleString("i");}catch(e){return "RangeError"===e.name}return !1}()?function(e,t){return e.toLocaleString(t,{year:"numeric",month:"long",day:"numeric",hour:"numeric",minute:"2-digit"})}:function(t){return fecha.format(t,"haDateTime")},r=function(){try{(new Date).toLocaleTimeString("i");}catch(e){return "RangeError"===e.name}return !1}()?function(e,t){return e.toLocaleTimeString(t,{hour:"numeric",minute:"2-digit"})}:function(t){return fecha.format(t,"shortTime")};function f(e){return e.substr(0,e.indexOf("."))}var w="hass:bookmark",E=["closed","locked","off"],A=function(e,t,a,n){n=n||{},a=null==a?{}:a;var r=new Event(t,{bubbles:void 0===n.bubbles||n.bubbles,cancelable:Boolean(n.cancelable),composed:void 0===n.composed||n.composed});return r.detail=a,e.dispatchEvent(r),r},j={alert:"hass:alert",automation:"hass:playlist-play",calendar:"hass:calendar",camera:"hass:video",climate:"hass:thermostat",configurator:"hass:settings",conversation:"hass:text-to-speech",device_tracker:"hass:account",fan:"hass:fan",group:"hass:google-circles-communities",history_graph:"hass:chart-line",homeassistant:"hass:home-assistant",homekit:"hass:home-automation",image_processing:"hass:image-filter-frames",input_boolean:"hass:drawing",input_datetime:"hass:calendar-clock",input_number:"hass:ray-vertex",input_select:"hass:format-list-bulleted",input_text:"hass:textbox",light:"hass:lightbulb",mailbox:"hass:mailbox",notify:"hass:comment-alert",person:"hass:account",plant:"hass:flower",proximity:"hass:apple-safari",remote:"hass:remote",scene:"hass:google-pages",script:"hass:file-document",sensor:"hass:eye",simple_alarm:"hass:bell",sun:"hass:white-balance-sunny",switch:"hass:flash",timer:"hass:timer",updater:"hass:cloud-upload",vacuum:"hass:robot-vacuum",water_heater:"hass:thermometer",weblink:"hass:open-in-new"};function I(e,t){if(e in j)return j[e];switch(e){case"alarm_control_panel":switch(t){case"armed_home":return "hass:bell-plus";case"armed_night":return "hass:bell-sleep";case"disarmed":return "hass:bell-outline";case"triggered":return "hass:bell-ring";default:return "hass:bell"}case"binary_sensor":return t&&"off"===t?"hass:radiobox-blank":"hass:checkbox-marked-circle";case"cover":return "closed"===t?"hass:window-closed":"hass:window-open";case"lock":return t&&"unlocked"===t?"hass:lock-open":"hass:lock";case"media_player":return t&&"off"!==t&&"idle"!==t?"hass:cast-connected":"hass:cast";case"zwave":switch(t){case"dead":return "hass:emoticon-dead";case"sleeping":return "hass:sleep";case"initializing":return "hass:timer-sand";default:return "hass:z-wave"}default:return console.warn("Unable to find icon for domain "+e+" ("+t+")"),w}}var F=function(e){A(window,"haptic",e);},B=function(e,t,a){void 0===a&&(a=!1),a?history.replaceState(null,"",t):history.pushState(null,"",t),A(window,"location-changed",{replace:a});},U=function(e,t,a){void 0===a&&(a=!0);var n,r=f(t),i="group"===r?"homeassistant":r;switch(r){case"lock":n=a?"unlock":"lock";break;case"cover":n=a?"open_cover":"close_cover";break;default:n=a?"turn_on":"turn_off";}return e.callService(i,n,{entity_id:t})},V=function(e,t){var a=E.includes(e.states[t].state);return U(e,t,a)},W=function(e,t,a,n){var r;if("double_tap"===n&&a.double_tap_action?r=a.double_tap_action:"hold"===n&&a.hold_action?r=a.hold_action:"tap"===n&&a.tap_action&&(r=a.tap_action),r||(r={action:"more-info"}),!r.confirmation||r.confirmation.exemptions&&r.confirmation.exemptions.some(function(e){return e.user===t.user.id})||(F("warning"),confirm(r.confirmation.text||"Are you sure you want to "+r.action+"?")))switch(r.action){case"more-info":(a.entity||a.camera_image)&&A(e,"hass-more-info",{entityId:a.entity?a.entity:a.camera_image});break;case"navigate":r.navigation_path&&B(0,r.navigation_path);break;case"url":r.url_path&&window.open(r.url_path);break;case"toggle":a.entity&&(V(t,a.entity),F("success"));break;case"call-service":if(!r.service)return void F("failure");var i=r.service.split(".",2);t.callService(i[0],i[1],r.service_data),F("success");}};function G(e){return void 0!==e&&"none"!==e.action}
 
 /**
  * Performs a deep merge of objects and returns new object. Does not modify
@@ -4536,7 +4519,7 @@ const actionHandler = directive((options = {}) => (part) => {
     actionHandlerBind(part.committer.element, options);
 });
 
-const CARD_VERSION = '3.1.3';
+const CARD_VERSION = '3.1.4';
 
 var common = {
 	version: "Version",
@@ -4833,6 +4816,7 @@ let BarCard = class BarCard extends LitElement {
         this._configArray = [];
         this._stateArray = [];
         this._animationState = [];
+        this._rowAmount = 1;
     }
     static async getConfigElement() {
         return document.createElement('bar-card-editor');
@@ -4865,9 +4849,10 @@ let BarCard = class BarCard extends LitElement {
                 value: 'inside',
             },
         }, config);
-        if (this._config.stack)
+        if (this._config.stack == 'horizontal')
             this._config.columns = this._config.entities.length;
         this._configArray = createConfigArray(this._config);
+        this._rowAmount = this._configArray.length / this._config.columns;
     }
     render() {
         if (!this._config || !this.hass) {
@@ -5321,6 +5306,16 @@ let BarCard = class BarCard extends LitElement {
     _handleAction(ev) {
         if (this.hass && ev.target.config && ev.detail.action) {
             W(this, this.hass, ev.target.config, ev.detail.action);
+        }
+    }
+    getCardSize() {
+        if (this._config.height) {
+            const heightString = this._config.height.toString();
+            const cardSize = Math.trunc((Number(heightString.replace('px', '')) / 50) * this._rowAmount);
+            return cardSize + 1;
+        }
+        else {
+            return this._rowAmount + 1;
         }
     }
 };

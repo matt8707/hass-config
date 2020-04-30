@@ -3,11 +3,13 @@ import logging
 
 from homeassistant import config_entries
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_NAME
 from homeassistant.core import callback
 
 from .helpers import get_ha
 from .helpers.const import *
 from .managers.config_flow_manager import ConfigFlowManager
+from .models import AlreadyExistsError, LoginError
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -46,8 +48,7 @@ class HPPrinterFlowHandler(config_entries.ConfigFlow):
             ha = get_ha(self.hass, name)
 
             if ha is None:
-                result = await self._config_flow.valid_login()
-                errors = result.get("errors")
+                errors = await self._config_flow.valid_login()
             else:
                 _LOGGER.warning(f"{DEFAULT_NAME} ({name}) already configured")
 
@@ -94,10 +95,27 @@ class HPPrinterOptionsFlowHandler(config_entries.OptionsFlow):
         self._config_flow.initialize(self.hass)
 
         if user_input is not None:
-            self._config_flow.update_options(user_input, True)
+            new_user_input = None
+
+            try:
+                new_user_input = await self._config_flow.update_options(
+                    user_input, True
+                )
+
+            except LoginError as lex:
+                _LOGGER.warning(f"Cannot complete login")
+
+                errors = lex.errors
+
+            except AlreadyExistsError as aeex:
+                new_name = aeex.entry.data.get(CONF_NAME)
+
+                _LOGGER.warning(f"Cannot update host to: {new_name}")
+
+                errors = {"base": "already_configured"}
 
             if errors is None:
-                return self.async_create_entry(title="", data=user_input)
+                return self.async_create_entry(title="", data=new_user_input)
 
         data_schema = self._config_flow.get_default_options()
 
