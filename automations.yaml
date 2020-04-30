@@ -330,21 +330,6 @@
       entity_id: media_player.sony_bravia_tv
       source: "{{ states('input_select.hdmi') }}"
 
-- alias: hdmi_input_select_update
-  initial_state: true
-  trigger:
-  - platform: state
-    entity_id: media_player.sony_bravia_tv
-  action:
-  - service: input_select.select_option
-    data_template:
-      entity_id: input_select.hdmi
-      option: >-
-        {% if state_attr('media_player.sony_bravia_tv', 'None') %}
-        HDMI 1 {% else %}
-        {{ state_attr('media_player.sony_bravia_tv', 'media_title') }}
-        {% endif %}
-
 - alias: hdmi2_input_select
   initial_state: true
   trigger:
@@ -481,7 +466,7 @@
       ['light.belysning', 'light.fonsterlampa', 'light.datorlampa', 'light.taklampor', 
       'light.mattias', 'light.sanja', 'light.badrum', 'light.taklampa', 'light.kladkammare_2', 
       'light.hall', 'switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 
-      'switch.playstation_template', 'switch.tv_template', 'switch.tv2_template']
+      'switch.playstation_template', 'media_player.sony_bravia_tv', 'media_player.samsung']
     from: 'on'
     to: 'off'
   condition:
