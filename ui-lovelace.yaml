@@ -277,6 +277,11 @@ views:
     cards:
       - type: picture-elements
         image: /local/uibg.png
+        style: |
+          /* sidebar footer icons */ #root > hui-icon-element 
+          {color: rgba(255, 255, 255, 0.1) !important; transition: 0.4s;} 
+          #root > hui-icon-element:hover, #root > hui-icon-element:active 
+          {color: rgba(255, 255, 255, 0.25) !important; transition: none;}
         elements:
 
           #################################################
