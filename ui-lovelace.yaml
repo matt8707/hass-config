@@ -694,15 +694,21 @@ views:
           #################################################
 
           - type: custom:button-card
-            entity: switch.tv_template
+            entity: media_player.sony_bravia_tv
             triggers_update:
-              ['switch.tv_template', 'input_boolean.sony_bravia_tv']
+              ['media_player.sony_bravia_tv', 'input_boolean.sony_bravia_tv']
             style:
               top: 37.9%
               left: 30.31%
               width: 10%
             tap_action:
-              action: toggle
+              services: |
+                [[[ if (entity.state === 'off')
+                hass.callService('input_boolean', 'turn_on', {entity_id: 'input_boolean.sony_bravia_tv'});
+                hass.callService('remote', 'send_command', {entity_id: 'remote.vardagsrum', command: 'menu'});
+                if (entity.state === 'on')
+                hass.callService('input_boolean', 'turn_on', {entity_id: 'input_boolean.sony_bravia_tv'});
+                hass.callService('media_player', 'turn_off', {entity_id: 'media_player.sony_bravia_tv'}); ]]]
             hold_action: !include popup/vardagsrum_tv.yaml
             custom_fields:
               icon_tv: &icon_tv >
@@ -956,15 +962,21 @@ views:
           #################################################
 
           - type: custom:button-card
-            entity: switch.tv2_template
+            entity: media_player.samsung
             triggers_update:
-              ['switch.tv2_template', 'input_boolean.samsung']
+              ['media_player.samsung', 'input_boolean.samsung']
             style:
               top: 37.9%
               left: 91.05%
               width: 10%
             tap_action:
-              action: toggle
+              services: |
+                [[[ if (entity.state === 'off') 
+                hass.callService('input_boolean', 'turn_on', {entity_id: 'input_boolean.samsung'});
+                hass.callService('remote', 'send_command', {entity_id: 'remote.sovrum', command: 'menu'}); 
+                if (entity.state === 'on') 
+                hass.callService('input_boolean', 'turn_on', {entity_id: 'input_boolean.samsung'}); 
+                hass.callService('media_player', 'turn_off', {entity_id: 'media_player.samsung'}); ]]]
             hold_action: !include popup/sovrum_tv2.yaml
             custom_fields:
               icon_tv: *icon_tv
@@ -1351,7 +1363,6 @@ views:
                 var fill_color = home ? 'none' : '#FFFFFF08';
                 return '<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="20.5" stroke="' + stroke_color+ '" stroke-width="1.5" fill="' + fill_color + '" /><text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">' + last_changed + '</text></svg>'; ]]]
             template: switch
-
 
           #################################################
           #                                               #
