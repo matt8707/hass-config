@@ -45,7 +45,10 @@ lovelace:
 logger:
   default: warning
   logs:
-    braviarc.braviarc: fatal
+    bravia_tv.braviarc: fatal
+    homeassistant.helpers.service: fatal
+    homeassistant.components.rest.sensor: fatal
+    homeassistant.components.bluetooth_tracker.device_tracker: fatal
     homeassistant.components.websocket_api: fatal
     homeassistant.components.command_line.sensor: fatal
     homeassistant.components.homekit.type_media_players: fatal
@@ -100,10 +103,6 @@ hue:
 wemo:
   discovery: false
   static: !secret wemo_static
-
-media_player:
-  - platform: braviatv
-    host: !secret braviatv_host
 
 cast:
   media_player:
