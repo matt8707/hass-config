@@ -275,11 +275,19 @@ class AppleTVManager:
         protocol = Protocol(self.config_entry.data[CONF_PROTOCOL])
 
         self._update_state(message="Discovering device...")
-        atvs = await scan(
-            self.hass.loop, identifier=identifier, protocol=protocol, hosts=[address]
-        )
-        if atvs:
-            return atvs[0]
+        try:
+            atvs = await scan(
+                self.hass.loop,
+                identifier=identifier,
+                protocol=protocol,
+                hosts=[address],
+            )
+            if atvs:
+                return atvs[0]
+        except exceptions.NonLocalSubnetError:
+            _LOGGER.debug(
+                "Address %s is on non-local subnet, relying on regular scan", address
+            )
 
         _LOGGER.debug(
             "Failed to find device %s with address %s, trying to scan",
