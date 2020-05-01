@@ -114,6 +114,17 @@ samsungtv:
 hacs:
   token: !secret hacs_token
 
+synology_dsm_custom:
+  # update sensors every 30 seconds instead of 15min
+  # __init__.py SCAN_INTERVAL = timedelta(seconds=30)
+  # const.py DOMAIN = "synology_dsm_custom"
+  # manifest.json "domain": "synology_dsm_custom"
+  - host: !secret synologydsm_host
+    port: !secret synologydsm_port
+    ssl: false
+    username: !secret synologydsm_username
+    password: !secret synologydsm_password
+
 google:
   client_id: !secret google_client_id
   client_secret: !secret google_client_secret
