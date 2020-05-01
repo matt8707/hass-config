@@ -78,17 +78,6 @@
       | replace ('About an hour', '1 timme')  | replace ('seconds', 'sekunder') | replace ('minutes', 'minuter') 
       | replace ('hours', 'timmar') | replace ('days', 'dagar') + ' sedan' }}
 
-  # - platform: synologydsm_custom
-  #   # changed timedelta, updates every 30 seconds instead of 15min
-  #   host: !secret synologydsm_host
-  #   port: !secret synologydsm_port
-  #   ssl: false
-  #   username: !secret synologydsm_username
-  #   password: !secret synologydsm_password
-  #   monitored_conditions:
-  #     ['cpu_total_load', 'memory_real_usage', 'volume_status', 
-  #     'volume_percentage_used', 'network_up', 'network_down', 'disk_temp']
-
   - platform: snmp
     host: !secret synologydsm_host
     community: public
