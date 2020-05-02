@@ -8,6 +8,33 @@
           "name": "Nombre"
         }
       }
+    },
+    "abort": {
+      "already_configured": "La integración de la impresora HP ({name}) ya está configurada"
+    },
+    "error": {
+      "error_400": "Los detalles del servidor no son válidos",
+      "error_404": "API no compatible"
+    }
+  },
+  "options": {
+      "step": {
+          "hp_printer_additional_settings": {
+              "title": "Opciones para la impresora HP.",
+              "description": "Definir configuraciones adicionales para la integración de la impresora HP",
+              "data": {
+                  "host": "Host",
+                  "name": "Nombre",
+                  "update_interval": "Intervalo de actualización (segundos)",
+                  "log_level": "Nivel del registro",
+                  "store_data": "Debería almacenar respuestas?"
+              }
+          }
+      },
+    "error": {
+      "error_400": "Los detalles del servidor no son válidos",
+      "error_404": "API no compatible",
+        "already_configured": "La integración de la impresora HP ({name}) ya está configurada"
     }
   }
 }
