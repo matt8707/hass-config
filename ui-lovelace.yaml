@@ -216,7 +216,7 @@ button_card_templates:
           [background-image:
           "[[[ if (entity.attributes.entity_picture == null) return 'none'; 
           else return 'url(' + entity.attributes.entity_picture + ')'; ]]]", 
-          background-size: cover, top: 0%, left: 0%, width: 100%, filter: blur(4px), clip-path: inset(16.05vw 0 0 0), position: absolute]
+          background-size: cover, top: 0%, left: 0%, width: 100%, filter: blur(4px), clip-path: inset(16vw 0 0 0), position: absolute]
         overlay:
           [background:
           "[[[ if (entity.attributes.entity_picture == null) return 'rgba(255, 255, 255, 0.8)'; 
@@ -232,6 +232,8 @@ button_card_templates:
           "[[[ if (entity.state == 'off' || entity.state == 'idle' || entity.state == 'standby') return '#9da0a2'; 
           else return 'rgba(255, 255, 255, 0.8)'; ]]]", 
           top: 5.35%, left: 5.35%, width: 2.95vw, position: absolute]
+        progress_bar:
+          [top: 16vw, left: 0%, width: 100%, position: absolute]
       name:
         [top: 79.8%, left: 5.3%, position: absolute, line-height: 2vw, z-index: 10]
       state:
@@ -277,11 +279,23 @@ views:
     cards:
       - type: picture-elements
         image: /local/uibg.png
-        style: |
-          /* sidebar footer icons */ #root > hui-icon-element 
-          {color: rgba(255, 255, 255, 0.1) !important; transition: 0.4s;} 
-          #root > hui-icon-element:hover, #root > hui-icon-element:active 
-          {color: rgba(255, 255, 255, 0.25) !important; transition: none;}
+        style:
+          .: |
+            /* Global */
+
+            #root > hui-icon-element {color: rgba(255, 255, 255, 0.1) !important; transition: 0.4s;}
+            #root > hui-icon-element:hover {color: rgba(255, 255, 255, 0.25) !important; transition: none;}
+            #root > hui-icon-element:active {color: rgba(255, 255, 255, 0.35) !important; transition: none;}
+
+          "#root > hui-element > hui-markdown-card":
+            $: |
+              ha-card > ha-markdown {padding: 0 !important;}
+              ha-card > ha-markdown > p > font > ha-icon {margin-bottom: 0.15%; opacity: 0.6;}
+
+          "#root > hui-state-label-element":
+            $: |
+              div {padding: 0 !important;}
+
         elements:
 
           #################################################
@@ -293,8 +307,8 @@ views:
           - type: custom:hui-element
             card_type: markdown
             style:
-              top: 91.9%
-              left: 69.3%
+              top: 93.5%
+              left: 70.2%
               width: 90vw
               height: 1px
               --iron-icon-height: 1.2vw
@@ -312,20 +326,21 @@ views:
               {% if is_state('sensor.sweden_coronavirus_current', 
               'unavailable') %} {% else %}
               <font color='#6a7377'>
-              <b><ha-icon icon="bha:virus"></ha-icon> Coronavirus</b>
+              <ha-icon icon="bha:virus"></ha-icon> <b>Coronavirus</b>
               ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
-              <b><ha-icon icon="mdi:emoticon-sad"></ha-icon> 
-              {{ states('sensor.sweden_coronavirus_current') }}</b> smittade
+              <ha-icon icon="mdi:emoticon-sad"></ha-icon> 
+              <b>{{ states('sensor.sweden_coronavirus_current') }}</b> smittade
               ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
               <ha-icon icon="mdi:chart-bar"></ha-icon> 
-              <b>{{ ((states('sensor.sweden_coronavirus_confirmed') 
-              | int / 10327589 ) * 100) | round(2) }}%</b> av Sverige </font>
+              <b>{{ ((states('sensor.sweden_coronavirus_confirmed')
+              | int / 10327589 ) * 100) | round(2) }}%</b> av Sverige
               ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
-              <b><ha-icon icon="mdi:emoticon-happy"></ha-icon> 
-              {{ states('sensor.sweden_coronavirus_recovered') }}</b> tillfrisknade
+              <ha-icon icon="mdi:emoticon-happy"></ha-icon> 
+              <b>{{ states('sensor.sweden_coronavirus_recovered') }}</b> tillfrisknade
               ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
-              <b><ha-icon icon="mdi:grave-stone"></ha-icon> 
-              {{ states('sensor.sweden_coronavirus_deaths') }}</b> avlidna
+              <ha-icon icon="mdi:grave-stone"></ha-icon> 
+              <b>{{ states('sensor.sweden_coronavirus_deaths') }}</b> avlidna
+              </font>
               {% endif %}
 
           ##########################################################################
@@ -360,10 +375,10 @@ views:
               action: none
             style:
               top: 10.8%
-              left: 2.8%
+              left: 3%
               color: rgba(255, 255, 255, 0.7)
               font-family: SF Text
-              font-size: 5.41vw
+              font-size: 5vw
               font-weight: 200
               letter-spacing: -0.05vw
               max-width: 1px
@@ -378,15 +393,15 @@ views:
           - type: custom:hui-element
             card_type: markdown
             style:
-              top: 16%
-              left: 11%
-              width: 17.5vw
+              top: 16.9%
+              left: 10.95%
+              width: 15.5vw
               height: 1px
               --ha-card-background: none
               --ha-card-box-shadow: none
               --primary-text-color: rgba(255, 255, 255, 0.9)
               font-family: SF Display
-              font-size: 1.6vw
+              font-size: 1.5vw
               font-weight: 300
               letter-spacing: 0.06vw
               line-height: 2.05vw
@@ -413,6 +428,9 @@ views:
 
 
               {{ states('sensor.tvatta_countdown') }}
+
+
+              {{ states('sensor.mathem_countdown') }}
 
 
               {% if states('sensor.imac_get_ip') == states('sensor.public_ip') 
@@ -649,7 +667,7 @@ views:
             <<: *title
             style:
               top: 9.15%
-              left: 24.85%
+              left: 25.4%
               <<: *title-style
 
           #################################################
@@ -780,7 +798,7 @@ views:
             <<: *title
             style:
               top: 9.15%
-              left: 49.65%
+              left: 50.2%
               <<: *title-style
 
           #################################################
@@ -896,7 +914,7 @@ views:
             <<: *title
             style:
               top: 9.15%
-              left: 74.55%
+              left: 75.1%
               <<: *title-style
 
           #################################################
@@ -1006,7 +1024,7 @@ views:
             <<: *title
             style:
               top: 53.4%
-              left: 24.75%
+              left: 25.4%
               <<: *title-style
 
           - type: custom:swipe-card
@@ -1093,6 +1111,15 @@ views:
                       custom_fields:
                         icon: &icon_apple_tv >
                           <svg viewBox="0 0 50 50"><path d="M25.2 49.7l-13.7-.1c-2.4 0-4.6-.8-6.5-2.2-2-1.6-3.6-3.6-4.3-6.2-.2-1-.2-1.9-.3-3V11.5C.5 7.9 1.9 5 4.8 2.7 6.2 1.6 7.8.8 9.6.5c.5-.1.9-.1 1.4-.1L27.5.3l10.9.1c2.6 0 4.8.8 6.7 2.4 2.1 1.7 3.7 3.9 4.2 6.6l.2 2.4.1 20.5-.1 6.7c-.1 2.2-.9 4.2-2.2 5.9-1.7 2.2-4 3.8-6.8 4.4-.6.1-1.2.2-1.9.2-.1.1-13.4.2-13.4.2zm-4-27.8c-.9-1.2-2.2-1.6-3.7-1.2-.4.1-.8.2-1.2.4-.3.1-.6.1-.8 0-.4-.1-.8-.3-1.2-.4-.3-.1-.7-.1-1-.1-1.5.2-2.4 1.1-3 2.6-.4 1.1-.3 2.2 0 3.5.4 1.5 1 2.9 2.1 4 .5.6 1.2.9 2 .6 1.1-.5 2.2-.5 3.4 0 .8.3 1.5 0 2.1-.6.7-.8 1.1-1.8 1.6-2.8v-.2c-1-.6-1.7-1.4-1.8-2.7-.2-1.4.5-2.4 1.5-3.1zm9.9-1.4c.1.2.1.3.1.4l3.6 9.5c.1.3.3.4.6.4h.7c.6 0 .6 0 .9-.6l3.7-9.4c.1-.1.1-.3.2-.5H39l-2.9 8.3-3.1-8.3-1.9.2zM27.3 18l-1.3.4c-.5.2-.5.2-.6.7v1.4h-1.6l.1 1.4h1.5v5c0 .7.1 1.4.2 2.1.1.5.3 1 .8 1.4.8.6 2.6.7 3.5.2l-.1-1.2h-1.3c-.5 0-.9-.3-1-.8-.1-.3-.2-.6-.2-1v-5.8H30c0-.5.1-1 0-1.4h-2.7V18zm-8.8-.9c-1.9.3-3 2-2.7 3.2 1.4.2 2.9-1.7 2.7-3.2z"/></svg>
+                        progress_bar: &progress_bar
+                          card: 
+                            type: custom:mini-media-player
+                            entity: '[[[ return entity.entity_id ]]]'
+                            artwork: none
+                            hide: {name: true, icon: true, info: true, power: true, source: true, sound_mode: true, controls: true, play_pause: true, play_stop: true, volume: true, mute: true, runtime: true, artwork_border: true, power_state: true, icon_state: true, shuffle: true}
+                            style: |
+                              div {border-radius: 0 !important; --mmp-accent-color: #2c7a9d; 
+                              --mmp-progress-height: 0.2vw; max-height: 0.2vw; }
                       style:
                         top: 50%
                         left: 50%
@@ -1114,6 +1141,7 @@ views:
                       entity: media_player.sovrum
                       custom_fields:
                         icon: *icon_apple_tv
+                        progress_bar: *progress_bar
                       style:
                         top: 50%
                         left: 50%
@@ -1158,6 +1186,7 @@ views:
                       custom_fields:
                         icon: &icon_nest_mini >
                           <svg viewBox="0 0 50 50"><path d="M49.7 25c0 13.6-11.1 24.7-24.8 24.7C11.3 49.7.3 38.6.3 25S11.4.3 25 .3 49.7 11.4 49.7 25zm-33.9 0a2.22 2.22 0 0 0-2.2-2.2c-1.2 0-2.3 1-2.3 2.2a2.22 2.22 0 0 0 2.2 2.2c1.3.1 2.3-.9 2.3-2.2h0zm10.8 0c0 1.2.9 2.2 2.2 2.3 1.3 0 2.3-1 2.3-2.2 0-1.3-1-2.3-2.2-2.3-1.3 0-2.3.9-2.3 2.2zm-3.2 0a2.22 2.22 0 0 0-2.2-2.2c-1.2 0-2.3 1-2.3 2.2a2.22 2.22 0 0 0 2.2 2.2c1.3 0 2.3-.9 2.3-2.2h0zm13 2.2a2.22 2.22 0 0 0 2.2-2.2c0-1.2-1-2.3-2.2-2.3a2.22 2.22 0 0 0-2.2 2.2c0 1.3 1 2.3 2.2 2.3z" /></svg>
+                        progress_bar: *progress_bar
                       style:
                         top: 50%
                         left: 50%
@@ -1230,7 +1259,7 @@ views:
             <<: *title
             style:
               top: 53.4%
-              left: 49.6%
+              left: 50.2%
               <<: *title-style
 
           #################################################
@@ -1324,7 +1353,7 @@ views:
             <<: *title
             style:
               top: 53.4%
-              left: 74.5%
+              left: 75.1%
               <<: *title-style
 
           #################################################
@@ -1462,10 +1491,11 @@ views:
             title: Ladda om
             icon: mdi:dots-vertical
             style:
-              top: 5%
-              left: 97%
+              top: 4%
+              left: 98%
               color: rgba(255, 255, 255, 0.1)
               opacity: 0.5
+              padding: 1vw
               --iron-icon-height: 4vw
               --iron-icon-width: 4vw
             tap_action:
