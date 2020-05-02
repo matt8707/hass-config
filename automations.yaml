@@ -384,6 +384,10 @@
               '/local/tts_custom/timer_tvatten_ar_klar.mp3',
               '/local/tts_custom/timer_dags_att_ga_ner.mp3'] | random }}
         media_content_type: music
+    - service: notify.mobile_app_iphone
+      data_template: 
+        title: "{{'\U0001F9FA'}} {{ ['Tvätten är färdig', 'Tvätten är klar', 'Dags att gå ner'] | random }}"
+        message: " "
     - service: shell_command.notify_laundry
     - delay: '00:00:03'
     - service: homeassistant.turn_on
