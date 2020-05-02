@@ -267,7 +267,7 @@
             {% elif states('sensor.dark_sky_temperature') | float > 0.0 %} 
             Känns som {{ states('sensor.dark_sky_apparent_temperature') | round }}° med 
             {{ states('sensor.dark_sky_precip_probability') | round }}% risk för regn 
-            {% if states('sensor.dark_sky_precip_probability') | float > 30.0 %} {{'\u2614\uFE0F' }}
+            {%- if states('sensor.dark_sky_precip_probability') | float > 30.0 %} {{'\u2614\uFE0F' }}
             {% endif %}
 
             {% elif states('sensor.dark_sky_temperature') | float > 19.0 and 
@@ -592,6 +592,37 @@
           "Juli", "Augusti", "September", "Oktober", "November", "December"] %}
           {{ strptime(states('sensor.date'), '%Y-%m-%d').day }}
           {{ months[now().month-1] }}
+
+      mathem_countdown:
+        entity_id: sensor.time
+        friendly_name: Mathem
+        value_template: >-
+          {% if state_attr('calendar.mathem', 'start_time') ==  null or 
+          state_attr('calendar.mathem', 'start_time') == None %}
+          {% else %} 
+            {% set mathem = state_attr('calendar.mathem', 'start_time') %}
+            {% set nu_tid = now() %}
+
+            {% set dag = strptime(mathem, "%Y-%m-%d %H:%M:%S").strftime("%A") 
+            | replace('Monday', 'Måndag') | replace('Tuesday', 'Tisdag') 
+            | replace('Wednesday', 'Onsdag') | replace('Thursday', 'Torsdag') 
+            | replace('Friday', 'Fredag') | replace('Saturday', 'Lördag') | replace('Sunday', 'Söndag') %}
+            {% set tid = as_timestamp(mathem) | timestamp_custom('%H:%M') %}
+            {% set tid_end = as_timestamp(state_attr('calendar.mathem', 'end_time')) | timestamp_custom('%H:%M') %}
+
+            {% set sub_timmar = as_timestamp(mathem) | timestamp_custom('%H') | int / 24 %}
+            {% set count = (as_timestamp(mathem) - as_timestamp(nu_tid)) / 86400 - sub_timmar %}
+
+            {% if count <= 0.0 %}
+              {{'\U0001F6D2'}} Mathem idag mellan {{ tid }}-{{ tid_end }}
+            {% elif count <= 1.0 %}
+              Mathem imorgon mellan {{ tid }}-{{ tid_end }}
+            {% elif count <= 2.0 %}
+              Mathem i övermorgon mellan {{ tid }}-{{ tid_end }}
+            {% else %}
+              Mathem om {{ (count + sub_timmar) | round }} dagar på {{ dag }} mellan {{ tid }}-{{ tid_end }}
+            {% endif %}
+          {% endif %}
 
       tvatta_countdown:
         entity_id: sensor.time
