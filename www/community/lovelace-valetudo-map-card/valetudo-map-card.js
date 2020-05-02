@@ -4,6 +4,7 @@ class ValetudoMapCard extends HTMLElement {
     this.drawingMap = false;
     this.drawingControls = false;
     this.lastUpdatedMap = "";
+    this.lastDrawnTheme = null;
     this.lastUpdatedControls = "";
     this.attachShadow({ mode: 'open' });
     this.lastValidRobotPosition = [];
@@ -42,8 +43,8 @@ class ValetudoMapCard extends HTMLElement {
     this.cardContainer.appendChild(this.controlContainerStyle);
   };
 
-  shouldDrawMap(state) {
-    return !this.drawingMap && this.lastUpdatedMap != state.last_updated;
+  shouldDrawMap(state, theme) {
+    return !this.drawingMap && (this.lastUpdatedMap != state.last_updated || this.lastDrawnTheme != theme);
   };
 
   shouldDrawControls(state) {
@@ -267,7 +268,12 @@ class ValetudoMapCard extends HTMLElement {
     if (this._config.crop.right === undefined) this._config.crop.right = 0;
     if (this._config.min_height === undefined) this._config.min_height = 0;
 
-    // Set card title
+    // Set card title and hide the header completely if the title is set to an empty value
+    if (!this._config.title) {
+        this.cardHeader.style.display = 'none';
+    } else {
+        this.cardHeader.style.display = 'block';
+    };
     this.cardTitle.textContent = this._config.title;
   };
 
@@ -367,7 +373,7 @@ class ValetudoMapCard extends HTMLElement {
       const vacuumColor = this.calculateColor(homeAssistant, this._config.vacuum_color, '--primary-text-color');
 
       // Don't redraw unnecessarily often
-      if (this.shouldDrawMap(mapEntity)) {
+      if (this.shouldDrawMap(mapEntity, hass.selectedTheme)) {
         // Start drawing map
         this.drawingMap = true;
 
@@ -375,6 +381,7 @@ class ValetudoMapCard extends HTMLElement {
 
         // Done drawing map
         this.lastUpdatedMap = mapEntity.last_updated;
+        this.lastDrawnTheme = hass.selectedTheme;
         this.drawingMap = false;
       };
     };
