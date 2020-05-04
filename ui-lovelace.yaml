@@ -193,28 +193,28 @@ button_card_templates:
       custom_fields:
         media_image:
           [background-image:
-          "[[[ return entity.attributes.entity_picture === null ? 'linear-gradient(0deg, rgba(115, 115, 115, 0.2) 0%, rgba(115, 115, 115, 0.2) 100%)' 
+          "[[[ return entity.attributes.entity_picture == null ? 'linear-gradient(0deg, rgba(115, 115, 115, 0.2) 0%, rgba(115, 115, 115, 0.2) 100%)' 
           : 'linear-gradient(0deg, rgba(13,17,19,0.9) 0%, rgba(13,17,19,0) 50%), url(' + entity.attributes.entity_picture + ')'; ]]]", 
           background-size: cover, top: 0%, left: 0%, width: 100%, position: absolute]
         blur:
           [background-image:
-          "[[[ return entity.attributes.entity_picture === null ? 'none' : 'url(' + entity.attributes.entity_picture + ')'; ]]]", 
+          "[[[ return entity.attributes.entity_picture == null ? 'none' : 'url(' + entity.attributes.entity_picture + ')'; ]]]", 
           background-size: cover, top: 0%, left: 0%, width: 100%, filter: blur(4px), clip-path: inset(16vw 0 0 0), position: absolute]
         overlay:
           [background:
-          "[[[ return entity.attributes.entity_picture === null ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.4)'; ]]]", 
+          "[[[ return entity.attributes.entity_picture == null ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.4)'; ]]]", 
           background-size: cover, z-index: 0, top: 16vw, left: 0%, width: 100%, opacity: 1, position: absolute]
         play_pause:
           [filter: 
-          "[[[ return entity.attributes.entity_picture === null ? 'none' : 'drop-shadow(0 0 1.3vw rgba(0,0,0,0.7))'; ]]]", 
+          "[[[ return entity.attributes.entity_picture == null ? 'none' : 'drop-shadow(0 0 1.3vw rgba(0,0,0,0.7))'; ]]]", 
           fill: '#dedede', top: 0, right: 0, bottom: 0, left: 0, margin: auto, width: 21%, height: 21%, position: absolute]
         icon:
           [fill:
-          "[[[ if (entity.state == 'off' || entity.state == 'idle' || entity.state == 'standby') return '#9da0a2'; 
+          "[[[ if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby') return '#9da0a2'; 
           else return 'rgba(255, 255, 255, 0.8)'; ]]]", 
           top: 5.35%, left: 5.35%, width: 2.95vw, position: absolute]
         progress_bar:
-          [top: 16vw, left: 0%, width: 100%, position: absolute]
+          [top: 15.95vw, left: 0%, width: 100%, position: absolute]
       name:
         [top: 79.8%, left: 5.3%, position: absolute, line-height: 2vw, z-index: 10]
       state:
@@ -223,7 +223,7 @@ button_card_templates:
       card: 
         [<<: *button_styles_card, background-color: none, 
         color: &media_font_color "[[[ if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby') { return 'rgba(255, 255, 255, 0.3)'; }
-        if ((entity.state != 'off' && entity.state != 'idle' && entity.state != 'standby') && (entity.attributes.entity_picture === null)) {
+        if ((entity.state != 'off' && entity.state != 'idle' && entity.state != 'standby') && (entity.attributes.entity_picture == null)) {
         return 'rgba(0, 0, 0, 0.6)'; } else { return '#efefef'; } ]]]", 
         text-shadow: &media_text_shadow "[[[ if (entity.attributes.entity_picture == null) return 'none'; 
         else return '1px 1px 5px rgba(18, 22, 23, 0.9)' ; ]]]"]
@@ -246,7 +246,7 @@ button_card_templates:
         background-image: 
         "[[[ if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby') {
         return 'linear-gradient(0deg, rgba(115, 115, 115, 0.2) 0%, rgba(115, 115, 115, 0.2) 100%)'; }
-        if ((entity.state != 'off' && entity.state != 'idle' && entity.state != 'standby') && (entity.attributes.entity_picture === null)) {
+        if ((entity.state != 'off' && entity.state != 'idle' && entity.state != 'standby') && (entity.attributes.entity_picture == null)) {
         return 'linear-gradient(0deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.8) 100%)'; }
         else { return 'linear-gradient(0deg, rgba(0,0,0,.8) 0%, rgba(0,0,0,0) 100%), url(' + entity.attributes.entity_picture + ')'; } ]]]"]
 
@@ -1073,8 +1073,8 @@ views:
                             artwork: none
                             hide: {name: true, icon: true, info: true, power: true, source: true, sound_mode: true, controls: true, play_pause: true, play_stop: true, volume: true, mute: true, runtime: true, artwork_border: true, power_state: true, icon_state: true, shuffle: true}
                             style: |
-                              div {border-radius: 0 !important; --mmp-accent-color: #2c7a9d; 
-                              --mmp-progress-height: 0.2vw; max-height: 0.2vw; }
+                              div {border-radius: 0 !important; --mmp-accent-color: #3884b6; 
+                              --mmp-progress-height: 0.4vw; max-height: 0.4vw;}
                       style:
                         top: 50%
                         left: 50%
@@ -1322,7 +1322,7 @@ views:
             triggers_update:
               ['person.mattias', 'sensor.mattias_last_changed']
             state_display: &button_home_state_display >
-              [[[ return entity.state == 'home' ? 'Ja' : 'Nej'; ]]]
+              [[[ return entity.state === 'home' ? 'Ja' : 'Nej'; ]]]
             show_entity_picture: true
             state: &button_home_state
               - value: 'home'
