@@ -100,29 +100,16 @@ button_card_templates:
                     #popup > div.action-holder > div > div > span {
                       background: radial-gradient(circle at 50% 0, rgba(255,0,0,.5), rgba(255,0,0,0) 70.71%),
                       radial-gradient(circle at 6.7% 75%, rgba(0,0,255,.5), rgba(0,0,255,0) 70.71%),
-                      radial-gradient(circle at 93.3% 75%, rgba(0,255,0,.5), rgba(0,255,0,0) 70.71%) beige;
-                    }
+                      radial-gradient(circle at 93.3% 75%, rgba(0,255,0,.5), rgba(0,255,0,0) 70.71%) beige; }
                     #popup > div.action-holder > div > div {
-                      margin: 0.2em 0 0 0;
-                    }
+                      margin: 0.2em 0 0 0; }
                     #brightnessValue {
-                      color: rgba(255, 255, 255, 0.7);
-                      margin: -0.8em 0 0.7em 0;
-                      font-size: 1.9em;
-                      font-weight: 400;
-                      font-family: SF Display;
-                      letter-spacing: 0.04em;
-                      text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
-                    }
-                    #popup {
-                      margin: 0 0 0.8em 0;
-                    }
+                      color: rgba(255, 255, 255, 0.7); margin: -0.8em 0 0.7em 0; font-size: 1.9em; font-weight: 400; 
+                      font-family: SF Display; letter-spacing: 0.04em; text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2); }
+                    #popup { 
+                      margin: 0 0 0.8em 0; }
                     #popup > div.range-holder > input[type=range]::-webkit-slider-thumb {
-                      border: 0;
-                      height: 0;
-                      width: 0;
-                      cursor: pointer;
-                    }
+                      border: 0; eight: 0; width: 0; cursor: pointer; }
                   actions:
                     - service: browser_mod.popup
                       service_data:
