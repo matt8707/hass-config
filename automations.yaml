@@ -523,9 +523,15 @@
         entity_id: input_select.conditional_media
         option: "{{ trigger.to_state.name }}"
 
-- alias: conditional_media_paused
+- alias: conditional_media_paused_idle
   initial_state: true
   trigger:
+    - platform: state
+      entity_id: 
+        ['media_player.vardagsrum', 'media_player.sovrum', 
+         'media_player.playstation_4', 'media_player.google_nest_mini']
+      to:
+        ['off', 'idle', 'standby']
     - platform: state
       entity_id: 
         ['media_player.vardagsrum', 'media_player.sovrum', 
@@ -551,7 +557,7 @@
           {{ media_players | selectattr('state','eq','playing') | map(attribute='name') | max }}
           {% endif %}
 
-- alias: conditional_media_idle
+- alias: conditional_media_all_off
   initial_state: true
   trigger:
     - platform: template
