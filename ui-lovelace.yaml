@@ -47,14 +47,12 @@ button_card_templates:
           state: [color: 'rgba(0, 0, 0, 0.6)']
     custom_fields:
       info: >
-        [[[ var brightness = Math.round( entity.attributes.brightness / 2.54 ); 
-        if (entity.state === 'on') return '<svg viewBox="0 0 50 50"><circle id="c_brightness" cx="25" cy="25" r="20.5" stroke="#b2b2b2" stroke-width="1.5" fill="none" />
-        <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">' + brightness + '<tspan font-size="10">%</tspan></text></svg>'; ]]]
-    extra_styles: |
-      [[[ var radius = 20.5; 
-      var circumference = radius * 2 * Math.PI; 
-      var brightness = Math.round( entity.attributes.brightness / 2.54 ); 
-      return '#c_brightness { transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: ' + circumference + '; stroke-dashoffset: ' + (circumference - brightness / 100 * circumference) + ';}'; ]]]
+        [[[ if (entity.state === 'on' && entity.attributes.brightness) {
+        const brightness = Math.round(entity.attributes.brightness / 2.54);
+        const radius = 20.5; const circumference = radius * 2 * Math.PI; 
+        return `<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="${radius}" stroke="#b2b2b2" stroke-width="1.5" fill="none" style="
+        transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: ${circumference}; stroke-dashoffset: ${circumference - brightness / 100 * circumference};" />
+        <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">${brightness}<tspan font-size="10">%</tspan></text></svg>`; } ]]]
     styles:
       name: &button_styles_name
         [top: 57.7%, left: 11%, position: absolute, line-height: 2vw]
@@ -127,13 +125,13 @@ button_card_templates:
                               secondary_info: last-changed
                             - type: custom:light-entity-card
                               entity: '[[[ return entity.entity_id ]]]'
+                              style: 'ha-card {box-shadow: none; margin-bottom: -1em;}'
                               brightness: false
                               color_temp: true
                               full_width_sliders: true
                               header: false
                               show_slider_percent: true
                               smooth_color_wheel: true
-                              style: "ha-card {box-shadow: none; margin-bottom: -1em;}"
 
   switch:
     aspect_ratio: 1/1
@@ -160,59 +158,55 @@ button_card_templates:
         [background: '#FFFFFF10', color: '#9da0a2', border-radius: 0.6em, box-shadow: none, 
         transition: none, width: 100%, padding: 1em 1.4em 1em 1.2em, font-size: 1.06em, 
         font-weight: 500, letter-spacing: 0.015em]
-    style: "#name > ha-icon {width: 1.4em; margin-right: 0.3em; }"
+    style: '#name > ha-icon {width: 1.4em; margin-right: 0.3em; }'
 
   media:
     aspect_ratio: 1/1
     show_state: true
     show_icon: false
     state_display: >
-      [[[ if (entity.attributes.media_title == 'Nothing playing' || entity.attributes.media_title == 'No title' && entity.state == 'paused' ) return 'Inget spelas';
-      if (entity.attributes.media_title == 'No title' && entity.state == 'playing') return 'Ingen titel';
-      else if (entity.attributes.media_title != null) return entity.attributes.media_title; ]]]
+      [[[ if (entity.attributes.media_title === 'Nothing playing' || entity.attributes.media_title === 'No title' && entity.state === 'paused' ) { return 'Inget spelas'; }
+      if (entity.attributes.media_title === 'No title' && entity.state === 'playing') { return 'Ingen titel'; }
+      else { return entity.attributes.media_title; } ]]]
     custom_fields:
       media_image: >
         <svg viewBox="0 0 50 50" />
       blur: >
-        [[[ if (entity.attributes.entity_picture != null) 
-        return '<svg viewBox="0 0 50 50" />'; ]]]
+        [[[ if (entity.attributes.entity_picture != null) {
+        return '<svg viewBox="0 0 50 50" />'; } ]]]
       overlay: >
-        [[[ if (entity.state != 'off' && entity.state != 'idle' && entity.state != 'standby') 
-        return '<svg viewBox="0 0 50 50" />'; ]]]
+        [[[ if (entity.state != 'off' && entity.state != 'idle' && entity.state != 'standby') {
+        return '<svg viewBox="0 0 50 50" />'; } ]]]
       play_pause: >
-        [[[ if (entity.state === 'playing') return '<svg viewBox="0 0 166 166"><style>.scale-up{animation: scale-up 0.3s cubic-bezier(.05,.5,.3,1) 1; transform-origin: center center;}
-        @keyframes scale-up{0%{opacity: 0; transform: scale(0);}100%{opacity: 1; transform: scale(1);}}</style><path class="scale-up" d="M0 0h59.9v166H0zm106.1 0H166v166h-59.9z"/></svg>'; 
-        if (entity.state === 'paused') return '<svg viewBox="0 0 166 166"><style>.scale-up{animation: scale-up 0.3s cubic-bezier(.05,.5,.3,1) 1; transform-origin: center center;}
-        @keyframes scale-up{0%{opacity: 0; transform: scale(0);}100%{opacity: 1; transform: scale(1);}}</style><path class="scale-up" d="M0 0l166 83L0 166z"/></svg>'; ]]]
+        [[[ const style = `<style>.scale-up { animation: scale-up 0.3s; cubic-bezier(.05,.5,.3,1) 1; transform-origin: center center; }
+        @keyframes scale-up { 0% { opacity: 0; transform: scale(0); } 100% { opacity: 1; transform: scale(1); } }</style>`;
+        if (entity.state === 'playing') { return `<svg viewBox="0 0 166 166">${style}<path class="scale-up" d="M0 0h59.9v166H0zm106.1 0H166v166h-59.9z"/></svg>`; }
+        if (entity.state === 'paused') { return `<svg viewBox="0 0 166 166">${style}<path class="scale-up" d="M0 0l166 83L0 166z"/></svg>`; } ]]]
     tap_action: &media_tap_action
       action: >
-        [[[ if (entity.state == 'off' || entity.state == 'idle' || entity.state == 'standby') 
-        return 'none'; else return 'call-service'; ]]]
+        [[[ if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby') {
+        return 'none'; } else { return 'call-service'; } ]]]
       service: media_player.media_play_pause
       service_data:
-        entity_id: >
-          [[[ return entity.entity_id ]]]
+        entity_id: '[[[ return entity.entity_id ]]]'
     styles:
       custom_fields:
         media_image:
           [background-image:
-          "[[[ if (entity.attributes.entity_picture == null) return 'linear-gradient(0deg, rgba(115, 115, 115, 0.2) 0%, rgba(115, 115, 115, 0.2) 100%)'; 
-          else return 'linear-gradient(0deg, rgba(13,17,19,0.9) 0%, rgba(13,17,19,0) 50%), url(' + entity.attributes.entity_picture + ')'; ]]]", 
+          "[[[ return entity.attributes.entity_picture === null ? 'linear-gradient(0deg, rgba(115, 115, 115, 0.2) 0%, rgba(115, 115, 115, 0.2) 100%)' 
+          : 'linear-gradient(0deg, rgba(13,17,19,0.9) 0%, rgba(13,17,19,0) 50%), url(' + entity.attributes.entity_picture + ')'; ]]]", 
           background-size: cover, top: 0%, left: 0%, width: 100%, position: absolute]
         blur:
           [background-image:
-          "[[[ if (entity.attributes.entity_picture == null) return 'none'; 
-          else return 'url(' + entity.attributes.entity_picture + ')'; ]]]", 
+          "[[[ return entity.attributes.entity_picture === null ? 'none' : 'url(' + entity.attributes.entity_picture + ')'; ]]]", 
           background-size: cover, top: 0%, left: 0%, width: 100%, filter: blur(4px), clip-path: inset(16vw 0 0 0), position: absolute]
         overlay:
           [background:
-          "[[[ if (entity.attributes.entity_picture == null) return 'rgba(255, 255, 255, 0.8)'; 
-          else return 'rgba(0, 0, 0, 0.4)'; ]]]", 
+          "[[[ return entity.attributes.entity_picture === null ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.4)'; ]]]", 
           background-size: cover, z-index: 0, top: 16vw, left: 0%, width: 100%, opacity: 1, position: absolute]
         play_pause:
           [filter: 
-          "[[[ if (entity.attributes.entity_picture == null) return 'none'; 
-          else return 'drop-shadow(0 0 1.3vw rgba(0,0,0,0.7))'; ]]]", 
+          "[[[ return entity.attributes.entity_picture === null ? 'none' : 'drop-shadow(0 0 1.3vw rgba(0,0,0,0.7))'; ]]]", 
           fill: '#dedede', top: 0, right: 0, bottom: 0, left: 0, margin: auto, width: 21%, height: 21%, position: absolute]
         icon:
           [fill:
@@ -228,9 +222,9 @@ button_card_templates:
         white-space: nowrap, overflow: hidden, text-overflow: ellipsis, max-width: 90%]
       card: 
         [<<: *button_styles_card, background-color: none, 
-        color: &media_font_color "[[[ if (entity.state == 'off' || entity.state == 'idle' || entity.state == 'standby') return 'rgba(255, 255, 255, 0.3)'; 
-        if ((entity.state != 'off' && entity.state != 'idle' && entity.state != 'standby') && (entity.attributes.entity_picture == null)) 
-        return 'rgba(0, 0, 0, 0.6)'; else return '#efefef'; ]]]", 
+        color: &media_font_color "[[[ if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby') { return 'rgba(255, 255, 255, 0.3)'; }
+        if ((entity.state != 'off' && entity.state != 'idle' && entity.state != 'standby') && (entity.attributes.entity_picture === null)) {
+        return 'rgba(0, 0, 0, 0.6)'; } else { return '#efefef'; } ]]]", 
         text-shadow: &media_text_shadow "[[[ if (entity.attributes.entity_picture == null) return 'none'; 
         else return '1px 1px 5px rgba(18, 22, 23, 0.9)' ; ]]]"]
 
@@ -250,11 +244,11 @@ button_card_templates:
         [<<: *button_styles_card, color: *media_font_color, text-shadow: *media_text_shadow, 
         background-color: none, background-size: cover,
         background-image: 
-        "[[[ if (entity.state == 'off' || entity.state == 'idle' || entity.state == 'standby') 
-        return 'linear-gradient(0deg, rgba(115, 115, 115, 0.2) 0%, rgba(115, 115, 115, 0.2) 100%)';
-        if ((entity.state != 'off' && entity.state != 'idle' && entity.state != 'standby') && (entity.attributes.entity_picture == null)) 
-        return 'linear-gradient(0deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.8) 100%)';
-        else return 'linear-gradient(0deg, rgba(0,0,0,.8) 0%, rgba(0,0,0,0) 100%), url(' + entity.attributes.entity_picture + ')'; ]]]"]
+        "[[[ if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby') {
+        return 'linear-gradient(0deg, rgba(115, 115, 115, 0.2) 0%, rgba(115, 115, 115, 0.2) 100%)'; }
+        if ((entity.state != 'off' && entity.state != 'idle' && entity.state != 'standby') && (entity.attributes.entity_picture === null)) {
+        return 'linear-gradient(0deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.8) 100%)'; }
+        else { return 'linear-gradient(0deg, rgba(0,0,0,.8) 0%, rgba(0,0,0,0) 100%), url(' + entity.attributes.entity_picture + ')'; } ]]]"]
 
 
 
@@ -599,10 +593,9 @@ views:
                   top: 95%
                   left: 10.45%
                 name: >
-                  [[[ if (parseInt(states['sensor.hacs'].state) === 1) return 
-                  'HACS: ' + states['sensor.hacs'].state + ' uppdatering'; 
-                  else return 
-                  'HACS: ' + states['sensor.hacs'].state + ' uppdateringar';  ]]]
+                  [[[ if (parseInt(states['sensor.hacs'].state) === 1) {
+                  return 'HACS: ' + states['sensor.hacs'].state + ' uppdatering'; }
+                  else { return 'HACS: ' + states['sensor.hacs'].state + ' uppdateringar'; } ]]]
                 styles:
                   name:
                     [letter-spacing: 0.06vw, font-family: SF Display, font-weight: 500, 
@@ -624,7 +617,7 @@ views:
                       card_type: iframe
                       url: !secret hacs_url
                       aspect_ratio: 60%
-                      style: "ha-card { border-radius: 1em;}"
+                      style: 'ha-card { border-radius: 1em;}'
 
           ##########################################################################
           #                                                                        #
@@ -698,29 +691,28 @@ views:
               width: 10%
             tap_action:
               services: |
-                [[[ if (entity.state === 'off')
+                [[[ if (entity.state === 'off') {
                 hass.callService('input_boolean', 'turn_on', {entity_id: 'input_boolean.sony_bravia_tv'});
-                hass.callService('remote', 'send_command', {entity_id: 'remote.vardagsrum', command: 'menu'});
-                if (entity.state === 'on')
+                hass.callService('remote', 'send_command', {entity_id: 'remote.vardagsrum', command: 'menu'}); }
+                if (entity.state === 'on') {
                 hass.callService('input_boolean', 'turn_on', {entity_id: 'input_boolean.sony_bravia_tv'});
-                hass.callService('media_player', 'turn_off', {entity_id: 'media_player.sony_bravia_tv'}); ]]]
+                hass.callService('media_player', 'turn_off', {entity_id: 'media_player.sony_bravia_tv'}); } ]]]
             hold_action: !include popup/vardagsrum_tv.yaml
             custom_fields:
               icon_tv: &icon_tv >
-                [[[ var fill_color = entity.state === 'on' ? '#616161' : '#9da0a2';
-                var gradient = entity.state === 'on' ? '<linearGradient id="A" gradientUnits="userSpaceOnUse" x1="5.401" y1="34.714" x2="43.817" y2="11.74"><stop offset="0" stop-color="#64acb7"/><stop offset="1" stop-color="#7fdbe9"/></linearGradient><path d="M2.9,8h44.3v29.9H2.9V8z" fill="url(#A)"/>' : ' '; 
-                return '<svg viewBox="0 0 50 50">' + gradient + '<path d="M46 9.2v27.5H4.1V9.2H46m2.4-2.4H1.6v32.3h46.7c.1 0 .1-32.3.1-32.3zM11.9 43.2h26.3c.6 0 1.1-.4 1.1-1v-.3c0-.6-.4-1.1-1-1.1H11.9c-.6 0-1.1.4-1.1 1v.3a1.11 1.11 0 0 0 1.1 1.1z" fill="' + fill_color + '"/></svg>'; ]]]
+                [[[ const fill_color = entity.state === 'on' ? '#616161' : '#9da0a2';
+                const gradient = entity.state === 'on' ? '<linearGradient id="A" gradientUnits="userSpaceOnUse" x1="5.401" y1="34.714" x2="43.817" y2="11.74"><stop offset="0" stop-color="#64acb7"/><stop offset="1" stop-color="#7fdbe9"/></linearGradient><path d="M2.9,8h44.3v29.9H2.9V8z" fill="url(#A)"/>' : ' '; 
+                return `<svg viewBox="0 0 50 50">${gradient}<path d="M46 9.2v27.5H4.1V9.2H46m2.4-2.4H1.6v32.3h46.7c.1 0 .1-32.3.1-32.3zM11.9 43.2h26.3c.6 0 1.1-.4 1.1-1v-.3c0-.6-.4-1.1-1-1.1H11.9c-.6 0-1.1.4-1.1 1v.3a1.11 1.11 0 0 0 1.1 1.1z" fill="${fill_color}"/></svg>`; ]]]
               loading: >
-                [[[ var boolean = states['input_boolean.sony_bravia_tv'].state; 
-                var invert = (entity.state === 'off') ? 'invert(1)' : 'none';
-                var loader = '<img src="/local/loader.svg" width="100%" style="filter:' + invert + '">';
-                if (boolean === 'on' && entity.state === 'off' || boolean === 'on' && entity.state === 'on') return loader; ]]]
+                [[[ if (states['input_boolean.sony_bravia_tv'].state === 'on') { 
+                return '<img src="/local/loader.svg" width="100%">'; } ]]]
             styles: &icon_tv_styles
               custom_fields:
                 icon_tv:
                   [top: 7%, left: 10.7%, width: 3.5vw, position: absolute]
                 loading: &loading
-                  [top: 3%, left: 60%, width: 3.7vw, position: absolute, opacity: 0.5]
+                  [filter: "[[[ return entity.state === 'off' ? 'invert(1)' : 'none'; ]]]", 
+                   top: 3%, left: 60%, width: 3.7vw, position: absolute, opacity: 0.6]
             template: switch
 
           #################################################
@@ -742,14 +734,12 @@ views:
             hold_action: !include popup/vardagsrum_playstation.yaml
             custom_fields:
               icon_ps4: >
-                [[[ if (entity.state === 'on') 
-                return '<svg viewBox="0 0 50 50"><path d="M19.2 26.8l-3.8 1.4L31.6 34l4.8-1.6a9.93 9.93 0 0 1 3-.5c.4 0 .8.1 1.2.2.2.1.6.3.6.5.1.2-.2.5-.5.7-.4.2-.8.5-1.3.6l-3.8 1.4 6 2.2 3.4-1.3c.9-.3 1.6-.9 2.4-1.6.9-.7.8-1.5.1-2.4l-.7-.7c-.9-.7-2-1.3-3.1-1.6-3.3-.9-6.7-1.3-10.2-.8-1.4.2-2.9.6-4.3 1-.2.1-.5.2-.8.2-.9.3-1.3.5-1.8.7" fill="#336db3"/><path d="M17 34.8l-1.3.5L32.2 41l9.8-3.6-6.2-2.2-1.3.5-5.4 2-2.5 1v-3.1l2.6-.8 2.7-.9-16.3-5.8-9.3 3.4-.5.2L12 34l5.1-2 2.2-.8V34c0 .1-2.3.8-2.3.8z" fill="#00aa9e"/><path d="M15.8 35.2l-1.3.5c-1 .4-2.1.6-3.3.5-.5 0-1.1-.2-1.6-.3-.2-.1-.4-.3-.5-.5 0-.2.2-.4.4-.5.4-.2.7-.4 1.1-.5l1.4-.5-6.3-2.2c-1 .4-2 .9-2.8 1.5-1.2.7-1.3 2.1-.2 3.1.3.3.8.7 1.3.9 3.3 1.3 6.7 2 10.2 1.8l2.6-.3c.4-.1 1.6-.3 2.4-.6v1.6c0 .9 0 .9.9 1.3l5.3 1.8 1.1.3 2.4-.8L32 41l-16.2-5.8z" fill="#f3c202"/><path d="M26.7 14c0-.5.2-.9.7-1.2.5-.2.9-.1 1.4.2.7.5.9 1.2.9 2v11.1c0 .8.2 1 .9 1.3.4.2.8.2 1.2.3 2.7.5 4.6-.5 5.6-3.1.1-.2.1-.3.2-.5.5-1.6.5-3.3.5-5-.1-2-.8-3.8-2.1-5.4-1.5-1.8-3.4-3-5.6-3.7L19.9 7.1c-.2 0-.3 0-.5-.1 0 .3-.1.5-.1.8v31.8c0 .9 0 .9.9 1.3l5.3 1.8 1.1.3v-1c-.1 0 .1-28 .1-28z" fill="#de0029"/></svg>'; 
-                else return '<svg viewBox="0 0 50 50"><path d="M26.7 14c0-.5.2-.9.7-1.2.5-.2.9-.1 1.4.2.7.5.9 1.2.9 2v11.1c0 .8.2 1 .9 1.3.4.2.8.2 1.2.3 2.7.5 4.6-.5 5.6-3.1.1-.2.1-.3.2-.5.5-1.6.5-3.3.5-5-.1-2-.8-3.8-2.1-5.4-1.5-1.8-3.4-3-5.6-3.7L19.9 7.1c-.2 0-.3 0-.5-.1 0 .3-.1.5-.1.8v31.8c0 .9 0 .9.9 1.3l5.3 1.8 1.1.3v-1c-.1 0 .1-28 .1-28zm-9 13.4l-.9.2-10.6 3.9c-1.2.5-2.3 1-3.3 1.7-1.2.7-1.3 2.1-.2 3.1.4.4.9.7 1.4.9 3.3 1.3 6.7 2 10.2 1.8l2.6-.3c.6-.1.8-.3.9-.9.1-1 0-2 0-3.2h0c-.3.1-.5.2-.7.2l-2.6.9c-1 .4-2.1.6-3.3.5-.5 0-1.1-.2-1.6-.3-.2-.1-.4-.3-.5-.5 0-.2.2-.4.4-.5.4-.2.7-.4 1.1-.5l6.5-2.5c.5-.2.8-.5.8-1.1-.1-.9 0-2 0-2.9-.1-.1-.2-.3-.2-.5zm27.4 8.9c.9-.3 1.6-.9 2.4-1.6.9-.7.8-1.5.1-2.4l-.7-.7c-.9-.7-2-1.3-3.1-1.6-3.3-.9-6.7-1.3-10.2-.8-1.6.2-3.1.7-4.7 1.1-.5.1-.7.4-.7.9v3.5c0 .1.1.2.2.3.3-.1.5-.2.9-.2l7.3-2.5a9.93 9.93 0 0 1 3-.5c.4 0 .8.1 1.2.2.2.1.6.3.6.5.1.2-.2.5-.5.7-.4.2-.8.4-1.3.6l-5 1.9-5.4 2c-.5.2-.9.5-.8 1.2v3.4c.3-.1.5-.1.6-.2l16.1-5.8z" fill="#9da0a2"/></svg>'; ]]]
+                [[[ if (entity.state === 'on') {
+                return '<svg viewBox="0 0 50 50"><path d="M19.2 26.8l-3.8 1.4L31.6 34l4.8-1.6a9.93 9.93 0 0 1 3-.5c.4 0 .8.1 1.2.2.2.1.6.3.6.5.1.2-.2.5-.5.7-.4.2-.8.5-1.3.6l-3.8 1.4 6 2.2 3.4-1.3c.9-.3 1.6-.9 2.4-1.6.9-.7.8-1.5.1-2.4l-.7-.7c-.9-.7-2-1.3-3.1-1.6-3.3-.9-6.7-1.3-10.2-.8-1.4.2-2.9.6-4.3 1-.2.1-.5.2-.8.2-.9.3-1.3.5-1.8.7" fill="#336db3"/><path d="M17 34.8l-1.3.5L32.2 41l9.8-3.6-6.2-2.2-1.3.5-5.4 2-2.5 1v-3.1l2.6-.8 2.7-.9-16.3-5.8-9.3 3.4-.5.2L12 34l5.1-2 2.2-.8V34c0 .1-2.3.8-2.3.8z" fill="#00aa9e"/><path d="M15.8 35.2l-1.3.5c-1 .4-2.1.6-3.3.5-.5 0-1.1-.2-1.6-.3-.2-.1-.4-.3-.5-.5 0-.2.2-.4.4-.5.4-.2.7-.4 1.1-.5l1.4-.5-6.3-2.2c-1 .4-2 .9-2.8 1.5-1.2.7-1.3 2.1-.2 3.1.3.3.8.7 1.3.9 3.3 1.3 6.7 2 10.2 1.8l2.6-.3c.4-.1 1.6-.3 2.4-.6v1.6c0 .9 0 .9.9 1.3l5.3 1.8 1.1.3 2.4-.8L32 41l-16.2-5.8z" fill="#f3c202"/><path d="M26.7 14c0-.5.2-.9.7-1.2.5-.2.9-.1 1.4.2.7.5.9 1.2.9 2v11.1c0 .8.2 1 .9 1.3.4.2.8.2 1.2.3 2.7.5 4.6-.5 5.6-3.1.1-.2.1-.3.2-.5.5-1.6.5-3.3.5-5-.1-2-.8-3.8-2.1-5.4-1.5-1.8-3.4-3-5.6-3.7L19.9 7.1c-.2 0-.3 0-.5-.1 0 .3-.1.5-.1.8v31.8c0 .9 0 .9.9 1.3l5.3 1.8 1.1.3v-1c-.1 0 .1-28 .1-28z" fill="#de0029"/></svg>'; }
+                else { return '<svg viewBox="0 0 50 50"><path d="M26.7 14c0-.5.2-.9.7-1.2.5-.2.9-.1 1.4.2.7.5.9 1.2.9 2v11.1c0 .8.2 1 .9 1.3.4.2.8.2 1.2.3 2.7.5 4.6-.5 5.6-3.1.1-.2.1-.3.2-.5.5-1.6.5-3.3.5-5-.1-2-.8-3.8-2.1-5.4-1.5-1.8-3.4-3-5.6-3.7L19.9 7.1c-.2 0-.3 0-.5-.1 0 .3-.1.5-.1.8v31.8c0 .9 0 .9.9 1.3l5.3 1.8 1.1.3v-1c-.1 0 .1-28 .1-28zm-9 13.4l-.9.2-10.6 3.9c-1.2.5-2.3 1-3.3 1.7-1.2.7-1.3 2.1-.2 3.1.4.4.9.7 1.4.9 3.3 1.3 6.7 2 10.2 1.8l2.6-.3c.6-.1.8-.3.9-.9.1-1 0-2 0-3.2h0c-.3.1-.5.2-.7.2l-2.6.9c-1 .4-2.1.6-3.3.5-.5 0-1.1-.2-1.6-.3-.2-.1-.4-.3-.5-.5 0-.2.2-.4.4-.5.4-.2.7-.4 1.1-.5l6.5-2.5c.5-.2.8-.5.8-1.1-.1-.9 0-2 0-2.9-.1-.1-.2-.3-.2-.5zm27.4 8.9c.9-.3 1.6-.9 2.4-1.6.9-.7.8-1.5.1-2.4l-.7-.7c-.9-.7-2-1.3-3.1-1.6-3.3-.9-6.7-1.3-10.2-.8-1.6.2-3.1.7-4.7 1.1-.5.1-.7.4-.7.9v3.5c0 .1.1.2.2.3.3-.1.5-.2.9-.2l7.3-2.5a9.93 9.93 0 0 1 3-.5c.4 0 .8.1 1.2.2.2.1.6.3.6.5.1.2-.2.5-.5.7-.4.2-.8.4-1.3.6l-5 1.9-5.4 2c-.5.2-.9.5-.8 1.2v3.4c.3-.1.5-.1.6-.2l16.1-5.8z" fill="#9da0a2"/></svg>'; } ]]]
               loading: >
-                [[[ var boolean = states['input_boolean.playstation_template'].state; 
-                var invert = (entity.state === 'off') ? 'invert(1)' : 'none';
-                var loader = '<img src="/local/loader.svg" width="100%" style="filter:' + invert + '">';
-                if (boolean === 'on' && entity.state === 'off' || boolean === 'on' && entity.state === 'on') return loader; ]]]
+                [[[ if (states['input_boolean.playstation_template'].state === 'on') { 
+                return '<img src="/local/loader.svg" width="100%">'; } ]]]
             styles:
               custom_fields:
                 icon_ps4:
@@ -827,20 +817,18 @@ views:
             hold_action: !include popup/studio_dator.yaml
             custom_fields:
               icon_imac: >
-                [[[ var fill_color = entity.state === 'on' ? '#797a7b' : '#9da0a2';
-                return '<svg viewBox="0 0 50 50"><path d="M31.9 44.5c-1-.3-1.9.4-1.9-3.7h-9.9c0 4.2-.9 3.4-1.9 3.7s-.2.7-.2.7h14.1s.8-.3-.2-.7zM47.6 4.8H2.5c-1.1 0-2 .9-2 2v30.1c0 1.1.9 2 2 2h45c1.1 0 2-.9 2-2v-30a1.95 1.95 0 0 0-1.9-2.1zm-.7 26.4H3.2V7.6H47v23.6z" fill="' + fill_color + '"/></svg>'; ]]]
+                <svg viewBox="0 0 50 50"><path d="M31.9 44.5c-1-.3-1.9.4-1.9-3.7h-9.9c0 4.2-.9 3.4-1.9 3.7s-.2.7-.2.7h14.1s.8-.3-.2-.7zM47.6 4.8H2.5c-1.1 0-2 .9-2 2v30.1c0 1.1.9 2 2 2h45c1.1 0 2-.9 2-2v-30a1.95 1.95 0 0 0-1.9-2.1zm-.7 26.4H3.2V7.6H47v23.6z" /></svg>
               loading: >
-                [[[ var boolean = states['input_boolean.dator_template'].state; 
-                var invert = (entity.state === 'off') ? 'invert(1)' : 'none';
-                var loader = '<img src="/local/loader.svg" width="100%" style="filter:' + invert + '">';
-                if (boolean === 'on' && entity.state === 'off' || boolean === 'on' && entity.state === 'on') return loader; ]]]
+                [[[ if (states['input_boolean.dator_template'].state === 'on') { 
+                return '<img src="/local/loader.svg" width="100%">'; } ]]]
               icon_lock: >
-                [[[ if (states['input_boolean.lock_computer'].state === 'on' && states['input_boolean.dator_template'].state === 'off') 
-                return '<svg viewBox="0 0 50 50"><path d="M8.2 22.6h2.4v-7.2C10.6 7.5 17.1 1 25 1s14.4 6.4 14.4 14.4v7.2h2.4V49H8.2m26.4-26.4v-7.2c0-5.3-4.3-9.6-9.6-9.6s-9.6 4.3-9.6 9.6v7.2"/></svg>'; ]]]
+                [[[ if (states['input_boolean.lock_computer'].state === 'on' && states['input_boolean.dator_template'].state === 'off') {
+                return '<svg viewBox="0 0 50 50"><path d="M8.2 22.6h2.4v-7.2C10.6 7.5 17.1 1 25 1s14.4 6.4 14.4 14.4v7.2h2.4V49H8.2m26.4-26.4v-7.2c0-5.3-4.3-9.6-9.6-9.6s-9.6 4.3-9.6 9.6v7.2"/></svg>'; } ]]]
             styles:
               custom_fields:
                 icon_imac:
-                  [top: 8.5%, left: 11%, width: 3.3vw, position: absolute]
+                  [fill: "[[[ return entity.state === 'on' ? '#797a7b' : '#9da0a2'; ]]]", 
+                  top: 8.5%, left: 11%, width: 3.3vw, position: absolute]
                 loading: *loading
                 icon_lock:
                   [top: 11%, left: 73%, width: 1.8vw, position: absolute, fill: '#9da0a2']
@@ -863,10 +851,10 @@ views:
             hold_action: !include popup/studio_monitorer.yaml
             custom_fields:
               icon_monitors: >
-                [[[ if (entity.state === 'on') 
+                [[[ if (entity.state === 'on') {
                 return '<svg viewBox="0 0 50 50"><style>@keyframes scale{0%{transform:scale(.9)}25%{transform:scale(1.4)}50%{transform:scale(1)}75%{transform:scale(1.3)}100%{transform:scale(.9)}}.cone.animated{animation:scale .6s linear 1;animation-delay:.3s;transform-origin:center center}</style>
-                <path d="M35.8 46.9H14.2c-1.1 0-2-1-2-2.3V6.7c0-1.3.9-2.3 2-2.3h21.5c1.1 0 2 1 2 2.3v37.9c0 1.2-.9 2.3-1.9 2.3z" fill="#686868"/><path d="M39.2 1H10.8C9.4 1 8.3 2.1 8.2 3.5v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3c1.4 0 2.5-1.2 2.6-2.6V3.5c0-1.4-1.1-2.5-2.5-2.5zM25 7c1.3 0 2.4 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4C22.5 8 23.6 7 25 7zm10.2 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6s-.1-1.1-.4-1.9.6-.9.6-.9h19.3c0-.1.8-.1.5.9z" fill="#2a2a2a"/><path class="cone animated" d="M25 15.7c-6.2 0-11.3 5.1-11.3 11.3S18.8 38.3 25 38.3 36.3 33.2 36.3 27c-.1-6.3-5.1-11.3-11.3-11.3zm0 14.5a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c-.1 1.9-1.5 3.3-3.3 3.3z" fill="#e5dd00"/></svg>'; 
-                else return '<img src="/local/monitors.svg" />'; ]]]
+                <path d="M35.8 46.9H14.2c-1.1 0-2-1-2-2.3V6.7c0-1.3.9-2.3 2-2.3h21.5c1.1 0 2 1 2 2.3v37.9c0 1.2-.9 2.3-1.9 2.3z" fill="#686868"/><path d="M39.2 1H10.8C9.4 1 8.3 2.1 8.2 3.5v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3c1.4 0 2.5-1.2 2.6-2.6V3.5c0-1.4-1.1-2.5-2.5-2.5zM25 7c1.3 0 2.4 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4C22.5 8 23.6 7 25 7zm10.2 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6s-.1-1.1-.4-1.9.6-.9.6-.9h19.3c0-.1.8-.1.5.9z" fill="#2a2a2a"/><path class="cone animated" d="M25 15.7c-6.2 0-11.3 5.1-11.3 11.3S18.8 38.3 25 38.3 36.3 33.2 36.3 27c-.1-6.3-5.1-11.3-11.3-11.3zm0 14.5a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c-.1 1.9-1.5 3.3-3.3 3.3z" fill="#e5dd00"/></svg>'; }
+                else { return '<svg viewBox="0 0 50 50"><path d="M25 18.6c-4.6 0-8.4 3.8-8.4 8.4s3.8 8.4 8.4 8.4 8.4-3.8 8.4-8.4-3.7-8.4-8.4-8.4zm0 11.7a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c0 1.8-1.4 3.3-3.3 3.3zM39.2 1H10.9C9.4 1 8.3 2.1 8.3 3.6v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3a2.65 2.65 0 0 0 2.6-2.6v-43C41.7 2 40.5.9 39.2 1zM25 7c1.3 0 2.4 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4S23.7 7 25 7zm10.3 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6l-.4-1.9c-.2-.9.6-.9.6-.9h19.3s.9.1.6.9zM25 38.2c-6.2 0-11.3-5.1-11.3-11.3a11.29 11.29 0 1 1 22.6 0c.1 6.3-5 11.3-11.3 11.3z" fill="#9da0a2"/></svg>'; } ]]]
             styles:
               custom_fields:
                 icon_monitors:
@@ -941,9 +929,9 @@ views:
             hold_action: !include popup/sovrum_flakt.yaml
             custom_fields:
               icon_fan: >
-                [[[ if (entity.state === 'on') return '<img src="/local/fan.svg" />'; 
-                else return '<svg viewBox="0 0 50 50" fill="#9ca2a5"><style>@keyframes spin{from{transform:rotate(0)}to{transform:rotate(720deg)}}.spin.animated{animation:spin 1.7s ease-out 1;transform-origin:center center}</style>
-                <g class="spin animated"><circle cx="25" cy="25" r="6.6"/><path d="M31.9 30.4c-.5.6-1.1 1.1-1.7 1.5-1.4 1.1-3.2 1.7-5.2 1.7-2.3 0-4.5-.9-6-2.4-.9 1.1-1.6 2.3-2.3 3.2l-4.9 5.4c-1.8 2.7.3 5.6 2.5 7 3.9 2.4 9.8 3.1 14.1 1.9 4.6-1.3 7.9-4.7 7.4-9.7-.2-3.4-1.9-6-3.9-8.6zM17 28.3c-.4-1-.6-2.1-.6-3.3a8.7 8.7 0 0 1 6.4-8.4l-1.6-3.5L19 6.2c-1.5-2.8-5-2.5-7.3-1.2-4 2.2-7.5 6.9-8.7 11.3-1.2 4.6.2 9.2 4.7 11.3 3.1 1.3 6.1 1.2 9.3.7zm26.9-17.6c-3.3-3.4-8-4.6-12.1-1.8-2.8 1.8-4.2 4.6-5.5 7.5 4.2.6 7.4 4.2 7.4 8.6 0 .9-.1 1.7-.4 2.5 1.3.2 2.8.3 3.8.4 2.3.4 4.7 1.3 7.1 1.7 3.2.3 4.7-3 4.8-5.6.3-4.6-1.9-10.1-5.1-13.3z"/></g></svg>'; ]]]
+                [[[ if (entity.state === 'on') { return '<svg viewBox="0 0 50 50" fill="#5daeea"><animateTransform accumulate="none" additive="sum" attributeName="transform" attributeType="xml" calcMode="linear" dur="0.5s" fill="remove" from="0 0 0" repeatCount="indefinite" restart="always" to="360 0 0" type="rotate"/><circle cx="25" cy="25" r="6.6"/><path d="M31.9 30.4c-.5.6-1.1 1.1-1.7 1.5-1.4 1.1-3.2 1.7-5.2 1.7-2.3 0-4.5-.9-6-2.4-.9 1.1-1.6 2.3-2.3 3.2l-4.9 5.4c-1.8 2.7.3 5.6 2.5 7 3.9 2.4 9.8 3.1 14.1 1.9 4.6-1.3 7.9-4.7 7.4-9.7-.2-3.4-1.9-6-3.9-8.6zM17 28.3c-.4-1-.6-2.1-.6-3.3a8.7 8.7 0 0 1 6.4-8.4l-1.6-3.5L19 6.2c-1.5-2.8-5-2.5-7.3-1.2-4 2.2-7.5 6.9-8.7 11.3-1.2 4.6.2 9.2 4.7 11.3 3.1 1.3 6.1 1.2 9.3.7zm26.9-17.6c-3.3-3.4-8-4.6-12.1-1.8-2.8 1.8-4.2 4.6-5.5 7.5 4.2.6 7.4 4.2 7.4 8.6 0 .9-.1 1.7-.4 2.5 1.3.2 2.8.3 3.8.4 2.3.4 4.7 1.3 7.1 1.7 3.2.3 4.7-3 4.8-5.6.3-4.6-1.9-10.1-5.1-13.3z"/></svg>'; }
+                else { return '<svg viewBox="0 0 50 50" fill="#9ca2a5"><style>@keyframes spin{from{transform:rotate(0)}to{transform:rotate(720deg)}}.spin.animated{animation:spin 1.7s ease-out 1;transform-origin:center center}</style>
+                <g class="spin animated"><circle cx="25" cy="25" r="6.6"/><path d="M31.9 30.4c-.5.6-1.1 1.1-1.7 1.5-1.4 1.1-3.2 1.7-5.2 1.7-2.3 0-4.5-.9-6-2.4-.9 1.1-1.6 2.3-2.3 3.2l-4.9 5.4c-1.8 2.7.3 5.6 2.5 7 3.9 2.4 9.8 3.1 14.1 1.9 4.6-1.3 7.9-4.7 7.4-9.7-.2-3.4-1.9-6-3.9-8.6zM17 28.3c-.4-1-.6-2.1-.6-3.3a8.7 8.7 0 0 1 6.4-8.4l-1.6-3.5L19 6.2c-1.5-2.8-5-2.5-7.3-1.2-4 2.2-7.5 6.9-8.7 11.3-1.2 4.6.2 9.2 4.7 11.3 3.1 1.3 6.1 1.2 9.3.7zm26.9-17.6c-3.3-3.4-8-4.6-12.1-1.8-2.8 1.8-4.2 4.6-5.5 7.5 4.2.6 7.4 4.2 7.4 8.6 0 .9-.1 1.7-.4 2.5 1.3.2 2.8.3 3.8.4 2.3.4 4.7 1.3 7.1 1.7 3.2.3 4.7-3 4.8-5.6.3-4.6-1.9-10.1-5.1-13.3z"/></g></svg>'; } ]]]
             styles:
               custom_fields:
                 icon_fan:
@@ -966,20 +954,18 @@ views:
               width: 10%
             tap_action:
               services: |
-                [[[ if (entity.state === 'off') 
+                [[[ if (entity.state === 'off') {
                 hass.callService('input_boolean', 'turn_on', {entity_id: 'input_boolean.samsung'});
-                hass.callService('remote', 'send_command', {entity_id: 'remote.sovrum', command: 'menu'}); 
-                if (entity.state === 'on') 
+                hass.callService('remote', 'send_command', {entity_id: 'remote.sovrum', command: 'menu'}); }
+                if (entity.state === 'on') {
                 hass.callService('input_boolean', 'turn_on', {entity_id: 'input_boolean.samsung'}); 
-                hass.callService('media_player', 'turn_off', {entity_id: 'media_player.samsung'}); ]]]
+                hass.callService('media_player', 'turn_off', {entity_id: 'media_player.samsung'}); } ]]]
             hold_action: !include popup/sovrum_tv2.yaml
             custom_fields:
               icon_tv: *icon_tv
               loading: >
-                [[[ var boolean = states['input_boolean.samsung'].state; 
-                var invert = (entity.state === 'off') ? 'invert(1)' : 'none';
-                var loader = '<img src="/local/loader.svg" width="100%" style="filter:' + invert + '">';
-                if (boolean === 'on' && entity.state === 'off' || boolean === 'on' && entity.state === 'on') return loader; ]]]
+                [[[ if (states['input_boolean.samsung'].state === 'on') { 
+                return '<img src="/local/loader.svg" width="100%">'; } ]]]
             styles: *icon_tv_styles
             template: switch
 
@@ -1287,8 +1273,8 @@ views:
               width: 10%
             custom_fields:
               icon_closet: >
-                [[[ if (entity.state === 'on') return '<svg viewBox="0 0 50 50"><path d="M11.4,1.4h27.2v43.1H11.4V1.4z" fill="#bcbcbc"/><path d="M11.4 1.4v43.1l21.5 4.1-.2-43.4-21.3-3.8zm18.1 26.8c0 1.1-.7 1.8-1.5 1.7h0c-.8-.2-1.5-1.1-1.5-2.2v-3.9c0-1.1.7-1.8 1.5-1.7h0c.8.2 1.5 1.1 1.5 2.2v3.9z" fill="#b68349"/></svg>'; 
-                else return '<svg viewBox="0 0 50 50"><path d="M11.4 1.4v43.1h27.2V1.4H11.4zm23 23.4c0 1.1-.9 1.9-1.9 1.9h0c-1.1 0-1.9-.9-1.9-1.9V21c0-1.1.9-1.9 1.9-1.9h0c1.1 0 1.9.9 1.9 1.9v3.8z" fill="#9da0a2"/></svg>'; ]]]
+                [[[ if (entity.state === 'on') { return '<svg viewBox="0 0 50 50"><path d="M11.4,1.4h27.2v43.1H11.4V1.4z" fill="#bcbcbc"/><path d="M11.4 1.4v43.1l21.5 4.1-.2-43.4-21.3-3.8zm18.1 26.8c0 1.1-.7 1.8-1.5 1.7h0c-.8-.2-1.5-1.1-1.5-2.2v-3.9c0-1.1.7-1.8 1.5-1.7h0c.8.2 1.5 1.1 1.5 2.2v3.9z" fill="#b68349"/></svg>'; }
+                else { return '<svg viewBox="0 0 50 50"><path d="M11.4 1.4v43.1h27.2V1.4H11.4zm23 23.4c0 1.1-.9 1.9-1.9 1.9h0c-1.1 0-1.9-.9-1.9-1.9V21c0-1.1.9-1.9 1.9-1.9h0c1.1 0 1.9.9 1.9 1.9v3.8z" fill="#9da0a2"/></svg>'; } ]]]
             styles:
               custom_fields:
                 icon_closet:
@@ -1363,11 +1349,11 @@ views:
             hold_action: !include popup/hemma_mattias.yaml
             custom_fields:
               sensor: >
-                [[[ var last_changed = states['sensor.mattias_last_changed'].state; 
-                var home = (entity.state === 'home'); 
-                var stroke_color = home ? '#b2b2b2' : '#313638'; 
-                var fill_color = home ? 'none' : '#FFFFFF08';
-                return '<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="20.5" stroke="' + stroke_color+ '" stroke-width="1.5" fill="' + fill_color + '" /><text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">' + last_changed + '</text></svg>'; ]]]
+                [[[ const last_changed = states['sensor.mattias_last_changed'].state; 
+                const stroke_color = entity.state === 'home' ? '#b2b2b2' : '#313638'; 
+                const fill_color = entity.state === 'home' ? 'none' : '#FFFFFF08';
+                return `<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="20.5" stroke="${stroke_color}" stroke-width="1.5" fill="${fill_color}" />
+                <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">${last_changed}</text></svg>`; ]]]
             template: switch
 
           #################################################
@@ -1392,11 +1378,11 @@ views:
             hold_action: !include popup/hemma_sanja.yaml
             custom_fields:
               sensor: >
-                [[[ var last_changed = states['sensor.sanja_last_changed'].state; 
-                var home = (entity.state === 'home'); 
-                var stroke_color = home ? '#b2b2b2' : '#313638'; 
-                var fill_color = home ? 'none' : '#FFFFFF08';
-                return '<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="20.5" stroke="' + stroke_color+ '" stroke-width="1.5" fill="' + fill_color + '" /><text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">' + last_changed + '</text></svg>'; ]]]
+                [[[ const last_changed = states['sensor.sanja_last_changed'].state; 
+                const stroke_color = entity.state === 'home' ? '#b2b2b2' : '#313638'; 
+                const fill_color = entity.state === 'home' ? 'none' : '#FFFFFF08';
+                return `<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="20.5" stroke="${stroke_color}" stroke-width="1.5" fill="${fill_color}" />
+                <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">${last_changed}</text></svg>`; ]]]
             template: switch
 
           #################################################
@@ -1422,7 +1408,7 @@ views:
               custom_fields:
                 icon_away:
                   [top: 10%, left: 10.1%, width: 3.1vw, position: absolute,
-                  fill: "[[[ return entity.state == 'on' ? '#797a7b' : '#9da0a2'; ]]]"]
+                  fill: "[[[ return entity.state === 'on' ? '#797a7b' : '#9da0a2'; ]]]"]
             template: switch
 
           #################################################
@@ -1447,7 +1433,7 @@ views:
               custom_fields:
                 icon_home:
                   [top: 10.5%, left: 10.1%, width: 2.9vw, position: absolute,
-                  fill: "[[[ return entity.state == 'on' ? '#c7983e' : '#9da0a2'; ]]]"]
+                  fill: "[[[ return entity.state === 'on' ? '#c7983e' : '#9da0a2'; ]]]"]
             template: switch
 
           #################################################
