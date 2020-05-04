@@ -457,6 +457,17 @@ class ValetudoMapCard extends HTMLElement {
         });
         this.controlFlexBox.appendChild(startButton);
 
+        const pauseButton = document.createElement('paper-button');
+        const pauseIcon = document.createElement('ha-icon');
+        const pauseRipple = document.createElement('paper-ripple');
+        pauseIcon.icon = 'mdi:pause';
+        pauseButton.appendChild(pauseIcon);
+        pauseButton.appendChild(pauseRipple);
+        pauseButton.addEventListener('click', (event) => {
+          this._hass.callService('vacuum', 'pause', { entity_id: this._config.vacuum_entity }).then();
+        });
+        this.controlFlexBox.appendChild(pauseButton);
+
         const stopButton = document.createElement('paper-button');
         const stopIcon = document.createElement('ha-icon');
         const stopRipple = document.createElement('paper-ripple');
