@@ -21,6 +21,11 @@ sensor: !include sensors.yaml
 
 lovelace:
   mode: yaml
+  dashboards:
+    ui-experimental:
+      title: Experimental
+      filename: ui-experimental.yaml
+      mode: yaml
   resources:
     [ {'url':'/hacsfiles/bar-card/bar-card.js',                               'type':'module'},
       {'url':'/hacsfiles/button-card/button-card.js',                         'type':'module'},
