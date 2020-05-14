@@ -532,7 +532,6 @@
           state_attr('sensor.fullykiosk', 'internalStorageTotalSpace') * 100 ) | int }}
           {% endif %}
 
-
       fullykiosk_memory_percentage:
         friendly_name: Minne
         icon_template: 'mdi:memory'
@@ -543,7 +542,6 @@
           {{ 100 - ( state_attr('sensor.fullykiosk', 'ramFreeMemory') / 
           state_attr('sensor.fullykiosk', 'ramTotalMemory') * 100 ) | int }}
           {% endif %}
-
 
       fullykiosk_motion_detector_state:
         friendly_name: Kamera
