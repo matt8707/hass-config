@@ -85,8 +85,6 @@ dummy:
 
 auto_hemma:
   sequence:
-    - service: homeassistant.turn_off
-      entity_id: group.ui_sound
     - service_template: >-
         {% if is_state('switch.fullykiosk_screen', 'on') and 
         is_state('switch.fullykiosk_screensaver', 'off') %}
@@ -99,8 +97,6 @@ auto_hemma:
           scene.hemma_below_horizon {% else %} 
           scene.hemma_above_horizon {% endif %}
     - delay: '00:00:04'
-    - service: homeassistant.turn_on
-      entity_id: group.ui_sound
 
 say_auto_hemma:
   sequence:
@@ -116,8 +112,6 @@ say_auto_hemma:
 
 auto_stang_allt:
   sequence:
-    - service: homeassistant.turn_off
-      entity_id: group.ui_sound
     - service_template: >-
         {% if is_state('switch.fullykiosk_screensaver', 'off') %}
         script.say_auto_stang_allt {% else %}
@@ -145,8 +139,6 @@ auto_stang_allt:
         script.tv2_off {% else %}
         script.dummy {% endif %}
     - delay: '00:00:04'
-    - service: homeassistant.turn_on
-      entity_id: group.ui_sound
 
 say_auto_stang_allt:
   sequence:
