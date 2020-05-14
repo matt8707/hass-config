@@ -371,7 +371,7 @@ class {
 },
       I = ["html", "svg"],
       U = new Set(),
-      q = (t, e, i) => {
+      z = (t, e, i) => {
   U.add(t);const n = i ? i.element : document.createElement("template"),
         s = e.querySelectorAll("style"),
         { length: r } = s;if (0 === r) return void window.ShadyCSS.prepareTemplateStyles(n, t);const a = document.createElement("style");for (let c = 0; c < r; c++) {
@@ -398,7 +398,7 @@ class {
   }(i, a, o.firstChild) : o.insertBefore(a, o.firstChild), window.ShadyCSS.prepareTemplateStyles(n, t);const l = o.querySelector("style");if (window.ShadyCSS.nativeShadow && null !== l) e.insertBefore(l.cloneNode(!0), e.firstChild);else if (i) {
     o.insertBefore(a, o.firstChild);const t = new Set();t.add(a), u(i, t);
   }
-};window.JSCompiler_renameProperty = (t, e) => t;const z = { toAttribute(t, e) {
+};window.JSCompiler_renameProperty = (t, e) => t;const q = { toAttribute(t, e) {
     switch (e) {case Boolean:
         return t ? "" : null;case Object:case Array:
         return null == t ? t : JSON.stringify(t);}return t;
@@ -409,7 +409,7 @@ class {
         return JSON.parse(t);}return t;
   } },
       Y = (t, e) => e !== t && (e == e || t == t),
-      B = { attribute: !0, type: String, converter: z, reflect: !1, hasChanged: Y };class W extends HTMLElement {
+      B = { attribute: !0, type: String, converter: q, reflect: !1, hasChanged: Y };class W extends HTMLElement {
   constructor() {
     super(), this._updateState = 0, this._instanceProperties = void 0, this._updatePromise = new Promise(t => this._enableUpdatingResolver = t), this._changedProperties = new Map(), this._reflectingProperties = void 0, this.initialize();
   }static get observedAttributes() {
@@ -442,11 +442,11 @@ class {
     return i(t, e);
   }static _propertyValueFromAttribute(t, e) {
     const i = e.type,
-          n = e.converter || z,
+          n = e.converter || q,
           s = "function" == typeof n ? n : n.fromAttribute;return s ? s(t, i) : t;
   }static _propertyValueToAttribute(t, e) {
     if (void 0 === e.reflect) return;const i = e.type,
-          n = e.converter;return (n && n.toAttribute || z.toAttribute)(t, i);
+          n = e.converter;return (n && n.toAttribute || q.toAttribute)(t, i);
   }initialize() {
     this._saveInstanceProperties(), this._requestUpdate();
   }_saveInstanceProperties() {
@@ -594,7 +594,7 @@ found at http://polymer.github.io/PATENTS.txt
         l = o ? document.createDocumentFragment() : e;if (((t, e, n) => {
     let s = V.get(e);void 0 === s && (i(e, e.firstChild), V.set(e, s = new M(Object.assign({ templateFactory: $ }, n))), s.appendInto(e)), s.setValue(t), s.commit();
   })(t, l, Object.assign({ templateFactory: F(s) }, n)), o) {
-    const t = V.get(l);V.delete(l);const n = t.value instanceof y ? t.value.template : void 0;q(s, l, n), i(e, e.firstChild), e.appendChild(l), V.set(e, t);
+    const t = V.get(l);V.delete(l);const n = t.value instanceof y ? t.value.template : void 0;z(s, l, n), i(e, e.firstChild), e.appendChild(l), V.set(e, t);
   }!r && a && window.ShadyCSS.styleElement(e.host);
 };
 /**
@@ -824,7 +824,7 @@ class rt {
 }var Ut = function (t) {
   Rt(window, "haptic", t);
 },
-    qt = function (t, e) {
+    zt = function (t, e) {
   return function (t, e, i) {
     void 0 === i && (i = !0);var n,
         s = $t(e),
@@ -834,7 +834,7 @@ class rt {
         n = i ? "turn_on" : "turn_off";}return t.callService(r, n, { entity_id: e });
   }(t, e, Vt.includes(t.states[e].state));
 },
-    zt = function (t, e, i, n, s) {
+    qt = function (t, e, i, n, s) {
   var r;if (s && i.double_tap_action ? r = i.double_tap_action : n && i.hold_action ? r = i.hold_action : !n && i.tap_action && (r = i.tap_action), r || (r = { action: "more-info" }), !r.confirmation || r.confirmation.exemptions && r.confirmation.exemptions.some(function (t) {
     return t.user === e.user.id;
   }) || confirm(r.confirmation.text || "Are you sure you want to " + r.action + "?")) switch (r.action) {case "more-info":
@@ -843,7 +843,7 @@ class rt {
         void 0 === i && (i = !1), i ? history.replaceState(null, "", e) : history.pushState(null, "", e), Rt(window, "location-changed", { replace: i });
       }(0, r.navigation_path), r.haptic && Ut(r.haptic));break;case "url":
       r.url_path && window.open(r.url_path), r.haptic && Ut(r.haptic);break;case "toggle":
-      i.entity && (qt(e, i.entity), r.haptic && Ut(r.haptic));break;case "call-service":
+      i.entity && (zt(e, i.entity), r.haptic && Ut(r.haptic));break;case "call-service":
       if (!r.service) return;var a = r.service.split(".", 2),
           o = a[0],
           l = a[1],
@@ -1533,7 +1533,7 @@ class rt {
 `;const Te = (t, e, i, n) => {
   if (!((t, e, i) => {
     const [n, s] = t.split(".", 2);return Number(n) > e || Number(n) === e && Number(s) >= i;
-  })(t.connection.haVersion, 0, 109)) return function (t, e) {
+  })(t.config.version, 0, 109)) return function (t, e) {
     let i;const n = ye(e.entity_id);return "binary_sensor" === n ? (e.attributes.device_class && (i = t(`state.${n}.${e.attributes.device_class}.${e.state}`)), i || (i = t(`state.${n}.default.${e.state}`))) : i = e.attributes.unit_of_measurement && !["unknown", "unavailable"].includes(e.state) ? e.state : "zwave" === n ? ["initializing", "dead"].includes(e.state) ? t(`state.zwave.query_stage.${e.state}`, "query_stage", e.attributes.query_stage) : t(`state.zwave.default.${e.state}`) : t(`state.${n}.${e.state}`), i || (i = t(`state.default.${e.state}`) || t(`component.${n}.state.${e.state}`) || e.state), i;
   }(e, i);if ("unknown" === i.state || "unavailable" === i.state) return e(`state.default.${i.state}`);if (i.attributes.unit_of_measurement) return `${i.state} ${i.attributes.unit_of_measurement}`;const s = ye(i.entity_id);if ("input_datetime" === s) {
     let t;if (!i.attributes.has_time) return t = new Date(i.attributes.year, i.attributes.month - 1, i.attributes.day), Ct(t, n);if (!i.attributes.has_date) {
@@ -1684,10 +1684,9 @@ class rt {
   }_buildName(t, e) {
     if (!1 === this._config.show_name) return;let i;var n;return e && e.name ? i = e.name : this._config.name ? i = this._config.name : t && (i = t.attributes && t.attributes.friendly_name ? t.attributes.friendly_name : (n = t.entity_id).substr(n.indexOf(".") + 1)), this._getTemplateOrValue(t, i);
   }_buildStateString(t) {
-    let e;if (this._config.show_state && t && t.state) {
-      const i = Te(this._hass, this._hass.localize, t, this._hass.language),
-            n = this._buildUnits(t);n ? e = `${t.state} ${n}` : "timer" === ye(t.entity_id) ? "idle" === t.state || 0 === this._timeRemaining ? e = i : (e = this._computeTimeDisplay(t), "paused" === t.state && (e += ` (${i})`)) : e = i;
-    }return e;
+    var e;let i;if (this._config.show_state && t && t.state) {
+      const n = this._buildUnits(t);n ? i = `${t.state} ${n}` : "timer" === ye(t.entity_id) ? "idle" === t.state || 0 === this._timeRemaining ? i = Te(this._hass, this._hass.localize, t, this._hass.language) : (i = this._computeTimeDisplay(t), "paused" === t.state && (i += ` (${Te(this._hass, this._hass.localize, t, this._hass.language)})`)) : i = (null === (e = this._config) || void 0 === e ? void 0 : e.show_units) || "sensor" !== ye(t.entity_id) ? Te(this._hass, this._hass.localize, t, this._hass.language) : t.state;
+    }return i;
   }_buildUnits(t) {
     let e;return t && this._config.show_units && (e = t.attributes && t.attributes.unit_of_measurement && !this._config.units ? t.attributes.unit_of_measurement : this._config.units ? this._config.units : void 0), e;
   }_buildLastChanged(t, e) {
@@ -1907,11 +1906,11 @@ class rt {
         this._handleHold(t);break;case "double_tap":
         this._handleDblTap(t);}
   }_handleTap(t) {
-    const e = t.target.config;e && zt(this, this._hass, this._evalActions(e, "tap_action"), !1, !1);
+    const e = t.target.config;e && qt(this, this._hass, this._evalActions(e, "tap_action"), !1, !1);
   }_handleHold(t) {
-    const e = t.target.config;e && zt(this, this._hass, this._evalActions(e, "hold_action"), !0, !1);
+    const e = t.target.config;e && qt(this, this._hass, this._evalActions(e, "hold_action"), !0, !1);
   }_handleDblTap(t) {
-    const e = t.target.config;e && zt(this, this._hass, this._evalActions(e, "double_tap_action"), !1, !0);
+    const e = t.target.config;e && qt(this, this._hass, this._evalActions(e, "double_tap_action"), !1, !0);
   }_handleUnlockType(t) {
     const e = t.target.config;e && e.lock.unlock === t.detail.action && this._handleLock();
   }_handleLock() {

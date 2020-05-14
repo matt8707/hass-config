@@ -413,7 +413,10 @@ class HPDeviceData:
 
     @staticmethod
     def clean_parameter(data_item, data_key, default_value="N/A"):
-        result = data_item.get(data_key, {})
+        if data_item is None:
+            result = default_value
+        else:
+            result = data_item.get(data_key, {})
 
         if not isinstance(result, str):
             result = result.get("#text", 0)

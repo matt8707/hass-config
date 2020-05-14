@@ -166,12 +166,10 @@ class ConfigFlowManager:
         api = ProductConfigDynDataAPI(self._hass, self.config_manager)
 
         try:
-            if await api.async_get(True) is None:
-                _LOGGER.warning(f"Failed to access {DEFAULT_NAME} ({config_data.host})")
-                errors = {"base": "error_400"}
+            await api.async_get(True)
         except LoginError as ex:
-            _LOGGER.warning(
-                f"Failed to access {DEFAULT_NAME} ({config_data.host}) due to error {ex.status_code}"
+            _LOGGER.info(
+                f"Unable to access {DEFAULT_NAME} ({config_data.host}), HTTP Status Code {ex.status_code}"
             )
 
             status_code = ex.status_code

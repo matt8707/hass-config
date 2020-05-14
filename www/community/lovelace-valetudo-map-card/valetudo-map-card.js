@@ -143,33 +143,37 @@ class ValetudoMapCard extends HTMLElement {
       };
     };
 
-    mapCtx.strokeStyle = obstacleStrongColor;
-    mapCtx.lineWidth = 1;
-    mapCtx.fillStyle = obstacleWeakColor;
-    mapCtx.beginPath();
-    if (mapData.attributes.image.pixels.obstacle_weak) {
-      for (let item of mapData.attributes.image.pixels.obstacle_weak) {
-        let x = item[0] * this._config.map_scale;
-        let y = item[1] * this._config.map_scale;
-        if (this.isOutsideBounds(x, y, drawnMapCanvas, this._config)) continue;
-        mapCtx.fillRect(x, y, this._config.map_scale, this._config.map_scale);
+    if (this._config.show_weak_obstacles) {
+      mapCtx.strokeStyle = obstacleStrongColor;
+      mapCtx.lineWidth = 1;
+      mapCtx.fillStyle = obstacleWeakColor;
+      mapCtx.beginPath();
+      if (mapData.attributes.image.pixels.obstacle_weak) {
+        for (let item of mapData.attributes.image.pixels.obstacle_weak) {
+          let x = item[0] * this._config.map_scale;
+          let y = item[1] * this._config.map_scale;
+          if (this.isOutsideBounds(x, y, drawnMapCanvas, this._config)) continue;
+          mapCtx.fillRect(x, y, this._config.map_scale, this._config.map_scale);
+        };
       };
     };
 
-    mapCtx.strokeStyle = obstacleStrongColor;
-    mapCtx.lineWidth = 1;
-    mapCtx.fillStyle = obstacleStrongColor;
-    mapCtx.beginPath();
-    if (mapData.attributes.image.pixels.obstacle_weak) {
-      for (let item of mapData.attributes.image.pixels.obstacle_strong) {
-        let x = item[0] * this._config.map_scale;
-        let y = item[1] * this._config.map_scale;
-        if (this.isOutsideBounds(x, y, drawnMapCanvas, this._config)) continue;
-        mapCtx.fillRect(x, y, this._config.map_scale, this._config.map_scale);
+    if (this._config.show_strong_obstacles) {
+      mapCtx.strokeStyle = obstacleStrongColor;
+      mapCtx.lineWidth = 1;
+      mapCtx.fillStyle = obstacleStrongColor;
+      mapCtx.beginPath();
+      if (mapData.attributes.image.pixels.obstacle_weak) {
+        for (let item of mapData.attributes.image.pixels.obstacle_strong) {
+          let x = item[0] * this._config.map_scale;
+          let y = item[1] * this._config.map_scale;
+          if (this.isOutsideBounds(x, y, drawnMapCanvas, this._config)) continue;
+          mapCtx.fillRect(x, y, this._config.map_scale, this._config.map_scale);
+        };
       };
     };
 
-    if (mapData.attributes.no_go_areas) {
+    if (mapData.attributes.no_go_areas && this._config.show_no_go_areas) {
       mapCtx.strokeStyle = noGoAreaColor;
       mapCtx.lineWidth = 1;
       mapCtx.fillStyle = noGoAreaColor;
@@ -189,9 +193,9 @@ class ValetudoMapCard extends HTMLElement {
       };
     };
 
-    if (mapData.attributes.virtual_walls) {
+    if (mapData.attributes.virtual_walls && this._config.show_virtual_walls && this._config.virtual_wall_width > 0) {
       mapCtx.strokeStyle = virtualWallColor;
-      mapCtx.lineWidth = this._config.virtual_wall_width || 1;
+      mapCtx.lineWidth = this._config.virtual_wall_width;
       mapCtx.beginPath();
       for (let item of mapData.attributes.virtual_walls) {
         let fromX = Math.floor(item[0] / widthScale) - leftOffset;
@@ -209,7 +213,7 @@ class ValetudoMapCard extends HTMLElement {
     if (mapData.attributes.path && mapData.attributes.path.points) {
       const pathCtx = pathCanvas.getContext("2d");
       pathCtx.strokeStyle = pathColor;
-      pathCtx.lineWidth = this._config.path_width || 1;
+      pathCtx.lineWidth = this._config.path_width;
 
       let first = true;
       let prevX = 0;
@@ -232,10 +236,9 @@ class ValetudoMapCard extends HTMLElement {
         } else {
           pathCtx.lineTo(x, y);
         };
-
       };
 
-      if (this._config.show_path) pathCtx.stroke();
+      if (this._config.show_path && this._config.path_width > 0) pathCtx.stroke();
 
       // Update vacuum angle
       if (!first) {
@@ -254,8 +257,14 @@ class ValetudoMapCard extends HTMLElement {
     this._config = Object.assign({}, config);
 
     if (this._config.title === undefined) this._config.title = "Vacuum";
+    if (this._config.virtual_wall_width === undefined) this._config.virtual_wall_width = 1;
+    if (this._config.path_width === undefined) this._config.path_width = 1;
     if (this._config.show_dock === undefined) this._config.show_dock = true;
     if (this._config.show_vacuum === undefined) this._config.show_vacuum = true;
+    if (this._config.show_weak_obstacles === undefined) this._config.show_weak_obstacles = true;
+    if (this._config.show_strong_obstacles === undefined) this._config.show_strong_obstacles = true;
+    if (this._config.show_no_go_areas === undefined) this._config.show_no_go_areas = true;
+    if (this._config.show_virtual_walls === undefined) this._config.show_virtual_walls = true;
     if (this._config.show_path === undefined) this._config.show_path = true;
     if (this._config.map_scale === undefined) this._config.map_scale = 1;
     if (this._config.icon_scale === undefined) this._config.icon_scale = 1;

@@ -13,7 +13,7 @@
       "already_configured": "HP Printer integration ({name}) already configured"
     },
     "error": {
-      "error_400": "Invalid server details",
+      "error_400": "Invalid server details, please try manually access to `http://{IP}//DevMgmt/ProductStatusDyn.xml` (Replace placeholder with IP or Hostname), in case it's accessible, please report the issue with logs",
       "error_404": "Unsupported API"
     }
   },
@@ -32,9 +32,9 @@
           }
       },
     "error": {
-      "error_400": "Invalid server details",
+      "error_400": "Invalid server details, please try manually access to `http://{IP}//DevMgmt/ProductStatusDyn.xml` (Replace placeholder with IP or Hostname), in case it's accessible, please report the issue with logs",
       "error_404": "Unsupported API",
-        "already_configured": "HP Printer integration ({name}) already configured"
+      "already_configured": "HP Printer integration ({name}) already configured"
     }
   }
 }
