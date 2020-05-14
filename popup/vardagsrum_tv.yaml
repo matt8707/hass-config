@@ -10,11 +10,16 @@
                 card:
                   type: entities
                   style: "ha-card {padding: 0.3em 1.2em 0.4em 0.5em;}"
+                  show_header_toggle: false
                   entities:
 
                     - entity: switch.tv_template
                       name: Sony Bravia
                       secondary_info: last-changed
+
+                    - entity: automation.tv_on_lights
+                      name: Tänd lampa bakom tv
+                      icon: mdi:lightbulb-on-outline
 
                     - entity: input_select.hdmi
 
