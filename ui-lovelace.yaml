@@ -65,6 +65,11 @@ button_card_templates:
         [font-family: Sf Display, letter-spacing: 0.05vw, text-rendering: optimizeLegibility, font-weight: 400, color: 'rgba(255, 255, 255, 0.3)', font-size: 1.34vw, 
         background-color: 'rgba(115, 115, 115, 0.2)', border-radius: 0.8vw, box-shadow: none, transition: none]
     tap_action:
+      ui_sound: &ui_sound |
+        [[[ if (entity.state === 'off' && states['switch.fullykiosk_screensaver'].state === 'off') {
+        hass.callService('media_player', 'play_media', {entity_id: 'media_player.tablet', media_content_id: '/local/on.m4a', media_content_type: 'music'}); }
+        else if (entity.state === 'on' && states['switch.fullykiosk_screensaver'].state === 'off') {
+        hass.callService('media_player', 'play_media', {entity_id: 'media_player.tablet', media_content_id: '/local/off.m4a', media_content_type: 'music'}); } ]]]
       action: toggle
     hold_action:
       action: call-service
@@ -119,13 +124,28 @@ button_card_templates:
                           opacity: 0.9
                         card:
                           type: entities
+                          style: "ha-card {padding: 0.3em 1.2em 0.4em 0.5em;}"
                           show_header_toggle: false
                           entities:
                             - entity: '[[[ return entity.entity_id ]]]'
                               secondary_info: last-changed
                             - type: custom:light-entity-card
                               entity: '[[[ return entity.entity_id ]]]'
-                              style: 'ha-card {box-shadow: none; margin-bottom: -1em;}'
+                              style:
+                                .: |
+                                  ha-card {
+                                    background: none; box-shadow: none; margin: -0.5em -1em -0.5em -0.7em; }
+                                  ha-card > div.light-entity-card-sliders.ha-slider-full-width { 
+                                    margin-bottom: 0.75em; }
+                                  ha-card > div.light-entity-card-sliders.ha-slider-full-width > div > ha-icon {
+                                    margin: auto; width: 34px; height: 34px; cursor: default; 
+                                    padding-right: 0.49em; color: var(--paper-item-icon-color);}
+                                  ha-card > div.light-entity-card-sliders.ha-slider-full-width > div > div {
+                                    margin: auto; padding: 0 1.4em 0 1em; max-width: 1em; cursor: default;}
+                                'ha-card > div.light-entity-card-sliders.ha-slider-full-width > div > ha-slider':
+                                  $: |
+                                    #sliderContainer { 
+                                      --calculated-paper-slider-height: var(--paper-slider-height, 5px); }
                               brightness: false
                               color_temp: true
                               full_width_sliders: true
@@ -142,6 +162,12 @@ button_card_templates:
       name: *button_styles_name
       state: *button_styles_state
       card: *button_styles_card
+      custom_fields:
+        loading:
+          [filter: "[[[ return entity.state === 'off' ? 'invert(1)' : 'none'; ]]]", 
+           top: 3%, left: 60%, width: 3.7vw, position: absolute, opacity: 0.6]
+    tap_action:
+      ui_sound: *ui_sound
 
   icon_action:
     color: '#9da0a2'
@@ -175,7 +201,7 @@ button_card_templates:
         [[[ if (entity.attributes.entity_picture != null) {
         return '<svg viewBox="0 0 50 50" />'; } ]]]
       overlay: >
-        [[[ if (entity.state != 'off' && entity.state != 'idle' && entity.state != 'standby') {
+        [[[ if (entity.state != 'off' && entity.state != 'idle' && entity.state != 'standby' && entity.state != 'unavailable') {
         return '<svg viewBox="0 0 50 50" />'; } ]]]
       play_pause: >
         [[[ const style = `<style>.scale-up { animation: scale-up 0.3s; cubic-bezier(.05,.5,.3,1) 1; transform-origin: center center; }
@@ -183,6 +209,10 @@ button_card_templates:
         if (entity.state === 'playing') { return `<svg viewBox="0 0 166 166">${style}<path class="scale-up" d="M0 0h59.9v166H0zm106.1 0H166v166h-59.9z"/></svg>`; }
         if (entity.state === 'paused') { return `<svg viewBox="0 0 166 166">${style}<path class="scale-up" d="M0 0l166 83L0 166z"/></svg>`; } ]]]
     tap_action: &media_tap_action
+      sound: >
+        [[[ if (states['switch.fullykiosk_screensaver'].state === 'off') {
+        if (entity.state != 'off' || entity.state != 'idle' || entity.state != 'standby')
+        hass.callService('media_player', 'play_media', {entity_id: 'media_player.tablet', media_content_id: '/local/popup.m4a', media_content_type: 'music'}); } ]]]
       action: >
         [[[ if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby') {
         return 'none'; } else { return 'call-service'; } ]]]
@@ -210,7 +240,7 @@ button_card_templates:
           fill: '#dedede', top: 0, right: 0, bottom: 0, left: 0, margin: auto, width: 21%, height: 21%, position: absolute]
         icon:
           [fill:
-          "[[[ if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby') return '#9da0a2'; 
+          "[[[ if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby' || entity.state === 'unavailable') return '#9da0a2'; 
           else return 'rgba(255, 255, 255, 0.8)'; ]]]", 
           top: 5.35%, left: 5.35%, width: 2.95vw, position: absolute]
         progress_bar:
@@ -222,7 +252,7 @@ button_card_templates:
         white-space: nowrap, overflow: hidden, text-overflow: ellipsis, max-width: 90%]
       card: 
         [<<: *button_styles_card, background-color: none, 
-        color: &media_font_color "[[[ if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby') { return 'rgba(255, 255, 255, 0.3)'; }
+        color: &media_font_color "[[[ if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby' || entity.state === 'unavailable') { return 'rgba(255, 255, 255, 0.3)'; }
         if ((entity.state != 'off' && entity.state != 'idle' && entity.state != 'standby') && (entity.attributes.entity_picture == null)) {
         return 'rgba(0, 0, 0, 0.6)'; } else { return '#efefef'; } ]]]", 
         text-shadow: &media_text_shadow "[[[ if (entity.attributes.entity_picture == null) return 'none'; 
@@ -244,7 +274,7 @@ button_card_templates:
         [<<: *button_styles_card, color: *media_font_color, text-shadow: *media_text_shadow, 
         background-color: none, background-size: cover,
         background-image: 
-        "[[[ if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby') {
+        "[[[ if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby' || entity.state === 'unavailable') {
         return 'linear-gradient(0deg, rgba(115, 115, 115, 0.2) 0%, rgba(115, 115, 115, 0.2) 100%)'; }
         if ((entity.state != 'off' && entity.state != 'idle' && entity.state != 'standby') && (entity.attributes.entity_picture == null)) {
         return 'linear-gradient(0deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.8) 100%)'; }
@@ -646,7 +676,10 @@ views:
               width: 10%
             custom_fields:
               icon_hue: &icon_hue >
-                <svg viewBox="0 0 50 50"><path d="M27.4 47.3h-4.9s-.7.1-.7.8.4.9.7.9h4.9c.3 0 .7-.1.7-.9s-.7-.8-.7-.8zm3.3-2.9H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9-.1-.8-.9-.8-.9-.8zm0-3H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9-.1-.8-.9-.8-.9-.8zm0-2.9H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9s-.9-.8-.9-.8zm5.2-23.2c-3.3-5.3-7-5.6-10.9-5.6-3.8 0-8.4.4-10.9 5.6-.1.1-.1.3.1.7.4.8 3.3 7.2 3.2 18.8 0 1.1-.1 1.6 0 1.7 0 .1 0 .7 1.1.7h13c1 0 1-.5 1.1-.7v-1.7c-.1-11.6 2.8-18 3.2-18.8.1-.4.1-.5.1-.7" fill="#9da0a2"/><path d="M14.1 15.3c3.4-.3 7-.4 10.9-.4 3.8 0 7.5.2 10.9.4.4-.4.7-.8.9-1.1C39 8.5 38.9 6.5 38.9 6c-.2-4.4-8.4-5-12.1-5h0-3.4c-3.7 0-12 .5-12.1 5 0 .5-.1 2.5 2.1 8.2 0 .3.3.8.7 1.1z" fill="var(--button-card-light-color-no-temperature)"/></svg>
+                [[[ const state = entity.state === 'on' ? 'animate' : null;
+                return `<svg viewBox="0 0 50 50"><style>@keyframes animate{0%{transform: scale(0.85);}20%{transform: scale(1.1);}40%{transform: scale(0.95);}60%{transform: scale(1.03);}80%{transform: scale(0.97);}100%{transform: scale(1);}}.animate{animation: animate 0.8s; transform-origin: center;}</style>
+                <path fill="#9da0a2" d="M27.4 47.3h-4.9s-.7.1-.7.8.4.9.7.9h4.9c.3 0 .7-.1.7-.9s-.7-.8-.7-.8zm3.3-2.9H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9-.1-.8-.9-.8-.9-.8zm0-3H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9-.1-.8-.9-.8-.9-.8zm0-2.9H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9s-.9-.8-.9-.8zm5.2-23.2c-3.3-5.3-7-5.6-10.9-5.6-3.8 0-8.4.4-10.9 5.6-.1.1-.1.3.1.7.4.8 3.3 7.2 3.2 18.8 0 1.1-.1 1.6 0 1.7 0 .1 0 .7 1.1.7h13c1 0 1-.5 1.1-.7v-1.7c-.1-11.6 2.8-18 3.2-18.8.1-.4.1-.5.1-.7"/>
+                <path class="${state}" fill="var(--button-card-light-color-no-temperature)" d="M14.1 15.3c3.4-.3 7-.4 10.9-.4 3.8 0 7.5.2 10.9.4.4-.4.7-.8.9-1.1C39 8.5 38.9 6.5 38.9 6c-.2-4.4-8.4-5-12.1-5h0-3.4c-3.7 0-12 .5-12.1 5 0 .5-.1 2.5 2.1 8.2 0 .3.3.8.7 1.1z"/></svg>`; ]]]
             styles: &icon_hue_styles
               custom_fields:
                 icon_hue:
@@ -668,7 +701,10 @@ views:
               width: 10%
             custom_fields:
               icon_shade: >
-                <svg viewBox="0 0 50 50"><path d="M26.4 25.6c.6-.3 1.1-.7 1.1-1.3L25 17.9l-2.5 6.4c0 .7.6 1.1 1.1 1.3v20.8h-5.5v2.7h13.7v-2.7h-5.5V25.6z" fill="#9da0a2"/><path d="M24.6.9l-9.4.5c-.6.1-1.9 0-2.5 2.1s-2.4 9.1-4 16.9c-.2.7-.5 2-.5 2.3s-.4 1.6.9 1.6c.8.1 7.4.3 15.9.3 8.6 0 15.1-.3 15.9-.3 1.3-.1.9-1.3.9-1.6s-.3-1.6-.5-2.3c-1.6-7.8-3.4-14.8-4-16.9s-1.9-2-2.5-2.1c-1.6-.2-6.9-.4-9.4-.5" fill="var(--button-card-light-color-no-temperature)"/></svg>
+                [[[ const state = entity.state === 'on' ? 'animate' : null;
+                return `<svg viewBox="0 0 50 50"><style>@keyframes animate{0%{transform: scale(0.85);}20%{transform: scale(1.1);}40%{transform: scale(0.95);}60%{transform: scale(1.03);}80%{transform: scale(0.97);}100%{transform: scale(1);}}.animate{animation: animate 0.8s; transform-origin: center;}</style>
+                <path fill="#9da0a2" d="M26.4 25.6c.6-.3 1.1-.7 1.1-1.3L25 17.9l-2.5 6.4c0 .7.6 1.1 1.1 1.3v20.8h-5.5v2.7h13.7v-2.7h-5.5V25.6z"/>
+                <path class="${state}" fill="var(--button-card-light-color-no-temperature)" d="M24.6.9l-9.4.5c-.6.1-1.9 0-2.5 2.1s-2.4 9.1-4 16.9c-.2.7-.5 2-.5 2.3s-.4 1.6.9 1.6c.8.1 7.4.3 15.9.3 8.6 0 15.1-.3 15.9-.3 1.3-.1.9-1.3.9-1.6s-.3-1.6-.5-2.3c-1.6-7.8-3.4-14.8-4-16.9s-1.9-2-2.5-2.1c-1.6-.2-6.9-.4-9.4-.5"/> </svg>`;]]]
             styles:
               custom_fields:
                 icon_shade:
@@ -689,30 +725,33 @@ views:
               top: 37.9%
               left: 30.31%
               width: 10%
-            tap_action:
+            tap_action: &tv_tap_action
               services: |
                 [[[ if (entity.state === 'off') {
-                hass.callService('input_boolean', 'turn_on', {entity_id: 'input_boolean.sony_bravia_tv'});
-                hass.callService('remote', 'send_command', {entity_id: 'remote.vardagsrum', command: 'menu'}); }
+                hass.callService('input_boolean', 'turn_on', {entity_id: entity.entity_id.replace('media_player', 'input_boolean')});
+                hass.callService('media_player', 'turn_on', {entity_id: entity.entity_id}); }
                 if (entity.state === 'on') {
-                hass.callService('input_boolean', 'turn_on', {entity_id: 'input_boolean.sony_bravia_tv'});
-                hass.callService('media_player', 'turn_off', {entity_id: 'media_player.sony_bravia_tv'}); } ]]]
+                hass.callService('input_boolean', 'turn_on', {entity_id: entity.entity_id.replace('media_player', 'input_boolean')});
+                hass.callService('media_player', 'turn_off', {entity_id: entity.entity_id}); } ]]]
             hold_action: !include popup/vardagsrum_tv.yaml
             custom_fields:
               icon_tv: &icon_tv >
-                [[[ const fill_color = entity.state === 'on' ? '#616161' : '#9da0a2';
-                const gradient = entity.state === 'on' ? '<linearGradient id="A" gradientUnits="userSpaceOnUse" x1="5.401" y1="34.714" x2="43.817" y2="11.74"><stop offset="0" stop-color="#64acb7"/><stop offset="1" stop-color="#7fdbe9"/></linearGradient><path d="M2.9,8h44.3v29.9H2.9V8z" fill="url(#A)"/>' : ' '; 
-                return `<svg viewBox="0 0 50 50">${gradient}<path d="M46 9.2v27.5H4.1V9.2H46m2.4-2.4H1.6v32.3h46.7c.1 0 .1-32.3.1-32.3zM11.9 43.2h26.3c.6 0 1.1-.4 1.1-1v-.3c0-.6-.4-1.1-1-1.1H11.9c-.6 0-1.1.4-1.1 1v.3a1.11 1.11 0 0 0 1.1 1.1z" fill="${fill_color}"/></svg>`; ]]]
-              loading: >
-                [[[ if (states['input_boolean.sony_bravia_tv'].state === 'on') { 
+                [[[ const boolean = states[entity.entity_id.replace('media_player', 'input_boolean')].state;
+                const style = '<style>@keyframes animate_on{from{transform: scaleY(0);}to{transform: scaleY(1);}}.animate_on{animation: animate_on 1s; transform-origin: -100% 46%; animation-fill-mode: forwards;}@keyframes animate_off{from{transform: scaleY(1);}to{transform: scaleY(0);}}.animate_off{animation: animate_off 1s; transform-origin: -100% 46%; animation-fill-mode: forwards;}</style>';
+                const path = '<path d="M46 9.2v27.5H4.1V9.2H46m2.4-2.4H1.6v32.3h46.7c.1 0 .1-32.3.1-32.3zM11.9 43.2h26.3c.6 0 1.1-.4 1.1-1v-.3c0-.6-.4-1.1-1-1.1H11.9c-.6 0-1.1.4-1.1 1v.3a1.11 1.11 0 0 0 1.1 1.1z"/>';
+                const gradient = '<linearGradient id="A" gradientUnits="userSpaceOnUse" x1="5.401" y1="34.714" x2="43.817" y2="11.74"><stop offset="0" stop-color="#64acb7"/><stop offset="1" stop-color="#7fdbe9"/></linearGradient>';
+                if (entity.state === 'off' && boolean === 'off') { return `<svg viewBox="0 0 50 50"> ${style} ${gradient} <path class="animate_off" d="M2.9,8h44.3v29.9H2.9V8z" fill="url(#A)"/> ${path} </svg>`; }
+                if (entity.state === 'on' && boolean === 'off') { return `<svg viewBox="0 0 50 50"> ${style} ${gradient} <path d="M2.9,8h44.3v29.9H2.9V8z" fill="#20262890"/><path class="animate_on" d="M2.9,8h44.3v29.9H2.9V8z" fill="url(#A)"/> ${path} </svg>`; }
+                if (entity.state === 'on' && boolean === 'on') { return `<svg viewBox="0 0 50 50"> ${gradient} <path d="M2.9,8h44.3v29.9H2.9V8z" fill="url(#A)"/> ${path} </svg>`; }
+                else if (entity.state==='off' && boolean==='on') { return `<svg viewBox="0 0 50 50"> ${path} </svg>`; } ]]]
+              loading: &loading >
+                [[[ if (states[entity.entity_id.replace(/media_player|switch/g, 'input_boolean')].state === 'on') { 
                 return '<img src="/local/loader.svg" width="100%">'; } ]]]
             styles: &icon_tv_styles
               custom_fields:
                 icon_tv:
-                  [top: 7%, left: 10.7%, width: 3.5vw, position: absolute]
-                loading: &loading
-                  [filter: "[[[ return entity.state === 'off' ? 'invert(1)' : 'none'; ]]]", 
-                   top: 3%, left: 60%, width: 3.7vw, position: absolute, opacity: 0.6]
+                  [fill: "[[[ return entity.state === 'on' ? '#616161' : '#9da0a2'; ]]]", 
+                  top: 7%, left: 10.7%, width: 3.5vw, position: absolute]
             template: switch
 
           #################################################
@@ -734,17 +773,15 @@ views:
             hold_action: !include popup/vardagsrum_playstation.yaml
             custom_fields:
               icon_ps4: >
-                [[[ if (entity.state === 'on') {
-                return '<svg viewBox="0 0 50 50"><path d="M19.2 26.8l-3.8 1.4L31.6 34l4.8-1.6a9.93 9.93 0 0 1 3-.5c.4 0 .8.1 1.2.2.2.1.6.3.6.5.1.2-.2.5-.5.7-.4.2-.8.5-1.3.6l-3.8 1.4 6 2.2 3.4-1.3c.9-.3 1.6-.9 2.4-1.6.9-.7.8-1.5.1-2.4l-.7-.7c-.9-.7-2-1.3-3.1-1.6-3.3-.9-6.7-1.3-10.2-.8-1.4.2-2.9.6-4.3 1-.2.1-.5.2-.8.2-.9.3-1.3.5-1.8.7" fill="#336db3"/><path d="M17 34.8l-1.3.5L32.2 41l9.8-3.6-6.2-2.2-1.3.5-5.4 2-2.5 1v-3.1l2.6-.8 2.7-.9-16.3-5.8-9.3 3.4-.5.2L12 34l5.1-2 2.2-.8V34c0 .1-2.3.8-2.3.8z" fill="#00aa9e"/><path d="M15.8 35.2l-1.3.5c-1 .4-2.1.6-3.3.5-.5 0-1.1-.2-1.6-.3-.2-.1-.4-.3-.5-.5 0-.2.2-.4.4-.5.4-.2.7-.4 1.1-.5l1.4-.5-6.3-2.2c-1 .4-2 .9-2.8 1.5-1.2.7-1.3 2.1-.2 3.1.3.3.8.7 1.3.9 3.3 1.3 6.7 2 10.2 1.8l2.6-.3c.4-.1 1.6-.3 2.4-.6v1.6c0 .9 0 .9.9 1.3l5.3 1.8 1.1.3 2.4-.8L32 41l-16.2-5.8z" fill="#f3c202"/><path d="M26.7 14c0-.5.2-.9.7-1.2.5-.2.9-.1 1.4.2.7.5.9 1.2.9 2v11.1c0 .8.2 1 .9 1.3.4.2.8.2 1.2.3 2.7.5 4.6-.5 5.6-3.1.1-.2.1-.3.2-.5.5-1.6.5-3.3.5-5-.1-2-.8-3.8-2.1-5.4-1.5-1.8-3.4-3-5.6-3.7L19.9 7.1c-.2 0-.3 0-.5-.1 0 .3-.1.5-.1.8v31.8c0 .9 0 .9.9 1.3l5.3 1.8 1.1.3v-1c-.1 0 .1-28 .1-28z" fill="#de0029"/></svg>'; }
-                else { return '<svg viewBox="0 0 50 50"><path d="M26.7 14c0-.5.2-.9.7-1.2.5-.2.9-.1 1.4.2.7.5.9 1.2.9 2v11.1c0 .8.2 1 .9 1.3.4.2.8.2 1.2.3 2.7.5 4.6-.5 5.6-3.1.1-.2.1-.3.2-.5.5-1.6.5-3.3.5-5-.1-2-.8-3.8-2.1-5.4-1.5-1.8-3.4-3-5.6-3.7L19.9 7.1c-.2 0-.3 0-.5-.1 0 .3-.1.5-.1.8v31.8c0 .9 0 .9.9 1.3l5.3 1.8 1.1.3v-1c-.1 0 .1-28 .1-28zm-9 13.4l-.9.2-10.6 3.9c-1.2.5-2.3 1-3.3 1.7-1.2.7-1.3 2.1-.2 3.1.4.4.9.7 1.4.9 3.3 1.3 6.7 2 10.2 1.8l2.6-.3c.6-.1.8-.3.9-.9.1-1 0-2 0-3.2h0c-.3.1-.5.2-.7.2l-2.6.9c-1 .4-2.1.6-3.3.5-.5 0-1.1-.2-1.6-.3-.2-.1-.4-.3-.5-.5 0-.2.2-.4.4-.5.4-.2.7-.4 1.1-.5l6.5-2.5c.5-.2.8-.5.8-1.1-.1-.9 0-2 0-2.9-.1-.1-.2-.3-.2-.5zm27.4 8.9c.9-.3 1.6-.9 2.4-1.6.9-.7.8-1.5.1-2.4l-.7-.7c-.9-.7-2-1.3-3.1-1.6-3.3-.9-6.7-1.3-10.2-.8-1.6.2-3.1.7-4.7 1.1-.5.1-.7.4-.7.9v3.5c0 .1.1.2.2.3.3-.1.5-.2.9-.2l7.3-2.5a9.93 9.93 0 0 1 3-.5c.4 0 .8.1 1.2.2.2.1.6.3.6.5.1.2-.2.5-.5.7-.4.2-.8.4-1.3.6l-5 1.9-5.4 2c-.5.2-.9.5-.8 1.2v3.4c.3-.1.5-.1.6-.2l16.1-5.8z" fill="#9da0a2"/></svg>'; } ]]]
-              loading: >
-                [[[ if (states['input_boolean.playstation_template'].state === 'on') { 
-                return '<img src="/local/loader.svg" width="100%">'; } ]]]
+                [[[ if (entity.state === 'on') { return '<svg viewBox="0 0 50 50"> <style>@keyframes animate{50%{transform: translateY(0);}100%{transform: translateY(-45%);}}.animate{animation: animate 2s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;}</style>
+                <g style="clip-path: url(#mask);"><g class="animate"><path fill="#00aa9e" d="M49.2 38.9l-75.6-25.1v7.4l75.6 25.2z"/><path fill="#f3c202" d="M49.2 46.4l-75.6-25.2v7.5l75.6 25.1z"/><path fill="#326db3" d="M49.2 53.8l-75.6-25.1V51l75.6 25.1zm0-22.3L-26.4 6.4v7.4l75.6 25.1z"/></g></g>
+                <defs><clipPath id="mask"><path d="M47.5 33.2c-.5-2.2-3.9-3.5-9.1-3.9-3.8-.3-7.5.6-11.1 1.9l-.6.2v-5.7l-5.7.8-4.6 1.6L6 31.9h-.1c-1.9.7-3.8 2.2-3.7 4.2.1 2.1 4.7 2.6 8.2 3.2 3.3.6 6.2.2 8.9-.7l7.3 4.8L33 41l10.7-4h.1c2.8-1 4-2.5 3.7-3.8zm-31.3 2l-3.6 1.3c-2.2.8-4.1-1.1-2.1-1.9l1.7-.6 7.2-2.7v2.8l-3.2 1.1zm22.5-1.1l-1.9.7-10.2 3.7V36l6.5-2.4 3.8-1.3c4-.9 5.6.5 1.8 1.8z"/></clipPath></defs><path fill="#de0029" d="M26.7 14.6v28.7l-7.3-2.5V7.1l9.3 2.6c6 1.7 9.6 5 9.6 10.7-.1 6.7-3 9.4-8.7 7.6V14.9c-.1-1.6-2.9-1.7-2.9-.3h0z"/></svg>'; }
+                else { return '<svg viewBox="0 0 50 50"><path fill="#9da0a2" d="M43.8 37h-.1l-10.6 4-4.2 1.6v-4.9l8-2.9 1.9-.7c3.8-1.3 2.2-2.7-1.8-1.9l-3.8 1.3-4.3 1.6v-4.5c3.1-1 6.3-1.6 9.5-1.4 5.3.4 8.7 1.6 9.1 3.9.3 1.4-.9 2.9-3.7 3.9zm-26.7-2.1l-.9.3-3.6 1.3c-2.2.8-4.1-1.1-2.1-1.9l1.7-.6 5-1.9v-4.2l-.6.2L6 31.9h-.1c-1.9.7-3.8 2.2-3.7 4.2.1 2.1 4.7 2.6 8.2 3.2 2.4.4 4.6.3 6.7-.1v-4.3zm12.4-20V28c5.7 1.7 8.7-.9 8.7-7.6.1-5.7-3.6-9-9.6-10.7l-9.3-2.6v33.8l7.2 2.5.1.1V14.6c.1-1.4 2.9-1.3 2.9.3z"/></svg>'; } ]]]
+              loading: *loading
             styles:
               custom_fields:
                 icon_ps4:
                   [top: 7%, left: 10%, width: 3.5vw, position: absolute]
-                loading: *loading
             template: switch
 
           ##########################################################################
@@ -791,7 +828,9 @@ views:
               width: 10%
             custom_fields:
               icon_spot: &icon_spot >
-                <svg viewBox="0 0 50 50"><path d="M26.3 49.2s1.5.5 11-8.7c.5-.4 6.7-6.7 6.2-7.5-.7-.8-19.7-20.7-19.7-20.7s-.6-1-9.1 6.8c-.6.5-9.2 8.5-8.2 9.6l19.8 20.5z" fill="var(--button-card-light-color-no-temperature)"/><path d="M42.2.8H17.4c-.1 0-.1 0-.1.1a3.33 3.33 0 0 0 3.3 3.3h6.5c.1 0 .1 0 .1.1v7.9l3.6 3.7 1-1a2.84 2.84 0 0 0 .7-1.7v-9c0-.1 0-.1.1-.1H39c1.8.1 3.3-1.4 3.2-3.3h0z" fill="#9da0a2"/></svg>
+                [[[ const state = entity.state === 'on' ? 'animate_on' : 'animate_off';
+                return `<svg viewBox="0 0 50 50"><style>@keyframes animate_on{0%{transform: rotateZ(0deg); animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);}70%{transform: rotateZ(-15deg); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);}75%{transform: rotateZ(-15deg); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);}88%{transform: rotateZ(-11deg);}100%{transform: rotateZ(-15deg);}}.animate_on{animation: animate_on 0.7s; transform-origin: 40% 20%; animation-fill-mode: forwards; animation-delay: -0.1s;}@keyframes animate_off{0%{transform: rotateZ(-15deg); animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);}70%{transform: rotateZ(0deg); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);}75%{transform: rotateZ(0deg); animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);}88%{transform: rotateZ(-4deg);}100%{transform: rotateZ(0deg);}}.animate_off{animation: animate_off 0.7s; transform-origin: 40% 20%; animation-fill-mode: forwards;}</style>
+                <path style="clip-path: url(#mask);" fill="#9da0a2" d="M40.5.8H17.1c-.1 0-.1 0-.1.1A3.12 3.12 0 0 0 20.1 4h6.1c.1 0 .1 0 .1.1v7.4L18 19.1l3.6 3.5 9.1-8.6c.4-.4.6-1 .7-1.6V4c0-.1 0-.1.1-.1h6c1.7.1 3.1-1.3 3-3.1z"/><defs><clipPath id="mask"><path class="${state}" d="M0 9.1h24l8.3 8.8H50V-9H0z"/></clipPath></defs><path class="${state}" fill="var(--button-card-light-color-no-temperature)" d="M25.5 46.4s1.4.5 10.4-8.2c.5-.4 6.3-6.3 5.8-7.1-.7-.8-18.6-19.5-18.6-19.5s-.6-.9-8.6 6.4c-.6.5-8.7 8-7.7 9.1l18.7 19.3z"/></svg>`; ]]]
             styles: &icon_spot_styles
               custom_fields:
                 icon_spot:
@@ -807,31 +846,37 @@ views:
           - type: custom:button-card
             entity: switch.dator_template
             triggers_update:
-              ['switch.dator_template', 'input_boolean.dator_template', 'input_boolean.lock_computer']
+              ['switch.dator_template', 'input_boolean.dator_template', 
+              'input_boolean.lock_computer', 'script.auto_stang_allt']
             style:
               top: 37.9%
               left: 55.18%
               width: 10%
             tap_action:
               action: toggle
+              animate_locked: |
+                [[[ if (states['input_boolean.lock_computer'].state === 'on' && states['input_boolean.dator_template'].state === 'off') {
+                this.shadowRoot.getElementById('lock').classList.add('locked');
+                window.setTimeout(() => { this.shadowRoot.getElementById('lock').classList.remove('locked'); }, 1100) } ]]]
             hold_action: !include popup/studio_dator.yaml
             custom_fields:
               icon_imac: >
-                <svg viewBox="0 0 50 50"><path d="M31.9 44.5c-1-.3-1.9.4-1.9-3.7h-9.9c0 4.2-.9 3.4-1.9 3.7s-.2.7-.2.7h14.1s.8-.3-.2-.7zM47.6 4.8H2.5c-1.1 0-2 .9-2 2v30.1c0 1.1.9 2 2 2h45c1.1 0 2-.9 2-2v-30a1.95 1.95 0 0 0-1.9-2.1zm-.7 26.4H3.2V7.6H47v23.6z" /></svg>
-              loading: >
-                [[[ if (states['input_boolean.dator_template'].state === 'on') { 
-                return '<img src="/local/loader.svg" width="100%">'; } ]]]
+                [[[ const state = entity.state === 'on' ? 'animate' : null; 
+                return `<svg viewBox="0 0 50 50"><style>@keyframes animate{from{opacity: 0.5; transform: scale(0.6);}100%{opacity: 1;}}.animate{animation: animate 0.8s cubic-bezier(0.25, 1, 0.5, 1); transform-origin: center;}</style>
+                <path class="${state}" d="M31.9 44.5c-1-.3-1.9.4-1.9-3.7h-9.9c0 4.2-.9 3.4-1.9 3.7s-.2.7-.2.7h14.1s.8-.3-.2-.7zM47.6 4.8H2.5c-1.1 0-2 .9-2 2v30.1c0 1.1.9 2 2 2h45c1.1 0 2-.9 2-2v-30a1.95 1.95 0 0 0-1.9-2.1zm-.7 26.4H3.2V7.6H47v23.6z"/></svg>`; ]]]
+              loading: *loading
               icon_lock: >
-                [[[ if (states['input_boolean.lock_computer'].state === 'on' && states['input_boolean.dator_template'].state === 'off') {
-                return '<svg viewBox="0 0 50 50"><path d="M8.2 22.6h2.4v-7.2C10.6 7.5 17.1 1 25 1s14.4 6.4 14.4 14.4v7.2h2.4V49H8.2m26.4-26.4v-7.2c0-5.3-4.3-9.6-9.6-9.6s-9.6 4.3-9.6 9.6v7.2"/></svg>'; } ]]]
+                [[[ const state = states['script.auto_stang_allt'].state === 'on' ? 'locked' : null;
+                if (states['input_boolean.lock_computer'].state === 'on' && states['input_boolean.dator_template'].state === 'off') {
+                return `<svg viewBox="0 0 50 50"><style>@keyframes locked{from, to{transform: translateX(0);}10%, 30%, 50%, 70%, 90%{transform: translateX(-8%);}20%, 40%, 60%, 80%{transform: translateX(8%);}}.locked{animation: locked 1.1s;}</style>
+                <path id="lock" class="${state}" d="M8.2 22.6h2.4v-7.2C10.6 7.5 17.1 1 25 1s14.4 6.4 14.4 14.4v7.2h2.4V49H8.2m26.4-26.4v-7.2c0-5.3-4.3-9.6-9.6-9.6s-9.6 4.3-9.6 9.6v7.2"/></svg>`; } ]]]
             styles:
               custom_fields:
                 icon_imac:
-                  [fill: "[[[ return entity.state === 'on' ? '#797a7b' : '#9da0a2'; ]]]", 
+                  [fill: "[[[ return entity.state === 'on' ? '#72757c' : '#9da0a2'; ]]]", 
                   top: 8.5%, left: 11%, width: 3.3vw, position: absolute]
-                loading: *loading
                 icon_lock:
-                  [top: 11%, left: 73%, width: 1.8vw, position: absolute, fill: '#9da0a2']
+                  [top: 11%, left: 73%, width: 1.7vw, position: absolute, fill: '#b0b3b6']
             template: switch
 
           #################################################
@@ -842,6 +887,8 @@ views:
 
           - type: custom:button-card
             entity: switch.wemo_monitorer
+            triggers_update:
+              ['switch.wemo_monitorer', 'sensor.getvolume']
             style:
               top: 37.9%
               left: 66.14%
@@ -852,13 +899,21 @@ views:
             custom_fields:
               icon_monitors: >
                 [[[ if (entity.state === 'on') {
-                return '<svg viewBox="0 0 50 50"><style>@keyframes scale{0%{transform:scale(.9)}25%{transform:scale(1.4)}50%{transform:scale(1)}75%{transform:scale(1.3)}100%{transform:scale(.9)}}.cone.animated{animation:scale .6s linear 1;animation-delay:.3s;transform-origin:center center}</style>
-                <path d="M35.8 46.9H14.2c-1.1 0-2-1-2-2.3V6.7c0-1.3.9-2.3 2-2.3h21.5c1.1 0 2 1 2 2.3v37.9c0 1.2-.9 2.3-1.9 2.3z" fill="#686868"/><path d="M39.2 1H10.8C9.4 1 8.3 2.1 8.2 3.5v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3c1.4 0 2.5-1.2 2.6-2.6V3.5c0-1.4-1.1-2.5-2.5-2.5zM25 7c1.3 0 2.4 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4C22.5 8 23.6 7 25 7zm10.2 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6s-.1-1.1-.4-1.9.6-.9.6-.9h19.3c0-.1.8-.1.5.9z" fill="#2a2a2a"/><path class="cone animated" d="M25 15.7c-6.2 0-11.3 5.1-11.3 11.3S18.8 38.3 25 38.3 36.3 33.2 36.3 27c-.1-6.3-5.1-11.3-11.3-11.3zm0 14.5a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c-.1 1.9-1.5 3.3-3.3 3.3z" fill="#e5dd00"/></svg>'; }
-                else { return '<svg viewBox="0 0 50 50"><path d="M25 18.6c-4.6 0-8.4 3.8-8.4 8.4s3.8 8.4 8.4 8.4 8.4-3.8 8.4-8.4-3.7-8.4-8.4-8.4zm0 11.7a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c0 1.8-1.4 3.3-3.3 3.3zM39.2 1H10.9C9.4 1 8.3 2.1 8.3 3.6v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3a2.65 2.65 0 0 0 2.6-2.6v-43C41.7 2 40.5.9 39.2 1zM25 7c1.3 0 2.4 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4S23.7 7 25 7zm10.3 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6l-.4-1.9c-.2-.9.6-.9.6-.9h19.3s.9.1.6.9zM25 38.2c-6.2 0-11.3-5.1-11.3-11.3a11.29 11.29 0 1 1 22.6 0c.1 6.3-5 11.3-11.3 11.3z" fill="#9da0a2"/></svg>'; } ]]]
+                return '<svg viewBox="0 0 50 50"><style>@keyframes animate{35%{transform: scale(0.8); animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);}36%{transform: translateY(0%);}49%{transform: scale(1.25);}63%{transform: scale(0.85); animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);}77%{transform: scale(1.15); animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);}95%{transform: scale(1);}}.animate{animation: animate 1.4s; transform-origin: center;}@keyframes rubber{0%{transform: scale(1);}40%{transform: scale(1);}49%{transform: scale(0.95);}63%{transform: scale(1);}77%{transform: scale(0.95);}100%{transform: scale(1);}}.rubber{animation: rubber 1.3s; transform-origin: center;}</style>
+                <g class="rubber"><path fill="#686868" d="M35.8 46.9H14.2c-1.1 0-2-1-2-2.3V6.7c0-1.3.9-2.3 2-2.3h21.5c1.1 0 2 1 2 2.3v37.9c0 1.2-.9 2.3-1.9 2.3z"/><path fill="#2a2a2a" d="M39.2 1H10.8C9.4 1 8.3 2.1 8.2 3.5v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3c1.4 0 2.5-1.2 2.6-2.6V3.5c0-1.4-1.1-2.5-2.5-2.5zM25 7c1.3 0 2.4 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4C22.5 8 23.6 7 25 7zm10.2 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6s-.1-1.1-.4-1.9.6-.9.6-.9h19.3c0-.1.8-.1.5.9z"/> </g> <path class="animate" fill="#e5dd00" d="M25 15.7c-6.2 0-11.3 5.1-11.3 11.3S18.8 38.3 25 38.3 36.3 33.2 36.3 27c-.1-6.3-5.1-11.3-11.3-11.3zm0 14.5a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c-.1 1.9-1.5 3.3-3.3 3.3z"/></svg>'; }
+                else { return '<svg viewBox="0 0 50 50"><path fill="#9da0a2" d="M25 18.6c-4.6 0-8.4 3.8-8.4 8.4s3.8 8.4 8.4 8.4 8.4-3.8 8.4-8.4-3.7-8.4-8.4-8.4zm0 11.7a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c0 1.8-1.4 3.3-3.3 3.3zM39.2 1H10.9C9.4 1 8.3 2.1 8.3 3.6v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3a2.65 2.65 0 0 0 2.6-2.6v-43C41.7 2 40.5.9 39.2 1zM25 7c1.3 0 2.4 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4S23.7 7 25 7zm10.3 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6l-.4-1.9c-.2-.9.6-.9.6-.9h19.3s.9.1.6.9zM25 38.2c-6.2 0-11.3-5.1-11.3-11.3a11.29 11.29 0 1 1 22.6 0c.1 6.3-5 11.3-11.3 11.3z"/></svg>'; } ]]]
+              volume: >
+                [[[ if (entity.state === 'on') {
+                const volume = states['sensor.getvolume'].state;
+                const radius = 20.5; const circumference = radius * 2 * Math.PI;
+                return `<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="${radius}" stroke="#b2b2b2" stroke-width="1.5" fill="none" style="
+                transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: ${circumference}; stroke-dashoffset: ${circumference - volume / 100 * circumference};" />
+                <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">${volume}<tspan font-size="10">%</tspan></text></svg>`; } ]]]
             styles:
               custom_fields:
                 icon_monitors:
                   [top: 11%, left: 7%, width: 2.8vw, position: absolute]
+                volume: *circle_pos
             template: switch
 
           ##########################################################################
@@ -888,7 +943,10 @@ views:
               width: 10%
             custom_fields:
               icon_lamp: &icon_lamp >
-                <svg viewBox="0 0 50 50"><path d="M26.5 21.8l3.8-6.1H19.7l3.8 6.1c-5 .7-6.3 5.8-5.7 10.2.7 5.1 3.2 10.1 5.7 14.4H19v2.5h11.8v-2.5h-4.5C29 42 31.4 37 32.1 32c.6-4.4-.6-9.4-5.6-10.2zm3.1 9.1c-.3 4.3-2.3 8.7-4.4 12.4l-.2.1v.1-.1c-1.8-3-3.3-6.4-4.1-9.7-.7-3.1-1-7.2 2.7-8.4 1.4-.5 3.1-.1 4.2.8 1.6 1 1.8 3 1.8 4.8z" fill="#9da0a2"/><path d="M38.1 20L35.7 3.8c-.3-1.9-.4-1.7-.6-2-.9-.6-2.3-.7-2.3-.7H17.4s-1.4 0-2.3.7c-.2.3-.3.1-.6 2C14 5.7 11.9 20 11.9 20s5.8.3 13.4.3h0c7.3 0 12.8-.3 12.8-.3z" fill="var(--button-card-light-color-no-temperature)"/></svg>
+                [[[ const state = entity.state === 'on' ? 'animate' : null; 
+                return `<svg viewBox="0 0 50 50"><style>@keyframes animate{0%{transform: scale(0.85);}20%{transform: scale(1.1);}40%{transform: scale(0.95);}60%{transform: scale(1.03);}80%{transform: scale(0.97);}}.animate{animation: animate 0.8s; transform-origin: center;}</style>
+                <path fill="#9da0a2" d="M26.5 21.8l3.8-6.1H19.7l3.8 6.1c-5 .7-6.3 5.8-5.7 10.2.7 5.1 3.2 10.1 5.7 14.4H19v2.5h11.8v-2.5h-4.5C29 42 31.4 37 32.1 32c.6-4.4-.6-9.4-5.6-10.2zm3.1 9.1c-.3 4.3-2.3 8.7-4.4 12.4l-.2.1v.1-.1c-1.8-3-3.3-6.4-4.1-9.7-.7-3.1-1-7.2 2.7-8.4 1.4-.5 3.1-.1 4.2.8 1.6 1 1.8 3 1.8 4.8z"/>
+                <path class="${state}" fill="var(--button-card-light-color-no-temperature)" d="M38.1 20L35.7 3.8c-.3-1.9-.4-1.7-.6-2-.9-.6-2.3-.7-2.3-.7H17.4s-1.4 0-2.3.7c-.2.3-.3.1-.6 2C14 5.7 11.9 20 11.9 20s5.8.3 13.4.3h0c7.3 0 12.8-.3 12.8-.3z"/> </svg>`;]]]
             styles: &icon_lamp_styles
               custom_fields:
                 icon_lamp:
@@ -929,9 +987,10 @@ views:
             hold_action: !include popup/sovrum_flakt.yaml
             custom_fields:
               icon_fan: >
-                [[[ if (entity.state === 'on') { return '<svg viewBox="0 0 50 50" fill="#5daeea"><animateTransform accumulate="none" additive="sum" attributeName="transform" attributeType="xml" calcMode="linear" dur="0.5s" fill="remove" from="0 0 0" repeatCount="indefinite" restart="always" to="360 0 0" type="rotate"/><circle cx="25" cy="25" r="6.6"/><path d="M31.9 30.4c-.5.6-1.1 1.1-1.7 1.5-1.4 1.1-3.2 1.7-5.2 1.7-2.3 0-4.5-.9-6-2.4-.9 1.1-1.6 2.3-2.3 3.2l-4.9 5.4c-1.8 2.7.3 5.6 2.5 7 3.9 2.4 9.8 3.1 14.1 1.9 4.6-1.3 7.9-4.7 7.4-9.7-.2-3.4-1.9-6-3.9-8.6zM17 28.3c-.4-1-.6-2.1-.6-3.3a8.7 8.7 0 0 1 6.4-8.4l-1.6-3.5L19 6.2c-1.5-2.8-5-2.5-7.3-1.2-4 2.2-7.5 6.9-8.7 11.3-1.2 4.6.2 9.2 4.7 11.3 3.1 1.3 6.1 1.2 9.3.7zm26.9-17.6c-3.3-3.4-8-4.6-12.1-1.8-2.8 1.8-4.2 4.6-5.5 7.5 4.2.6 7.4 4.2 7.4 8.6 0 .9-.1 1.7-.4 2.5 1.3.2 2.8.3 3.8.4 2.3.4 4.7 1.3 7.1 1.7 3.2.3 4.7-3 4.8-5.6.3-4.6-1.9-10.1-5.1-13.3z"/></svg>'; }
-                else { return '<svg viewBox="0 0 50 50" fill="#9ca2a5"><style>@keyframes spin{from{transform:rotate(0)}to{transform:rotate(720deg)}}.spin.animated{animation:spin 1.7s ease-out 1;transform-origin:center center}</style>
-                <g class="spin animated"><circle cx="25" cy="25" r="6.6"/><path d="M31.9 30.4c-.5.6-1.1 1.1-1.7 1.5-1.4 1.1-3.2 1.7-5.2 1.7-2.3 0-4.5-.9-6-2.4-.9 1.1-1.6 2.3-2.3 3.2l-4.9 5.4c-1.8 2.7.3 5.6 2.5 7 3.9 2.4 9.8 3.1 14.1 1.9 4.6-1.3 7.9-4.7 7.4-9.7-.2-3.4-1.9-6-3.9-8.6zM17 28.3c-.4-1-.6-2.1-.6-3.3a8.7 8.7 0 0 1 6.4-8.4l-1.6-3.5L19 6.2c-1.5-2.8-5-2.5-7.3-1.2-4 2.2-7.5 6.9-8.7 11.3-1.2 4.6.2 9.2 4.7 11.3 3.1 1.3 6.1 1.2 9.3.7zm26.9-17.6c-3.3-3.4-8-4.6-12.1-1.8-2.8 1.8-4.2 4.6-5.5 7.5 4.2.6 7.4 4.2 7.4 8.6 0 .9-.1 1.7-.4 2.5 1.3.2 2.8.3 3.8.4 2.3.4 4.7 1.3 7.1 1.7 3.2.3 4.7-3 4.8-5.6.3-4.6-1.9-10.1-5.1-13.3z"/></g></svg>'; } ]]]
+                [[[ const path = '<circle cx="25" cy="25" r="6.6"/> <path d="M31.9 30.4c-.5.6-1.1 1.1-1.7 1.5-1.4 1.1-3.2 1.7-5.2 1.7-2.3 0-4.5-.9-6-2.4-.9 1.1-1.6 2.3-2.3 3.2l-4.9 5.4c-1.8 2.7.3 5.6 2.5 7 3.9 2.4 9.8 3.1 14.1 1.9 4.6-1.3 7.9-4.7 7.4-9.7-.2-3.4-1.9-6-3.9-8.6zM17 28.3c-.4-1-.6-2.1-.6-3.3a8.7 8.7 0 0 1 6.4-8.4l-1.6-3.5L19 6.2c-1.5-2.8-5-2.5-7.3-1.2-4 2.2-7.5 6.9-8.7 11.3-1.2 4.6.2 9.2 4.7 11.3 3.1 1.3 6.1 1.2 9.3.7zm26.9-17.6c-3.3-3.4-8-4.6-12.1-1.8-2.8 1.8-4.2 4.6-5.5 7.5 4.2.6 7.4 4.2 7.4 8.6 0 .9-.1 1.7-.4 2.5 1.3.2 2.8.3 3.8.4 2.3.4 4.7 1.3 7.1 1.7 3.2.3 4.7-3 4.8-5.6.3-4.6-1.9-10.1-5.1-13.3z"/>';
+                const style='<svg viewBox="0 0 50 50"> <style>@keyframes rotate{0%{visibility: visible; transform: rotate(0deg);}100%{transform: rotate(1080deg);}}.start{animation: rotate 2.8s ease-in; transform-origin: center; fill: #5daeea; visibility: hidden;}.on{animation: rotate 1.8s linear infinite; transform-origin: center; fill: #5daeea; animation-delay: 2.8s; visibility: hidden;}.end{animation: rotate 2.8s; transform-origin: center; fill: #9ca2a5; animation-timing-function: cubic-bezier(0.61, 1, 0.88, 1);}</style>';
+                if (entity.state === 'on') { return `${style}<g class="start">${path}</g><g class="on">${path}</g></svg>`; }
+                else { return `${style}<g class="end">${path}</g></svg>`; } ]]]
             styles:
               custom_fields:
                 icon_fan:
@@ -952,20 +1011,11 @@ views:
               top: 37.9%
               left: 91.05%
               width: 10%
-            tap_action:
-              services: |
-                [[[ if (entity.state === 'off') {
-                hass.callService('input_boolean', 'turn_on', {entity_id: 'input_boolean.samsung'});
-                hass.callService('remote', 'send_command', {entity_id: 'remote.sovrum', command: 'menu'}); }
-                if (entity.state === 'on') {
-                hass.callService('input_boolean', 'turn_on', {entity_id: 'input_boolean.samsung'}); 
-                hass.callService('media_player', 'turn_off', {entity_id: 'media_player.samsung'}); } ]]]
+            tap_action: *tv_tap_action
             hold_action: !include popup/sovrum_tv2.yaml
             custom_fields:
               icon_tv: *icon_tv
-              loading: >
-                [[[ if (states['input_boolean.samsung'].state === 'on') { 
-                return '<img src="/local/loader.svg" width="100%">'; } ]]]
+              loading: *loading
             styles: *icon_tv_styles
             template: switch
 
@@ -985,16 +1035,14 @@ views:
           - type: custom:swipe-card
             start_card: 1
             parameters:
+              roundLengths: true
               effect: coverflow
-              speed: 450
-              spaceBetween: 10
-              threshold: 30
+              speed: 650
+              spaceBetween: 20
+              threshold: 7
               coverflowEffect:
-                rotate: 70
-                stretch: 0
+                rotate: 80
                 depth: 300
-                modifier: 1
-                slideShadows : true
             style:
               top: 56.55%
               left: 35.8%
@@ -1231,7 +1279,9 @@ views:
               width: 10%
             custom_fields:
               icon_bathroom: >
-                <svg viewBox="0 0 50 50" fill="var(--button-card-light-color-no-temperature)"><path d="M12.9 1.2h2.5c1.6 0 2.9 1.3 2.9 2.9v18.6c0 1.4 1.1 2.5 2.4 2.5h20.5c.5 0 1 .4.9 1-.1 2.6-1.2 9.6-10.2 11v7.6c0 .2.2.4.4.4h1.5a1.58 1.58 0 0 1 1.6 1.6v.3a1.58 1.58 0 0 1-1.6 1.6H11a1.58 1.58 0 0 1-1.6-1.6v-.3a1.58 1.58 0 0 1 1.6-1.6h1.6c.2 0 .4-.2.4-.4v-7.6s-5.2-.3-5.2-5.9V4.2c0-1.6 1.3-2.9 2.9-2.9h2.2v-.1zm9.4 17.6h18.3a1.58 1.58 0 0 1 1.6 1.6v.6a1.58 1.58 0 0 1-1.6 1.6h-19c-.4 0-.7-.3-.8-.7v-2.3c0-.4.3-.7.7-.8h.8z"/></svg>
+                [[[ const state = entity.state==='on' ? 'animate_on' : 'animate_off'; 
+                return `<svg viewBox="0 0 50 50" fill="var(--button-card-light-color-no-temperature)"><style>@keyframes animate_on{0%{transform: rotateZ(0deg) translate(0%, 0%);}100%{transform: rotateZ(-90deg) translate(-1.5%, 0%);}}@keyframes animate_off{0%{transform: rotateZ(-90deg) translate(-1.5%, 0%);}45%{transform: rotateZ(-40deg);}55%{transform: rotateZ(0deg);}65%{transform: rotateZ(-15deg);}75%{transform: rotateZ(0deg);}85%{transform: rotateZ(-5deg);}95%{transform: rotateZ(0deg);}}.animate_on{animation: animate_on 0.4s; animation-fill-mode: forwards; transform-origin: 45% 41%; transition-timing-function: cubic-bezier(0.85, 0, 0.15, 1);}.animate_off{animation: animate_off 1.05s linear; animation-delay: 0.05s; animation-fill-mode: both; transform-origin: 45% 41%;}</style>
+                <path d="M12.9 1.2h2.5c1.6 0 2.9 1.3 2.9 2.9v18.6c0 1.4 1.1 2.5 2.4 2.5h20.5c.5 0 1 .4.9 1-.1 2.6-1.2 9.6-10.2 11v7.6c0 .2.2.4.4.4h1.5a1.58 1.58 0 0 1 1.6 1.6v.3a1.58 1.58 0 0 1-1.6 1.6H11a1.58 1.58 0 0 1-1.6-1.6v-.3a1.58 1.58 0 0 1 1.6-1.6h1.6c.2 0 .4-.2.4-.4v-7.6s-5.2-.3-5.2-5.9V4.2c0-1.6 1.3-2.9 2.9-2.9l2.2-.1c0 .1 0 0 0 0z"/><path class="${state}" d="M22.3 18.8h18.3a1.58 1.58 0 0 1 1.6 1.6v.6a1.58 1.58 0 0 1-1.6 1.6h-19c-.4 0-.7-.3-.8-.7v-2.3c0-.4.3-.7.7-.8h.8z"/></svg>`;]]]
             styles:
               custom_fields:
                 icon_bathroom:
@@ -1273,8 +1323,9 @@ views:
               width: 10%
             custom_fields:
               icon_closet: >
-                [[[ if (entity.state === 'on') { return '<svg viewBox="0 0 50 50"><path d="M11.4,1.4h27.2v43.1H11.4V1.4z" fill="#bcbcbc"/><path d="M11.4 1.4v43.1l21.5 4.1-.2-43.4-21.3-3.8zm18.1 26.8c0 1.1-.7 1.8-1.5 1.7h0c-.8-.2-1.5-1.1-1.5-2.2v-3.9c0-1.1.7-1.8 1.5-1.7h0c.8.2 1.5 1.1 1.5 2.2v3.9z" fill="#b68349"/></svg>'; }
-                else { return '<svg viewBox="0 0 50 50"><path d="M11.4 1.4v43.1h27.2V1.4H11.4zm23 23.4c0 1.1-.9 1.9-1.9 1.9h0c-1.1 0-1.9-.9-1.9-1.9V21c0-1.1.9-1.9 1.9-1.9h0c1.1 0 1.9.9 1.9 1.9v3.8z" fill="#9da0a2"/></svg>'; } ]]]
+                [[[ const state = entity.state === 'on' ? 'door' : 'door reverse'; const opacity = entity.state === 'on' ? 'room' : 'room reverse';
+                return `<svg viewBox="0 0 50 50"> <style>.door{animation: door 0.4s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;}.room{animation: room 0.4s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;}.reverse{animation-direction: reverse;}@keyframes door{0%{transform: none; fill: #9da0a2;}100%{transform: skewY(10deg) translate(4.5%, -3.9%) scaleX(0.8); fill: #b68349;}}@keyframes room{0%{opacity: 0;}100%{opacity: 1;}}</style>
+                <path class="${opacity}" d="M11.4,1.4h27.2v43.1H11.4V1.4z" fill="#bcbcbc"/><path class="${state}" d="M11.4 1.4v43.1h27.2V1.4H11.4zm23 23.4c0 1.1-.9 1.9-1.9 1.9h0c-1.1 0-1.9-.9-1.9-1.9V21c0-1.1.9-1.9 1.9-1.9h0c1.1 0 1.9.9 1.9 1.9v3.8z"/></svg>`; ]]]
             styles:
               custom_fields:
                 icon_closet:
@@ -1393,6 +1444,7 @@ views:
 
           - type: custom:button-card
             entity: switch.auto_stangallt_template
+            state_display: Auto
             style:
               top: 82.1%
               left: 80.05%
@@ -1403,12 +1455,15 @@ views:
               action: none
             custom_fields:
               icon_away: >
-                <svg viewBox="0 0 50 50"><path d="M32.1 18.4s.3-1.6.7-2.1c.3-.6.9-1.4 1.6-1.8.6-.4 1.1-.7 1.4-.7s.7-.1 1 .1.6.4.8 1.3l.3 2.7.1 2.4.2 4.1c0 .3.2 3.1.2 3.3s.2 2.7.2 3.2l-.1 2.5c.1 1.6.5 3.1-.2 4.6-.6 1.4-1.7 2.7-2.9 3.6-.5.4-1.9 1.3-2.9 1.7-1.1.5-2.2.8-3.3 1.1-.5.1-1.4.4-2.3.3s-1.8-.6-2.1-1l-1.6-2.3c-.6-.8-2.1-2.3-2.3-2.5l-2.7-2.8c-.2-.2-2.7-3.5-2.9-3.8l-3.1-4.7-1.8-3.2-1.5-2.8-.9-1.8c-.1-.2-.3-1.1-.2-1.4.3-1.2 1.4-1.4 2.3-.7.3.2.9 1 1.1 1.3s6.1 8.1 6.1 8.1c.2.3.7.3.9 0s-.1-.7-.2-.9c-.4-.6-8.3-11.5-8.3-11.5s-.6-.9-.7-1.1c-.3-1.1 0-2.3 1.1-2.7s1.9.3 2.6 1.1c.3.3 8.3 11.5 8.3 11.5.2.2.3.3.5.3.3 0 .5-.4.4-.7-.1-.2-.5-.9-.5-.9L11.8 9c-.6-1-.9-2-.1-3 .7-.8 2.2-1.3 3-.2.3.3 10.1 14.3 10.1 14.3.2.2.5.4.7.3.5-.1.3-.7.1-1-.1-.2-8.4-11.8-8.4-11.8-.4-.9-.6-2 .2-2.8 1-1.1 2.5-.5 3.3.5.2.3 1 1.4 1 1.4l2.7 3.7c.1.2 3.4 4.4 3.8 4.8.9 1.1 1.8 2.2 2.7 3.2l.5.5c.1.1.1.4.1.8 0 1.3.1 2.6.1 3.9 0 .2.1.4.2.6.3.3.6.1.7-.2.1-.2 0-2.4 0-2.7-.3-.3-.5-1.3-.4-2.9zM12.2 46.9s-2.8-.8-4.8-2.7-2.6-2.7-2.8-3-1.8-3-2-3.6c-.2-.5-.2-.7.2-1 .4-.4 1-.5 1.3.1.1.2.4 1 .5 1.2s1 1.9 1.7 2.8 1.6 2.2 4.4 3.8c.6.3 1.2.6 1.9.9.3.1.6.2.8.4.1.2.1.6-.1.8-.2.4-.7.4-1.1.3zM7.1 30.7l.9 3.1c.3.7 1.1 2.3 1.9 3.3s2.4 2.6 3.4 3.2 2 1.1 3 1.5c1 .3 1.1.4 1.2.5.3.4.2 1.2-.4 1.3-.2 0-1.2 0-1.8-.3L12 41.7c-.5-.4-3.9-3.1-5.1-6S5.3 31 5.2 30.4s-.2-1.1 0-1.4c.3-.4.9-.8 1.3-.3.2.3.3.6.3.9.1 0 .2.8.3 1.1zm26.8-25s.2-.1.5-.1.8.3 1.4.7 1.9 1 3.6 2.9 2.9 3.9 3.4 5.8c.5 1.8.8 3.1.9 5.5 0 .5.1 1.6 0 1.7-.2.5-.5.7-1 .7-.6 0-.7-.5-.7-1l-.1-2.9c-.1-.6-.3-1.9-.7-2.9-.3-1-.7-2.3-1.7-3.6-.9-1.3-2.1-2.8-3.2-3.5l-2.4-1.5c-.6-.6-.7-1.2 0-1.8zm4.9-2.5s.3-.2.5-.1c.2 0 .7.3.9.4s2.1 1.3 3.6 3c1.5 1.6 3.5 5.1 3.7 7.4.1.4.2.9 0 1-.2.2-.4.4-.7.4-.2 0-.5 0-.7-.1-.1-.2-.4-1.1-.4-1.3s-.6-2-1.1-3.1C44 9.7 43.5 8.5 42 7.1s-2.2-1.9-2.8-2.2-1.1-.6-1.1-1c.1-.3.3-.6.7-.7z"/></svg>
+                [[[ const state=entity.state==='on' ? 'animate' : null;
+                return `<svg viewBox="0 0 50 50"><style>@keyframes animate{10%, 20%, 100%{transform: rotateZ(0deg);}30%, 50%, 70%{transform: rotateZ(7deg);}90%{transform: rotateZ(3deg);}40%, 60%, 80%{transform: rotateZ(-7deg);}}.animate{animation: animate 1.35s cubic-bezier(0.5, 1, 0.89, 1); animation-fill-mode: both; transform-origin: 70% 80%; animation-delay: 0s;}</style>
+                <path class="${state}" d="M32.1 18.4s.3-1.6.7-2.1c.3-.6.9-1.4 1.6-1.8.6-.4 1.1-.7 1.4-.7s.7-.1 1 .1.6.4.8 1.3l.3 2.7.1 2.4.2 4.1c0 .3.2 3.1.2 3.3s.2 2.7.2 3.2l-.1 2.5c.1 1.6.5 3.1-.2 4.6-.6 1.4-1.7 2.7-2.9 3.6-.5.4-1.9 1.3-2.9 1.7-1.1.5-2.2.8-3.3 1.1-.5.1-1.4.4-2.3.3s-1.8-.6-2.1-1l-1.6-2.3c-.6-.8-2.1-2.3-2.3-2.5l-2.7-2.8c-.2-.2-2.7-3.5-2.9-3.8l-3.1-4.7-1.8-3.2-1.5-2.8-.9-1.8c-.1-.2-.3-1.1-.2-1.4.3-1.2 1.4-1.4 2.3-.7.3.2.9 1 1.1 1.3s6.1 8.1 6.1 8.1c.2.3.7.3.9 0s-.1-.7-.2-.9c-.4-.6-8.3-11.5-8.3-11.5s-.6-.9-.7-1.1c-.3-1.1 0-2.3 1.1-2.7s1.9.3 2.6 1.1c.3.3 8.3 11.5 8.3 11.5.2.2.3.3.5.3.3 0 .5-.4.4-.7-.1-.2-.5-.9-.5-.9L11.8 9c-.6-1-.9-2-.1-3 .7-.8 2.2-1.3 3-.2.3.3 10.1 14.3 10.1 14.3.2.2.5.4.7.3.5-.1.3-.7.1-1-.1-.2-8.4-11.8-8.4-11.8-.4-.9-.6-2 .2-2.8 1-1.1 2.5-.5 3.3.5.2.3 1 1.4 1 1.4l2.7 3.7c.1.2 3.4 4.4 3.8 4.8.9 1.1 1.8 2.2 2.7 3.2l.5.5c.1.1.1.4.1.8 0 1.3.1 2.6.1 3.9 0 .2.1.4.2.6.3.3.6.1.7-.2.1-.2 0-2.4 0-2.7-.3-.3-.5-1.3-.4-2.9zM12.2 46.9s-2.8-.8-4.8-2.7-2.6-2.7-2.8-3-1.8-3-2-3.6c-.2-.5-.2-.7.2-1 .4-.4 1-.5 1.3.1.1.2.4 1 .5 1.2s1 1.9 1.7 2.8 1.6 2.2 4.4 3.8c.6.3 1.2.6 1.9.9.3.1.6.2.8.4.1.2.1.6-.1.8-.2.4-.7.4-1.1.3zM7.1 30.7l.9 3.1c.3.7 1.1 2.3 1.9 3.3s2.4 2.6 3.4 3.2 2 1.1 3 1.5c1 .3 1.1.4 1.2.5.3.4.2 1.2-.4 1.3-.2 0-1.2 0-1.8-.3L12 41.7c-.5-.4-3.9-3.1-5.1-6S5.3 31 5.2 30.4s-.2-1.1 0-1.4c.3-.4.9-.8 1.3-.3.2.3.3.6.3.9.1 0 .2.8.3 1.1zm26.8-25s.2-.1.5-.1.8.3 1.4.7 1.9 1 3.6 2.9 2.9 3.9 3.4 5.8c.5 1.8.8 3.1.9 5.5 0 .5.1 1.6 0 1.7-.2.5-.5.7-1 .7-.6 0-.7-.5-.7-1l-.1-2.9c-.1-.6-.3-1.9-.7-2.9-.3-1-.7-2.3-1.7-3.6-.9-1.3-2.1-2.8-3.2-3.5l-2.4-1.5c-.6-.6-.7-1.2 0-1.8zm4.9-2.5s.3-.2.5-.1c.2 0 .7.3.9.4s2.1 1.3 3.6 3c1.5 1.6 3.5 5.1 3.7 7.4.1.4.2.9 0 1-.2.2-.4.4-.7.4-.2 0-.5 0-.7-.1-.1-.2-.4-1.1-.4-1.3s-.6-2-1.1-3.1C44 9.7 43.5 8.5 42 7.1s-2.2-1.9-2.8-2.2-1.1-.6-1.1-1c.1-.3.3-.6.7-.7z"/></svg>`; ]]]
             styles:
+              card: [transition: all 0.3s ease-out]
               custom_fields:
                 icon_away:
                   [top: 10%, left: 10.1%, width: 3.1vw, position: absolute,
-                  fill: "[[[ return entity.state === 'on' ? '#797a7b' : '#9da0a2'; ]]]"]
+                  fill: "[[[ return entity.state === 'on' ? '#516d82' : '#9da0a2'; ]]]"]
             template: switch
 
           #################################################
@@ -1419,6 +1474,7 @@ views:
 
           - type: custom:button-card
             entity: switch.auto_hemma_template
+            state_display: Auto
             style:
               top: 82.1%
               left: 91.05%
@@ -1428,8 +1484,11 @@ views:
             hold_action: !include popup/hemma_data_kwh.yaml
             custom_fields:
               icon_home: >
-                <svg viewBox="0 0 50 50"><path d="M42.2 28.3c0-.8-.2-1-.2-1L26 12.1s-.5-.4-1-.4-1 .3-1 .3L8.2 27.1c-.4.5-.4.9-.4.9v18.3c0 1.1.9 2 1.9 2h8.2a1.47 1.47 0 0 0 1.5-1.5v-14a1.47 1.47 0 0 1 1.5-1.5h8.4a1.47 1.47 0 0 1 1.5 1.5v14a1.47 1.47 0 0 0 1.5 1.5h8.2c1.1 0 2-.9 2-1.9 0-.2-.3-18.1-.3-18.1zM7.3 25l-1.6 1.5s-.3.3-.5.3-.5 0-.8-.2c-.2-.2-2-2.8-2-2.8s-.1-.4-.1-.7c.1-.3.2-.7.3-.8.4-.1 21.5-20.1 21.5-20.1s.4-.3.9-.3c.4 0 .8.1.9.2s.5.4.5.4l8.9 8.5V6s.1-.4.2-.7c.1-.2.3-.3.4-.3s.3-.1.3-.1h3s.3.1.4.3a1.08 1.08 0 0 1 .3.7v9.8l7.2 6.9s.2.3.3.4c.1.2.1.7.1.7 0 .1-.1.4-.2.5s-1.6 2.5-1.6 2.5-.1.3-.3.3c-.2.1-.4.1-.7 0-.2-.1-.5-.4-.5-.4L26.4 9.4s-.3-.3-.5-.4-.4-.2-.8-.2-.5.1-.8.1c-.1.1-.4.3-.7.5C23.3 9.8 7.3 25 7.3 25z"/></svg>
+                [[[ const state = entity.state === 'on' ? 'animate' : null;
+                return `<svg viewBox="0 0 50 50"> <style>@keyframes animate{from, 20%, 40%, 60%, 80%, to{animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);}0%{transform: scale(0.3);}20%{transform: scale(1.1);}40%{transform: scale(0.9);}60%{transform: scale(1.03);}80%{transform: scale(0.97);}to{transform: scale(1);}}.animate{animation: animate 1s; transform-origin: center;}</style>
+                <path class="${state}" d="M42.2 28.3c0-.8-.2-1-.2-1L26 12.1s-.5-.4-1-.4-1 .3-1 .3L8.2 27.1c-.4.5-.4.9-.4.9v18.3c0 1.1.9 2 1.9 2h8.2a1.47 1.47 0 0 0 1.5-1.5v-14a1.47 1.47 0 0 1 1.5-1.5h8.4a1.47 1.47 0 0 1 1.5 1.5v14a1.47 1.47 0 0 0 1.5 1.5h8.2c1.1 0 2-.9 2-1.9 0-.2-.3-18.1-.3-18.1zM7.3 25l-1.6 1.5s-.3.3-.5.3-.5 0-.8-.2c-.2-.2-2-2.8-2-2.8s-.1-.4-.1-.7c.1-.3.2-.7.3-.8.4-.1 21.5-20.1 21.5-20.1s.4-.3.9-.3c.4 0 .8.1.9.2s.5.4.5.4l8.9 8.5V6s.1-.4.2-.7c.1-.2.3-.3.4-.3s.3-.1.3-.1h3s.3.1.4.3a1.08 1.08 0 0 1 .3.7v9.8l7.2 6.9s.2.3.3.4c.1.2.1.7.1.7 0 .1-.1.4-.2.5s-1.6 2.5-1.6 2.5-.1.3-.3.3c-.2.1-.4.1-.7 0-.2-.1-.5-.4-.5-.4L26.4 9.4s-.3-.3-.5-.4-.4-.2-.8-.2-.5.1-.8.1c-.1.1-.4.3-.7.5C23.3 9.8 7.3 25 7.3 25z"/></svg>`; ]]]
             styles:
+              card: [transition: all 0.3s ease-out]
               custom_fields:
                 icon_home:
                   [top: 10.5%, left: 10.1%, width: 2.9vw, position: absolute,
