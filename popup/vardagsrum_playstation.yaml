@@ -8,24 +8,42 @@
                   border-radius: 1em
                   opacity: 0.9
                 card:
-                  type: entities
-                  style: "ha-card {padding: 0.3em 1.2em 0.4em 0.5em;}"
-                  entities:
+                  type: custom:stack-in-card
+                  cards:
 
-                    - entity: switch.playstation_template
-                      icon: 'mdi:playstation'
-                      name: Playstation 4
+                    - type: entities
+                      style: "ha-card {padding: 0.3em 1.2em 0.4em 0.5em;}"
+                      entities:
+                        - entity: switch.playstation_template
+                          icon: 'mdi:playstation'
+                          name: Playstation 4
 
-                    - entity: media_player.playstation_4
-                      type: custom:mini-media-player
-                      artwork: none
-                      icon: 'mdi:gamepad'
-                      name: Spel
-                      source: full
-                      group: true
-                      scale: 0.99
-                      hide:
-                        volume: true
-                        controls: true
-                        power: true
-                        info: true
+                        - entity: media_player.playstation_4
+                          type: custom:mini-media-player
+                          artwork: none
+                          icon: 'mdi:gamepad'
+                          name: Spel
+                          source: full
+                          group: true
+                          scale: 0.99
+                          hide:
+                            volume: true
+                            controls: true
+                            power: true
+                            info: true
+
+                    - type: custom:calendar-card
+                      title: Kommande
+                      disableLinks: true
+                      numberOfDays: 730
+                      hidePastEvents: true
+                      hideTime: true
+                      dateTopFormat: ' '
+                      dateBottomFormat: DD MMM Y
+                      entities: [calendar.spel]
+                      style: |
+                        ha-card { margin: -1.5em 1.3em 0.55em 1.2em; height: 20em; }
+                        ha-card > div { margin-bottom: 0.4em; }
+                        ha-card > table > tbody > tr > td > div { opacity: 0.5; }
+                        ha-card > table > tbody > tr > td { cursor: default !important; }
+                        ha-card > table > tbody > tr > td.overview.no-pointer > div { opacity: 1; }
