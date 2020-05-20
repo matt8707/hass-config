@@ -9,9 +9,6 @@ SIGNAL_UPDATE_HP_PRINTER = f"updates_{DOMAIN}"
 NOTIFICATION_ID = f"{DOMAIN}_notification"
 NOTIFICATION_TITLE = f"{DEFAULT_NAME} Setup"
 
-DOMAIN_LOGGER = "logger"
-SERVICE_SET_LEVEL = "set_level"
-
 SENSOR_ENTITY_ID = "sensor.{}_{}"
 BINARY_SENSOR_ENTITY_ID = "binary_sensor.{}_{}"
 

@@ -18,7 +18,7 @@ from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import CONF_HOST, CONF_NAME, CONF_PORT, CONF_SSL
 from homeassistant.helpers.entity import Entity
 
-__version__ = '0.2.9'
+__version__ = '0.3.1'
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -30,6 +30,7 @@ CONF_TOKEN = 'token'
 CONF_MAX = 'max'
 CONF_IMG_CACHE = 'img_dir'
 CONF_SECTION_TYPES = 'section_types'
+CONF_RESOLUTION = 'image_resolution'
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
@@ -41,10 +42,11 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_DL_IMAGES, default=True): cv.boolean,
     vol.Optional(CONF_HOST, default='localhost'): cv.string,
     vol.Optional(CONF_PORT, default=32400): cv.port,
-    vol.Optional(CONF_SECTION_TYPES, 
+    vol.Optional(CONF_SECTION_TYPES,
                 default=['movie', 'show']): vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional(CONF_RESOLUTION, default=200): cv.positive_int,
     vol.Optional(CONF_IMG_CACHE, 
-                default='/custom-lovelace/upcoming-media-card/images/plex/'): cv.string
+                default='/upcoming-media-card-images/plex/'): cv.string
 })
 
 
@@ -60,6 +62,8 @@ class PlexRecentlyAddedSensor(Entity):
         self._name = name
         self.conf_dir = str(hass.config.path()) + '/'
         self._dir = conf.get(CONF_IMG_CACHE)
+        if self._name:
+            self._dir = self._dir + self._name.replace(' ', '_') + '/'
         self.img = '{0}{1}{2}{3}{4}.jpg'.format(
             self.conf_dir, {}, self._dir, {}, {})
         self.img_url = '{0}{1}{2}{3}.jpg'.format({}, self._dir, {}, {})
@@ -71,6 +75,7 @@ class PlexRecentlyAddedSensor(Entity):
         self.max_items = int(conf.get(CONF_MAX))
         self.dl_images = conf.get(CONF_DL_IMAGES)
         self.sections = conf.get(CONF_SECTION_TYPES)
+        self.resolution = conf.get(CONF_RESOLUTION)
         if self.server_name:
             self.server_ip, self.local_ip, self.port = get_server_ip(
                 self.server_name, self.token)
@@ -177,12 +182,12 @@ class PlexRecentlyAddedSensor(Entity):
                         card_item['fanart'] = ''
                 else:
                     card_item['poster'] = image_url(self.url_elements,
-                                                    False, poster)
+                                                    False, poster, self.resolution)
                     card_item['fanart'] = image_url(self.url_elements,
-                                                    False, fanart)
+                                                    False, fanart, self.resolution)
                 self.card_json.append(card_item)
                 self.change_detected = False
-        attributes['data'] = json.dumps(self.card_json)
+        attributes['data'] = self.card_json
         return attributes
 
     def update(self):
@@ -217,7 +222,7 @@ class PlexRecentlyAddedSensor(Entity):
             """Get JSON for each library, combine and sort."""
             for library in sections:
                 sub_sec = plex.get(recently_added.format(
-                    library, self.max_items * 2), headers=headers, timeout=10) 
+                    library, self.max_items * 2), headers=headers, timeout=10)
                 try:
                     self.api_json += sub_sec.json()['MediaContainer']['Metadata']
                 except:
@@ -273,7 +278,7 @@ class PlexRecentlyAddedSensor(Entity):
                         if not os.path.isfile(fanart_jpg):
                             if image_url(self.url_elements, True, fanart):
                                 image = plex.get(image_url(
-                                    self.url_elements, True, fanart),
+                                    self.url_elements, True, fanart, self.resolution),
                                     headers=headers, timeout=10).content
                                 open(fanart_jpg, 'wb').write(image)
                             else:
@@ -281,7 +286,7 @@ class PlexRecentlyAddedSensor(Entity):
                         if not os.path.isfile(poster_jpg):
                             if image_url(self.url_elements, True, poster):
                                 image = plex.get(image_url(
-                                    self.url_elements, True, poster),
+                                    self.url_elements, True, poster, self.resolution),
                                     headers=headers, timeout=10).content
                                 open(poster_jpg, 'wb').write(image)
                             else:
@@ -295,7 +300,7 @@ class PlexRecentlyAddedSensor(Entity):
             self._state = '%s cannot be reached' % self.server_ip
 
 
-def image_url(url_elements, cert_check, img):
+def image_url(url_elements, cert_check, img, resolution=200):
     """Plex can resize images with a long & partially % encoded url."""
     from urllib.parse import quote
     ssl, host, local, port, token, self_cert, dl_images = url_elements
@@ -309,9 +314,10 @@ def image_url(url_elements, cert_check, img):
                                                                    img,
                                                                    token),
                                                                    safe='')
-    url = ('http{0}://{1}:{2}/photo/:/transcode?width=700&height=700'
+    url = ('http{0}://{1}:{2}/photo/:/transcode?width={5}&height={5}'
            '&minSize=1&url={3}&X-Plex-Token={4}').format(ssl, host, port,
-                                                         encoded, token)
+                                                         encoded, token,
+                                                         resolution)
     """Check if image exists"""
     if not self_cert:
         r = requests.head(url, verify=False)

@@ -1,7 +1,7 @@
 """
-Support for Blue Iris binary sensors.
+Support for HP Printer binary sensors.
 For more details about this platform, please refer to the documentation at
-https://home-assistant.io/components/binary_sensor.blueiris/
+https://home-assistant.io/components/binary_sensor.hp_printer/
 """
 import logging
 from typing import Union
@@ -25,7 +25,7 @@ def get_device_tracker(hass: HomeAssistant, integration_name: str, entity: Entit
 
 
 async def async_setup_entry(hass: HomeAssistant, entry, async_add_entities):
-    """Set up EdgeOS based off an entry."""
+    """Set up HP Printer based off an entry."""
     await async_setup_base_entry(
         hass, entry, async_add_entities, CURRENT_DOMAIN, get_device_tracker
     )
@@ -38,7 +38,7 @@ async def async_unload_entry(hass, config_entry):
 
 
 class HPPrinterSensor(HPPrinterEntity):
-    """Representation a binary sensor that is updated by EdgeOS."""
+    """Representation a binary sensor that is updated by HP Printer."""
 
     @property
     def state(self) -> Union[None, str, int, float]:

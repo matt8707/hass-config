@@ -370,9 +370,9 @@ class {
   }return s.stringsArray.set(e.strings, r), r;
 },
       I = ["html", "svg"],
-      U = new Set(),
-      z = (t, e, i) => {
-  U.add(t);const n = i ? i.element : document.createElement("template"),
+      z = new Set(),
+      U = (t, e, i) => {
+  z.add(t);const n = i ? i.element : document.createElement("template"),
         s = e.querySelectorAll("style"),
         { length: r } = s;if (0 === r) return void window.ShadyCSS.prepareTemplateStyles(n, t);const a = document.createElement("style");for (let c = 0; c < r; c++) {
     const t = s[c];t.parentNode.removeChild(t), a.textContent += t.textContent;
@@ -590,11 +590,11 @@ found at http://polymer.github.io/PATENTS.txt
   if (!n || "object" != typeof n || !n.scopeName) throw new Error("The `scopeName` option is required.");const s = n.scopeName,
         r = V.has(e),
         a = L && 11 === e.nodeType && !!e.host,
-        o = a && !U.has(s),
+        o = a && !z.has(s),
         l = o ? document.createDocumentFragment() : e;if (((t, e, n) => {
     let s = V.get(e);void 0 === s && (i(e, e.firstChild), V.set(e, s = new M(Object.assign({ templateFactory: $ }, n))), s.appendInto(e)), s.setValue(t), s.commit();
   })(t, l, Object.assign({ templateFactory: F(s) }, n)), o) {
-    const t = V.get(l);V.delete(l);const n = t.value instanceof y ? t.value.template : void 0;z(s, l, n), i(e, e.firstChild), e.appendChild(l), V.set(e, t);
+    const t = V.get(l);V.delete(l);const n = t.value instanceof y ? t.value.template : void 0;U(s, l, n), i(e, e.firstChild), e.appendChild(l), V.set(e, t);
   }!r && a && window.ShadyCSS.styleElement(e.host);
 };
 /**
@@ -821,10 +821,10 @@ class rt {
           return "hass:timer-sand";default:
           return "hass:z-wave";}default:
       return console.warn("Unable to find icon for domain " + t + " (" + e + ")"), jt;}
-}var Ut = function (t) {
+}var zt = function (t) {
   Rt(window, "haptic", t);
 },
-    zt = function (t, e) {
+    Ut = function (t, e) {
   return function (t, e, i) {
     void 0 === i && (i = !0);var n,
         s = $t(e),
@@ -838,16 +838,16 @@ class rt {
   var r;if (s && i.double_tap_action ? r = i.double_tap_action : n && i.hold_action ? r = i.hold_action : !n && i.tap_action && (r = i.tap_action), r || (r = { action: "more-info" }), !r.confirmation || r.confirmation.exemptions && r.confirmation.exemptions.some(function (t) {
     return t.user === e.user.id;
   }) || confirm(r.confirmation.text || "Are you sure you want to " + r.action + "?")) switch (r.action) {case "more-info":
-      (r.entity || i.entity || i.camera_image) && (Rt(t, "hass-more-info", { entityId: r.entity ? r.entity : i.entity ? i.entity : i.camera_image }), r.haptic && Ut(r.haptic));break;case "navigate":
+      (r.entity || i.entity || i.camera_image) && (Rt(t, "hass-more-info", { entityId: r.entity ? r.entity : i.entity ? i.entity : i.camera_image }), r.haptic && zt(r.haptic));break;case "navigate":
       r.navigation_path && (function (t, e, i) {
         void 0 === i && (i = !1), i ? history.replaceState(null, "", e) : history.pushState(null, "", e), Rt(window, "location-changed", { replace: i });
-      }(0, r.navigation_path), r.haptic && Ut(r.haptic));break;case "url":
-      r.url_path && window.open(r.url_path), r.haptic && Ut(r.haptic);break;case "toggle":
-      i.entity && (zt(e, i.entity), r.haptic && Ut(r.haptic));break;case "call-service":
+      }(0, r.navigation_path), r.haptic && zt(r.haptic));break;case "url":
+      r.url_path && window.open(r.url_path), r.haptic && zt(r.haptic);break;case "toggle":
+      i.entity && (Ut(e, i.entity), r.haptic && zt(r.haptic));break;case "call-service":
       if (!r.service) return;var a = r.service.split(".", 2),
           o = a[0],
           l = a[1],
-          c = Object.assign({}, r.service_data);"entity" === c.entity_id && (c.entity_id = i.entity), e.callService(o, l, c), r.haptic && Ut(r.haptic);}
+          c = Object.assign({}, r.service_data);"entity" === c.entity_id && (c.entity_id = i.entity), e.callService(o, l, c), r.haptic && zt(r.haptic);}
 },
     Yt = { humidity: "hass:water-percent", illuminance: "hass:brightness-5", temperature: "hass:thermometer", pressure: "hass:gauge", power: "hass:flash", signal_strength: "hass:wifi" },
     Bt = { binary_sensor: function (t) {
@@ -1165,6 +1165,7 @@ class rt {
   ha-icon {
     display: inline-block;
     margin: auto;
+    --mdc-icon-size: 100%;
   }
   ha-card.button-card-main {
     padding: 4% 0px;
@@ -1199,6 +1200,7 @@ class rt {
     -webkit-animation-fill-mode: both;
     animation-fill-mode: both;
     margin: unset;
+    width: 24px;
   }
   .invalid {
     animation: blink 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
@@ -1542,7 +1544,7 @@ class rt {
   }return i.attributes.device_class && e(`component.${s}.state.${i.attributes.device_class}.${i.state}`) || e(`component.${s}.state._.${i.state}`) || i.state;
 };let Me = window.cardHelpers;const Ne = new Promise(async t => {
   Me && t(), window.loadCardHelpers && (Me = await window.loadCardHelpers(), window.cardHelpers = Me, t());
-});console.info("%c  BUTTON-CARD  \n%c Version 3.3.2 ", "color: orange; font-weight: bold; background: black", "color: white; font-weight: bold; background: dimgray");let Oe = class extends tt {
+});console.info("%c  BUTTON-CARD  \n%c Version 3.3.4 ", "color: orange; font-weight: bold; background: black", "color: white; font-weight: bold; background: dimgray");let Oe = class extends tt {
   constructor() {
     super(...arguments), this._cards = [], this._entities = [];
   }set hass(t) {

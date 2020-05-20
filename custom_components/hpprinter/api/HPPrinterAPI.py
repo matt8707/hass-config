@@ -1,3 +1,4 @@
+from asyncio import sleep
 import json
 import logging
 import sys
@@ -23,7 +24,6 @@ class HPPrinterAPI:
         self._hass = hass
         self._data_type = data_type
         self._data = None
-        self._reader = None
         self._session = None
 
         self.initialize()
@@ -47,18 +47,35 @@ class HPPrinterAPI:
 
         return url
 
-    def initialize(self, reader=None):
+    def initialize(self):
         try:
-            self._session = async_create_clientsession(hass=self._hass)
-
-            self._reader = reader
+            self._session = async_create_clientsession(
+                hass=self._hass, auto_cleanup=True
+            )
 
         except Exception as ex:
             exc_type, exc_obj, tb = sys.exc_info()
             line_number = tb.tb_lineno
 
             _LOGGER.error(
-                f"Failed to initialize BlueIris API, error: {ex}, line: {line_number}"
+                f"Failed to initialize Printer API, error: {ex}, line: {line_number}"
+            )
+
+    async def terminate(self):
+        try:
+            if self._session is not None and not self._session.closed:
+                await self._session.close()
+
+                await sleep(3)
+
+                self._session = None
+
+        except Exception as ex:
+            exc_type, exc_obj, tb = sys.exc_info()
+            line_number = tb.tb_lineno
+
+            _LOGGER.error(
+                f"Failed to terminate Printer API, error: {ex}, line: {line_number}"
             )
 
     async def get_data(self):
@@ -67,10 +84,12 @@ class HPPrinterAPI:
 
             _LOGGER.debug(f"Updating {self._data_type} from {self.config_data.host}")
 
-            if self._reader is None:
+            file_reader = self.config_data.file_reader
+
+            if file_reader is None:
                 printer_data = await self.async_get()
             else:
-                printer_data = self._reader(self._data_type)
+                printer_data = file_reader(self._data_type)
 
             result = {}
 

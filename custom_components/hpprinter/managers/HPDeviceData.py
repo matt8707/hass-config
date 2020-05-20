@@ -55,6 +55,12 @@ class HPDeviceData:
         self.device_data[PRINTER_CURRENT_STATUS] = PRINTER_STATUS[""]
         self.device_data[HP_DEVICE_IS_ONLINE] = False
 
+    async def terminate(self):
+        await self._usage_data_manager.terminate()
+        await self._consumable_data_manager.terminate()
+        await self._product_config_manager.terminate()
+        await self._product_status_manager.terminate()
+
     async def update(self):
         try:
             self.device_data["Name"] = self.config_data.name

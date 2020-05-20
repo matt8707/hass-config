@@ -1,3 +1,5 @@
+from typing import Any
+
 from homeassistant.const import CONF_HOST, CONF_NAME, CONF_PORT, CONF_SSL
 
 from ..helpers.const import *
@@ -11,6 +13,7 @@ class ConfigData:
     should_store: bool
     update_interval: int
     log_level: str
+    file_reader: Any
 
     def __init__(self):
         self.name = ""
@@ -20,6 +23,7 @@ class ConfigData:
         self.should_store = False
         self.update_interval = 60
         self.log_level = LOG_LEVEL_DEFAULT
+        self.file_reader = None
 
     @property
     def protocol(self):

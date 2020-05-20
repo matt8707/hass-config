@@ -130,16 +130,18 @@ class ValetudoMapCard extends HTMLElement {
     containerContainer.appendChild(vacuumContainer);
 
     const mapCtx = drawnMapCanvas.getContext("2d");
-    mapCtx.strokeStyle = floorColor;
-    mapCtx.lineWidth = 1;
-    mapCtx.fillStyle = floorColor;
-    mapCtx.beginPath();
-    if (mapData.attributes.image.pixels.floor) {
-      for (let item of mapData.attributes.image.pixels.floor) {
-        let x = item[0] * this._config.map_scale;
-        let y = item[1] * this._config.map_scale;
-        if (this.isOutsideBounds(x, y, drawnMapCanvas, this._config)) continue;
-        mapCtx.fillRect(x, y, this._config.map_scale, this._config.map_scale);
+    if (this._config.show_floor) {
+      mapCtx.strokeStyle = floorColor;
+      mapCtx.lineWidth = 1;
+      mapCtx.fillStyle = floorColor;
+      mapCtx.beginPath();
+      if (mapData.attributes.image.pixels.floor) {
+        for (let item of mapData.attributes.image.pixels.floor) {
+          let x = item[0] * this._config.map_scale;
+          let y = item[1] * this._config.map_scale;
+          if (this.isOutsideBounds(x, y, drawnMapCanvas, this._config)) continue;
+          mapCtx.fillRect(x, y, this._config.map_scale, this._config.map_scale);
+        };
       };
     };
 
@@ -259,6 +261,7 @@ class ValetudoMapCard extends HTMLElement {
     if (this._config.title === undefined) this._config.title = "Vacuum";
     if (this._config.virtual_wall_width === undefined) this._config.virtual_wall_width = 1;
     if (this._config.path_width === undefined) this._config.path_width = 1;
+    if (this._config.show_floor === undefined) this._config.show_floor = true;
     if (this._config.show_dock === undefined) this._config.show_dock = true;
     if (this._config.show_vacuum === undefined) this._config.show_vacuum = true;
     if (this._config.show_weak_obstacles === undefined) this._config.show_weak_obstacles = true;
@@ -284,6 +287,13 @@ class ValetudoMapCard extends HTMLElement {
         this.cardHeader.style.display = 'block';
     };
     this.cardTitle.textContent = this._config.title;
+
+    // Set container card background color
+    if (this._config.background_color) {
+      this.cardContainer.style.background = this._config.background_color;
+    } else {
+      this.cardContainer.style.background = null;
+    };
   };
 
   set hass(hass) {

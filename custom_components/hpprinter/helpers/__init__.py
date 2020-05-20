@@ -1,6 +1,7 @@
 import logging
 import sys
 
+from homeassistant.components.logger import DOMAIN as DOMAIN_LOGGER, SERVICE_SET_LEVEL
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 

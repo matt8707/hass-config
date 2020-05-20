@@ -23,7 +23,7 @@ async def async_setup_base_entry(
     component: Callable[[HomeAssistant, Any, EntityData], Any],
 ):
 
-    """Set up EdgeOS based off an entry."""
+    """Set up HP Printer based off an entry."""
     _LOGGER.debug(f"Starting async_setup_entry {domain}")
 
     try:
@@ -41,7 +41,7 @@ async def async_setup_base_entry(
 
 
 class HPPrinterEntity(Entity):
-    """Representation a binary sensor that is updated by BlueIris."""
+    """Representation a binary sensor that is updated by HP Printer."""
 
     hass: HomeAssistant = None
     integration_name: str = None
