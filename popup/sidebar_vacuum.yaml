@@ -4,9 +4,11 @@
                 title: Stäng
                 deviceID: this
                 style:
+                  --ha-card-border-radius: 1em
+                  --more-info-header-color: rgba(255,255,255,0.6)
                   background: none
                   box-shadow: none
-                  width: calc(400px + 555px)
+                  width: 400px #calc(400px + 555px)
                 card:
                   type: custom:layout-card
                   column_num: 2
@@ -18,19 +20,15 @@
                         - type: entities
                           title: Dammsugare
                           show_header_toggle: false
-                          style: &entities-style |
+                          style: |
                             ha-card {
-                              box-shadow: none;
-                              border-radius: 1em;
-                              background: rgba(34, 38, 39, 0.9);
-                              padding: 0.3em 1.25em 0.4em 0.5em;
-                            }
+                              animation: pop-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; transform-origin: center;
+                              box-shadow: none; border-radius: 1em; padding: 0.3em 1.25em 0.4em 0.5em; 
+                              background: linear-gradient(180deg, rgba(48,52,52,1) 0%, rgba(48,52,52,1) 4.8em, rgba(34,38,39,1) 4.8em, rgba(34,38,39,1) 100%); }
                             .card-header {
-                              margin-left: 0.4em;
-                              margin-bottom: 0.1em;
-                              font-family: sf text;
-                              letter-spacing: 0.005em;
-                            }
+                              margin: -0.4em 0 1.4em 0.4em; font-family: sf text; letter-spacing: 0.005em; font-size: 1.5em;}
+                            @keyframes pop-in {
+                              0% { transform: scale(0.6); opacity: 0; } 20% { opacity: 0; } 100% { transform: scale(1); opacity: 0.9; }}
                           entities:
 
                           - entity: sensor.roborock_state
@@ -163,208 +161,216 @@
 
                     - break
 
-                    - type: picture-elements
-                      title: Kartläggning
-                      image: /local/overlay.svg
-                      style: *entities-style
-                      elements:
+                    # - type: picture-elements
+                    #   title: Kartläggning
+                    #   image: /local/overlay.svg
+                    #   style: |
+                    #     ha-card {
+                    #       animation: pop-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.05s; transform-origin: center;
+                    #       box-shadow: none; border-radius: 1em; padding: 0.3em 1.25em 0.4em 0.5em; 
+                    #       background: linear-gradient(180deg, rgba(48,52,52,1) 0%, rgba(48,52,52,1) 4.8em, rgba(34,38,39,1) 4.8em, rgba(34,38,39,1) 100%); }
+                    #     .card-header {
+                    #       margin: -0.4em 0 1.4em 0.4em; font-family: sf text; letter-spacing: 0.005em; font-size: 1.5em;}
+                    #     @keyframes pop-in {
+                    #       0% { transform: scale(0.6); opacity: 0; } 20% { opacity: 0; } 100% { transform: scale(1); opacity: 0.9; }}
+                    #   elements:
 
-                        - type: custom:valetudo-map-card
-                          entity: sensor.xiaomi_map
-                          title: null
-                          rotate: 0
-                          crop:
-                            top: 175
-                            bottom: 88
-                            left: 180
-                            right: 0
-                          min_height: 0
-                          map_scale: 2
-                          floor_color: '#2e3233'
-                          obstacle_weak_color: '#191e1e50'
-                          obstacle_strong_color: '#191e1e'
-                          no_go_area_color: '#ff000015'
-                          virtual_wall_color: '#ff000020'
-                          virtual_wall_width: 5
-                          path_color: '#1e5071'
-                          path_width: 1.5
-                          vacuum_icon: 'bha:roborock'
-                          vacuum_color: '#e0e0e0'
-                          style:
-                            top: 48%
-                            left: 50%
-                            width: 100%
-                            box-shadow: none
-                            '--ha-card-background': none
-                            '--ha-card-box-shadow': none
+                    #     - type: custom:valetudo-map-card
+                    #       entity: sensor.xiaomi_map
+                    #       title: null
+                    #       rotate: 0
+                    #       crop:
+                    #         top: 175
+                    #         bottom: 88
+                    #         left: 180
+                    #         right: 0
+                    #       min_height: 0
+                    #       map_scale: 2
+                    #       floor_color: '#2e3233'
+                    #       obstacle_weak_color: '#191e1e50'
+                    #       obstacle_strong_color: '#191e1e'
+                    #       no_go_area_color: '#ff000015'
+                    #       virtual_wall_color: '#ff000020'
+                    #       virtual_wall_width: 5
+                    #       path_color: '#1e5071'
+                    #       path_width: 1.5
+                    #       vacuum_icon: 'custom:roborock'
+                    #       vacuum_color: '#e0e0e0'
+                    #       style:
+                    #         top: 48%
+                    #         left: 50%
+                    #         width: 100%
+                    #         box-shadow: none
+                    #         '--ha-card-background': none
+                    #         '--ha-card-box-shadow': none
 
-                        - type: "custom:button-card"
-                          name: Sovrum
-                          show_label: false
-                          show_icon: false
-                          tap_action:
-                            action: none
-                          styles: &button-card-styles
-                            card:
-                              [background: '#191c1d80', border-radius: 0.6em, 
-                              box-shadow: none, padding: 0.41em 0.7em 0.4em 0.7em]
-                            name:
-                              [font-size: 0.83em, letter-spacing: 0.003em, color: '#aeb0b0']
-                          style:
-                            left: 22.5%
-                            top: 76%
+                    #     - type: "custom:button-card"
+                    #       name: Sovrum
+                    #       show_label: false
+                    #       show_icon: false
+                    #       tap_action:
+                    #         action: none
+                    #       styles: &button-card-styles
+                    #         card:
+                    #           [background: '#191c1d80', border-radius: 0.6em, 
+                    #           box-shadow: none, padding: 0.41em 0.7em 0.4em 0.7em]
+                    #         name:
+                    #           [font-size: 0.83em, letter-spacing: 0.003em, color: '#aeb0b0']
+                    #       style:
+                    #         left: 22.5%
+                    #         top: 76%
 
-                        - type: "custom:button-card"
-                          name: Kök
-                          show_label: false
-                          show_icon: false
-                          tap_action:
-                            action: none
-                          styles: *button-card-styles
-                          style:
-                            left: 17%
-                            top: 51%
+                    #     - type: "custom:button-card"
+                    #       name: Kök
+                    #       show_label: false
+                    #       show_icon: false
+                    #       tap_action:
+                    #         action: none
+                    #       styles: *button-card-styles
+                    #       style:
+                    #         left: 17%
+                    #         top: 51%
 
-                        - type: "custom:button-card"
-                          name: Studio
-                          show_label: false
-                          show_icon: false
-                          tap_action:
-                            action: none
-                          styles: *button-card-styles
-                          style:
-                            left: 39.5%
-                            top: 22%
+                    #     - type: "custom:button-card"
+                    #       name: Studio
+                    #       show_label: false
+                    #       show_icon: false
+                    #       tap_action:
+                    #         action: none
+                    #       styles: *button-card-styles
+                    #       style:
+                    #         left: 39.5%
+                    #         top: 22%
 
-                        - type: "custom:button-card"
-                          name: Vardagsrum
-                          show_label: false
-                          show_icon: false
-                          tap_action:
-                            action: none
-                          styles: *button-card-styles
-                          style:
-                            left: 77%
-                            top: 9%
+                    #     - type: "custom:button-card"
+                    #       name: Vardagsrum
+                    #       show_label: false
+                    #       show_icon: false
+                    #       tap_action:
+                    #         action: none
+                    #       styles: *button-card-styles
+                    #       style:
+                    #         left: 77%
+                    #         top: 9%
 
-                        - type: "custom:button-card"
-                          name: Hall
-                          show_label: false
-                          show_icon: false
-                          tap_action:
-                            action: none
-                          styles: *button-card-styles
-                          style:
-                            left: 59%
-                            top: 49%
+                    #     - type: "custom:button-card"
+                    #       name: Hall
+                    #       show_label: false
+                    #       show_icon: false
+                    #       tap_action:
+                    #         action: none
+                    #       styles: *button-card-styles
+                    #       style:
+                    #         left: 59%
+                    #         top: 49%
 
-                        - type: image
-                          tap_action:
-                            action: call-service
-                            service: input_select.select_option
-                            service_data:
-                              entity_id: input_select.roborock_zone
-                              option: Ingen vald
-                          image: /local/overlay.svg
-                          title: null
-                          style:
-                            top: 50%
-                            left: 50%
-                            width: 100%
-                            cursor: default
+                    #     - type: image
+                    #       tap_action:
+                    #         action: call-service
+                    #         service: input_select.select_option
+                    #         service_data:
+                    #           entity_id: input_select.roborock_zone
+                    #           option: Ingen vald
+                    #       image: /local/overlay.svg
+                    #       title: null
+                    #       style:
+                    #         top: 50%
+                    #         left: 50%
+                    #         width: 100%
+                    #         cursor: default
 
-                        - type: image
-                          tap_action:
-                            action: call-service
-                            service: input_select.select_option
-                            service_data:
-                              entity_id: input_select.roborock_zone
-                              option: Vardagsrum
-                          image: /local/overlay.svg
-                          title: Vardagsrum
-                          style:
-                            top: 8%
-                            left: 59.5%
-                            transform: scale(1.6,1.2)
+                    #     - type: image
+                    #       tap_action:
+                    #         action: call-service
+                    #         service: input_select.select_option
+                    #         service_data:
+                    #           entity_id: input_select.roborock_zone
+                    #           option: Vardagsrum
+                    #       image: /local/overlay.svg
+                    #       title: Vardagsrum
+                    #       style:
+                    #         top: 8%
+                    #         left: 59.5%
+                    #         transform: scale(1.6,1.2)
 
-                        - type: image
-                          tap_action:
-                            action: call-service
-                            service: input_select.select_option
-                            service_data:
-                              entity_id: input_select.roborock_zone
-                              option: Hall
-                          image: /local/overlay.svg
-                          title: Hall
-                          style:
-                            top: 35%
-                            left: 35%
-                            transform: scale(1.4,1.1)
-                            opacity: 10%
+                    #     - type: image
+                    #       tap_action:
+                    #         action: call-service
+                    #         service: input_select.select_option
+                    #         service_data:
+                    #           entity_id: input_select.roborock_zone
+                    #           option: Hall
+                    #       image: /local/overlay.svg
+                    #       title: Hall
+                    #       style:
+                    #         top: 35%
+                    #         left: 35%
+                    #         transform: scale(1.4,1.1)
+                    #         opacity: 10%
 
-                        - type: image
-                          tap_action:
-                            action: call-service
-                            service: input_select.select_option
-                            service_data:
-                              entity_id: input_select.roborock_zone
-                              option: Kök
-                          image: /local/overlay.svg
-                          title: Kök
-                          style:
-                            top: 36.5%
-                            left: 3.5%
-                            transform: scale(0.9,0.9)
+                    #     - type: image
+                    #       tap_action:
+                    #         action: call-service
+                    #         service: input_select.select_option
+                    #         service_data:
+                    #           entity_id: input_select.roborock_zone
+                    #           option: Kök
+                    #       image: /local/overlay.svg
+                    #       title: Kök
+                    #       style:
+                    #         top: 36.5%
+                    #         left: 3.5%
+                    #         transform: scale(0.9,0.9)
 
-                        - type: image
-                          tap_action:
-                            action: call-service
-                            service: input_select.select_option
-                            service_data:
-                              entity_id: input_select.roborock_zone
-                              option: Sovrum
-                          image: /local/overlay.svg
-                          title: Sovrum
-                          style:
-                            top: 61%
-                            left: 10.5%
-                            transform: scale(1.4,0.9)
+                    #     - type: image
+                    #       tap_action:
+                    #         action: call-service
+                    #         service: input_select.select_option
+                    #         service_data:
+                    #           entity_id: input_select.roborock_zone
+                    #           option: Sovrum
+                    #       image: /local/overlay.svg
+                    #       title: Sovrum
+                    #       style:
+                    #         top: 61%
+                    #         left: 10.5%
+                    #         transform: scale(1.4,0.9)
 
-                        - type: image
-                          tap_action:
-                            action: call-service
-                            service: input_select.select_option
-                            service_data:
-                              entity_id: input_select.roborock_zone
-                              option: Studio
-                          image: /local/overlay.svg
-                          title: Studio
-                          style:
-                            top: 8%
-                            left: 24%
-                            transform: scale(1,1.2)
+                    #     - type: image
+                    #       tap_action:
+                    #         action: call-service
+                    #         service: input_select.select_option
+                    #         service_data:
+                    #           entity_id: input_select.roborock_zone
+                    #           option: Studio
+                    #       image: /local/overlay.svg
+                    #       title: Studio
+                    #       style:
+                    #         top: 8%
+                    #         left: 24%
+                    #         transform: scale(1,1.2)
 
-                        - type: "custom:button-card"
-                          entity: input_select.roborock_zone
-                          name: Rengöringszon
-                          label: '[[[ return entity.state ]]]'
-                          show_label: true
-                          show_icon: false
-                          tap_action:
-                            action: call-service
-                            service: script.turn_on
-                            service_data:
-                              entity_id: script.zoned_cleanup
-                          styles:
-                            card:
-                              [background: '#FFFFFF10', border-radius: 0.6em, box-shadow: none]
-                            name:
-                              [font-size: 0.75em, color: '#FFFFFF40', margin-bottom: 0.05em]
-                            label:
-                              [font-size: 1.05em, padding: 0.02em 0.8em 0.6em 0.8em, 
-                              color: "[[[ if (states['input_select.roborock_zone'].state == 'Ingen vald') 
-                              return '#e0e1e170'; return '#e0e1e1';]]]"]
-                          style:
-                            left: 80%
-                            top: 88%
-                            width: 10.2em
+                    #     - type: "custom:button-card"
+                    #       entity: input_select.roborock_zone
+                    #       name: Rengöringszon
+                    #       label: '[[[ return entity.state ]]]'
+                    #       show_label: true
+                    #       show_icon: false
+                    #       tap_action:
+                    #         action: call-service
+                    #         service: script.turn_on
+                    #         service_data:
+                    #           entity_id: script.zoned_cleanup
+                    #       styles:
+                    #         card:
+                    #           [background: '#FFFFFF10', border-radius: 0.6em, box-shadow: none]
+                    #         name:
+                    #           [font-size: 0.75em, color: '#FFFFFF40', margin-bottom: 0.05em]
+                    #         label:
+                    #           [font-size: 1.05em, padding: 0.02em 0.8em 0.6em 0.8em, 
+                    #           color: "[[[ if (states['input_select.roborock_zone'].state == 'Ingen vald') 
+                    #           return '#e0e1e170'; return '#e0e1e1';]]]"]
+                    #       style:
+                    #         left: 80%
+                    #         top: 88%
+                    #         width: 10.2em
