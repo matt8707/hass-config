@@ -4,6 +4,8 @@
                 title: Stäng
                 deviceID: this
                 style:
+                  --ha-card-border-radius: 1em
+                  --more-info-header-color: rgba(255,255,255,0.6)
                   background: none
                   box-shadow: none
                   width: calc(400px + 400px + 400px)
@@ -16,19 +18,15 @@
                     - type: entities
                       title: Home Assistant
                       show_header_toggle: false
-                      style: &entities-style |
+                      style: |
                         ha-card {
-                          box-shadow: none;
-                          border-radius: 1em;
-                          background: rgba(34, 38, 39, 0.9);
-                          padding: 0.3em 1.25em 0.4em 0.5em;
-                        }
+                          animation: pop-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; transform-origin: center;
+                          box-shadow: none; border-radius: 1em; padding: 0.3em 1.25em 0.4em 0.5em; 
+                          background: linear-gradient(180deg, rgba(48,52,52,1) 0%, rgba(48,52,52,1) 4.8em, rgba(34,38,39,1) 4.8em, rgba(34,38,39,1) 100%); }
                         .card-header {
-                          margin-left: 0.4em;
-                          margin-bottom: 0.1em;
-                          font-family: sf text;
-                          letter-spacing: 0.005em;
-                        }
+                          margin: -0.4em 0 1em 0.4em; font-family: sf text; letter-spacing: 0.005em; font-size: 1.5em;}
+                        @keyframes pop-in {
+                          0% { transform: scale(0.6); opacity: 0; } 20% { opacity: 0; } 100% { transform: scale(1); opacity: 0.9; }}
                       entities:
 
                         - entity: sensor.hass_version_template
@@ -145,7 +143,15 @@
                     - type: entities
                       title: Väggplattan
                       show_header_toggle: false
-                      style: *entities-style
+                      style: |
+                        ha-card {
+                          animation: pop-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.05s; transform-origin: center;
+                          box-shadow: none; border-radius: 1em; padding: 0.3em 1.25em 0.4em 0.5em; 
+                          background: linear-gradient(180deg, rgba(48,52,52,1) 0%, rgba(48,52,52,1) 4.8em, rgba(34,38,39,1) 4.8em, rgba(34,38,39,1) 100%); }
+                        .card-header {
+                          margin: -0.4em 0 1em 0.4em; font-family: sf text; letter-spacing: 0.005em; font-size: 1.5em;}
+                        @keyframes pop-in {
+                          0% { transform: scale(0.6); opacity: 0; } 20% { opacity: 0; } 100% { transform: scale(1); opacity: 0.9; }}
                       entities:
 
                         - entity: switch.fullykiosk_screen
@@ -232,17 +238,13 @@
                       show_header_toggle: false
                       style: |
                         ha-card {
-                          box-shadow: none;
-                          border-radius: 1em;
-                          background: rgba(34, 38, 39, 0.9);
-                          padding: 0.3em 1.25em 0.4em 0.5em;
-                        }
+                          animation: pop-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.1s; transform-origin: center;
+                          box-shadow: none; border-radius: 1em; padding: 0.3em 1.25em 0.4em 0.5em; 
+                          background: linear-gradient(180deg, rgba(48,52,52,1) 0%, rgba(48,52,52,1) 4.8em, rgba(34,38,39,1) 4.8em, rgba(34,38,39,1) 100%); }
                         .card-header {
-                          margin-left: 0.4em;
-                          margin-bottom: 0.1em;
-                          font-family: sf text;
-                          letter-spacing: 0.005em;
-                        }
+                          margin: -0.4em 0 1em 0.4em; font-family: sf text; letter-spacing: 0.005em; font-size: 1.5em;}
+                        @keyframes pop-in {
+                          0% { transform: scale(0.6); opacity: 0; } 20% { opacity: 0; } 100% { transform: scale(1); opacity: 0.9; }}
                         #states > div > mini-graph-card {
                           margin: 0 -34px -21px -23px;
                         }
