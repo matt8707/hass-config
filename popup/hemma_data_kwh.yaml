@@ -1,18 +1,34 @@
               action: call-service
               service: browser_mod.popup
               service_data:
-                title: Elförbrukning kWh
+                title: Stäng
                 deviceID: this
                 style:
-                  --ha-card-border-radius: 0 0 1em 1em
-                  border-radius: 1em
-                  opacity: 0.9
+                  --ha-card-border-radius: 1em
+                  --more-info-header-color: rgba(255,255,255,0.6)
+                  background: none
+                  box-shadow: none
                   width: 38em
                 card:
                   type: custom:stack-in-card
+                  style:
+                    .: |
+                      ha-card {
+                        animation: pop-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; transform-origin: center;
+                        box-shadow: none; border-radius: 1em;
+                        background: linear-gradient(180deg, rgba(48,52,52,1) 0%, rgba(48,52,52,1) 4.8em, rgba(34,38,39,1) 4.8em, rgba(34,38,39,1) 100%); }
+                      @keyframes pop-in {
+                        0% { transform: scale(0.6); opacity: 0; } 20% { opacity: 0; } 100% { transform: scale(1); opacity: 0.9; }}
+
+                    ha-card > div > hui-vertical-stack-card:
+                      $:
+                        '#root > hui-horizontal-stack-card:nth-child(1)':
+                          $: |
+                            div.card-header { margin: -0.2em 0 1.4em 0.75em; font-family: sf text; letter-spacing: 0.005em; font-size: 1.5em;}
                   cards:
 
                     - type: horizontal-stack
+                      title: Elförbrukning kWh
                       cards:
                         - entities:
                             - entity: sensor.year
