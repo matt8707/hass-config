@@ -102,7 +102,8 @@
     host: !secret plex_host
     port: !secret plex_port
     max: 1
-    img_dir: '/plex/'
+    img_dir: '/'
+    image_resolution: 500
 
   - platform: mqtt
     state_topic: "valetudo/rockrobo/state"
@@ -463,7 +464,7 @@
           {% else %}
           {{ states('vacuum.xiaomi_vacuum_cleaner') }}
           {% endif %}
-        icon_template: 'bha:roborock'
+        icon_template: 'custom:roborock'
 
       roborock_fan_speed:
         value_template: "{{ state_attr('vacuum.xiaomi_vacuum_cleaner', 'fan_speed') }}"
@@ -771,14 +772,14 @@
 
       plex_title:
         value_template: >
-          {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %} 
+          {% set data = state_attr('sensor.plex_recently_added', 'data') %} 
           {{ data[1].title }}
           {% if data[1].number is none %} ({{ data[1].aired.split('-')[0] }})
           {% else %} {{ data[1].number }} {% endif %}
 
       plex_poster:
         value_template: >
-          {% set data = state_attr('sensor.plex_recently_added', 'data') | from_json %}
+          {% set data = state_attr('sensor.plex_recently_added', 'data') %}
           {{ data[1].fanart }}
 
     ####################################################
