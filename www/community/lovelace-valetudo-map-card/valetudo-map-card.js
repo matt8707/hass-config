@@ -88,6 +88,7 @@ class ValetudoMapCard extends HTMLElement {
     const chargerContainer = document.createElement('div');
     const chargerHTML = document.createElement('ha-icon');
     if (this._config.show_dock && mapData.attributes.charger) {
+      chargerHTML.style.position = 'absolute'; // Needed in Home Assistant 0.110.0 and up
       chargerHTML.icon = this._config.dock_icon || 'mdi:flash';
       chargerHTML.style.left = `${Math.floor(mapData.attributes.charger[0] / widthScale) - leftOffset - (12 * this._config.icon_scale)}px`;
       chargerHTML.style.top = `${Math.floor(mapData.attributes.charger[1] / heightScale) - topOffset - (12 * this._config.icon_scale)}px`;
@@ -114,6 +115,7 @@ class ValetudoMapCard extends HTMLElement {
 
     if (this._config.show_vacuum && robotPosition) {
       this.lastValidRobotPosition = robotPosition;
+      vacuumHTML.style.position = 'absolute'; // Needed in Home Assistant 0.110.0 and up
       vacuumHTML.icon = this._config.vacuum_icon || 'mdi:robot-vacuum';
       vacuumHTML.style.color = vacuumColor;
       vacuumHTML.style.left = `${Math.floor(robotPosition[0] / widthScale) - leftOffset - (12 * this._config.icon_scale)}px`;
@@ -297,6 +299,9 @@ class ValetudoMapCard extends HTMLElement {
   };
 
   set hass(hass) {
+    // Home Assistant 0.110.0 may call this function with undefined sometimes if inside another card
+    if (hass === undefined) return;
+
     this._hass = hass;
     const config = this._config;
     let mapEntity = this._hass.states[this._config.entity];
