@@ -8,7 +8,7 @@
 from secrets import user, pasw
 account_id = user
 password = pasw
-output = '/Volumes/docker/home-assistant/python/data.kwh'
+output = '/Volumes/docker/hass-config/python/data.kwh'
 
 ###############################################################
 
