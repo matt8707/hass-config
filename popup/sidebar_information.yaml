@@ -356,7 +356,7 @@
                               border-radius: 1em;
                               background: none;
                               box-shadow: none;
-                              height: 8.65em;
+                              height: 8.4em;
                             }
                           tap_action:
                             action: none
