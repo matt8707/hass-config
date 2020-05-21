@@ -24,7 +24,7 @@
                       $:
                         '#root > hui-horizontal-stack-card:nth-child(1)':
                           $: |
-                            div.card-header { margin: -0.2em 0 1.4em 0.75em; font-family: sf text; letter-spacing: 0.005em; font-size: 1.5em;}
+                            div.card-header { margin: -0.2em 0 0 0.75em; font-family: sf text; letter-spacing: 0.005em; font-size: 1.5em;}
                   cards:
 
                     - type: horizontal-stack
