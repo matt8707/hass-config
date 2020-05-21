@@ -338,7 +338,7 @@ views:
             $: |
               hui-image {pointer-events: none;}
 
-          "#root > hui-element > hui-markdown-card":
+          "#root > hui-markdown-card, #root > hui-element > hui-markdown-card":
             $: |
               ha-card > ha-markdown {padding: 0 !important;}
               ha-card > ha-markdown > p > font > ha-icon {vertical-align: 3%; opacity: 0.6;}
@@ -362,8 +362,7 @@ views:
           #                                               #
           #################################################
 
-          - type: custom:hui-element
-            card_type: markdown
+          - type: custom:hui-markdown-card
             style:
               top: 93.5%
               left: 70.2%
@@ -627,7 +626,7 @@ views:
                   top: 85%
                   left: 12.2%
                   width: 1.7%
-                tap_action: !include popup/sidebar_information.yaml
+                  pointer-events: none
 
           #################################################
           #                                               #
