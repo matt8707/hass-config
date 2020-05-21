@@ -15,7 +15,7 @@
                     .: |
                       ha-card {
                         animation: pop-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; transform-origin: center;
-                        box-shadow: none; border-radius: 1em;
+                        box-shadow: none; border-radius: 1em; height: 49.2em;
                         background: linear-gradient(180deg, rgba(48,52,52,1) 0%, rgba(48,52,52,1) 4.8em, rgba(34,38,39,1) 4.8em, rgba(34,38,39,1) 100%); }
                       @keyframes pop-in {
                         0% { transform: scale(0.6); opacity: 0; } 20% { opacity: 0; } 100% { transform: scale(1); opacity: 0.9; }}
