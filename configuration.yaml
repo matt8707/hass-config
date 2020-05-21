@@ -35,6 +35,7 @@ lovelace:
     [ {'url':'/hacsfiles/bar-card/bar-card.js',                                    'type':'module'},
       {'url':'/hacsfiles/button-card/button-card.js',                              'type':'module'},
       {'url':'/hacsfiles/calendar-card/calendar-card.js',                          'type':'module'},
+      {'url':'/hacsfiles/custom-header/custom-header.js',                          'type':'module'},
       {'url':'/hacsfiles/light-entity-card/light-entity-card.js',                  'type':'js'},
       {'url':'/hacsfiles/light-popup-card/light-popup-card.js',                    'type':'module'},
       {'url':'/hacsfiles/lovelace-card-mod/card-mod.js',                           'type':'module'},
@@ -49,7 +50,6 @@ lovelace:
       {'url':'/hacsfiles/swipe-card/swipe-card.js',                                'type':'module'},
 
       {'url':'/hacsfiles/lovelace-slider-entity-row/slider-entity-row.js?v=12',    'type':'module'},
-      {'url':'/hacsfiles/mod/custom-header.js?v=1.3.8',                            'type':'module'},
       {'url':'/local/custom_icons.js',                                             'type':'module'},
       {'url':'/local/font.css',                                                    'type':'css'} ]
 
