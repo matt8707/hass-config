@@ -3,7 +3,7 @@ from homeassistant.components.media_player import (
         SUPPORT_PLAY, SUPPORT_PLAY_MEDIA,
         SUPPORT_PAUSE, SUPPORT_STOP,
         SUPPORT_VOLUME_SET, SUPPORT_VOLUME_MUTE,
-        MediaPlayerDevice,
+        MediaPlayerEntity,
     )
 from homeassistant.const import (
         STATE_UNAVAILABLE,
@@ -23,7 +23,7 @@ async def async_setup_platform(hass, config, async_add_devices, discovery_info=N
     return setup_platform(hass, config, async_add_devices, PLATFORM, BrowserModPlayer)
 
 
-class BrowserModPlayer(MediaPlayerDevice, BrowserModEntity):
+class BrowserModPlayer(MediaPlayerEntity, BrowserModEntity):
     domain = PLATFORM
 
     def __init__(self, hass, connection, deviceID, alias=None):

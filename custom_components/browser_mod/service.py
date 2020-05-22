@@ -3,7 +3,7 @@ from .const import DOMAIN, DATA_DEVICES, DATA_ALIASES, USER_COMMANDS
 
 _LOGGER = logging.getLogger(__name__)
 
-def setup_service(hass):
+async def setup_service(hass):
 
     def handle_command(call):
         command = call.data.get("command", None)

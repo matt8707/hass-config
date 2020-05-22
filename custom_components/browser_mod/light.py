@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 
 from homeassistant.const import STATE_UNAVAILABLE, STATE_ON, STATE_OFF
-from homeassistant.components.light import Light, SUPPORT_BRIGHTNESS
+from homeassistant.components.light import LightEntity, SUPPORT_BRIGHTNESS
 
 from .helpers import setup_platform, BrowserModEntity
 
@@ -11,7 +11,7 @@ PLATFORM = 'light'
 async def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
     return setup_platform(hass, config, async_add_devices, PLATFORM, BrowserModLight)
 
-class BrowserModLight(Light, BrowserModEntity):
+class BrowserModLight(LightEntity, BrowserModEntity):
     domain = PLATFORM
 
     def __init__(self, hass, connection, deviceID, alias=None):

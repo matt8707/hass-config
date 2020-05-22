@@ -1,16 +1,16 @@
 /*! *****************************************************************************
-Copyright (c) Microsoft Corporation. All rights reserved.
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the
-License at http://www.apache.org/licenses/LICENSE-2.0
+Copyright (c) Microsoft Corporation.
 
-THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-MERCHANTABLITY OR NON-INFRINGEMENT.
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
 
-See the Apache Version 2.0 License for specific language governing permissions
-and limitations under the License.
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
 function t(t, e, i, n) {
   var s,
@@ -43,13 +43,13 @@ function t(t, e, i, n) {
           s = [],
           a = document.createTreeWalker(e.content, 133, null, !1);let l = 0,
         u = -1,
-        d = 0;const { strings: f, values: { length: p } } = t;for (; d < p;) {
+        d = 0;const { strings: p, values: { length: f } } = t;for (; d < f;) {
       const t = a.nextNode();if (null !== t) {
         if (u++, 1 === t.nodeType) {
           if (t.hasAttributes()) {
             const e = t.attributes,
                   { length: i } = e;let n = 0;for (let t = 0; t < i; t++) o(e[t].name, "$lit$") && n++;for (; n-- > 0;) {
-              const e = f[d],
+              const e = p[d],
                     i = h.exec(e)[2],
                     n = i.toLowerCase() + "$lit$",
                     s = t.getAttribute(n);t.removeAttribute(n);const a = s.split(r);this.parts.push({ type: "attribute", index: u, name: i, strings: a }), d += a.length - 1;
@@ -81,16 +81,16 @@ function t(t, e, i, n) {
       c = () => document.createComment(""),
       h = /([ \x09\x0a\x0c\x0d])([^\0-\x1F\x7F-\x9F "'>=/]+)([ \x09\x0a\x0c\x0d]*=[ \x09\x0a\x0c\x0d]*(?:[^ \x09\x0a\x0c\x0d"'`<>=]*|"[^"]*|'[^']*))$/;function u(t, e) {
   const { element: { content: i }, parts: n } = t,
-        s = document.createTreeWalker(i, 133, null, !1);let r = f(n),
+        s = document.createTreeWalker(i, 133, null, !1);let r = p(n),
       a = n[r],
       o = -1,
       l = 0;const c = [];let h = null;for (; s.nextNode();) {
-    o++;const t = s.currentNode;for (t.previousSibling === h && (h = null), e.has(t) && (c.push(t), null === h && (h = t)), null !== h && l++; void 0 !== a && a.index === o;) a.index = null !== h ? -1 : a.index - l, r = f(n, r), a = n[r];
+    o++;const t = s.currentNode;for (t.previousSibling === h && (h = null), e.has(t) && (c.push(t), null === h && (h = t)), null !== h && l++; void 0 !== a && a.index === o;) a.index = null !== h ? -1 : a.index - l, r = p(n, r), a = n[r];
   }c.forEach(t => t.parentNode.removeChild(t));
 }const d = t => {
   let e = 11 === t.nodeType ? 0 : 1;const i = document.createTreeWalker(t, 133, null, !1);for (; i.nextNode();) e++;return e;
 },
-      f = (t, e = -1) => {
+      p = (t, e = -1) => {
   for (let i = e + 1; i < t.length; i++) {
     const e = t[i];if (l(e)) return i;
   }return -1;
@@ -108,11 +108,11 @@ function t(t, e, i, n) {
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-const p = new WeakMap(),
+const f = new WeakMap(),
       m = t => (...e) => {
-  const i = t(...e);return p.set(i, !0), i;
+  const i = t(...e);return f.set(i, !0), i;
 },
-      g = t => "function" == typeof t && p.has(t),
+      g = t => "function" == typeof t && f.has(t),
       _ = {},
       b = {};
 /**
@@ -245,7 +245,7 @@ class y {
   }clear(t = this.startNode) {
     i(this.startNode.parentNode, t.nextSibling, this.endNode);
   }
-}class N {
+}class O {
   constructor(t, e, i) {
     if (this.value = void 0, this.__pendingValue = void 0, 2 !== i.length || "" !== i[0] || "" !== i[1]) throw new Error("Boolean attributes can only contain a single expression");this.element = t, this.name = e, this.strings = i;
   }setValue(t) {
@@ -255,7 +255,7 @@ class y {
       const t = this.__pendingValue;this.__pendingValue = _, t(this);
     }if (this.__pendingValue === _) return;const t = !!this.__pendingValue;this.value !== t && (t ? this.element.setAttribute(this.name, "") : this.element.removeAttribute(this.name), this.value = t), this.__pendingValue = _;
   }
-}class O extends k {
+}class N extends k {
   constructor(t, e, i) {
     super(t, e, i), this.single = 2 === i.length && "" === i[0] && "" === i[1];
   }_createPart() {
@@ -265,10 +265,10 @@ class y {
   }commit() {
     this.dirty && (this.dirty = !1, this.element[this.name] = this._getValue());
   }
-}class C extends T {}let E = !1;(() => {
+}class C extends T {}let P = !1;(() => {
   try {
     const t = { get capture() {
-        return E = !0, !1;
+        return P = !0, !1;
       } };window.addEventListener("test", t, t), window.removeEventListener("test", t, t);
   } catch (t) {}
 })();class A {
@@ -282,11 +282,11 @@ class y {
     }if (this.__pendingValue === _) return;const t = this.__pendingValue,
           e = this.value,
           i = null == t || null != e && (t.capture !== e.capture || t.once !== e.once || t.passive !== e.passive),
-          n = null != t && (null == e || i);i && this.element.removeEventListener(this.eventName, this.__boundHandleEvent, this.__options), n && (this.__options = P(t), this.element.addEventListener(this.eventName, this.__boundHandleEvent, this.__options)), this.value = t, this.__pendingValue = _;
+          n = null != t && (null == e || i);i && this.element.removeEventListener(this.eventName, this.__boundHandleEvent, this.__options), n && (this.__options = E(t), this.element.addEventListener(this.eventName, this.__boundHandleEvent, this.__options)), this.value = t, this.__pendingValue = _;
   }handleEvent(t) {
     "function" == typeof this.value ? this.value.call(this.eventContext || this.element, t) : this.value.handleEvent(t);
   }
-}const P = t => t && (E ? { capture: t.capture, passive: t.passive, once: t.once } : t.capture)
+}const E = t => t && (P ? { capture: t.capture, passive: t.passive, once: t.once } : t.capture)
 /**
  * @license
  * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
@@ -302,7 +302,7 @@ class y {
  */;function $(t) {
   let e = j.get(t.type);void 0 === e && (e = { stringsArray: new WeakMap(), keyString: new Map() }, j.set(t.type, e));let i = e.stringsArray.get(t.strings);if (void 0 !== i) return i;const s = t.strings.join(n);return i = e.keyString.get(s), void 0 === i && (i = new a(t, t.getTemplateElement()), e.keyString.set(s, i)), e.stringsArray.set(t.strings, i), i;
 }const j = new Map(),
-      V = new WeakMap();
+      H = new WeakMap();
 /**
  * @license
  * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
@@ -315,7 +315,7 @@ class y {
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
- */const H = new
+ */const R = new
 /**
  * @license
  * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
@@ -332,8 +332,8 @@ class y {
 class {
   handleAttributeExpressions(t, e, i, n) {
     const s = e[0];if ("." === s) {
-      return new O(t, e.slice(1), i).parts;
-    }return "@" === s ? [new A(t, e.slice(1), n.eventContext)] : "?" === s ? [new N(t, e.slice(1), i)] : new k(t, e, i).parts;
+      return new N(t, e.slice(1), i).parts;
+    }return "@" === s ? [new A(t, e.slice(1), n.eventContext)] : "?" === s ? [new O(t, e.slice(1), i)] : new k(t, e, i).parts;
   }handleTextExpression(t) {
     return new M(t);
   }
@@ -350,7 +350,7 @@ class {
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
- */"undefined" != typeof window && (window.litHtmlVersions || (window.litHtmlVersions = [])).push("1.2.1");const R = (t, ...e) => new w(t, e, "html", H)
+ */"undefined" != typeof window && (window.litHtmlVersions || (window.litHtmlVersions = [])).push("1.2.1");const V = (t, ...e) => new w(t, e, "html", R)
 /**
  * @license
  * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
@@ -364,9 +364,9 @@ class {
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */,
-      D = (t, e) => `${t}--${e}`;let L = !0;void 0 === window.ShadyCSS ? L = !1 : void 0 === window.ShadyCSS.prepareTemplateDom && (console.warn("Incompatible ShadyCSS version detected. Please update to at least @webcomponents/webcomponentsjs@2.0.2 and @webcomponents/shadycss@1.3.1."), L = !1);const F = t => e => {
+      D = (t, e) => `${t}--${e}`;let F = !0;void 0 === window.ShadyCSS ? F = !1 : void 0 === window.ShadyCSS.prepareTemplateDom && (console.warn("Incompatible ShadyCSS version detected. Please update to at least @webcomponents/webcomponentsjs@2.0.2 and @webcomponents/shadycss@1.3.1."), F = !1);const L = t => e => {
   const i = D(e.type, t);let s = j.get(i);void 0 === s && (s = { stringsArray: new WeakMap(), keyString: new Map() }, j.set(i, s));let r = s.stringsArray.get(e.strings);if (void 0 !== r) return r;const o = e.strings.join(n);if (r = s.keyString.get(o), void 0 === r) {
-    const i = e.getTemplateElement();L && window.ShadyCSS.prepareTemplateDom(i, t), r = new a(e, i), s.keyString.set(o, r);
+    const i = e.getTemplateElement();F && window.ShadyCSS.prepareTemplateDom(i, t), r = new a(e, i), s.keyString.set(o, r);
   }return s.stringsArray.set(e.strings, r), r;
 },
       I = ["html", "svg"],
@@ -386,13 +386,13 @@ class {
       });
     });
   })(t);const o = n.content;i ? function (t, e, i = null) {
-    const { element: { content: n }, parts: s } = t;if (null == i) return void n.appendChild(e);const r = document.createTreeWalker(n, 133, null, !1);let a = f(s),
+    const { element: { content: n }, parts: s } = t;if (null == i) return void n.appendChild(e);const r = document.createTreeWalker(n, 133, null, !1);let a = p(s),
         o = 0,
         l = -1;for (; r.nextNode();) {
       for (l++, r.currentNode === i && (o = d(e), i.parentNode.insertBefore(e, i)); -1 !== a && s[a].index === l;) {
         if (o > 0) {
-          for (; -1 !== a;) s[a].index += o, a = f(s, a);return;
-        }a = f(s, a);
+          for (; -1 !== a;) s[a].index += o, a = p(s, a);return;
+        }a = p(s, a);
       }
     }
   }(i, a, o.firstChild) : o.insertBefore(a, o.firstChild), window.ShadyCSS.prepareTemplateStyles(n, t);const l = o.querySelector("style");if (window.ShadyCSS.nativeShadow && null !== l) e.insertBefore(l.cloneNode(!0), e.firstChild);else if (i) {
@@ -529,7 +529,10 @@ const J = (t, e) => "method" === e.kind && e.descriptor && !("value" in e.descri
   return (e, i) => void 0 !== i ? ((t, e, i) => {
     e.constructor.createProperty(i, t);
   })(t, e, i) : J(t, e);
-}
+}const Z = (t, e, i) => {
+  Object.defineProperty(e, i, t);
+},
+      X = (t, e) => ({ kind: "method", placement: "prototype", key: e.key, descriptor: t });
 /**
 @license
 Copyright (c) 2019 The Polymer Project Authors. All rights reserved.
@@ -539,12 +542,13 @@ http://polymer.github.io/AUTHORS.txt The complete set of contributors may be
 found at http://polymer.github.io/CONTRIBUTORS.txt Code distributed by Google as
 part of the polymer project is also subject to an additional IP rights grant
 found at http://polymer.github.io/PATENTS.txt
-*/const Z = "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype,
-      X = Symbol();class K {
+*/
+const K = "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype,
+      Q = Symbol();class tt {
   constructor(t, e) {
-    if (e !== X) throw new Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText = t;
+    if (e !== Q) throw new Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText = t;
   }get styleSheet() {
-    return void 0 === this._styleSheet && (Z ? (this._styleSheet = new CSSStyleSheet(), this._styleSheet.replaceSync(this.cssText)) : this._styleSheet = null), this._styleSheet;
+    return void 0 === this._styleSheet && (K ? (this._styleSheet = new CSSStyleSheet(), this._styleSheet.replaceSync(this.cssText)) : this._styleSheet = null), this._styleSheet;
   }toString() {
     return this.cssText;
   }
@@ -562,7 +566,7 @@ found at http://polymer.github.io/PATENTS.txt
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-(window.litElementVersions || (window.litElementVersions = [])).push("2.3.1");const Q = {};class tt extends W {
+(window.litElementVersions || (window.litElementVersions = [])).push("2.3.1");const et = {};class it extends W {
   static getStyles() {
     return this.styles;
   }static _getUniqueStyles() {
@@ -576,27 +580,72 @@ found at http://polymer.github.io/PATENTS.txt
   }createRenderRoot() {
     return this.attachShadow({ mode: "open" });
   }adoptStyles() {
-    const t = this.constructor._styles;0 !== t.length && (void 0 === window.ShadyCSS || window.ShadyCSS.nativeShadow ? Z ? this.renderRoot.adoptedStyleSheets = t.map(t => t.styleSheet) : this._needsShimAdoptedStyleSheets = !0 : window.ShadyCSS.ScopingShim.prepareAdoptedCssText(t.map(t => t.cssText), this.localName));
+    const t = this.constructor._styles;0 !== t.length && (void 0 === window.ShadyCSS || window.ShadyCSS.nativeShadow ? K ? this.renderRoot.adoptedStyleSheets = t.map(t => t.styleSheet) : this._needsShimAdoptedStyleSheets = !0 : window.ShadyCSS.ScopingShim.prepareAdoptedCssText(t.map(t => t.cssText), this.localName));
   }connectedCallback() {
     super.connectedCallback(), this.hasUpdated && void 0 !== window.ShadyCSS && window.ShadyCSS.styleElement(this);
   }update(t) {
-    const e = this.render();super.update(t), e !== Q && this.constructor.render(e, this.renderRoot, { scopeName: this.localName, eventContext: this }), this._needsShimAdoptedStyleSheets && (this._needsShimAdoptedStyleSheets = !1, this.constructor._styles.forEach(t => {
+    const e = this.render();super.update(t), e !== et && this.constructor.render(e, this.renderRoot, { scopeName: this.localName, eventContext: this }), this._needsShimAdoptedStyleSheets && (this._needsShimAdoptedStyleSheets = !1, this.constructor._styles.forEach(t => {
       const e = document.createElement("style");e.textContent = t.cssText, this.renderRoot.appendChild(e);
     }));
   }render() {
-    return Q;
+    return et;
   }
-}tt.finalized = !0, tt.render = (t, e, n) => {
+}it.finalized = !0, it.render = (t, e, n) => {
   if (!n || "object" != typeof n || !n.scopeName) throw new Error("The `scopeName` option is required.");const s = n.scopeName,
-        r = V.has(e),
-        a = L && 11 === e.nodeType && !!e.host,
+        r = H.has(e),
+        a = F && 11 === e.nodeType && !!e.host,
         o = a && !z.has(s),
         l = o ? document.createDocumentFragment() : e;if (((t, e, n) => {
-    let s = V.get(e);void 0 === s && (i(e, e.firstChild), V.set(e, s = new M(Object.assign({ templateFactory: $ }, n))), s.appendInto(e)), s.setValue(t), s.commit();
-  })(t, l, Object.assign({ templateFactory: F(s) }, n)), o) {
-    const t = V.get(l);V.delete(l);const n = t.value instanceof y ? t.value.template : void 0;U(s, l, n), i(e, e.firstChild), e.appendChild(l), V.set(e, t);
+    let s = H.get(e);void 0 === s && (i(e, e.firstChild), H.set(e, s = new M(Object.assign({ templateFactory: $ }, n))), s.appendInto(e)), s.setValue(t), s.commit();
+  })(t, l, Object.assign({ templateFactory: L(s) }, n)), o) {
+    const t = H.get(l);H.delete(l);const n = t.value instanceof y ? t.value.template : void 0;U(s, l, n), i(e, e.firstChild), e.appendChild(l), H.set(e, t);
   }!r && a && window.ShadyCSS.styleElement(e.host);
 };
+/**
+@license
+Copyright 2020 Google Inc. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+class nt {
+  constructor(t) {
+    this.startPress = e => {
+      t().then(t => {
+        t && t.startPress(e);
+      });
+    }, this.endPress = () => {
+      t().then(t => {
+        t && t.endPress();
+      });
+    }, this.startFocus = () => {
+      t().then(t => {
+        t && t.startFocus();
+      });
+    }, this.endFocus = () => {
+      t().then(t => {
+        t && t.endFocus();
+      });
+    }, this.startHover = () => {
+      t().then(t => {
+        t && t.startHover();
+      });
+    }, this.endHover = () => {
+      t().then(t => {
+        t && t.endHover();
+      });
+    };
+  }
+}
 /**
  * @license
  * Copyright (c) 2018 The Polymer Project Authors. All rights reserved.
@@ -609,17 +658,16 @@ found at http://polymer.github.io/PATENTS.txt
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
- */
-const et = new WeakMap(),
-      it = m(t => e => {
+ */const st = new WeakMap(),
+      rt = m(t => e => {
   if (!(e instanceof T) || e instanceof C || "style" !== e.committer.name || e.committer.parts.length > 1) throw new Error("The `styleMap` directive must be used in the style attribute and must be the only part in the attribute.");const { committer: i } = e,
-        { style: n } = i.element;let s = et.get(e);void 0 === s && (n.cssText = i.strings.join(" "), et.set(e, s = new Set())), s.forEach(e => {
+        { style: n } = i.element;let s = st.get(e);void 0 === s && (n.cssText = i.strings.join(" "), st.set(e, s = new Set())), s.forEach(e => {
     e in t || (s.delete(e), -1 === e.indexOf("-") ? n[e] = null : n.removeProperty(e));
   });for (const r in t) s.add(r), -1 === r.indexOf("-") ? n[r] = t[r] : n.setProperty(r, t[r]);
 }),
-      nt = new WeakMap(),
-      st = m(t => e => {
-  if (!(e instanceof M)) throw new Error("unsafeHTML can only be used in text bindings");const i = nt.get(e);if (void 0 !== i && S(t) && t === i.value && e.value === i.fragment) return;const n = document.createElement("template");n.innerHTML = t;const s = document.importNode(n.content, !0);e.setValue(s), nt.set(e, { value: t, fragment: s });
+      at = new WeakMap(),
+      ot = m(t => e => {
+  if (!(e instanceof M)) throw new Error("unsafeHTML can only be used in text bindings");const i = at.get(e);if (void 0 !== i && S(t) && t === i.value && e.value === i.fragment) return;const n = document.createElement("template");n.innerHTML = t;const s = document.importNode(n.content, !0);e.setValue(s), at.set(e, { value: t, fragment: s });
 });
 /**
  * @license
@@ -634,7 +682,7 @@ const et = new WeakMap(),
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-class rt {
+class lt {
   constructor(t) {
     this.classes = new Set(), this.changed = !1, this.element = t;const e = (t.getAttribute("class") || "").split(/\s+/);for (const i of e) this.classes.add(i);
   }add(t) {
@@ -646,48 +694,48 @@ class rt {
       let t = "";this.classes.forEach(e => t += e + " "), this.element.setAttribute("class", t);
     }
   }
-}const at = new WeakMap(),
-      ot = m(t => e => {
+}const ct = new WeakMap(),
+      ht = m(t => e => {
   if (!(e instanceof T) || e instanceof C || "class" !== e.committer.name || e.committer.parts.length > 1) throw new Error("The `classMap` directive must be used in the `class` attribute and must be the only part in the attribute.");const { committer: i } = e,
-        { element: n } = i;let s = at.get(e);void 0 === s && (n.setAttribute("class", i.strings.join(" ")), at.set(e, s = new Set()));const r = n.classList || new rt(n);s.forEach(e => {
+        { element: n } = i;let s = ct.get(e);void 0 === s && (n.setAttribute("class", i.strings.join(" ")), ct.set(e, s = new Set()));const r = n.classList || new lt(n);s.forEach(e => {
     e in t || (r.remove(e), s.delete(e));
   });for (const a in t) {
     const e = t[a];e != s.has(a) && (e ? (r.add(a), s.add(a)) : (r.remove(a), s.delete(a)));
   }"function" == typeof r.commit && r.commit();
-});var lt = /d{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|Z|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g,
-    ct = "[^\\s]+",
-    ht = /\[([^]*?)\]/gm;function ut(t, e) {
+});var ut = /d{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|Z|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g,
+    dt = "[^\\s]+",
+    pt = /\[([^]*?)\]/gm;function ft(t, e) {
   for (var i = [], n = 0, s = t.length; n < s; n++) i.push(t[n].substr(0, e));return i;
-}var dt = function (t) {
+}var mt = function (t) {
   return function (e, i) {
     var n = i[t].map(function (t) {
       return t.toLowerCase();
     }).indexOf(e.toLowerCase());return n > -1 ? n : null;
   };
-};function ft(t) {
+};function gt(t) {
   for (var e = [], i = 1; i < arguments.length; i++) e[i - 1] = arguments[i];for (var n = 0, s = e; n < s.length; n++) {
     var r = s[n];for (var a in r) t[a] = r[a];
   }return t;
-}var pt = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-    mt = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-    gt = ut(mt, 3),
-    _t = { dayNamesShort: ut(pt, 3), dayNames: pt, monthNamesShort: gt, monthNames: mt, amPm: ["am", "pm"], DoFn: function (t) {
+}var _t = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    bt = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    yt = ft(bt, 3),
+    vt = { dayNamesShort: ft(_t, 3), dayNames: _t, monthNamesShort: yt, monthNames: bt, amPm: ["am", "pm"], DoFn: function (t) {
     return t + ["th", "st", "nd", "rd"][t % 10 > 3 ? 0 : (t - t % 10 != 10 ? 1 : 0) * t % 10];
   } },
-    bt = ft({}, _t),
-    yt = function (t, e) {
+    wt = gt({}, vt),
+    St = function (t, e) {
   for (void 0 === e && (e = 2), t = String(t); t.length < e;) t = "0" + t;return t;
 },
-    vt = { D: function (t) {
+    xt = { D: function (t) {
     return String(t.getDate());
   }, DD: function (t) {
-    return yt(t.getDate());
+    return St(t.getDate());
   }, Do: function (t, e) {
     return e.DoFn(t.getDate());
   }, d: function (t) {
     return String(t.getDay());
   }, dd: function (t) {
-    return yt(t.getDay());
+    return St(t.getDay());
   }, ddd: function (t, e) {
     return e.dayNamesShort[t.getDay()];
   }, dddd: function (t, e) {
@@ -695,70 +743,70 @@ class rt {
   }, M: function (t) {
     return String(t.getMonth() + 1);
   }, MM: function (t) {
-    return yt(t.getMonth() + 1);
+    return St(t.getMonth() + 1);
   }, MMM: function (t, e) {
     return e.monthNamesShort[t.getMonth()];
   }, MMMM: function (t, e) {
     return e.monthNames[t.getMonth()];
   }, YY: function (t) {
-    return yt(String(t.getFullYear()), 4).substr(2);
+    return St(String(t.getFullYear()), 4).substr(2);
   }, YYYY: function (t) {
-    return yt(t.getFullYear(), 4);
+    return St(t.getFullYear(), 4);
   }, h: function (t) {
     return String(t.getHours() % 12 || 12);
   }, hh: function (t) {
-    return yt(t.getHours() % 12 || 12);
+    return St(t.getHours() % 12 || 12);
   }, H: function (t) {
     return String(t.getHours());
   }, HH: function (t) {
-    return yt(t.getHours());
+    return St(t.getHours());
   }, m: function (t) {
     return String(t.getMinutes());
   }, mm: function (t) {
-    return yt(t.getMinutes());
+    return St(t.getMinutes());
   }, s: function (t) {
     return String(t.getSeconds());
   }, ss: function (t) {
-    return yt(t.getSeconds());
+    return St(t.getSeconds());
   }, S: function (t) {
     return String(Math.round(t.getMilliseconds() / 100));
   }, SS: function (t) {
-    return yt(Math.round(t.getMilliseconds() / 10), 2);
+    return St(Math.round(t.getMilliseconds() / 10), 2);
   }, SSS: function (t) {
-    return yt(t.getMilliseconds(), 3);
+    return St(t.getMilliseconds(), 3);
   }, a: function (t, e) {
     return t.getHours() < 12 ? e.amPm[0] : e.amPm[1];
   }, A: function (t, e) {
     return t.getHours() < 12 ? e.amPm[0].toUpperCase() : e.amPm[1].toUpperCase();
   }, ZZ: function (t) {
-    var e = t.getTimezoneOffset();return (e > 0 ? "-" : "+") + yt(100 * Math.floor(Math.abs(e) / 60) + Math.abs(e) % 60, 4);
+    var e = t.getTimezoneOffset();return (e > 0 ? "-" : "+") + St(100 * Math.floor(Math.abs(e) / 60) + Math.abs(e) % 60, 4);
   }, Z: function (t) {
-    var e = t.getTimezoneOffset();return (e > 0 ? "-" : "+") + yt(Math.floor(Math.abs(e) / 60), 2) + ":" + yt(Math.abs(e) % 60, 2);
+    var e = t.getTimezoneOffset();return (e > 0 ? "-" : "+") + St(Math.floor(Math.abs(e) / 60), 2) + ":" + St(Math.abs(e) % 60, 2);
   } },
-    wt = function (t) {
+    kt = function (t) {
   return +t - 1;
 },
-    St = [null, "[1-9]\\d?"],
-    xt = [null, ct],
-    kt = ["isPm", ct, function (t, e) {
+    Tt = [null, "[1-9]\\d?"],
+    Mt = [null, dt],
+    Ot = ["isPm", dt, function (t, e) {
   var i = t.toLowerCase();return i === e.amPm[0] ? 0 : i === e.amPm[1] ? 1 : null;
 }],
-    Tt = ["timezoneOffset", "[^\\s]*?[\\+\\-]\\d\\d:?\\d\\d|[^\\s]*?Z?", function (t) {
+    Nt = ["timezoneOffset", "[^\\s]*?[\\+\\-]\\d\\d:?\\d\\d|[^\\s]*?Z?", function (t) {
   var e = (t + "").match(/([+-]|\d\d)/gi);if (e) {
     var i = 60 * +e[1] + parseInt(e[2], 10);return "+" === e[0] ? i : -i;
   }return 0;
 }],
-    Mt = (dt("monthNamesShort"), dt("monthNames"), { default: "ddd MMM DD YYYY HH:mm:ss", shortDate: "M/D/YY", mediumDate: "MMM D, YYYY", longDate: "MMMM D, YYYY", fullDate: "dddd, MMMM D, YYYY", isoDate: "YYYY-MM-DD", isoDateTime: "YYYY-MM-DDTHH:mm:ssZ", shortTime: "HH:mm", mediumTime: "HH:mm:ss", longTime: "HH:mm:ss.SSS" });var Nt = function (t, e, i) {
-  if (void 0 === e && (e = Mt.default), void 0 === i && (i = {}), "number" == typeof t && (t = new Date(t)), "[object Date]" !== Object.prototype.toString.call(t) || isNaN(t.getTime())) throw new Error("Invalid Date pass to format");var n = [];e = (e = Mt[e] || e).replace(ht, function (t, e) {
+    Ct = (mt("monthNamesShort"), mt("monthNames"), { default: "ddd MMM DD YYYY HH:mm:ss", shortDate: "M/D/YY", mediumDate: "MMM D, YYYY", longDate: "MMMM D, YYYY", fullDate: "dddd, MMMM D, YYYY", isoDate: "YYYY-MM-DD", isoDateTime: "YYYY-MM-DDTHH:mm:ssZ", shortTime: "HH:mm", mediumTime: "HH:mm:ss", longTime: "HH:mm:ss.SSS" });var Pt = function (t, e, i) {
+  if (void 0 === e && (e = Ct.default), void 0 === i && (i = {}), "number" == typeof t && (t = new Date(t)), "[object Date]" !== Object.prototype.toString.call(t) || isNaN(t.getTime())) throw new Error("Invalid Date pass to format");var n = [];e = (e = Ct[e] || e).replace(pt, function (t, e) {
     return n.push(e), "@@@";
-  });var s = ft(ft({}, bt), i);return (e = e.replace(lt, function (e) {
-    return vt[e](t, s);
+  });var s = gt(gt({}, wt), i);return (e = e.replace(ut, function (e) {
+    return xt[e](t, s);
   })).replace(/@@@/g, function () {
     return n.shift();
   });
-};function Ot(t) {
+};function At(t) {
   var e = t.split(":").map(Number);return 3600 * e[0] + 60 * e[1] + e[2];
-}var Ct = function () {
+}var Et = function () {
   try {
     new Date().toLocaleDateString("i");
   } catch (t) {
@@ -767,9 +815,9 @@ class rt {
 }() ? function (t, e) {
   return t.toLocaleDateString(e, { year: "numeric", month: "long", day: "numeric" });
 } : function (t) {
-  return Nt(t, "mediumDate");
+  return Pt(t, "mediumDate");
 },
-    Et = function () {
+    $t = function () {
   try {
     new Date().toLocaleString("i");
   } catch (t) {
@@ -778,9 +826,9 @@ class rt {
 }() ? function (t, e) {
   return t.toLocaleString(e, { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "2-digit" });
 } : function (t) {
-  return Nt(t, "haDateTime");
+  return Pt(t, "haDateTime");
 },
-    At = function () {
+    jt = function () {
   try {
     new Date().toLocaleTimeString("i");
   } catch (t) {
@@ -789,22 +837,22 @@ class rt {
 }() ? function (t, e) {
   return t.toLocaleTimeString(e, { hour: "numeric", minute: "2-digit" });
 } : function (t) {
-  return Nt(t, "shortTime");
+  return Pt(t, "shortTime");
 },
-    Pt = function (t) {
+    Ht = function (t) {
   return t < 10 ? "0" + t : t;
-};function $t(t) {
+};function Rt(t) {
   return t.substr(0, t.indexOf("."));
-}var jt = "hass:bookmark",
-    Vt = ["closed", "locked", "off"],
-    Ht = new Set(["fan", "input_boolean", "light", "switch", "group", "automation"]),
-    Rt = function (t, e, i, n) {
+}var Vt = "hass:bookmark",
+    Dt = ["closed", "locked", "off"],
+    Ft = new Set(["fan", "input_boolean", "light", "switch", "group", "automation"]),
+    Lt = function (t, e, i, n) {
   n = n || {}, i = null == i ? {} : i;var s = new Event(e, { bubbles: void 0 === n.bubbles || n.bubbles, cancelable: Boolean(n.cancelable), composed: void 0 === n.composed || n.composed });return s.detail = i, t.dispatchEvent(s), s;
 },
-    Dt = new Set(["call-service", "divider", "section", "weblink", "cast", "select"]),
-    Lt = { alert: "toggle", automation: "toggle", climate: "climate", cover: "cover", fan: "toggle", group: "group", input_boolean: "toggle", input_number: "input-number", input_select: "input-select", input_text: "input-text", light: "toggle", lock: "lock", media_player: "media-player", remote: "toggle", scene: "scene", script: "script", sensor: "sensor", timer: "timer", switch: "toggle", vacuum: "toggle", water_heater: "climate", input_datetime: "input-datetime" },
-    Ft = { alert: "hass:alert", automation: "hass:playlist-play", calendar: "hass:calendar", camera: "hass:video", climate: "hass:thermostat", configurator: "hass:settings", conversation: "hass:text-to-speech", device_tracker: "hass:account", fan: "hass:fan", group: "hass:google-circles-communities", history_graph: "hass:chart-line", homeassistant: "hass:home-assistant", homekit: "hass:home-automation", image_processing: "hass:image-filter-frames", input_boolean: "hass:drawing", input_datetime: "hass:calendar-clock", input_number: "hass:ray-vertex", input_select: "hass:format-list-bulleted", input_text: "hass:textbox", light: "hass:lightbulb", mailbox: "hass:mailbox", notify: "hass:comment-alert", person: "hass:account", plant: "hass:flower", proximity: "hass:apple-safari", remote: "hass:remote", scene: "hass:google-pages", script: "hass:file-document", sensor: "hass:eye", simple_alarm: "hass:bell", sun: "hass:white-balance-sunny", switch: "hass:flash", timer: "hass:timer", updater: "hass:cloud-upload", vacuum: "hass:robot-vacuum", water_heater: "hass:thermometer", weblink: "hass:open-in-new" };function It(t, e) {
-  if (t in Ft) return Ft[t];switch (t) {case "alarm_control_panel":
+    It = new Set(["call-service", "divider", "section", "weblink", "cast", "select"]),
+    zt = { alert: "toggle", automation: "toggle", climate: "climate", cover: "cover", fan: "toggle", group: "group", input_boolean: "toggle", input_number: "input-number", input_select: "input-select", input_text: "input-text", light: "toggle", lock: "lock", media_player: "media-player", remote: "toggle", scene: "scene", script: "script", sensor: "sensor", timer: "timer", switch: "toggle", vacuum: "toggle", water_heater: "climate", input_datetime: "input-datetime" },
+    Ut = { alert: "hass:alert", automation: "hass:playlist-play", calendar: "hass:calendar", camera: "hass:video", climate: "hass:thermostat", configurator: "hass:settings", conversation: "hass:text-to-speech", device_tracker: "hass:account", fan: "hass:fan", group: "hass:google-circles-communities", history_graph: "hass:chart-line", homeassistant: "hass:home-assistant", homekit: "hass:home-automation", image_processing: "hass:image-filter-frames", input_boolean: "hass:drawing", input_datetime: "hass:calendar-clock", input_number: "hass:ray-vertex", input_select: "hass:format-list-bulleted", input_text: "hass:textbox", light: "hass:lightbulb", mailbox: "hass:mailbox", notify: "hass:comment-alert", person: "hass:account", plant: "hass:flower", proximity: "hass:apple-safari", remote: "hass:remote", scene: "hass:google-pages", script: "hass:file-document", sensor: "hass:eye", simple_alarm: "hass:bell", sun: "hass:white-balance-sunny", switch: "hass:flash", timer: "hass:timer", updater: "hass:cloud-upload", vacuum: "hass:robot-vacuum", water_heater: "hass:thermometer", weblink: "hass:open-in-new" };function qt(t, e) {
+  if (t in Ut) return Ut[t];switch (t) {case "alarm_control_panel":
       switch (e) {case "armed_home":
           return "hass:bell-plus";case "armed_night":
           return "hass:bell-sleep";case "disarmed":
@@ -820,37 +868,37 @@ class rt {
           return "hass:sleep";case "initializing":
           return "hass:timer-sand";default:
           return "hass:z-wave";}default:
-      return console.warn("Unable to find icon for domain " + t + " (" + e + ")"), jt;}
-}var zt = function (t) {
-  Rt(window, "haptic", t);
+      return console.warn("Unable to find icon for domain " + t + " (" + e + ")"), Vt;}
+}var Yt = function (t) {
+  Lt(window, "haptic", t);
 },
-    Ut = function (t, e) {
+    Bt = function (t, e) {
   return function (t, e, i) {
     void 0 === i && (i = !0);var n,
-        s = $t(e),
+        s = Rt(e),
         r = "group" === s ? "homeassistant" : s;switch (s) {case "lock":
         n = i ? "unlock" : "lock";break;case "cover":
         n = i ? "open_cover" : "close_cover";break;default:
         n = i ? "turn_on" : "turn_off";}return t.callService(r, n, { entity_id: e });
-  }(t, e, Vt.includes(t.states[e].state));
+  }(t, e, Dt.includes(t.states[e].state));
 },
-    qt = function (t, e, i, n, s) {
+    Wt = function (t, e, i, n, s) {
   var r;if (s && i.double_tap_action ? r = i.double_tap_action : n && i.hold_action ? r = i.hold_action : !n && i.tap_action && (r = i.tap_action), r || (r = { action: "more-info" }), !r.confirmation || r.confirmation.exemptions && r.confirmation.exemptions.some(function (t) {
     return t.user === e.user.id;
   }) || confirm(r.confirmation.text || "Are you sure you want to " + r.action + "?")) switch (r.action) {case "more-info":
-      (r.entity || i.entity || i.camera_image) && (Rt(t, "hass-more-info", { entityId: r.entity ? r.entity : i.entity ? i.entity : i.camera_image }), r.haptic && zt(r.haptic));break;case "navigate":
+      (r.entity || i.entity || i.camera_image) && (Lt(t, "hass-more-info", { entityId: r.entity ? r.entity : i.entity ? i.entity : i.camera_image }), r.haptic && Yt(r.haptic));break;case "navigate":
       r.navigation_path && (function (t, e, i) {
-        void 0 === i && (i = !1), i ? history.replaceState(null, "", e) : history.pushState(null, "", e), Rt(window, "location-changed", { replace: i });
-      }(0, r.navigation_path), r.haptic && zt(r.haptic));break;case "url":
-      r.url_path && window.open(r.url_path), r.haptic && zt(r.haptic);break;case "toggle":
-      i.entity && (Ut(e, i.entity), r.haptic && zt(r.haptic));break;case "call-service":
+        void 0 === i && (i = !1), i ? history.replaceState(null, "", e) : history.pushState(null, "", e), Lt(window, "location-changed", { replace: i });
+      }(0, r.navigation_path), r.haptic && Yt(r.haptic));break;case "url":
+      r.url_path && window.open(r.url_path), r.haptic && Yt(r.haptic);break;case "toggle":
+      i.entity && (Bt(e, i.entity), r.haptic && Yt(r.haptic));break;case "call-service":
       if (!r.service) return;var a = r.service.split(".", 2),
           o = a[0],
           l = a[1],
-          c = Object.assign({}, r.service_data);"entity" === c.entity_id && (c.entity_id = i.entity), e.callService(o, l, c), r.haptic && zt(r.haptic);}
+          c = Object.assign({}, r.service_data);"entity" === c.entity_id && (c.entity_id = i.entity), e.callService(o, l, c), r.haptic && Yt(r.haptic);}
 },
-    Yt = { humidity: "hass:water-percent", illuminance: "hass:brightness-5", temperature: "hass:thermometer", pressure: "hass:gauge", power: "hass:flash", signal_strength: "hass:wifi" },
-    Bt = { binary_sensor: function (t) {
+    Jt = { humidity: "hass:water-percent", illuminance: "hass:brightness-5", temperature: "hass:thermometer", pressure: "hass:gauge", power: "hass:flash", signal_strength: "hass:wifi" },
+    Gt = { binary_sensor: function (t) {
     var e = t.state && "off" === t.state;switch (t.attributes.device_class) {case "battery":
         return e ? "hass:battery" : "hass:battery-outline";case "cold":
         return e ? "hass:thermometer" : "hass:snowflake";case "connectivity":
@@ -878,21 +926,21 @@ class rt {
         return e ? "hass:window-shutter-open" : "hass:window-shutter";case "blind":
         return e ? "hass:blinds-open" : "hass:blinds";case "window":
         return e ? "hass:window-open" : "hass:window-closed";default:
-        return It("cover", t.state);}
+        return qt("cover", t.state);}
   }, sensor: function (t) {
-    var e = t.attributes.device_class;if (e && e in Yt) return Yt[e];if ("battery" === e) {
+    var e = t.attributes.device_class;if (e && e in Jt) return Jt[e];if ("battery" === e) {
       var i = Number(t.state);if (isNaN(i)) return "hass:battery-unknown";var n = 10 * Math.round(i / 10);return n >= 100 ? "hass:battery" : n <= 0 ? "hass:battery-alert" : "hass:battery-" + n;
-    }var s = t.attributes.unit_of_measurement;return "°C" === s || "°F" === s ? "hass:thermometer" : It("sensor");
+    }var s = t.attributes.unit_of_measurement;return "°C" === s || "°F" === s ? "hass:thermometer" : qt("sensor");
   }, input_datetime: function (t) {
-    return t.attributes.has_date ? t.attributes.has_time ? It("input_datetime") : "hass:calendar" : "hass:clock";
-  } };const Wt = (t, e, i, n) => {
+    return t.attributes.has_date ? t.attributes.has_time ? qt("input_datetime") : "hass:calendar" : "hass:clock";
+  } };const Zt = (t, e, i, n) => {
   n = n || {}, i = null == i ? {} : i;const s = new Event(e, { bubbles: void 0 === n.bubbles || n.bubbles, cancelable: Boolean(n.cancelable), composed: void 0 === n.composed || n.composed });return s.detail = i, t.dispatchEvent(s), s;
 },
-      Jt = "ontouchstart" in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;class Gt extends HTMLElement {
+      Xt = "ontouchstart" in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;class Kt extends HTMLElement {
   constructor() {
     super(), this.holdTime = 500, this.held = !1, this.isRepeating = !1, this.ripple = document.createElement("mwc-ripple");
   }connectedCallback() {
-    Object.assign(this.style, { position: "absolute", width: Jt ? "100px" : "50px", height: Jt ? "100px" : "50px", transform: "translate(-50%, -50%)", pointerEvents: "none" }), this.appendChild(this.ripple), this.ripple.primary = !0, ["touchcancel", "mouseout", "mouseup", "touchmove", "mousewheel", "wheel", "scroll"].forEach(t => {
+    Object.assign(this.style, { position: "absolute", width: Xt ? "100px" : "50px", height: Xt ? "100px" : "50px", transform: "translate(-50%, -50%)", pointerEvents: "none" }), this.appendChild(this.ripple), this.ripple.primary = !0, ["touchcancel", "mouseout", "mouseup", "touchmove", "mousewheel", "wheel", "scroll"].forEach(t => {
       document.addEventListener(t, () => {
         clearTimeout(this.timer), this.stopAnimation(), this.timer = void 0;
       }, { passive: !0 });
@@ -903,45 +951,45 @@ class rt {
     });const i = i => {
       let n, s;this.held = !1, i.touches ? (n = i.touches[0].pageX, s = i.touches[0].pageY) : (n = i.pageX, s = i.pageY), this.timer = window.setTimeout(() => {
         this.startAnimation(n, s), this.held = !0, e.repeat && !this.isRepeating && (this.isRepeating = !0, this.repeatTimeout = setInterval(() => {
-          Wt(t, "action", { action: "hold" });
+          Zt(t, "action", { action: "hold" });
         }, e.repeat));
       }, this.holdTime);
     },
           n = i => {
-      i.preventDefault(), ["touchend", "touchcancel"].includes(i.type) && void 0 === this.timer ? this.isRepeating && this.repeatTimeout && (clearInterval(this.repeatTimeout), this.isRepeating = !1) : (clearTimeout(this.timer), this.isRepeating && this.repeatTimeout && clearInterval(this.repeatTimeout), this.isRepeating = !1, this.stopAnimation(), this.timer = void 0, this.held ? e.repeat || Wt(t, "action", { action: "hold" }) : e.hasDoubleClick ? "click" === i.type && i.detail < 2 || !this.dblClickTimeout ? this.dblClickTimeout = window.setTimeout(() => {
-        this.dblClickTimeout = void 0, Wt(t, "action", { action: "tap" });
-      }, 250) : (clearTimeout(this.dblClickTimeout), this.dblClickTimeout = void 0, Wt(t, "action", { action: "double_tap" })) : Wt(t, "action", { action: "tap" }));
+      i.preventDefault(), ["touchend", "touchcancel"].includes(i.type) && void 0 === this.timer ? this.isRepeating && this.repeatTimeout && (clearInterval(this.repeatTimeout), this.isRepeating = !1) : (clearTimeout(this.timer), this.isRepeating && this.repeatTimeout && clearInterval(this.repeatTimeout), this.isRepeating = !1, this.stopAnimation(), this.timer = void 0, this.held ? e.repeat || Zt(t, "action", { action: "hold" }) : e.hasDoubleClick ? "click" === i.type && i.detail < 2 || !this.dblClickTimeout ? this.dblClickTimeout = window.setTimeout(() => {
+        this.dblClickTimeout = void 0, Zt(t, "action", { action: "tap" });
+      }, 250) : (clearTimeout(this.dblClickTimeout), this.dblClickTimeout = void 0, Zt(t, "action", { action: "double_tap" })) : Zt(t, "action", { action: "tap" }));
     };t.addEventListener("touchstart", i, { passive: !0 }), t.addEventListener("touchend", n), t.addEventListener("touchcancel", n), t.addEventListener("mousedown", i, { passive: !0 }), t.addEventListener("click", n), t.addEventListener("keyup", t => {
       13 === t.keyCode && n(t);
     });
   }startAnimation(t, e) {
-    Object.assign(this.style, { left: `${t}px`, top: `${e}px`, display: null }), this.ripple.disabled = !1, this.ripple.active = !0, this.ripple.unbounded = !0;
+    Object.assign(this.style, { left: `${t}px`, top: `${e}px`, display: null }), this.ripple.disabled = !1, this.ripple.startPress ? this.ripple.startPress() : this.ripple.active = !0, this.ripple.unbounded = !0;
   }stopAnimation() {
-    this.ripple.active = !1, this.ripple.disabled = !0, this.style.display = "none";
+    this.ripple.endPress ? this.ripple.endPress() : this.ripple.active = !1, this.ripple.disabled = !0, this.style.display = "none";
   }
-}customElements.define("button-card-action-handler", Gt);const Zt = (t, e) => {
+}customElements.define("button-card-action-handler", Kt);const Qt = (t, e) => {
   const i = (() => {
     const t = document.body;if (t.querySelector("button-card-action-handler")) return t.querySelector("button-card-action-handler");const e = document.createElement("button-card-action-handler");return t.appendChild(e), e;
   })();i && i.bind(t, e);
 },
-      Xt = m((t = {}) => e => {
-  Zt(e.committer.element, t);
-});function Kt(t, e) {
+      te = m((t = {}) => e => {
+  Qt(e.committer.element, t);
+});function ee(t, e) {
   (function (t) {
     return "string" == typeof t && t.includes(".") && 1 === parseFloat(t);
   })(t) && (t = "100%");var i = function (t) {
     return "string" == typeof t && t.includes("%");
   }(t);return t = 360 === e ? t : Math.min(e, Math.max(0, parseFloat(t))), i && (t = parseInt(String(t * e), 10) / 100), Math.abs(t - e) < 1e-6 ? 1 : t = 360 === e ? (t < 0 ? t % e + e : t % e) / parseFloat(String(e)) : t % e / parseFloat(String(e));
-}function Qt(t) {
-  return Math.min(1, Math.max(0, t));
-}function te(t) {
-  return t = parseFloat(t), (isNaN(t) || t < 0 || t > 1) && (t = 1), t;
-}function ee(t) {
-  return t <= 1 ? 100 * Number(t) + "%" : t;
 }function ie(t) {
+  return Math.min(1, Math.max(0, t));
+}function ne(t) {
+  return t = parseFloat(t), (isNaN(t) || t < 0 || t > 1) && (t = 1), t;
+}function se(t) {
+  return t <= 1 ? 100 * Number(t) + "%" : t;
+}function re(t) {
   return 1 === t.length ? "0" + t : String(t);
-}function ne(t, e, i) {
-  t = Kt(t, 255), e = Kt(e, 255), i = Kt(i, 255);var n = Math.max(t, e, i),
+}function ae(t, e, i) {
+  t = ee(t, 255), e = ee(e, 255), i = ee(i, 255);var n = Math.max(t, e, i),
       s = Math.min(t, e, i),
       r = 0,
       a = 0,
@@ -951,10 +999,10 @@ class rt {
         r = (i - t) / l + 2;break;case i:
         r = (t - e) / l + 4;}r /= 6;
   }return { h: r, s: a, l: o };
-}function se(t, e, i) {
+}function oe(t, e, i) {
   return i < 0 && (i += 1), i > 1 && (i -= 1), i < 1 / 6 ? t + 6 * i * (e - t) : i < .5 ? e : i < 2 / 3 ? t + (e - t) * (2 / 3 - i) * 6 : t;
-}function re(t, e, i) {
-  t = Kt(t, 255), e = Kt(e, 255), i = Kt(i, 255);var n = Math.max(t, e, i),
+}function le(t, e, i) {
+  t = ee(t, 255), e = ee(e, 255), i = ee(i, 255);var n = Math.max(t, e, i),
       s = Math.min(t, e, i),
       r = 0,
       a = n,
@@ -965,15 +1013,15 @@ class rt {
         r = (i - t) / o + 2;break;case i:
         r = (t - e) / o + 4;}r /= 6;
   }return { h: r, s: l, v: a };
-}function ae(t, e, i, n) {
-  var s = [ie(Math.round(t).toString(16)), ie(Math.round(e).toString(16)), ie(Math.round(i).toString(16))];return n && s[0].startsWith(s[0].charAt(1)) && s[1].startsWith(s[1].charAt(1)) && s[2].startsWith(s[2].charAt(1)) ? s[0].charAt(0) + s[1].charAt(0) + s[2].charAt(0) : s.join("");
-}function oe(t) {
+}function ce(t, e, i, n) {
+  var s = [re(Math.round(t).toString(16)), re(Math.round(e).toString(16)), re(Math.round(i).toString(16))];return n && s[0].startsWith(s[0].charAt(1)) && s[1].startsWith(s[1].charAt(1)) && s[2].startsWith(s[2].charAt(1)) ? s[0].charAt(0) + s[1].charAt(0) + s[2].charAt(0) : s.join("");
+}function he(t) {
   return Math.round(255 * parseFloat(t)).toString(16);
-}function le(t) {
-  return ce(t) / 255;
-}function ce(t) {
+}function ue(t) {
+  return de(t) / 255;
+}function de(t) {
   return parseInt(t, 16);
-}var he = { aliceblue: "#f0f8ff", antiquewhite: "#faebd7", aqua: "#00ffff", aquamarine: "#7fffd4", azure: "#f0ffff", beige: "#f5f5dc", bisque: "#ffe4c4", black: "#000000", blanchedalmond: "#ffebcd", blue: "#0000ff", blueviolet: "#8a2be2", brown: "#a52a2a", burlywood: "#deb887", cadetblue: "#5f9ea0", chartreuse: "#7fff00", chocolate: "#d2691e", coral: "#ff7f50", cornflowerblue: "#6495ed", cornsilk: "#fff8dc", crimson: "#dc143c", cyan: "#00ffff", darkblue: "#00008b", darkcyan: "#008b8b", darkgoldenrod: "#b8860b", darkgray: "#a9a9a9", darkgreen: "#006400", darkgrey: "#a9a9a9", darkkhaki: "#bdb76b", darkmagenta: "#8b008b", darkolivegreen: "#556b2f", darkorange: "#ff8c00", darkorchid: "#9932cc", darkred: "#8b0000", darksalmon: "#e9967a", darkseagreen: "#8fbc8f", darkslateblue: "#483d8b", darkslategray: "#2f4f4f", darkslategrey: "#2f4f4f", darkturquoise: "#00ced1", darkviolet: "#9400d3", deeppink: "#ff1493", deepskyblue: "#00bfff", dimgray: "#696969", dimgrey: "#696969", dodgerblue: "#1e90ff", firebrick: "#b22222", floralwhite: "#fffaf0", forestgreen: "#228b22", fuchsia: "#ff00ff", gainsboro: "#dcdcdc", ghostwhite: "#f8f8ff", gold: "#ffd700", goldenrod: "#daa520", gray: "#808080", green: "#008000", greenyellow: "#adff2f", grey: "#808080", honeydew: "#f0fff0", hotpink: "#ff69b4", indianred: "#cd5c5c", indigo: "#4b0082", ivory: "#fffff0", khaki: "#f0e68c", lavender: "#e6e6fa", lavenderblush: "#fff0f5", lawngreen: "#7cfc00", lemonchiffon: "#fffacd", lightblue: "#add8e6", lightcoral: "#f08080", lightcyan: "#e0ffff", lightgoldenrodyellow: "#fafad2", lightgray: "#d3d3d3", lightgreen: "#90ee90", lightgrey: "#d3d3d3", lightpink: "#ffb6c1", lightsalmon: "#ffa07a", lightseagreen: "#20b2aa", lightskyblue: "#87cefa", lightslategray: "#778899", lightslategrey: "#778899", lightsteelblue: "#b0c4de", lightyellow: "#ffffe0", lime: "#00ff00", limegreen: "#32cd32", linen: "#faf0e6", magenta: "#ff00ff", maroon: "#800000", mediumaquamarine: "#66cdaa", mediumblue: "#0000cd", mediumorchid: "#ba55d3", mediumpurple: "#9370db", mediumseagreen: "#3cb371", mediumslateblue: "#7b68ee", mediumspringgreen: "#00fa9a", mediumturquoise: "#48d1cc", mediumvioletred: "#c71585", midnightblue: "#191970", mintcream: "#f5fffa", mistyrose: "#ffe4e1", moccasin: "#ffe4b5", navajowhite: "#ffdead", navy: "#000080", oldlace: "#fdf5e6", olive: "#808000", olivedrab: "#6b8e23", orange: "#ffa500", orangered: "#ff4500", orchid: "#da70d6", palegoldenrod: "#eee8aa", palegreen: "#98fb98", paleturquoise: "#afeeee", palevioletred: "#db7093", papayawhip: "#ffefd5", peachpuff: "#ffdab9", peru: "#cd853f", pink: "#ffc0cb", plum: "#dda0dd", powderblue: "#b0e0e6", purple: "#800080", rebeccapurple: "#663399", red: "#ff0000", rosybrown: "#bc8f8f", royalblue: "#4169e1", saddlebrown: "#8b4513", salmon: "#fa8072", sandybrown: "#f4a460", seagreen: "#2e8b57", seashell: "#fff5ee", sienna: "#a0522d", silver: "#c0c0c0", skyblue: "#87ceeb", slateblue: "#6a5acd", slategray: "#708090", slategrey: "#708090", snow: "#fffafa", springgreen: "#00ff7f", steelblue: "#4682b4", tan: "#d2b48c", teal: "#008080", thistle: "#d8bfd8", tomato: "#ff6347", turquoise: "#40e0d0", violet: "#ee82ee", wheat: "#f5deb3", white: "#ffffff", whitesmoke: "#f5f5f5", yellow: "#ffff00", yellowgreen: "#9acd32" };function ue(t) {
+}var pe = { aliceblue: "#f0f8ff", antiquewhite: "#faebd7", aqua: "#00ffff", aquamarine: "#7fffd4", azure: "#f0ffff", beige: "#f5f5dc", bisque: "#ffe4c4", black: "#000000", blanchedalmond: "#ffebcd", blue: "#0000ff", blueviolet: "#8a2be2", brown: "#a52a2a", burlywood: "#deb887", cadetblue: "#5f9ea0", chartreuse: "#7fff00", chocolate: "#d2691e", coral: "#ff7f50", cornflowerblue: "#6495ed", cornsilk: "#fff8dc", crimson: "#dc143c", cyan: "#00ffff", darkblue: "#00008b", darkcyan: "#008b8b", darkgoldenrod: "#b8860b", darkgray: "#a9a9a9", darkgreen: "#006400", darkgrey: "#a9a9a9", darkkhaki: "#bdb76b", darkmagenta: "#8b008b", darkolivegreen: "#556b2f", darkorange: "#ff8c00", darkorchid: "#9932cc", darkred: "#8b0000", darksalmon: "#e9967a", darkseagreen: "#8fbc8f", darkslateblue: "#483d8b", darkslategray: "#2f4f4f", darkslategrey: "#2f4f4f", darkturquoise: "#00ced1", darkviolet: "#9400d3", deeppink: "#ff1493", deepskyblue: "#00bfff", dimgray: "#696969", dimgrey: "#696969", dodgerblue: "#1e90ff", firebrick: "#b22222", floralwhite: "#fffaf0", forestgreen: "#228b22", fuchsia: "#ff00ff", gainsboro: "#dcdcdc", ghostwhite: "#f8f8ff", gold: "#ffd700", goldenrod: "#daa520", gray: "#808080", green: "#008000", greenyellow: "#adff2f", grey: "#808080", honeydew: "#f0fff0", hotpink: "#ff69b4", indianred: "#cd5c5c", indigo: "#4b0082", ivory: "#fffff0", khaki: "#f0e68c", lavender: "#e6e6fa", lavenderblush: "#fff0f5", lawngreen: "#7cfc00", lemonchiffon: "#fffacd", lightblue: "#add8e6", lightcoral: "#f08080", lightcyan: "#e0ffff", lightgoldenrodyellow: "#fafad2", lightgray: "#d3d3d3", lightgreen: "#90ee90", lightgrey: "#d3d3d3", lightpink: "#ffb6c1", lightsalmon: "#ffa07a", lightseagreen: "#20b2aa", lightskyblue: "#87cefa", lightslategray: "#778899", lightslategrey: "#778899", lightsteelblue: "#b0c4de", lightyellow: "#ffffe0", lime: "#00ff00", limegreen: "#32cd32", linen: "#faf0e6", magenta: "#ff00ff", maroon: "#800000", mediumaquamarine: "#66cdaa", mediumblue: "#0000cd", mediumorchid: "#ba55d3", mediumpurple: "#9370db", mediumseagreen: "#3cb371", mediumslateblue: "#7b68ee", mediumspringgreen: "#00fa9a", mediumturquoise: "#48d1cc", mediumvioletred: "#c71585", midnightblue: "#191970", mintcream: "#f5fffa", mistyrose: "#ffe4e1", moccasin: "#ffe4b5", navajowhite: "#ffdead", navy: "#000080", oldlace: "#fdf5e6", olive: "#808000", olivedrab: "#6b8e23", orange: "#ffa500", orangered: "#ff4500", orchid: "#da70d6", palegoldenrod: "#eee8aa", palegreen: "#98fb98", paleturquoise: "#afeeee", palevioletred: "#db7093", papayawhip: "#ffefd5", peachpuff: "#ffdab9", peru: "#cd853f", pink: "#ffc0cb", plum: "#dda0dd", powderblue: "#b0e0e6", purple: "#800080", rebeccapurple: "#663399", red: "#ff0000", rosybrown: "#bc8f8f", royalblue: "#4169e1", saddlebrown: "#8b4513", salmon: "#fa8072", sandybrown: "#f4a460", seagreen: "#2e8b57", seashell: "#fff5ee", sienna: "#a0522d", silver: "#c0c0c0", skyblue: "#87ceeb", slateblue: "#6a5acd", slategray: "#708090", slategrey: "#708090", snow: "#fffafa", springgreen: "#00ff7f", steelblue: "#4682b4", tan: "#d2b48c", teal: "#008080", thistle: "#d8bfd8", tomato: "#ff6347", turquoise: "#40e0d0", violet: "#ee82ee", wheat: "#f5deb3", white: "#ffffff", whitesmoke: "#f5f5f5", yellow: "#ffff00", yellowgreen: "#9acd32" };function fe(t) {
   var e = { r: 0, g: 0, b: 0 },
       i = 1,
       n = null,
@@ -981,30 +1029,30 @@ class rt {
       r = null,
       a = !1,
       o = !1;return "string" == typeof t && (t = function (t) {
-    if (0 === (t = t.trim().toLowerCase()).length) return !1;var e = !1;if (he[t]) t = he[t], e = !0;else if ("transparent" === t) return { r: 0, g: 0, b: 0, a: 0, format: "name" };var i = me.rgb.exec(t);if (i) return { r: i[1], g: i[2], b: i[3] };if (i = me.rgba.exec(t)) return { r: i[1], g: i[2], b: i[3], a: i[4] };if (i = me.hsl.exec(t)) return { h: i[1], s: i[2], l: i[3] };if (i = me.hsla.exec(t)) return { h: i[1], s: i[2], l: i[3], a: i[4] };if (i = me.hsv.exec(t)) return { h: i[1], s: i[2], v: i[3] };if (i = me.hsva.exec(t)) return { h: i[1], s: i[2], v: i[3], a: i[4] };if (i = me.hex8.exec(t)) return { r: ce(i[1]), g: ce(i[2]), b: ce(i[3]), a: le(i[4]), format: e ? "name" : "hex8" };if (i = me.hex6.exec(t)) return { r: ce(i[1]), g: ce(i[2]), b: ce(i[3]), format: e ? "name" : "hex" };if (i = me.hex4.exec(t)) return { r: ce(i[1] + i[1]), g: ce(i[2] + i[2]), b: ce(i[3] + i[3]), a: le(i[4] + i[4]), format: e ? "name" : "hex8" };if (i = me.hex3.exec(t)) return { r: ce(i[1] + i[1]), g: ce(i[2] + i[2]), b: ce(i[3] + i[3]), format: e ? "name" : "hex" };return !1;
-  }(t)), "object" == typeof t && (ge(t.r) && ge(t.g) && ge(t.b) ? (e = function (t, e, i) {
-    return { r: 255 * Kt(t, 255), g: 255 * Kt(e, 255), b: 255 * Kt(i, 255) };
-  }(t.r, t.g, t.b), a = !0, o = "%" === String(t.r).substr(-1) ? "prgb" : "rgb") : ge(t.h) && ge(t.s) && ge(t.v) ? (n = ee(t.s), s = ee(t.v), e = function (t, e, i) {
-    t = 6 * Kt(t, 360), e = Kt(e, 100), i = Kt(i, 100);var n = Math.floor(t),
+    if (0 === (t = t.trim().toLowerCase()).length) return !1;var e = !1;if (pe[t]) t = pe[t], e = !0;else if ("transparent" === t) return { r: 0, g: 0, b: 0, a: 0, format: "name" };var i = be.rgb.exec(t);if (i) return { r: i[1], g: i[2], b: i[3] };if (i = be.rgba.exec(t)) return { r: i[1], g: i[2], b: i[3], a: i[4] };if (i = be.hsl.exec(t)) return { h: i[1], s: i[2], l: i[3] };if (i = be.hsla.exec(t)) return { h: i[1], s: i[2], l: i[3], a: i[4] };if (i = be.hsv.exec(t)) return { h: i[1], s: i[2], v: i[3] };if (i = be.hsva.exec(t)) return { h: i[1], s: i[2], v: i[3], a: i[4] };if (i = be.hex8.exec(t)) return { r: de(i[1]), g: de(i[2]), b: de(i[3]), a: ue(i[4]), format: e ? "name" : "hex8" };if (i = be.hex6.exec(t)) return { r: de(i[1]), g: de(i[2]), b: de(i[3]), format: e ? "name" : "hex" };if (i = be.hex4.exec(t)) return { r: de(i[1] + i[1]), g: de(i[2] + i[2]), b: de(i[3] + i[3]), a: ue(i[4] + i[4]), format: e ? "name" : "hex8" };if (i = be.hex3.exec(t)) return { r: de(i[1] + i[1]), g: de(i[2] + i[2]), b: de(i[3] + i[3]), format: e ? "name" : "hex" };return !1;
+  }(t)), "object" == typeof t && (ye(t.r) && ye(t.g) && ye(t.b) ? (e = function (t, e, i) {
+    return { r: 255 * ee(t, 255), g: 255 * ee(e, 255), b: 255 * ee(i, 255) };
+  }(t.r, t.g, t.b), a = !0, o = "%" === String(t.r).substr(-1) ? "prgb" : "rgb") : ye(t.h) && ye(t.s) && ye(t.v) ? (n = se(t.s), s = se(t.v), e = function (t, e, i) {
+    t = 6 * ee(t, 360), e = ee(e, 100), i = ee(i, 100);var n = Math.floor(t),
         s = t - n,
         r = i * (1 - e),
         a = i * (1 - s * e),
         o = i * (1 - (1 - s) * e),
         l = n % 6;return { r: 255 * [i, a, r, r, o, i][l], g: 255 * [o, i, i, a, r, r][l], b: 255 * [r, r, o, i, i, a][l] };
-  }(t.h, n, s), a = !0, o = "hsv") : ge(t.h) && ge(t.s) && ge(t.l) && (n = ee(t.s), r = ee(t.l), e = function (t, e, i) {
-    var n, s, r;if (t = Kt(t, 360), e = Kt(e, 100), i = Kt(i, 100), 0 === e) s = i, r = i, n = i;else {
+  }(t.h, n, s), a = !0, o = "hsv") : ye(t.h) && ye(t.s) && ye(t.l) && (n = se(t.s), r = se(t.l), e = function (t, e, i) {
+    var n, s, r;if (t = ee(t, 360), e = ee(e, 100), i = ee(i, 100), 0 === e) s = i, r = i, n = i;else {
       var a = i < .5 ? i * (1 + e) : i + e - i * e,
-          o = 2 * i - a;n = se(o, a, t + 1 / 3), s = se(o, a, t), r = se(o, a, t - 1 / 3);
+          o = 2 * i - a;n = oe(o, a, t + 1 / 3), s = oe(o, a, t), r = oe(o, a, t - 1 / 3);
     }return { r: 255 * n, g: 255 * s, b: 255 * r };
-  }(t.h, n, r), a = !0, o = "hsl"), Object.prototype.hasOwnProperty.call(t, "a") && (i = t.a)), i = te(i), { ok: a, format: t.format || o, r: Math.min(255, Math.max(e.r, 0)), g: Math.min(255, Math.max(e.g, 0)), b: Math.min(255, Math.max(e.b, 0)), a: i };
-}var de = "(?:[-\\+]?\\d*\\.\\d+%?)|(?:[-\\+]?\\d+%?)",
-    fe = "[\\s|\\(]+(" + de + ")[,|\\s]+(" + de + ")[,|\\s]+(" + de + ")\\s*\\)?",
-    pe = "[\\s|\\(]+(" + de + ")[,|\\s]+(" + de + ")[,|\\s]+(" + de + ")[,|\\s]+(" + de + ")\\s*\\)?",
-    me = { CSS_UNIT: new RegExp(de), rgb: new RegExp("rgb" + fe), rgba: new RegExp("rgba" + pe), hsl: new RegExp("hsl" + fe), hsla: new RegExp("hsla" + pe), hsv: new RegExp("hsv" + fe), hsva: new RegExp("hsva" + pe), hex3: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/, hex6: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/, hex4: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/, hex8: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/ };function ge(t) {
-  return Boolean(me.CSS_UNIT.exec(String(t)));
-}var _e = function () {
+  }(t.h, n, r), a = !0, o = "hsl"), Object.prototype.hasOwnProperty.call(t, "a") && (i = t.a)), i = ne(i), { ok: a, format: t.format || o, r: Math.min(255, Math.max(e.r, 0)), g: Math.min(255, Math.max(e.g, 0)), b: Math.min(255, Math.max(e.b, 0)), a: i };
+}var me = "(?:[-\\+]?\\d*\\.\\d+%?)|(?:[-\\+]?\\d+%?)",
+    ge = "[\\s|\\(]+(" + me + ")[,|\\s]+(" + me + ")[,|\\s]+(" + me + ")\\s*\\)?",
+    _e = "[\\s|\\(]+(" + me + ")[,|\\s]+(" + me + ")[,|\\s]+(" + me + ")[,|\\s]+(" + me + ")\\s*\\)?",
+    be = { CSS_UNIT: new RegExp(me), rgb: new RegExp("rgb" + ge), rgba: new RegExp("rgba" + _e), hsl: new RegExp("hsl" + ge), hsla: new RegExp("hsla" + _e), hsv: new RegExp("hsv" + ge), hsva: new RegExp("hsva" + _e), hex3: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/, hex6: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/, hex4: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/, hex8: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/ };function ye(t) {
+  return Boolean(be.CSS_UNIT.exec(String(t)));
+}var ve = function () {
   function t(e, i) {
-    var n;if (void 0 === e && (e = ""), void 0 === i && (i = {}), e instanceof t) return e;this.originalInput = e;var s = ue(e);this.originalInput = e, this.r = s.r, this.g = s.g, this.b = s.b, this.a = s.a, this.roundA = Math.round(100 * this.a) / 100, this.format = null !== (n = i.format) && void 0 !== n ? n : s.format, this.gradientType = i.gradientType, this.r < 1 && (this.r = Math.round(this.r)), this.g < 1 && (this.g = Math.round(this.g)), this.b < 1 && (this.b = Math.round(this.b)), this.isValid = s.ok;
+    var n;if (void 0 === e && (e = ""), void 0 === i && (i = {}), e instanceof t) return e;this.originalInput = e;var s = fe(e);this.originalInput = e, this.r = s.r, this.g = s.g, this.b = s.b, this.a = s.a, this.roundA = Math.round(100 * this.a) / 100, this.format = null !== (n = i.format) && void 0 !== n ? n : s.format, this.gradientType = i.gradientType, this.r < 1 && (this.r = Math.round(this.r)), this.g < 1 && (this.g = Math.round(this.g)), this.b < 1 && (this.b = Math.round(this.b)), this.isValid = s.ok;
   }return t.prototype.isDark = function () {
     return this.getBrightness() < 128;
   }, t.prototype.isLight = function () {
@@ -1019,28 +1067,28 @@ class rt {
   }, t.prototype.getAlpha = function () {
     return this.a;
   }, t.prototype.setAlpha = function (t) {
-    return this.a = te(t), this.roundA = Math.round(100 * this.a) / 100, this;
+    return this.a = ne(t), this.roundA = Math.round(100 * this.a) / 100, this;
   }, t.prototype.toHsv = function () {
-    var t = re(this.r, this.g, this.b);return { h: 360 * t.h, s: t.s, v: t.v, a: this.a };
+    var t = le(this.r, this.g, this.b);return { h: 360 * t.h, s: t.s, v: t.v, a: this.a };
   }, t.prototype.toHsvString = function () {
-    var t = re(this.r, this.g, this.b),
+    var t = le(this.r, this.g, this.b),
         e = Math.round(360 * t.h),
         i = Math.round(100 * t.s),
         n = Math.round(100 * t.v);return 1 === this.a ? "hsv(" + e + ", " + i + "%, " + n + "%)" : "hsva(" + e + ", " + i + "%, " + n + "%, " + this.roundA + ")";
   }, t.prototype.toHsl = function () {
-    var t = ne(this.r, this.g, this.b);return { h: 360 * t.h, s: t.s, l: t.l, a: this.a };
+    var t = ae(this.r, this.g, this.b);return { h: 360 * t.h, s: t.s, l: t.l, a: this.a };
   }, t.prototype.toHslString = function () {
-    var t = ne(this.r, this.g, this.b),
+    var t = ae(this.r, this.g, this.b),
         e = Math.round(360 * t.h),
         i = Math.round(100 * t.s),
         n = Math.round(100 * t.l);return 1 === this.a ? "hsl(" + e + ", " + i + "%, " + n + "%)" : "hsla(" + e + ", " + i + "%, " + n + "%, " + this.roundA + ")";
   }, t.prototype.toHex = function (t) {
-    return void 0 === t && (t = !1), ae(this.r, this.g, this.b, t);
+    return void 0 === t && (t = !1), ce(this.r, this.g, this.b, t);
   }, t.prototype.toHexString = function (t) {
     return void 0 === t && (t = !1), "#" + this.toHex(t);
   }, t.prototype.toHex8 = function (t) {
     return void 0 === t && (t = !1), function (t, e, i, n, s) {
-      var r = [ie(Math.round(t).toString(16)), ie(Math.round(e).toString(16)), ie(Math.round(i).toString(16)), ie(oe(n))];return s && r[0].startsWith(r[0].charAt(1)) && r[1].startsWith(r[1].charAt(1)) && r[2].startsWith(r[2].charAt(1)) && r[3].startsWith(r[3].charAt(1)) ? r[0].charAt(0) + r[1].charAt(0) + r[2].charAt(0) + r[3].charAt(0) : r.join("");
+      var r = [re(Math.round(t).toString(16)), re(Math.round(e).toString(16)), re(Math.round(i).toString(16)), re(he(n))];return s && r[0].startsWith(r[0].charAt(1)) && r[1].startsWith(r[1].charAt(1)) && r[2].startsWith(r[2].charAt(1)) && r[3].startsWith(r[3].charAt(1)) ? r[0].charAt(0) + r[1].charAt(0) + r[2].charAt(0) + r[3].charAt(0) : r.join("");
     }(this.r, this.g, this.b, this.a, t);
   }, t.prototype.toHex8String = function (t) {
     return void 0 === t && (t = !1), "#" + this.toHex8(t);
@@ -1052,15 +1100,15 @@ class rt {
         i = Math.round(this.b);return 1 === this.a ? "rgb(" + t + ", " + e + ", " + i + ")" : "rgba(" + t + ", " + e + ", " + i + ", " + this.roundA + ")";
   }, t.prototype.toPercentageRgb = function () {
     var t = function (t) {
-      return Math.round(100 * Kt(t, 255)) + "%";
+      return Math.round(100 * ee(t, 255)) + "%";
     };return { r: t(this.r), g: t(this.g), b: t(this.b), a: this.a };
   }, t.prototype.toPercentageRgbString = function () {
     var t = function (t) {
-      return Math.round(100 * Kt(t, 255));
+      return Math.round(100 * ee(t, 255));
     };return 1 === this.a ? "rgb(" + t(this.r) + "%, " + t(this.g) + "%, " + t(this.b) + "%)" : "rgba(" + t(this.r) + "%, " + t(this.g) + "%, " + t(this.b) + "%, " + this.roundA + ")";
   }, t.prototype.toName = function () {
-    if (0 === this.a) return "transparent";if (this.a < 1) return !1;for (var t = "#" + ae(this.r, this.g, this.b, !1), e = 0, i = Object.keys(he); e < i.length; e++) {
-      var n = i[e];if (he[n] === t) return n;
+    if (0 === this.a) return "transparent";if (this.a < 1) return !1;for (var t = "#" + ce(this.r, this.g, this.b, !1), e = 0, i = Object.keys(pe); e < i.length; e++) {
+      var n = i[e];if (pe[n] === t) return n;
     }return !1;
   }, t.prototype.toString = function (t) {
     var e = Boolean(t);t = null != t ? t : this.format;var i = !1,
@@ -1068,19 +1116,19 @@ class rt {
   }, t.prototype.clone = function () {
     return new t(this.toString());
   }, t.prototype.lighten = function (e) {
-    void 0 === e && (e = 10);var i = this.toHsl();return i.l += e / 100, i.l = Qt(i.l), new t(i);
+    void 0 === e && (e = 10);var i = this.toHsl();return i.l += e / 100, i.l = ie(i.l), new t(i);
   }, t.prototype.brighten = function (e) {
     void 0 === e && (e = 10);var i = this.toRgb();return i.r = Math.max(0, Math.min(255, i.r - Math.round(-e / 100 * 255))), i.g = Math.max(0, Math.min(255, i.g - Math.round(-e / 100 * 255))), i.b = Math.max(0, Math.min(255, i.b - Math.round(-e / 100 * 255))), new t(i);
   }, t.prototype.darken = function (e) {
-    void 0 === e && (e = 10);var i = this.toHsl();return i.l -= e / 100, i.l = Qt(i.l), new t(i);
+    void 0 === e && (e = 10);var i = this.toHsl();return i.l -= e / 100, i.l = ie(i.l), new t(i);
   }, t.prototype.tint = function (t) {
     return void 0 === t && (t = 10), this.mix("white", t);
   }, t.prototype.shade = function (t) {
     return void 0 === t && (t = 10), this.mix("black", t);
   }, t.prototype.desaturate = function (e) {
-    void 0 === e && (e = 10);var i = this.toHsl();return i.s -= e / 100, i.s = Qt(i.s), new t(i);
+    void 0 === e && (e = 10);var i = this.toHsl();return i.s -= e / 100, i.s = ie(i.s), new t(i);
   }, t.prototype.saturate = function (e) {
-    void 0 === e && (e = 10);var i = this.toHsl();return i.s += e / 100, i.s = Qt(i.s), new t(i);
+    void 0 === e && (e = 10);var i = this.toHsl();return i.s += e / 100, i.s = ie(i.s), new t(i);
   }, t.prototype.greyscale = function () {
     return this.desaturate(100);
   }, t.prototype.spin = function (e) {
@@ -1110,31 +1158,31 @@ class rt {
   }, t.prototype.equals = function (e) {
     return this.toRgbString() === new t(e).toRgbString();
   }, t;
-}();function be(t, e) {
-  return void 0 === t && (t = ""), void 0 === e && (e = {}), new _e(t, e);
-}function ye(t) {
+}();function we(t, e) {
+  return void 0 === t && (t = ""), void 0 === e && (e = {}), new ve(t, e);
+}function Se(t) {
   return t.substr(0, t.indexOf("."));
-}function ve(t) {
+}function xe(t) {
   return "var" === t.substring(0, 3) ? window.getComputedStyle(document.documentElement).getPropertyValue(t.substring(4).slice(0, -1)).trim() : t;
-}function we(t, e) {
-  const i = new _e(ve(t));if (i.isValid) {
+}function ke(t, e) {
+  const i = new ve(xe(t));if (i.isValid) {
     const t = i.mix("black", 100 - e).toString();if (t) return t;
   }return t;
-}function Se(...t) {
+}function Te(...t) {
   const e = t => t && "object" == typeof t;return t.reduce((t, i) => (Object.keys(i).forEach(n => {
     const s = t[n],
-          r = i[n];Array.isArray(s) && Array.isArray(r) ? t[n] = s.concat(...r) : e(s) && e(r) ? t[n] = Se(s, r) : t[n] = r;
+          r = i[n];Array.isArray(s) && Array.isArray(r) ? t[n] = s.concat(...r) : e(s) && e(r) ? t[n] = Te(s, r) : t[n] = r;
   }), t), {});
-}function xe(t, e) {
+}function Me(t, e) {
   let i = [];return t && t.forEach(t => {
     let n = t;e && e.forEach(e => {
-      e.id && t.id && e.id == t.id && (n = Se(n, e));
+      e.id && t.id && e.id == t.id && (n = Te(n, e));
     }), i.push(n);
   }), e && (i = i.concat(e.filter(e => !t || !t.find(t => !(!t.id || !e.id) && t.id == e.id)))), i;
-}const ke = ((t, ...e) => {
+}const Oe = ((t, ...e) => {
   const i = e.reduce((e, i, n) => e + (t => {
-    if (t instanceof K) return t.cssText;if ("number" == typeof t) return t;throw new Error(`Value passed to 'css' function must be a 'css' function result: ${t}. Use 'unsafeCSS' to pass non-literal values, but\n            take care to ensure page security.`);
-  })(i) + t[n + 1], t[0]);return new K(i, X);
+    if (t instanceof tt) return t.cssText;if ("number" == typeof t) return t;throw new Error(`Value passed to 'css' function must be a 'css' function result: ${t}. Use 'unsafeCSS' to pass non-literal values, but\n            take care to ensure page security.`);
+  })(i) + t[n + 1], t[0]);return new tt(i, Q);
 })`
   :host {
     position: relative;
@@ -1166,6 +1214,8 @@ class rt {
     display: inline-block;
     margin: auto;
     --mdc-icon-size: 100%;
+    --iron-icon-width: 100%;
+    --iron-icon-height: 100%;
   }
   ha-card.button-card-main {
     padding: 4% 0px;
@@ -1532,21 +1582,21 @@ class rt {
       height: 100%;
     }
   }
-`;const Te = (t, e, i, n) => {
+`;const Ne = (t, e, i, n) => {
   if (!((t, e, i) => {
     const [n, s] = t.split(".", 2);return Number(n) > e || Number(n) === e && Number(s) >= i;
   })(t.config.version, 0, 109)) return function (t, e) {
-    let i;const n = ye(e.entity_id);return "binary_sensor" === n ? (e.attributes.device_class && (i = t(`state.${n}.${e.attributes.device_class}.${e.state}`)), i || (i = t(`state.${n}.default.${e.state}`))) : i = e.attributes.unit_of_measurement && !["unknown", "unavailable"].includes(e.state) ? e.state : "zwave" === n ? ["initializing", "dead"].includes(e.state) ? t(`state.zwave.query_stage.${e.state}`, "query_stage", e.attributes.query_stage) : t(`state.zwave.default.${e.state}`) : t(`state.${n}.${e.state}`), i || (i = t(`state.default.${e.state}`) || t(`component.${n}.state.${e.state}`) || e.state), i;
-  }(e, i);if ("unknown" === i.state || "unavailable" === i.state) return e(`state.default.${i.state}`);if (i.attributes.unit_of_measurement) return `${i.state} ${i.attributes.unit_of_measurement}`;const s = ye(i.entity_id);if ("input_datetime" === s) {
-    let t;if (!i.attributes.has_time) return t = new Date(i.attributes.year, i.attributes.month - 1, i.attributes.day), Ct(t, n);if (!i.attributes.has_date) {
-      const e = new Date();return t = new Date(e.getFullYear(), e.getMonth(), e.getDay(), i.attributes.hour, i.attributes.minute), At(t, n);
-    }return t = new Date(i.attributes.year, i.attributes.month - 1, i.attributes.day, i.attributes.hour, i.attributes.minute), Et(t, n);
+    let i;const n = Se(e.entity_id);return "binary_sensor" === n ? (e.attributes.device_class && (i = t(`state.${n}.${e.attributes.device_class}.${e.state}`)), i || (i = t(`state.${n}.default.${e.state}`))) : i = e.attributes.unit_of_measurement && !["unknown", "unavailable"].includes(e.state) ? e.state : "zwave" === n ? ["initializing", "dead"].includes(e.state) ? t(`state.zwave.query_stage.${e.state}`, "query_stage", e.attributes.query_stage) : t(`state.zwave.default.${e.state}`) : t(`state.${n}.${e.state}`), i || (i = t(`state.default.${e.state}`) || t(`component.${n}.state.${e.state}`) || e.state), i;
+  }(e, i);if ("unknown" === i.state || "unavailable" === i.state) return e(`state.default.${i.state}`);if (i.attributes.unit_of_measurement) return `${i.state} ${i.attributes.unit_of_measurement}`;const s = Se(i.entity_id);if ("input_datetime" === s) {
+    let t;if (!i.attributes.has_time) return t = new Date(i.attributes.year, i.attributes.month - 1, i.attributes.day), Et(t, n);if (!i.attributes.has_date) {
+      const e = new Date();return t = new Date(e.getFullYear(), e.getMonth(), e.getDay(), i.attributes.hour, i.attributes.minute), jt(t, n);
+    }return t = new Date(i.attributes.year, i.attributes.month - 1, i.attributes.day, i.attributes.hour, i.attributes.minute), $t(t, n);
   }return i.attributes.device_class && e(`component.${s}.state.${i.attributes.device_class}.${i.state}`) || e(`component.${s}.state._.${i.state}`) || i.state;
-};let Me = window.cardHelpers;const Ne = new Promise(async t => {
-  Me && t(), window.loadCardHelpers && (Me = await window.loadCardHelpers(), window.cardHelpers = Me, t());
-});console.info("%c  BUTTON-CARD  \n%c Version 3.3.4 ", "color: orange; font-weight: bold; background: black", "color: white; font-weight: bold; background: dimgray");let Oe = class extends tt {
+};let Ce = window.cardHelpers;const Pe = new Promise(async t => {
+  Ce && t(), window.loadCardHelpers && (Ce = await window.loadCardHelpers(), window.cardHelpers = Ce, t());
+});console.info("%c  BUTTON-CARD  \n%c Version 3.3.5 ", "color: orange; font-weight: bold; background: black", "color: white; font-weight: bold; background: dimgray");let Ae = class extends it {
   constructor() {
-    super(...arguments), this._cards = [], this._entities = [];
+    super(...arguments), this._cards = [], this._entities = [], this._rippleHandlers = new nt(() => this._ripple);
   }set hass(t) {
     this._hass = t;for (const e of this._cards) {
       e.hass = this._hass;
@@ -1554,11 +1604,11 @@ class rt {
   }disconnectedCallback() {
     super.disconnectedCallback(), this._clearInterval();
   }connectedCallback() {
-    if (super.connectedCallback(), this._hass && this._config && this._config.entity && "timer" === ye(this._config.entity)) {
+    if (super.connectedCallback(), this._hass && this._config && this._config.entity && "timer" === Se(this._config.entity)) {
       const t = this._hass.states[this._config.entity];this._startInterval(t);
     }
   }_createCard(t) {
-    if (Me) return Me.createCardElement(t);{
+    if (Ce) return Ce.createCardElement(t);{
       const e = function (t, e) {
         void 0 === e && (e = !1);var i = function (t, e) {
           return n("hui-error-card", { type: "error", error: t, config: e });
@@ -1570,25 +1620,25 @@ class rt {
             return console.error(t, n), i(n.message, e);
           }return n;
         };if (!t || "object" != typeof t || !e && !t.type) return i("No type defined", t);var s = t.type;if (s && s.startsWith("custom:")) s = s.substr("custom:".length);else if (e) {
-          if (Dt.has(s)) s = "hui-" + s + "-row";else {
-            if (!t.entity) return i("Invalid config given.", t);var r = t.entity.split(".", 1)[0];s = "hui-" + (Lt[r] || "text") + "-entity-row";
+          if (It.has(s)) s = "hui-" + s + "-row";else {
+            if (!t.entity) return i("Invalid config given.", t);var r = t.entity.split(".", 1)[0];s = "hui-" + (zt[r] || "text") + "-entity-row";
           }
         } else s = "hui-" + s + "-card";if (customElements.get(s)) return n(s, t);var a = i("Custom element doesn't exist: " + t.type + ".", t);a.style.display = "None";var o = setTimeout(function () {
           a.style.display = "";
         }, 2e3);return customElements.whenDefined(t.type).then(function () {
-          clearTimeout(o), Rt(a, "ll-rebuild", {}, a);
+          clearTimeout(o), Lt(a, "ll-rebuild", {}, a);
         }), a;
-      }(t);return Ne.then(() => {
-        Rt(e, "ll-rebuild", {});
+      }(t);return Pe.then(() => {
+        Lt(e, "ll-rebuild", {});
       }), e;
     }
   }static get styles() {
-    return ke;
+    return Oe;
   }render() {
     this._stateObj = this._config.entity ? this._hass.states[this._config.entity] : void 0;try {
-      return this._cards = [], this._evaledVariables = this._config.variables ? this._objectEvalTemplate(this._stateObj, this._config.variables) : void 0, this._config && this._hass ? this._cardHtml() : R``;
+      return this._cards = [], this._evaledVariables = this._config.variables ? this._objectEvalTemplate(this._stateObj, this._config.variables) : void 0, this._config && this._hass ? this._cardHtml() : V``;
     } catch (t) {
-      t.stack ? console.error(t.stack) : console.error(t);const e = document.createElement("hui-error-card");return e.setConfig({ type: "error", error: t.toString(), origConfig: this._config }), R`
+      t.stack ? console.error(t.stack) : console.error(t);const e = document.createElement("hui-error-card");return e.setConfig({ type: "error", error: t.toString(), origConfig: this._config }), V`
         ${e}
       `;
     }
@@ -1601,7 +1651,7 @@ class rt {
       }return !1;
     }(this, t);
   }updated(t) {
-    if (super.updated(t), this._config && this._config.entity && "timer" === ye(this._config.entity) && t.has("_hass")) {
+    if (super.updated(t), this._config && this._config.entity && "timer" === Se(this._config.entity) && t.has("_hass")) {
       const e = this._hass.states[this._config.entity],
             i = t.get("_hass");(i ? i.states[this._config.entity] : void 0) !== e ? this._startInterval(e) : e || this._clearInterval();
     }
@@ -1611,7 +1661,7 @@ class rt {
     this._clearInterval(), this._calculateRemaining(t), "active" === t.state && (this._interval = window.setInterval(() => this._calculateRemaining(t), 1e3));
   }_calculateRemaining(t) {
     this._timeRemaining = function (t) {
-      var e = Ot(t.attributes.remaining);if ("active" === t.state) {
+      var e = At(t.attributes.remaining);if ("active" === t.state) {
         var i = new Date().getTime(),
             n = new Date(t.last_changed).getTime();e = Math.max(e - (i - n) / 1e3, 0);
       }return e;
@@ -1620,8 +1670,8 @@ class rt {
     if (t) return function (t) {
       var e = Math.floor(t / 3600),
           i = Math.floor(t % 3600 / 60),
-          n = Math.floor(t % 3600 % 60);return e > 0 ? e + ":" + Pt(i) + ":" + Pt(n) : i > 0 ? i + ":" + Pt(n) : n > 0 ? "" + n : null;
-    }(this._timeRemaining || Ot(t.attributes.duration));
+          n = Math.floor(t % 3600 % 60);return e > 0 ? e + ":" + Ht(i) + ":" + Ht(n) : i > 0 ? i + ":" + Ht(n) : n > 0 ? "" + n : null;
+    }(this._timeRemaining || At(t.attributes.duration));
   }_getMatchingConfigState(t) {
     if (!this._config.state) return;const e = this._config.state.find(t => "template" === t.operator);if (!t && !e) return;let i;const n = this._config.state.find(e => {
       if (!e.operator) return t && this._getTemplateOrValue(t, e.value) == t.state;switch (e.operator) {case "==":
@@ -1638,7 +1688,7 @@ class rt {
     });return !n && i ? i : n;
   }_evalTemplate(t, e) {
     try {
-      return new Function("states", "entity", "user", "hass", "variables", "html", `'use strict'; ${e}`).call(this, this._hass.states, t, this._hass.user, this._hass, this._evaledVariables, R);
+      return new Function("states", "entity", "user", "hass", "variables", "html", `'use strict'; ${e}`).call(this, this._hass.states, t, this._hass.user, this._hass, this._evaledVariables, V);
     } catch (i) {
       const t = e.length <= 100 ? e.trim() : `${e.trim().substring(0, 98)}...`;throw i.message = `${i.name}: ${i.message} in '${t}'`, i.name = "ButtonCardJSTemplateError", i;
     }
@@ -1654,19 +1704,19 @@ class rt {
         return this._config.color_off;default:
         return this._config.default_color;}
   }_getColorForLightEntity(t, e) {
-    let i = this._config.default_color;return t && (t.attributes.rgb_color ? (i = `rgb(${t.attributes.rgb_color.join(",")})`, t.attributes.brightness && (i = we(i, (t.attributes.brightness + 245) / 5))) : e && t.attributes.color_temp && t.attributes.min_mireds && t.attributes.max_mireds ? (i = function (t, e, i) {
-      const n = new _e("rgb(255, 160, 0)"),
-            s = new _e("rgb(166, 209, 255)"),
-            r = new _e("white"),
-            a = (t - e) / (i - e) * 100;return a < 50 ? be(s).mix(r, 2 * a).toRgbString() : be(r).mix(n, 2 * (a - 50)).toRgbString();
-    }(t.attributes.color_temp, t.attributes.min_mireds, t.attributes.max_mireds), t.attributes.brightness && (i = we(i, (t.attributes.brightness + 245) / 5))) : i = t.attributes.brightness ? we(this._getDefaultColorForState(t), (t.attributes.brightness + 245) / 5) : this._getDefaultColorForState(t)), i;
+    let i = this._config.default_color;return t && (t.attributes.rgb_color ? (i = `rgb(${t.attributes.rgb_color.join(",")})`, t.attributes.brightness && (i = ke(i, (t.attributes.brightness + 245) / 5))) : e && t.attributes.color_temp && t.attributes.min_mireds && t.attributes.max_mireds ? (i = function (t, e, i) {
+      const n = new ve("rgb(255, 160, 0)"),
+            s = new ve("rgb(166, 209, 255)"),
+            r = new ve("white"),
+            a = (t - e) / (i - e) * 100;return a < 50 ? we(s).mix(r, 2 * a).toRgbString() : we(r).mix(n, 2 * (a - 50)).toRgbString();
+    }(t.attributes.color_temp, t.attributes.min_mireds, t.attributes.max_mireds), t.attributes.brightness && (i = ke(i, (t.attributes.brightness + 245) / 5))) : i = t.attributes.brightness ? ke(this._getDefaultColorForState(t), (t.attributes.brightness + 245) / 5) : this._getDefaultColorForState(t)), i;
   }_buildCssColorAttribute(t, e) {
     let i,
         n = "";return e && e.color ? n = e.color : "auto" !== this._config.color && t && "off" === t.state ? n = this._config.color_off : this._config.color && (n = this._config.color), i = "auto" == n || "auto-no-temperature" == n ? this._getColorForLightEntity(t, "auto-no-temperature" !== n) : n || (t ? this._getDefaultColorForState(t) : this._config.default_color), i;
   }_buildIcon(t, e) {
     if (!this._config.show_icon) return;let i;if (e && e.icon) i = e.icon;else if (this._config.icon) i = this._config.icon;else {
       if (!t) return;i = function (t) {
-        if (!t) return jt;if (t.attributes.icon) return t.attributes.icon;var e = $t(t.entity_id);return e in Bt ? Bt[e](t) : It(e, t.state);
+        if (!t) return Vt;if (t.attributes.icon) return t.attributes.icon;var e = Rt(t.entity_id);return e in Gt ? Gt[e](t) : qt(e, t.state);
       }(t);
     }return this._getTemplateOrValue(t, i);
   }_buildEntityPicture(t, e) {
@@ -1687,48 +1737,48 @@ class rt {
     if (!1 === this._config.show_name) return;let i;var n;return e && e.name ? i = e.name : this._config.name ? i = this._config.name : t && (i = t.attributes && t.attributes.friendly_name ? t.attributes.friendly_name : (n = t.entity_id).substr(n.indexOf(".") + 1)), this._getTemplateOrValue(t, i);
   }_buildStateString(t) {
     var e;let i;if (this._config.show_state && t && t.state) {
-      const n = this._buildUnits(t);n ? i = `${t.state} ${n}` : "timer" === ye(t.entity_id) ? "idle" === t.state || 0 === this._timeRemaining ? i = Te(this._hass, this._hass.localize, t, this._hass.language) : (i = this._computeTimeDisplay(t), "paused" === t.state && (i += ` (${Te(this._hass, this._hass.localize, t, this._hass.language)})`)) : i = (null === (e = this._config) || void 0 === e ? void 0 : e.show_units) || "sensor" !== ye(t.entity_id) ? Te(this._hass, this._hass.localize, t, this._hass.language) : t.state;
+      const n = this._buildUnits(t);n ? i = `${t.state} ${n}` : "timer" === Se(t.entity_id) ? "idle" === t.state || 0 === this._timeRemaining ? i = Ne(this._hass, this._hass.localize, t, this._hass.language) : (i = this._computeTimeDisplay(t), "paused" === t.state && (i += ` (${Ne(this._hass, this._hass.localize, t, this._hass.language)})`)) : i = (null === (e = this._config) || void 0 === e ? void 0 : e.show_units) || "sensor" !== Se(t.entity_id) ? Ne(this._hass, this._hass.localize, t, this._hass.language) : t.state;
     }return i;
   }_buildUnits(t) {
     let e;return t && this._config.show_units && (e = t.attributes && t.attributes.unit_of_measurement && !this._config.units ? t.attributes.unit_of_measurement : this._config.units ? this._config.units : void 0), e;
   }_buildLastChanged(t, e) {
-    return this._config.show_last_changed && t ? R`
+    return this._config.show_last_changed && t ? V`
           <ha-relative-time
             id="label"
             class="ellipsis"
             .hass="${this._hass}"
             .datetime="${t.last_changed}"
-            style=${it(e)}
+            style=${rt(e)}
           ></ha-relative-time>
         ` : void 0;
   }_buildLabel(t, e) {
     if (!this._config.show_label) return;let i;return i = e && e.label ? e.label : this._config.label, this._getTemplateOrValue(t, i);
   }_buildCustomFields(t, e) {
-    let i = R``;const n = {},
+    let i = V``;const n = {},
           s = {};return this._config.custom_fields && Object.keys(this._config.custom_fields).forEach(e => {
       const i = this._config.custom_fields[e];i.card ? s[e] = this._objectEvalTemplate(t, i.card) : n[e] = this._getTemplateOrValue(t, i);
     }), e && e.custom_fields && Object.keys(e.custom_fields).forEach(i => {
       const r = e.custom_fields[i];r.card ? s[i] = this._objectEvalTemplate(t, r.card) : n[i] = this._getTemplateOrValue(t, r);
     }), Object.keys(n).forEach(s => {
       if (null != n[s]) {
-        const r = Object.assign(Object.assign({}, this._buildCustomStyleGeneric(t, e, s)), { "grid-area": s });i = R`
+        const r = Object.assign(Object.assign({}, this._buildCustomStyleGeneric(t, e, s)), { "grid-area": s });i = V`
           ${i}
-          <div id=${s} class="ellipsis" style=${it(r)}>
-            ${n[s] && "html" === n[s].type ? n[s] : st(n[s])}
+          <div id=${s} class="ellipsis" style=${rt(r)}>
+            ${n[s] && "html" === n[s].type ? n[s] : ot(n[s])}
           </div>
         `;
       }
     }), Object.keys(s).forEach(n => {
       if (null != s[n]) {
         const r = Object.assign(Object.assign({}, this._buildCustomStyleGeneric(t, e, n)), { "grid-area": n }),
-              a = this._createCard(s[n]);this._cards.push(a), a.hass = this._hass, i = R`
+              a = this._createCard(s[n]);this._cards.push(a), a.hass = this._hass, i = V`
           ${i}
           <div
             id=${n}
             class="ellipsis"
             @click=${this._stopPropagation}
             @touchstart=${this._stopPropagation}
-            style=${it(r)}
+            style=${rt(r)}
           >
             ${a}
           </div>
@@ -1742,8 +1792,8 @@ class rt {
   }_rotate(t) {
     return !(!t || !t.spin);
   }_blankCardColoredHtml(t) {
-    const e = Object.assign({ background: "none", "box-shadow": "none" }, t);return R`
-      <ha-card class="disabled" style=${it(e)}>
+    const e = Object.assign({ background: "none", "box-shadow": "none" }, t);return V`
+      <ha-card class="disabled" style=${rt(e)}>
         <div></div>
       </ha-card>
     `;
@@ -1758,44 +1808,49 @@ class rt {
         return this._blankCardColoredHtml(o);case "card":case "label-card":
         {
           const t = function (t) {
-            const e = new _e(ve(t));return e.isValid && e.getLuminance() > .5 ? "rgb(62, 62, 62)" : "rgb(234, 234, 234)";
+            const e = new ve(xe(t));return e.isValid && e.getLuminance() > .5 ? "rgb(62, 62, 62)" : "rgb(234, 234, 234)";
           }(e);n.color = t, s.color = t, n["background-color"] = e, n = Object.assign(Object.assign({}, n), o), i = "inherit";break;
         }default:
-        n = o;}this._config.aspect_ratio ? (r["--aspect-ratio"] = this._config.aspect_ratio, n.position = "absolute") : r.display = "inline", this.style.setProperty("--button-card-light-color", this._getColorForLightEntity(this._stateObj, !0)), this.style.setProperty("--button-card-light-color-no-temperature", this._getColorForLightEntity(this._stateObj, !1)), s = Object.assign(Object.assign({}, s), a);const c = this._config.extra_styles ? R`
+        n = o;}this._config.aspect_ratio ? (r["--aspect-ratio"] = this._config.aspect_ratio, n.position = "absolute") : r.display = "inline", this.style.setProperty("--button-card-light-color", this._getColorForLightEntity(this._stateObj, !0)), this.style.setProperty("--button-card-light-color-no-temperature", this._getColorForLightEntity(this._stateObj, !1)), s = Object.assign(Object.assign({}, s), a);const c = this._config.extra_styles ? V`
           <style>
             ${this._getTemplateOrValue(this._stateObj, this._config.extra_styles)}
           </style>
-        ` : R``;return R`
+        ` : V``;return V`
       ${c}
-      <div id="aspect-ratio" style=${it(r)}>
+      <div id="aspect-ratio" style=${rt(r)}>
         <ha-card
           id="card"
-          class=${ot(l)}
-          style=${it(n)}
+          class=${ht(l)}
+          style=${rt(n)}
           @action=${this._handleAction}
-          .actionHandler=${Xt({ hasDoubleClick: "none" !== this._config.double_tap_action.action, hasHold: "none" !== this._config.hold_action.action, repeat: this._config.hold_action.repeat })}
+          @focus="${this.handleRippleFocus}"
+          @blur="${this.handleRippleBlur}"
+          @mousedown="${this.handleRippleActivate}"
+          @mouseup="${this.handleRippleDeactivate}"
+          @touchstart="${this.handleRippleActivate}"
+          @touchend="${this.handleRippleDeactivate}"
+          @touchcancel="${this.handleRippleDeactivate}"
+          .actionHandler=${te({ hasDoubleClick: "none" !== this._config.double_tap_action.action, hasHold: "none" !== this._config.hold_action.action, repeat: this._config.hold_action.repeat })}
           .config="${this._config}"
         >
           ${this._buttonContent(this._stateObj, t, i)}
-          ${this._config.lock && this._getTemplateOrValue(this._stateObj, this._config.lock.enabled) ? "" : R`
-                <mwc-ripple id="ripple"></mwc-ripple>
-              `}
+          <mwc-ripple id="ripple"></mwc-ripple>
         </ha-card>
       </div>
       ${this._getLock(s)}
     `;
   }_getLock(t) {
-    return this._config.lock && this._getTemplateOrValue(this._stateObj, this._config.lock.enabled) ? R`
+    return this._config.lock && this._getTemplateOrValue(this._stateObj, this._config.lock.enabled) ? V`
         <div
           id="overlay"
-          style=${it(t)}
+          style=${rt(t)}
           @action=${this._handleUnlockType}
-          .actionHandler=${Xt({ hasDoubleClick: "double_tap" === this._config.lock.unlock, hasHold: "hold" === this._config.lock.unlock })}
+          .actionHandler=${te({ hasDoubleClick: "double_tap" === this._config.lock.unlock, hasHold: "hold" === this._config.lock.unlock })}
           .config="${this._config}"
         >
           <ha-icon id="lock" icon="mdi:lock-outline"></ha-icon>
         </div>
-      ` : R``;
+      ` : V``;
   }_buttonContent(t, e, i) {
     const n = this._buildName(t, e),
           s = this._config.show_state && this._config.state_display ? this._getTemplateOrValue(t, this._config.state_display) : void 0,
@@ -1813,22 +1868,22 @@ class rt {
           h = this._buildStyleGeneric(t, e, "state"),
           u = this._buildStyleGeneric(t, e, "label"),
           d = this._buildLastChanged(t, u),
-          f = this._buildStyleGeneric(t, e, "grid");return a || o.push("no-icon"), s || o.push("no-name"), r || o.push("no-state"), l || d || o.push("no-label"), R`
-      <div id="container" class=${o.join(" ")} style=${it(f)}>
+          p = this._buildStyleGeneric(t, e, "grid");return a || o.push("no-icon"), s || o.push("no-name"), r || o.push("no-state"), l || d || o.push("no-label"), V`
+      <div id="container" class=${o.join(" ")} style=${rt(p)}>
         ${a || ""}
-        ${s ? R`
-              <div id="name" class="ellipsis" style=${it(c)}>
-                ${"html" === s.type ? s : st(s)}
+        ${s ? V`
+              <div id="name" class="ellipsis" style=${rt(c)}>
+                ${"html" === s.type ? s : ot(s)}
               </div>
             ` : ""}
-        ${r ? R`
-              <div id="state" class="ellipsis" style=${it(h)}>
-                ${"html" === r.type ? r : st(r)}
+        ${r ? V`
+              <div id="state" class="ellipsis" style=${rt(h)}>
+                ${"html" === r.type ? r : ot(r)}
               </div>
             ` : ""}
-        ${l && !d ? R`
-              <div id="label" class="ellipsis" style=${it(u)}>
-                ${"html" === l.type ? l : st(l)}
+        ${l && !d ? V`
+              <div id="label" class="ellipsis" style=${rt(u)}>
+                ${"html" === l.type ? l : ot(l)}
               </div>
             ` : ""}
         ${d || ""} ${this._buildCustomFields(t, e)}
@@ -1843,21 +1898,21 @@ class rt {
           l = this._buildStyleGeneric(t, e, "card"),
           c = Object.assign({ color: i, width: this._config.size, position: this._config.aspect_ratio || l.height ? "absolute" : "relative" }, a),
           h = Object.assign(Object.assign({}, c), r),
-          u = this._buildLiveStream(h);return n || s ? R`
-        <div id="img-cell" style=${it(o)}>
-          ${!n || s || u ? "" : R`
+          u = this._buildLiveStream(h);return n || s ? V`
+        <div id="img-cell" style=${rt(o)}>
+          ${!n || s || u ? "" : V`
                 <ha-icon
-                  style=${it(c)}
+                  style=${rt(c)}
                   .icon="${n}"
                   id="icon"
                   ?rotating=${this._rotate(e)}
                 ></ha-icon>
               `}
           ${u || ""}
-          ${s && !u ? R`
+          ${s && !u ? V`
                 <img
                   src="${s}"
-                  style=${it(h)}
+                  style=${rt(h)}
                   id="icon"
                   ?rotating=${this._rotate(e)}
                 />
@@ -1865,20 +1920,20 @@ class rt {
         </div>
       ` : void 0;
   }_buildLiveStream(t) {
-    return this._config.show_live_stream && this._config.entity && "camera" === ye(this._config.entity) ? R`
+    return this._config.show_live_stream && this._config.entity && "camera" === Se(this._config.entity) ? V`
         <hui-image
           .hass=${this._hass}
           .cameraImage=${this._config.entity}
           .entity=${this._config.entity}
           cameraView="live"
-          style=${it(t)}
+          style=${rt(t)}
         ></hui-image>
       ` : void 0;
   }_configFromLLTemplates(t, e) {
     const i = e.template;if (!i) return e;let n,
         s = {};const r = i && Array.isArray(i) ? i : [i];return null == r || r.forEach(e => {
-      if (!t.config.button_card_templates || !t.config.button_card_templates[e]) throw new Error(`Button-card template '${e}' is missing!`);const i = this._configFromLLTemplates(t, t.config.button_card_templates[e]);s = Se(s, i), n = xe(n, i.state);
-    }), s = Se(s, e), s.state = xe(n, e.state), s;
+      if (!t.config.button_card_templates || !t.config.button_card_templates[e]) throw new Error(`Button-card template '${e}' is missing!`);const i = this._configFromLLTemplates(t, t.config.button_card_templates[e]);s = Te(s, i), n = Me(n, i.state);
+    }), s = Te(s, e), s.state = Me(n, e.state), s;
   }setConfig(t) {
     if (!t) throw new Error("Invalid configuration");const e = function () {
       var t = document.querySelector("home-assistant");if (t = (t = (t = (t = (t = (t = (t = (t = t && t.shadowRoot) && t.querySelector("home-assistant-main")) && t.shadowRoot) && t.querySelector("app-drawer-layout partial-panel-resolver")) && t.shadowRoot || t) && t.querySelector("ha-panel-lovelace")) && t.shadowRoot) && t.querySelector("hui-root")) {
@@ -1888,7 +1943,7 @@ class rt {
       let t = document.querySelector("hc-main");if (t = t && t.shadowRoot, t = t && t.querySelector("hc-lovelace"), t = t && t.shadowRoot, t = t && (t.querySelector("hui-view") || t.querySelector("hui-panel-view")), t) {
         const e = t.lovelace;return e.current_view = t.___curView, e;
       }return null;
-    }();let i = JSON.parse(JSON.stringify(t));i = this._configFromLLTemplates(e, i), this._config = Object.assign({ hold_action: { action: "none" }, double_tap_action: { action: "none" }, layout: "vertical", size: "40%", color_type: "icon", show_name: !0, show_state: !1, show_icon: !0, show_units: !0, show_label: !1, show_entity_picture: !1, show_live_stream: !1 }, i), this._config.entity && Ht.has(ye(this._config.entity)) ? this._config = Object.assign({ tap_action: { action: "toggle" } }, this._config) : this._config = Object.assign({ tap_action: { action: "more-info" } }, this._config), this._config.lock = Object.assign({ enabled: !1, duration: 5, unlock: "tap" }, this._config.lock), this._config.default_color = "var(--primary-text-color)", "icon" !== this._config.color_type ? this._config.color_off = "var(--paper-card-background-color)" : this._config.color_off = "var(--paper-item-icon-color)", this._config.color_on = "var(--paper-item-icon-active-color)";const n = JSON.stringify(this._config);if (this._entities = [], Array.isArray(this._config.triggers_update) ? this._entities = [...this._config.triggers_update] : "string" == typeof this._config.triggers_update && "all" !== this._config.triggers_update && this._entities.push(this._config.triggers_update), "all" !== this._config.triggers_update) {
+    }();let i = JSON.parse(JSON.stringify(t));i = this._configFromLLTemplates(e, i), this._config = Object.assign({ hold_action: { action: "none" }, double_tap_action: { action: "none" }, layout: "vertical", size: "40%", color_type: "icon", show_name: !0, show_state: !1, show_icon: !0, show_units: !0, show_label: !1, show_entity_picture: !1, show_live_stream: !1 }, i), this._config.entity && Ft.has(Se(this._config.entity)) ? this._config = Object.assign({ tap_action: { action: "toggle" } }, this._config) : this._config = Object.assign({ tap_action: { action: "more-info" } }, this._config), this._config.lock = Object.assign({ enabled: !1, duration: 5, unlock: "tap" }, this._config.lock), this._config.default_color = "var(--primary-text-color)", "icon" !== this._config.color_type ? this._config.color_off = "var(--paper-card-background-color)" : this._config.color_off = "var(--paper-item-icon-color)", this._config.color_on = "var(--paper-item-icon-active-color)";const n = JSON.stringify(this._config);if (this._entities = [], Array.isArray(this._config.triggers_update) ? this._entities = [...this._config.triggers_update] : "string" == typeof this._config.triggers_update && "all" !== this._config.triggers_update && this._entities.push(this._config.triggers_update), "all" !== this._config.triggers_update) {
       const t = new RegExp(/states\[\s*('|\\")([a-zA-Z0-9_]+\.[a-zA-Z0-9_]+)\1\s*\]/, "gm"),
             e = new RegExp(/states\[\s*('|\\")([a-zA-Z0-9_]+\.[a-zA-Z0-9_]+)\1\s*\]/, "m"),
             i = n.match(t);null == i || i.forEach(t => {
@@ -1902,17 +1957,25 @@ class rt {
           n = t => t ? (Object.keys(t).forEach(e => {
       "object" == typeof t[e] ? t[e] = n(t[e]) : t[e] = this._getTemplateOrValue(this._stateObj, t[e]);
     }), t) : t;return i[e] = n(i[e]), !i[e].confirmation && i.confirmation && (i[e].confirmation = n(i.confirmation)), i;
+  }handleRippleActivate(t) {
+    this._ripple.then(e => e && e.startPress && this._rippleHandlers.startPress(t));
+  }handleRippleDeactivate() {
+    this._ripple.then(t => t && t.endPress && this._rippleHandlers.endPress());
+  }handleRippleFocus() {
+    this._ripple.then(t => t && t.startFocus && this._rippleHandlers.startFocus());
+  }handleRippleBlur() {
+    this._ripple.then(t => t && t.endFocus && this._rippleHandlers.endFocus());
   }_handleAction(t) {
     if (t.detail && t.detail.action) switch (t.detail.action) {case "tap":
         this._handleTap(t);break;case "hold":
         this._handleHold(t);break;case "double_tap":
         this._handleDblTap(t);}
   }_handleTap(t) {
-    const e = t.target.config;e && qt(this, this._hass, this._evalActions(e, "tap_action"), !1, !1);
+    const e = t.target.config;e && Wt(this, this._hass, this._evalActions(e, "tap_action"), !1, !1);
   }_handleHold(t) {
-    const e = t.target.config;e && qt(this, this._hass, this._evalActions(e, "hold_action"), !0, !1);
+    const e = t.target.config;e && Wt(this, this._hass, this._evalActions(e, "hold_action"), !0, !1);
   }_handleDblTap(t) {
-    const e = t.target.config;e && qt(this, this._hass, this._evalActions(e, "double_tap_action"), !1, !0);
+    const e = t.target.config;e && Wt(this, this._hass, this._evalActions(e, "double_tap_action"), !1, !0);
   }_handleUnlockType(t) {
     const e = t.target.config;e && e.lock.unlock === t.detail.action && this._handleLock();
   }_handleLock() {
@@ -1922,19 +1985,26 @@ class rt {
       }), !e) return t.classList.add("invalid"), void window.setTimeout(() => {
         t && t.classList.remove("invalid");
       }, 3e3);
-    }const e = this.shadowRoot.getElementById("overlay"),
-          i = this.shadowRoot.getElementById("card");e.style.setProperty("pointer-events", "none");const n = document.createElement("paper-ripple");if (t) {
-      i.appendChild(n);const e = document.createAttribute("icon");e.value = "mdi:lock-open-outline", t.attributes.setNamedItem(e), t.classList.add("hidden");
+    }const e = this.shadowRoot.getElementById("overlay");if (e.style.setProperty("pointer-events", "none"), t) {
+      const e = document.createAttribute("icon");e.value = "mdi:lock-open-outline", t.attributes.setNamedItem(e), t.classList.add("hidden");
     }window.setTimeout(() => {
       if (e.style.setProperty("pointer-events", ""), t) {
-        t.classList.remove("hidden");const e = document.createAttribute("icon");e.value = "mdi:lock-outline", t.attributes.setNamedItem(e), i.removeChild(n);
+        t.classList.remove("hidden");const e = document.createAttribute("icon");e.value = "mdi:lock-outline", t.attributes.setNamedItem(e);
       }
     }, 1e3 * this._config.lock.duration);
   }_stopPropagation(t) {
     t.stopPropagation();
   }
-};var Ce;t([G()], Oe.prototype, "_hass", void 0), t([G()], Oe.prototype, "_config", void 0), t([G()], Oe.prototype, "_timeRemaining", void 0), Oe = t([(Ce = "button-card", t => "function" == typeof t ? ((t, e) => (window.customElements.define(t, e), e))(Ce, t) : ((t, e) => {
+};var Ee, $e, je;t([G()], Ae.prototype, "_hass", void 0), t([G()], Ae.prototype, "_config", void 0), t([G()], Ae.prototype, "_timeRemaining", void 0), t([(Ee = "mwc-ripple", (t, e) => {
+  const i = { async get() {
+      return await this.updateComplete, this.renderRoot.querySelector(Ee);
+    }, enumerable: !0, configurable: !0 };return void 0 !== e ? Z(i, t, e) : X(i, t);
+})], Ae.prototype, "_ripple", void 0), t([($e = { passive: !0 }, (t, e) => void 0 !== e ? ((t, e, i) => {
+  Object.assign(e[i], t);
+})($e, t, e) : ((t, e) => Object.assign(Object.assign({}, e), { finisher(i) {
+    Object.assign(i.prototype[e.key], t);
+  } }))($e, t))], Ae.prototype, "handleRippleActivate", null), Ae = t([(je = "button-card", t => "function" == typeof t ? ((t, e) => (window.customElements.define(t, e), e))(je, t) : ((t, e) => {
   const { kind: i, elements: n } = e;return { kind: i, elements: n, finisher(e) {
       window.customElements.define(t, e);
     } };
-})(Ce, t))], Oe);
+})(je, t))], Ae);
