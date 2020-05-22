@@ -32,26 +32,26 @@ lovelace:
       filename: ui-experimental.yaml
       mode: yaml
   resources:
-    [ {'url':'/hacsfiles/bar-card/bar-card.js',                                    'type':'module'},
-      {'url':'/hacsfiles/button-card/button-card.js',                              'type':'module'},
-      {'url':'/hacsfiles/calendar-card/calendar-card.js',                          'type':'module'},
-      {'url':'/hacsfiles/custom-header/custom-header.js',                          'type':'module'},
-      {'url':'/hacsfiles/light-entity-card/light-entity-card.js',                  'type':'js'},
-      {'url':'/hacsfiles/light-popup-card/light-popup-card.js',                    'type':'module'},
-      {'url':'/hacsfiles/lovelace-card-mod/card-mod.js',                           'type':'module'},
-      {'url':'/hacsfiles/lovelace-card-preloader/lovelace-card-preloader.js',      'type':'module'},
-      {'url':'/hacsfiles/lovelace-hui-element/hui-element.js',                     'type':'module'},
-      {'url':'/hacsfiles/lovelace-layout-card/layout-card.js',                     'type':'module'},
-      {'url':'/hacsfiles/lovelace-valetudo-map-card/valetudo-map-card.js',         'type':'js'},
-      {'url':'/hacsfiles/mini-graph-card/mini-graph-card-bundle.js',               'type':'module'},
-      {'url':'/hacsfiles/mini-media-player/mini-media-player-bundle.js',           'type':'module'},
-      {'url':'/hacsfiles/popup-backdrop-filter/popup-backdrop-filter.js',          'type':'module'},
-      {'url':'/hacsfiles/stack-in-card/stack-in-card.js',                          'type':'module'},
-      {'url':'/hacsfiles/swipe-card/swipe-card.js',                                'type':'module'},
+    [ {url: /hacsfiles/bar-card/bar-card.js,                                     type: module},
+      {url: /hacsfiles/button-card/button-card.js,                               type: module},
+      {url: /hacsfiles/calendar-card/calendar-card.js,                           type: module},
+      {url: /hacsfiles/custom-header/custom-header.js,                           type: module},
+      {url: /hacsfiles/light-entity-card/light-entity-card.js,                   type: js},
+      {url: /hacsfiles/light-popup-card/light-popup-card.js,                     type: module},
+      {url: /hacsfiles/lovelace-card-mod/card-mod.js,                            type: module},
+      {url: /hacsfiles/lovelace-card-preloader/lovelace-card-preloader.js,       type: module},
+      {url: /hacsfiles/lovelace-hui-element/hui-element.js,                      type: module},
+      {url: /hacsfiles/lovelace-layout-card/layout-card.js,                      type: module},
+      {url: /hacsfiles/lovelace-valetudo-map-card/valetudo-map-card.js,          type: js},
+      {url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js,                type: module},
+      {url: /hacsfiles/mini-media-player/mini-media-player-bundle.js,            type: module},
+      {url: /hacsfiles/popup-backdrop-filter/popup-backdrop-filter.js,           type: module},
+      {url: /hacsfiles/stack-in-card/stack-in-card.js,                           type: module},
+      {url: /hacsfiles/swipe-card/swipe-card.js,                                 type: module},
 
-      {'url':'/hacsfiles/lovelace-slider-entity-row/slider-entity-row.js?v=12',    'type':'module'},
-      {'url':'/local/custom_icons.js',                                             'type':'module'},
-      {'url':'/local/font.css',                                                    'type':'css'} ]
+      {url: '/hacsfiles/lovelace-slider-entity-row/slider-entity-row.js?v=12',   type: module},
+      {url: /local/custom_icons.js,                                              type: module},
+      {url: /local/font.css,                                                     type: css} ]
 
 logger:
   default: warning
