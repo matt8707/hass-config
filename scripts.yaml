@@ -104,10 +104,10 @@ say_auto_hemma:
       data_template:
         entity_id: media_player.tablet
         media_content_id: >
-          {{ ['/local/tts_custom/hej.mp3', 
-          '/local/tts_custom/startar.mp3', 
-          '/local/tts_custom/varmer_upp.mp3', 
-          '/local/tts_custom/valkommen_hem.mp3'] | random }}
+          {{ ['/local/sound/tts_custom/hej.mp3', 
+          '/local/sound/tts_custom/startar.mp3', 
+          '/local/sound/tts_custom/varmer_upp.mp3', 
+          '/local/sound/tts_custom/valkommen_hem.mp3'] | random }}
         media_content_type: music
 
 auto_stang_allt:
@@ -146,10 +146,10 @@ say_auto_stang_allt:
       data_template:
         entity_id: media_player.tablet
         media_content_id: >
-          {{ ['/local/tts_custom/ha_det_bra.mp3',
-              '/local/tts_custom/saknar_dig_redan.mp3',
-              '/local/tts_custom/hej_da.mp3',
-              '/local/tts_custom/stanger_ner_allt.mp3'] | random}}
+          {{ ['/local/sound/tts_custom/ha_det_bra.mp3',
+              '/local/sound/tts_custom/saknar_dig_redan.mp3',
+              '/local/sound/tts_custom/hej_da.mp3',
+              '/local/sound/tts_custom/stanger_ner_allt.mp3'] | random}}
         media_content_type: music
 
 reference_monitors:
