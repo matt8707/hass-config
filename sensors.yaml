@@ -473,7 +473,7 @@
         friendly_name: Filter
         unit_of_measurement: '%'
         value_template: >
-          {% if states('vacuum.xiaomi_vacuum_cleaner') is defined %}
+          {% if states('vacuum.xiaomi_vacuum_cleaner') == 'unknown' %}
           {{ states('vacuum.xiaomi_vacuum_cleaner') }}
           {% else %}
           {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'filter_left') / 1.5) | round }}
@@ -484,7 +484,7 @@
         friendly_name: Huvudborste
         unit_of_measurement: '%'
         value_template: >
-          {% if states('vacuum.xiaomi_vacuum_cleaner') is defined %}
+          {% if states('vacuum.xiaomi_vacuum_cleaner') == 'unknown' %}
           {{ states('vacuum.xiaomi_vacuum_cleaner') }}
           {% else %}
           {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'main_brush_left') / 3) | round }}
@@ -495,7 +495,7 @@
         friendly_name: Sensorer
         unit_of_measurement: '%'
         value_template: >
-          {% if states('vacuum.xiaomi_vacuum_cleaner') is defined %}
+          {% if states('vacuum.xiaomi_vacuum_cleaner') == 'unknown' %}
           {{ states('vacuum.xiaomi_vacuum_cleaner') }}
           {% else %}
           {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'sensor_dirty_left') / 0.3) | round }}
@@ -506,7 +506,7 @@
         friendly_name: Sidoborste
         unit_of_measurement: '%'
         value_template: >
-          {% if states('vacuum.xiaomi_vacuum_cleaner') is defined %}
+          {% if states('vacuum.xiaomi_vacuum_cleaner') == 'unknown' %}
           {{ states('vacuum.xiaomi_vacuum_cleaner') }}
           {% else %}
           {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'side_brush_left') / 2) | round }}
@@ -518,7 +518,7 @@
         friendly_name: Senast städat
         icon_template: 'mdi:clock'
         value_template: >
-          {% if states('vacuum.xiaomi_vacuum_cleaner') is defined %}
+          {% if states('vacuum.xiaomi_vacuum_cleaner') == 'unknown' %}
           {{ states('vacuum.xiaomi_vacuum_cleaner') }}
           {% else %}
             {% set clean_stop = 
