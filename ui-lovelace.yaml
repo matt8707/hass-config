@@ -67,9 +67,9 @@ button_card_templates:
     tap_action:
       ui_sound: &ui_sound |
         [[[ if (entity.state === 'off' && states['switch.fullykiosk_screensaver'].state === 'off') {
-        hass.callService('media_player', 'play_media', {entity_id: 'media_player.tablet', media_content_id: '/local/on.m4a', media_content_type: 'music'}); }
+        hass.callService('media_player', 'play_media', {entity_id: 'media_player.tablet', media_content_id: '/local/sound/on.m4a', media_content_type: 'music'}); }
         else if (entity.state === 'on' && states['switch.fullykiosk_screensaver'].state === 'off') {
-        hass.callService('media_player', 'play_media', {entity_id: 'media_player.tablet', media_content_id: '/local/off.m4a', media_content_type: 'music'}); } ]]]
+        hass.callService('media_player', 'play_media', {entity_id: 'media_player.tablet', media_content_id: '/local/sound/off.m4a', media_content_type: 'music'}); } ]]]
       action: toggle
       haptic: light
     hold_action:
@@ -245,7 +245,7 @@ button_card_templates:
       sound: >
         [[[ if (states['switch.fullykiosk_screensaver'].state === 'off') {
         if (entity.state != 'off' || entity.state != 'idle' || entity.state != 'standby')
-        hass.callService('media_player', 'play_media', {entity_id: 'media_player.tablet', media_content_id: '/local/popup.m4a', media_content_type: 'music'}); } ]]]
+        hass.callService('media_player', 'play_media', {entity_id: 'media_player.tablet', media_content_id: '/local/sound/popup.m4a', media_content_type: 'music'}); } ]]]
       action: >
         [[[ if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby') {
         return 'none'; } else { return 'call-service'; } ]]]
@@ -321,7 +321,7 @@ views:
     path: default_view
     cards:
       - type: picture-elements
-        image: /local/uibg.png
+        image: /local/background.png
         style:
           .: |
             /* Global */
@@ -333,10 +333,6 @@ views:
           "#root > hui-image":
             $: |
               #image {pointer-events: none;}
-
-          "#root > hui-image-element":
-            $: |
-              hui-image {pointer-events: none;}
 
           "#root > hui-markdown-card, #root > hui-element > hui-markdown-card":
             $: |
@@ -415,6 +411,7 @@ views:
               top: 50%
               left: 10.6%
               width: 21.5%
+              pointer-events: none
               border-right: 1.5px solid rgba(58,69,73,0.2)
 
           #################################################
@@ -621,7 +618,7 @@ views:
                 state_not: unknown
             elements:
               - type: image
-                image: /local/update_available.svg
+                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'%3E%3Ccircle cx='25' cy='25' r='20.3' fill='%23ac2e2e' /%3E%3Cpath d='M24.4 18.3h0L19 21.9v-3.4l5.3-3.7H28v20.4h-3.6V18.3z' fill='%23bcbebf' /%3E%3C/svg%3E"
                 style:
                   top: 85%
                   left: 12.2%
@@ -1095,7 +1092,7 @@ views:
             cards:
 
             - type: picture-elements
-              image: /local/overlay.svg
+              image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' /%3E"
               elements:
 
                 #################################################
@@ -1232,7 +1229,7 @@ views:
                 #################################################
 
             - type: picture-elements
-              image: /local/overlay.svg
+              image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' /%3E"
               elements:
 
                 # SMALL APPLE TV VARDAGSRUM
