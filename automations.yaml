@@ -380,16 +380,16 @@
     - service: media_player.play_media
       data:
         entity_id: media_player.tablet
-        media_content_id: /local/timer.mp3
+        media_content_id: /local/sound/timer.mp3
         media_content_type: music
     - delay: 00:00:02
     - service: media_player.play_media
       data_template:
         entity_id: media_player.tablet
         media_content_id: >
-          {{ ['/local/tts_custom/timer_tvatten_ar_fardig.mp3',
-              '/local/tts_custom/timer_tvatten_ar_klar.mp3',
-              '/local/tts_custom/timer_dags_att_ga_ner.mp3'] | random }}
+          {{ ['/local/sound/tts_custom/timer_tvatten_ar_fardig.mp3',
+              '/local/sound/tts_custom/timer_tvatten_ar_klar.mp3',
+              '/local/sound/tts_custom/timer_dags_att_ga_ner.mp3'] | random }}
         media_content_type: music
     - service: notify.mobile_app_iphone
       data_template: 
@@ -464,7 +464,7 @@
 #   - service: media_player.play_media
 #     data:
 #       entity_id: media_player.tablet
-#       media_content_id: /local/on.m4a
+#       media_content_id: /local/sound/on.m4a
 #       media_content_type: music
 
 # - alias: ui_sound_off
@@ -486,7 +486,7 @@
 #   - service: media_player.play_media
 #     data:
 #       entity_id: media_player.tablet
-#       media_content_id: /local/off.m4a
+#       media_content_id: /local/sound/off.m4a
 #       media_content_type: music
 
 - alias: ui_sound_popup
@@ -505,7 +505,7 @@
   - service: media_player.play_media
     data:
       entity_id: media_player.tablet
-      media_content_id: /local/popup.m4a
+      media_content_id: /local/sound/popup.m4a
       media_content_type: music
 
     ####################################################
