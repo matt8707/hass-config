@@ -472,25 +472,45 @@
       roborock_filter:
         friendly_name: Filter
         unit_of_measurement: '%'
-        value_template: "{{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'filter_left') / 1.5) | round }}"
+        value_template: >
+          {% if states('vacuum.xiaomi_vacuum_cleaner') is defined %}
+          {{ states('vacuum.xiaomi_vacuum_cleaner') }}
+          {% else %}
+          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'filter_left') / 1.5) | round }}
+          {% endif %}
         icon_template: 'mdi:air-filter'
 
       roborock_huvudborste:
         friendly_name: Huvudborste
         unit_of_measurement: '%'
-        value_template: "{{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'main_brush_left') / 3) | round }}"
+        value_template: >
+          {% if states('vacuum.xiaomi_vacuum_cleaner') is defined %}
+          {{ states('vacuum.xiaomi_vacuum_cleaner') }}
+          {% else %}
+          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'main_brush_left') / 3) | round }}
+          {% endif %}
         icon_template: 'mdi:broom'
 
       roborock_sensorer:
         friendly_name: Sensorer
         unit_of_measurement: '%'
-        value_template: "{{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'sensor_dirty_left') / 0.3) | round }}"
+        value_template: >
+          {% if states('vacuum.xiaomi_vacuum_cleaner') is defined %}
+          {{ states('vacuum.xiaomi_vacuum_cleaner') }}
+          {% else %}
+          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'sensor_dirty_left') / 0.3) | round }}
+          {% endif %}
         icon_template: 'mdi:leak'
 
       roborock_sidoborste:
         friendly_name: Sidoborste
         unit_of_measurement: '%'
-        value_template: "{{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'side_brush_left') / 2) | round }}"
+        value_template: >
+          {% if states('vacuum.xiaomi_vacuum_cleaner') is defined %}
+          {{ states('vacuum.xiaomi_vacuum_cleaner') }}
+          {% else %}
+          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'side_brush_left') / 2) | round }}
+          {% endif %}
         icon_template: 'mdi:brush'
 
       roborock_last_clean:
@@ -498,15 +518,19 @@
         friendly_name: Senast städat
         icon_template: 'mdi:clock'
         value_template: >
-          {% set clean_stop = 
-          (as_timestamp(now()) - as_timestamp(state_attr('vacuum.xiaomi_vacuum_cleaner', 'clean_stop') | default(0))) %}
-          {% if clean_stop | timestamp_custom("%d") | int-1 == 1 %}{{ clean_stop | timestamp_custom("%d") | int-1}} dag sedan
-          {% elif clean_stop | timestamp_custom("%d") | int-1 >= 2 %}{{ clean_stop | timestamp_custom("%d") | int-1}} dagar sedan
-          {% elif clean_stop | timestamp_custom("%H") | int-1 == 1 %}{{ clean_stop | timestamp_custom("%H") | int-1}} timme sedan
-          {% elif clean_stop | timestamp_custom("%H") | int-1 >= 2 %}{{ clean_stop | timestamp_custom("%H") | int-1}} timmar sedan
-          {% elif clean_stop | timestamp_custom("%M")|int == 1 %}{{ clean_stop | timestamp_custom("%M") | int}} minut sedan
-          {% elif clean_stop | timestamp_custom("%M")|int >= 2 %}{{ clean_stop | timestamp_custom("%M") | int}} minuter sedan
-          {% else %}Minde än 1 minut sedan
+          {% if states('vacuum.xiaomi_vacuum_cleaner') is defined %}
+          {{ states('vacuum.xiaomi_vacuum_cleaner') }}
+          {% else %}
+            {% set clean_stop = 
+            (as_timestamp(now()) - as_timestamp(state_attr('vacuum.xiaomi_vacuum_cleaner', 'clean_stop') | default(0))) %}
+            {% if clean_stop | timestamp_custom("%d") | int-1 == 1 %}{{ clean_stop | timestamp_custom("%d") | int-1}} dag sedan
+            {% elif clean_stop | timestamp_custom("%d") | int-1 >= 2 %}{{ clean_stop | timestamp_custom("%d") | int-1}} dagar sedan
+            {% elif clean_stop | timestamp_custom("%H") | int-1 == 1 %}{{ clean_stop | timestamp_custom("%H") | int-1}} timme sedan
+            {% elif clean_stop | timestamp_custom("%H") | int-1 >= 2 %}{{ clean_stop | timestamp_custom("%H") | int-1}} timmar sedan
+            {% elif clean_stop | timestamp_custom("%M")|int == 1 %}{{ clean_stop | timestamp_custom("%M") | int}} minut sedan
+            {% elif clean_stop | timestamp_custom("%M")|int >= 2 %}{{ clean_stop | timestamp_custom("%M") | int}} minuter sedan
+            {% else %}Minde än 1 minut sedan
+            {% endif %}
           {% endif %}
 
     ####################################################
