@@ -163,7 +163,7 @@
 
                     - type: picture-elements
                       title: Kartläggning
-                      image: /local/overlay.svg
+                      image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' /%3E"
                       style: |
                         ha-card {
                           animation: pop-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.05s; transform-origin: center;
@@ -210,7 +210,7 @@
                             service_data:
                               entity_id: input_select.roborock_zone
                               option: Ingen vald
-                          image: /local/overlay.svg
+                          image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' /%3E"
                           title: null
                           style:
                             top: 50%
