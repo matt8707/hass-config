@@ -4,24 +4,21 @@
 
 If you like anything here, Be sure to :star2: my repo!
 
-![s_main.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/s_main.png)
+![screenshot](www/img/screenshot.png)
 
 ### New April 2020
 
-The configuration is now fully configurable with code and easier to maintain. I've transitioned from using images to [button-card](https://github.com/custom-cards/button-card). 
+This config is now fully configurable with code and easier to maintain. I've transitioned from using images to [button-card](https://github.com/custom-cards/button-card). :tada:
 
 ## Features
 
 * A different take on designing a [Lovelace UI](https://www.home-assistant.io/lovelace/) using a [Picture Elements Card](https://www.home-assistant.io/lovelace/picture-elements/) in [panel mode](https://www.home-assistant.io/lovelace/views/#panel-mode).
 * Achieving a less cluttered interface by displaying [more information](https://github.com/thomasloven/hass-browser_mod#popup) on a [long press](https://www.home-assistant.io/lovelace/picture-elements/#hold_action).
 * Loading wheel for slow responding entities such as booting a computer.
-* Animations and [applying sound](https://github.com/thomasloven/hass-browser_mod#media_player) to UI using automations listening for events.
+* [Applying sound](https://github.com/thomasloven/hass-browser_mod#media_player) to UI using automations listening for events.
+* [CSS Animations](https://www.w3schools.com/css/css3_animations.asp) based on state:
 
-### Media
-
-Conditionally display media player controls based on last active device such as [Apple TV](https://www.home-assistant.io/integrations/apple_tv/), [Playstation 4](https://www.home-assistant.io/integrations/ps4/), [Google Nest Mini](https://www.home-assistant.io/integrations/cast/). If nothing is active for 15 minutes then a poster of last downloaded movie/episode is shown ([Radarr](https://github.com/Radarr/Radarr)/[Sonarr](https://github.com/Sonarr/Sonarr)). Swipe to reveal other than last active media players.
-
-![lights_switches.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/con_media.gif)
+![animations](www/img/animations.gif)
 
 ### The sidebar
 
@@ -29,7 +26,7 @@ Conditionally display media player controls based on last active device such as 
 
 * Time and date with greeting based on time of day.
 * Lights and switches that are on, using natural language.
-* Temperature with emojis based on weather conditions.
+* Temperature with emoji based on weather conditions.
 * Important calendar information.
 * Other conditional alerts
 
@@ -41,7 +38,13 @@ The three icons at the bottom in order
 * Monitor [Home Assistant](https://home-assistant.io/), [tablet](https://www.samsung.com/us/mobile/tablets/galaxy-tab-a/galaxy-tab-a-10-1-2019-32gb-black-wi-fi-sm-t510nzkaxar/) and [Network Attached Storage](https://www.synology.com/products/DS918+).
 * A list of [scenes](https://www.home-assistant.io/integrations/scene/) with a legend.
 
-![s_info.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/s_info.png)
+![info](www/img/info.png)
+
+### Media
+
+Conditionally displaying media player controls based on last active device such as [Apple TV](https://www.home-assistant.io/integrations/apple_tv/), [Playstation 4](https://www.home-assistant.io/integrations/ps4/), [Google Nest Mini](https://www.home-assistant.io/integrations/cast/). If nothing is active for 15 minutes then a poster of last downloaded movie/episode is shown ([Radarr](https://github.com/Radarr/Radarr)/[Sonarr](https://github.com/Sonarr/Sonarr)). Swipe to reveal other than last active media players.
+
+![media](www/img/media.gif)
 
 ### Lights and sensors
 
@@ -51,6 +54,8 @@ All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.m
 * Injecting current lamp color to only parts of an icon.
 * Brightness percentage in a ~~circle sensor~~ custom field (SVG+JS).
 
+![light](www/img/light.gif)
+
 ***
 
 ### Switches
@@ -59,11 +64,23 @@ All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.m
 * [Belkin WeMo Switch](https://www.belkin.com/) to control studio monitors (speakers) with automations to apply [EQ calibration](https://www.sonarworks.com/reference) and volume control through AppleScript.
 * Control a pedestal fan, using [Belkin WeMo Switch](https://www.belkin.com/) and hue motion sensor temperature data to automate on summer nights.
 
-![s_light_switch.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/s_light_switch.png)
+![info_light](www/img/info_light.png)
 
-![s_misc.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/s_misc.png)
+***
 
-![s_vacuum.png](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/s_vacuum.png)
+### Custom icons
+
+I made some custom icons located in `www/custom_icons.js`. If you want to make your own I recommend reading the [material design principles](https://material.io/design/iconography/system-icons.html#design-principles).
+
+![custom_icons](www/img/custom_icons.png)
+
+### Misc
+
+![vacuum](www/img/vacuum.png)
+
+![misc](www/img/misc.png)
+
+![tracker](www/img/tracker.png)
 
 ***
 
