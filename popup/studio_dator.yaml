@@ -36,8 +36,6 @@
                       entities:
 
                         - entity: sensor.imac_cpu_per
-                          name: Processor
-                          icon: 'mdi:chip'
                           tap_action:
                             action: call-service
                             service: homeassistant.update_entity
@@ -45,8 +43,6 @@
                               entity_id: sensor.imac_cpu_per
 
                         - entity: sensor.imac_mem_per
-                          name: Minne
-                          icon: 'mdi:memory'
                           tap_action:
                             action: call-service
                             service: homeassistant.update_entity
@@ -94,7 +90,7 @@
                         }
 
                     - entity: automation.notification_motion_hall
-                      icon: 'mdi:bell'
+                      icon: mdi:bell
                       name: Mottag notiser
                       style: |
                         :host {
@@ -103,7 +99,6 @@
                           {% else %} #9e9e9e {% endif %}; }
 
                     - entity: sensor.macos_uptime_template
-                      name: Verklig drifttid
 
                     - entity: sensor.vpn_imac
                       tap_action:
@@ -118,7 +113,7 @@
                           {% else %} #9e9e9e {% endif %}; }
 
                     - entity: input_boolean.lock_computer
-                      icon: 'mdi:monitor-lock'
+                      icon: custom:lock
                       name: Avstängningslås
                       style: |
                         :host {
@@ -129,8 +124,6 @@
                     - entities:
 
                         - entity: sensor.imac_system_ssd
-                          name: System SSD
-                          icon: 'mdi:harddisk'
                           tap_action:
                             action: call-service
                             service: homeassistant.update_entity
@@ -138,8 +131,6 @@
                               entity_id: sensor.imac_system_ssd
 
                         - entity: sensor.imac_macintosh_hd
-                          name: Macintosh HD
-                          icon: 'mdi:harddisk'
                           tap_action:
                             action: call-service
                             service: homeassistant.update_entity
@@ -147,8 +138,6 @@
                               entity_id: sensor.imac_macintosh_hd
 
                         - entity: sensor.imac_time_machine
-                          name: Time Machine
-                          icon: 'mdi:harddisk'
                           tap_action:
                             action: call-service
                             service: homeassistant.update_entity
