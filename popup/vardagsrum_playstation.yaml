@@ -28,14 +28,13 @@
                           margin: -0.4em 0 1.4em 0.4em; font-family: sf text; letter-spacing: 0.005em; font-size: 1.5em;}
                       entities:
                         - entity: switch.playstation_template
-                          icon: 'mdi:playstation'
                           name: Playstation 4
                           secondary_info: last-changed
 
                         - entity: media_player.playstation_4
                           type: custom:mini-media-player
                           artwork: none
-                          icon: 'mdi:gamepad'
+                          icon: mdi:gamepad
                           name: Spel
                           group: true
                           scale: 0.99
