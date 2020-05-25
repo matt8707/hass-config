@@ -47,13 +47,13 @@
                       entities:
                         - entity: device_tracker.mattias
                           name: Router
-                          icon: 'mdi:router-wireless'
+                          icon: mdi:wifi
                         - entity: device_tracker.mattias_bluetooth
                           name: Bluetooth
-                          icon: 'mdi:bluetooth'
+                          icon: mdi:bluetooth
                         - entity: device_tracker.iphone
-                          name: iPhone
-                          icon: 'mdi:cellphone'
+                          name: Position
+                          icon: custom:iphone-modern
                       style:
                         .: |
                           ha-card {
@@ -63,17 +63,17 @@
                         "ha-card > div > div:nth-child(1)":
                           $: |
                             state-badge {
-                            color: {% if is_state('device_tracker.mattias', 'home') %} #35903b {% else %} #a33538 {% endif %};}
+                            color: {% if is_state('device_tracker.mattias', 'home') %} #3182b7 {% else %} #FFFFFF20 {% endif %};}
 
                         "ha-card > div > div:nth-child(2)":
                           $: |
                             state-badge {
-                            color: {% if is_state('device_tracker.mattias_bluetooth', 'home') %} #35903b {% else %} #a33538 {% endif %};}
+                            color: {% if is_state('device_tracker.mattias_bluetooth', 'home') %} #3182b7 {% else %} #FFFFFF20 {% endif %};}
 
                         "ha-card > div > div:nth-child(3)":
                           $: |
                             state-badge {
-                            color: {% if is_state('device_tracker.iphone', 'home') %} #35903b {% else %} #a33538 {% endif %};}
+                            color: {% if is_state('device_tracker.iphone', 'home') %} #3182b7 {% else %} #FFFFFF20 {% endif %};}
 
                     - type: map
                       entities:
