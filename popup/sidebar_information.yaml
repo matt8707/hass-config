@@ -32,34 +32,28 @@
                         - entity: sensor.hass_version_template
 
                         - entity: switch.watchtower
-                          icon: 'mdi:lighthouse-on'
+                          icon: custom:docker-watchtower
 
                         - entity: sensor.hass_release_template
 
                         - entity: sensor.home_assistant_v2_db
-                          icon: 'mdi:database'
+                          icon: mdi:database
                           name: Databas
 
                         - entity: sensor.home_assistant_log
-                          icon: 'mdi:file-document'
+                          icon: mdi:file-document
                           name: Loggfil
 
                         - entity: sensor.docker_uptime
-                          name: Senaste omstart
-                          icon: 'mdi:clock'
 
                         - entities:
                             - entity: sensor.docker_cpu
-                              name: Processor
-                              icon: 'mdi:chip'
                               tap_action:
                                 action: call-service
                                 service: homeassistant.update_entity
                                 service_data:
                                   entity_id: sensor.docker_cpu
                             - entity: sensor.docker_mem
-                              name: Minne
-                              icon: 'mdi:memory'
                               tap_action:
                                 action: call-service
                                 service: homeassistant.update_entity
@@ -155,8 +149,7 @@
                       entities:
 
                         - entity: switch.fullykiosk_screen
-                          icon: 'mdi:tablet'
-                          name: Display
+                          icon: mdi:tablet
 
                         - type: custom:slider-entity-row
                           entity: input_number.fullykiosk_brightness_slider
@@ -169,8 +162,6 @@
                               display: block;
                             }
                         - entity: switch.fullykiosk_screensaver
-                          icon: 'mdi:power-sleep'
-                          name: Skärmsläckare
 
                         - entity: sensor.fullykiosk_battery_level
 
@@ -181,7 +172,7 @@
                         - entities:
                             - entity: sensor.fullykiosk_memory_percentage
                               name: Minne - 2GB
-                              icon: 'mdi:memory'
+                              icon: mdi:memory
                               tap_action:
                                 action: call-service
                                 service: homeassistant.update_entity
@@ -189,7 +180,7 @@
                                   entity_id: sensor.fullykiosk_memory_percentage
                             - entity: sensor.fullykiosk_storage_percentage
                               name: Lagring - 32GB
-                              icon: 'mdi:sd'
+                              icon: mdi:sd
                               tap_action:
                                 action: call-service
                                 service: homeassistant.update_entity
@@ -250,9 +241,9 @@
                         }
                       entities:
                         - entity: sensor.synology_dsm_status
+                          icon: custom:synology-nas
                         - entity: sensor.nas_disk_temp
                         - entity: sensor.drifttid
-                          icon: 'mdi:calendar-month'
                         - entity: sensor.vpn_nas
                           style: |
                             :host {
@@ -266,7 +257,6 @@
                         - entities:
                             - entity: sensor.processor_use
                               name: Processor
-                              icon: 'mdi:chip'
                               tap_action:
                                 action: call-service
                                 service: homeassistant.update_entity
@@ -274,7 +264,6 @@
                                   entity_id: sensor.processor_use
                             - entity: sensor.memory_use_percent
                               name: Minne - 4GB
-                              icon: 'mdi:memory'
                               tap_action:
                                 action: call-service
                                 service: homeassistant.update_entity
@@ -282,7 +271,6 @@
                                   entity_id: sensor.memory_use_percent
                             - entity: sensor.disk_use_percent
                               name: Lagring - 10.5TB
-                              icon: 'mdi:harddisk'
                               tap_action:
                                 action: call-service
                                 service: homeassistant.update_entity
