@@ -48,10 +48,13 @@
                       entities:
                         - entity: device_tracker.sanja
                           name: Router
-                          icon: 'mdi:router-wireless'
+                          icon: mdi:wifi
                         - entity: device_tracker.sanja_bluetooth
                           name: Bluetooth
-                          icon: 'mdi:bluetooth'
+                          icon: mdi:bluetooth
+                        - entity: sensor.placeholder
+                          name: Position
+                          icon: mdi:help
                       style:
                         .: |
                           ha-card {
@@ -61,12 +64,17 @@
                         "ha-card > div > div:nth-child(1)":
                           $: |
                             state-badge {
-                            color: {% if is_state('device_tracker.sanja', 'home') %} #35903b {% else %} #a33538 {% endif %};}
+                            color: {% if is_state('device_tracker.sanja', 'home') %} #3182b7 {% else %} #FFFFFF20 {% endif %};}
 
                         "ha-card > div > div:nth-child(2)":
                           $: |
                             state-badge {
-                            color: {% if is_state('device_tracker.sanja_bluetooth', 'home') %} #35903b {% else %} #a33538 {% endif %};}
+                            color: {% if is_state('device_tracker.sanja_bluetooth', 'home') %} #3182b7 {% else %} #FFFFFF20 {% endif %};}
+
+                        "ha-card > div > div:nth-child(3)":
+                          $: |
+                            state-badge {
+                            color: #FFFFFF20;}
 
                     - type: entities
                       title: Skrivare
@@ -84,15 +92,13 @@
                       entities:
 
                         - entity: sensor.printer_status_template
-                          name: Status
-                          icon: 'mdi:printer'
 
                         - type: custom:bar-card
                           entities:
 
                             - entity: sensor.hp_printer_inkcartridge_black
                               name: Svart
-                              icon: 'mdi:water-outline'
+                              icon: mdi:water-outline
                               tap_action:
                                 action: call-service
                                 service: homeassistant.update_entity
@@ -101,7 +107,7 @@
 
                             - entity: sensor.hp_printer_inkcartridge_cyanmagentayellow
                               name: Färg
-                              icon: 'mdi:water'
+                              icon: mdi:water
                               tap_action:
                                 action: call-service
                                 service: homeassistant.update_entity
