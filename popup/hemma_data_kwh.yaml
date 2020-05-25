@@ -32,7 +32,6 @@
                       cards:
                         - entities:
                             - entity: sensor.year
-                              icon: 'mdi:checkbox-blank'
                           style: |
                             :host {
                             --paper-item-icon-color: 
@@ -44,7 +43,6 @@
                           type: entities
                         - entities:
                             - entity: sensor.last_year
-                              icon: 'mdi:checkbox-blank'
                           style: |
                             :host {
                             --paper-item-icon-color: 
@@ -606,7 +604,6 @@
                           points_per_hour: 1
                           line_color: '#405914'
                           align_icon: left
-                          icon: 'mdi:home-currency-usd'
                           show:
                             fill: fade
                             icon: true
@@ -615,8 +612,7 @@
                             name_adaptive_color: false
                             labels: hover
                             legend: false
-                          entities:
-                          - sensor.aktuellt_spotpris
+                          entities: ['sensor.aktuellt_spotpris']
                           style: |
                             .name > span {
                               font-size: 14px !important;
@@ -645,9 +641,7 @@
                         - type: entities
                           entities:
                             - entity: sensor.last_month_price
-                              icon: 'mdi:calculator'
                             - entity: sensor.total_year_kwh
-                              icon: 'mdi:poll-box'
                           style: |
                             ha-card {
                               margin-right: 1.8em;
