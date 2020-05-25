@@ -378,7 +378,7 @@ views:
               {% if is_state('sensor.sweden_coronavirus_current', 
               'unavailable') %} {% else %}
               <font color='#6a7377'>
-              <ha-icon icon="custom:virus"></ha-icon> <b>Coronavirus</b>
+              <ha-icon icon="custom:corona-virus"></ha-icon> <b>Coronavirus</b>
               ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
               <ha-icon icon="mdi:emoticon-sad"></ha-icon> 
               <b>{{ states('sensor.sweden_coronavirus_current') }}</b> smittade
@@ -583,7 +583,7 @@ views:
           #################################################
 
           - type: icon
-            icon: custom:roborock
+            icon: custom:roborock-vacuum
             title: Dammsugare
             style:
               top: 87.41%
@@ -1092,7 +1092,7 @@ views:
             cards:
 
             - type: picture-elements
-              image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' /%3E"
+              image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50' /%3E"
               elements:
 
                 #################################################
@@ -1229,7 +1229,7 @@ views:
                 #################################################
 
             - type: picture-elements
-              image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' /%3E"
+              image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50' /%3E"
               elements:
 
                 # SMALL APPLE TV VARDAGSRUM
@@ -1520,23 +1520,3 @@ views:
                   [top: 10.5%, left: 10.1%, width: 2.9vw, position: absolute,
                   fill: "[[[ return entity.state === 'on' ? '#c7983e' : '#9da0a2'; ]]]"]
             template: switch
-
-          #################################################
-          #                                               #
-          #                RELOAD LOVELACE                #
-          #                                               #
-          #################################################
-
-          - type: icon
-            title: Ladda om
-            icon: mdi:dots-vertical
-            style:
-              top: 4%
-              left: 98%
-              color: rgba(255, 255, 255, 0.1)
-              opacity: 0.5
-              padding: 1vw
-              --mdc-icon-size: 4vw
-            tap_action:
-              action: call-service
-              service: browser_mod.lovelace_reload
