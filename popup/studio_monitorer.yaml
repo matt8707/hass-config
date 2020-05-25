@@ -50,12 +50,12 @@
                           }
 
                     - entity: automation.turn_off_monitorer
-                      icon: 'mdi:speaker-off'
+                      icon: mdi:power
                       name: Stäng av när dator stängs av
 
                     - entity: automation.eq_calibration
                       name: Automatisk kalibrationsprofil
-                      icon: 'mdi:tune-vertical'
+                      icon: custom:eq-calibrate
 
                     - type: custom:hui-horizontal-stack-card
                       style: |
