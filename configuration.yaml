@@ -5,12 +5,8 @@ homeassistant:
   elevation: !secret homeassistant_elevation
   unit_system: metric
   time_zone: Europe/Stockholm
-  customize: !include customize.yaml
-  whitelist_external_dirs:
-    - '/config/'
-
-frontend:
-  themes: !include themes.yaml
+  packages: !include_dir_named include
+  whitelist_external_dirs: [/config/]
 
 #default_config:
 config:
@@ -18,11 +14,6 @@ history:
 mobile_app:
 sun:
 system_health:
-
-automation: !include automations.yaml
-script: !include scripts.yaml
-scene: !include scenes.yaml
-sensor: !include sensors.yaml
 
 lovelace:
   mode: yaml
@@ -50,20 +41,20 @@ lovelace:
       {url: /hacsfiles/swipe-card/swipe-card.js,                                 type: module},
 
       {url: '/hacsfiles/lovelace-slider-entity-row/slider-entity-row.js?v=12',   type: module},
-      {url: /local/custom_icons.js,                                              type: module},
+      {url: '/local/custom_icons.js?v=25052001',                                 type: module},
       {url: /local/font.css,                                                     type: css} ]
 
 logger:
   default: warning
   logs:
-    bravia_tv.braviarc: fatal
-    homeassistant.components.bluetooth_tracker.device_tracker: fatal
     homeassistant.components.homekit.type_media_players: fatal
-    homeassistant.components.command_line.sensor: fatal
-    homeassistant.components.rest.sensor: fatal
-    homeassistant.helpers.service: fatal
-    homeassistant.components.websocket_api: fatal
-    homeassistant.components.shell_command: fatal
+    bravia_tv.braviarc: fatal
+    # homeassistant.components.bluetooth_tracker.device_tracker: fatal
+    # homeassistant.components.command_line.sensor: fatal
+    # homeassistant.components.rest.sensor: fatal
+    # homeassistant.helpers.service: fatal
+    # homeassistant.components.websocket_api: fatal
+    # homeassistant.components.shell_command: fatal
 
 recorder:
   purge_keep_days: 2
@@ -149,20 +140,8 @@ browser_mod:
 
 timer:
   laundry:
-    duration: '01:00:00'
-    icon: 'mdi:washing-machine'
-
-binary_sensor:
-  - platform: command_line
-    name: check_plex
-    command: !secret check_plex
-    scan_interval: 300
-    payload_on: "on"
-    payload_off: "off"
-
-  - platform: ping
-    host: 8.8.8.8
-    name: nas_internet_access
+    duration: 01:00:00
+    icon: mdi:washing-machine
 
 shell_command:
   # Setup on macos
@@ -172,11 +151,12 @@ shell_command:
   # /config/.ssh/id_rsa
   # ssh-copy-id -i /config/.ssh/id_rsa USER@XXX.XXX.X.X
 
+  imac_switchbot_rpi: !secret imac_switchbot_rpi
   imac_turn_off: !secret imac_turn_off
   imac_sleep: !secret imac_sleep
   imac_restart: !secret imac_restart
-  notify_motion_hall: !secret notify_motion_hall
-  notify_laundry: !secret notify_laundry
+  imac_notify_motion_hallway: !secret imac_notify_motion_hallway
+  imac_notify_laundry: !secret imac_notify_laundry
 
   monitorer_volume_slider: !secret monitorer_volume_slider
   monitorer_mute_off: !secret monitorer_mute_off
@@ -195,19 +175,16 @@ shell_command:
 
   restart_hass_docker: !secret restart_hass_docker
   clear_logs: truncate -s 0 /config/home-assistant.log
-  switchbot_rpi: !secret switchbot_rpi
   update_data_kwh: !secret update_data_kwh
 
 light:
   - platform: group
     name: Belysning
-    entities:
-      ['light.tvlampa', 'light.golvlampa']
+    entities: ['light.tvlampa', 'light.golvlampa']
 
   - platform: group
     name: Taklampor
-    entities:
-      ['light.spot_1', 'light.spot_2']
+    entities: ['light.spot_1', 'light.spot_2']
 
   - platform: group
     name: alla_lampor_utom_hall
@@ -223,8 +200,7 @@ homekit:
     include_entities:
       ['switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 'media_player.sony_bravia_tv', 
       'media_player.samsung', 'switch.playstation_template', 'input_boolean.motion_hall', 
-      'input_boolean.motion_garderob', 'input_boolean.motion_badrum', 
-      'script.auto_hemma', 'script.auto_stang_allt']
+      'input_boolean.motion_garderob', 'input_boolean.motion_badrum', 'script.auto_hemma', 'script.auto_stang_allt']
   entity_config:
     switch.wemo_flakt:
       name: Fläkt
@@ -258,202 +234,34 @@ cloud:
     entity_config:
       switch.wemo_flakt:
         name: Fläkt
-        aliases:
-          ['Fläkt', 'Fläkten']
+        aliases: ['Fläkt', 'Fläkten']
         room: Sovrum
       switch.wemo_monitorer:
         name: Monitorer
         room: Studio
       switch.dator_template:
         name: Dator
-        aliases:
-          ['Dator', 'Datorn', 'Datan', 'iMac']
+        aliases: ['Dator', 'Datorn', 'Datan', 'iMac']
         room: Studio
       media_player.sony_bravia_tv:
         name: Tv
         aliases:
-          ['Tv', 'Sony Tv', 'Sony Bravia Tv', 'Bravia Tv', 'Vardagsrums Tv', 'Vardagsrums Teven', 'Tv Vardagsrum']
+          ['Tv', 'Sony Tv', 'Sony Bravia Tv', 'Bravia Tv', 
+          'Vardagsrums Tv', 'Vardagsrums Teven', 'Tv Vardagsrum']
         room: Vardagsrum
       media_player.samsung:
         name: Samsung Tv
-        aliases:
-          ['Samsung Tv', 'Sovrums Tv', 'Sovrums Teven', 'Tv Sovrum']
+        aliases: ['Samsung Tv', 'Sovrums Tv', 'Sovrums Teven', 'Tv Sovrum']
         room: Sovrum
       switch.playstation_template:
         name: Playstation
-        aliases:
-          ['Playstation', 'PS4', 'Playstation 4']
+        aliases: ['Playstation', 'PS4', 'Playstation 4']
         room: Vardagsrum
       script.auto_hemma:
         name: Hemma
-        aliases:
-          ['Hemma', 'Auto hemma', 'Jag är hemma']
+        aliases: ['Hemma', 'Auto hemma', 'Jag är hemma']
         room: Hall
       script.auto_stang_allt:
         name: Stäng allt
-        aliases:
-          ['Stäng allt', 'Auto Stäng allt']
+        aliases: ['Stäng allt', 'Auto Stäng allt']
         room: Hall
-
-input_boolean:
-  dator_template:
-  sony_bravia_tv:
-  samsung:
-  playstation_template:
-
-  lock_computer:
-  krisinformation_visibility:
-  laundry_timer_visibility:
-
-  motion_hall:
-    name: hallen
-    initial: off
-  motion_garderob:
-    name: klädkammaren
-    initial: off
-  motion_badrum:
-    name: badrummet
-    initial: off
-
-input_number:
-  monitorer_volume:
-    name: Volym
-    icon: 'mdi:volume-high'
-    initial: 20
-    min: 7
-    max: 75
-    step: 2
-    unit_of_measurement: "%"
-
-  fullykiosk_brightness_slider:
-    name: Ljusstyrka
-    icon: 'mdi:brightness-percent'
-    initial: 20
-    min: 0
-    max: 100
-    step: 1
-    unit_of_measurement: "%"
-
-  fan_timer:
-    name: Stäng efter
-    icon: 'mdi:fan-off'
-    initial: 6
-    min: 1
-    max: 12
-    step: 1
-    unit_of_measurement: "h"
-
-input_select:
-  hdmi:
-    name: Källa
-    options:
-      ['HDMI 1', 'HDMI 2/MHL', 'HDMI 3', 'HDMI 4']
-    initial: HDMI 1
-    icon: mdi:video-input-hdmi
-
-  hdmi2:
-    name: Källa
-    options:
-      ['TV', 'HDMI']
-    initial: HDMI
-    icon: mdi:video-input-hdmi
-
-  ps4_game:
-    name: Senast spelat
-    options:
-      - Inte igång...
-    icon: mdi:gamepad
-
-  roborock_fan_speed:
-    name: Rengöringsläge
-    options:
-      ['Tyst', 'Standard','Medium', 'Turbo']
-    icon: mdi:fan
-
-  roborock_zone:
-    initial: Ingen vald
-    options:
-      ['Ingen vald', 'Hall', 'Kök','Vardagsrum', 'Studio', 'Sovrum']
-
-  conditional_media:
-    initial: Senast nedladdat
-    options:
-      ['Senast nedladdat', 'Vardagsrum', 'Sovrum', 'PlayStation 4', 'Google Nest Mini']
-
-switch:
-  - platform: wake_on_lan
-    mac: !secret wake_on_lan_mac_address
-    name: iMac
-    host: !secret wake_on_lan_host
-
-  - platform: rest
-    resource: !secret ha_dockermon_watchtower
-    name: Watchtower
-    body_on: '{"state": "start"}'
-    body_off: '{"state": "stop"}'
-    is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
-
-  - platform: command_line
-    switches:
-      fullykiosk_screen:
-        command_on: !secret fullykiosk_screen_on
-        command_off: !secret fullykiosk_screen_off
-        command_state: !secret fullykiosk_screen_state
-        value_template: '{{ value == "on" }}'
-        friendly_name: Fullykiosk Screen
-
-  - platform: template
-    switches:
-      dator_template:
-        value_template: "{{ is_state('switch.imac', 'on') }}"
-        turn_on:
-          service: script.dator_on
-        turn_off:
-          service: script.dator_off
-
-      tv_template:
-        value_template: "{{ is_state('media_player.sony_bravia_tv', 'on') }}"
-        turn_on:
-          service: script.tv_on
-        turn_off:
-          service: script.tv_off
-
-      tv2_template:
-        value_template: "{{ is_state('media_player.samsung', 'on') }}"
-        turn_on:
-          service: script.tv2_on
-        turn_off:
-          service: script.tv2_off
-
-      playstation_template:
-        friendly_name: Playstation
-        value_template: "{{ is_state('sensor.ps4_state', 'on') }}"
-        turn_on:
-          service: script.playstation_on
-        turn_off:
-          service: script.playstation_off
-
-      auto_stangallt_template:
-        friendly_name: Stäng allt
-        value_template: "{{ states('script.auto_stang_allt') }}"
-        turn_on:
-          service: script.auto_stang_allt
-        turn_off:
-          service: script.auto_stang_allt
-
-      auto_hemma_template:
-        friendly_name: Hemma
-        value_template: "{{ states('script.auto_hemma') }}"
-        turn_on:
-          service: script.auto_hemma
-        turn_off:
-          service: script.auto_hemma
-
-      fullykiosk_screensaver:
-        value_template: >-
-          {% if is_state_attr('sensor.fullykiosk', 'currentFragment', 'screensaver') %}
-            on {% else %} off {% endif %}
-        turn_on:
-          service: shell_command.fullykiosk_screensaver_on
-        turn_off:
-          service: shell_command.fullykiosk_screensaver_off
