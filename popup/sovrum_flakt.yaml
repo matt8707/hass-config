@@ -53,8 +53,8 @@
                             }
 
                         - entity: automation.turn_on_flakt_temp
-                          icon: 'mdi:hotel'
-                          name: Slå på om temp överstiger 26 °C
+                          icon: mdi:chart-bell-curve-cumulative
+                          name: Slå på om 26 °C överskrids
 
                     - type: custom:mini-graph-card
                       entities:
