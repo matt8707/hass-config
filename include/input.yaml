@@ -1,0 +1,99 @@
+
+input_boolean:
+
+  ####################################################
+  #                                                  #
+  #                     BOOLEAN                      #
+  #                                                  #
+  ####################################################
+
+  dator_template:
+  sony_bravia_tv:
+  samsung:
+  playstation_template:
+  lock_computer:
+  krisinformation_visibility:
+  laundry_timer_visibility:
+
+  motion_hall:
+    name: hallen
+    initial: off
+  motion_garderob:
+    name: klädkammaren
+    initial: off
+  motion_badrum:
+    name: badrummet
+    initial: off
+
+input_number:
+
+  ####################################################
+  #                                                  #
+  #                      NUMBER                      #
+  #                                                  #
+  ####################################################
+
+  monitorer_volume:
+    name: Volym
+    icon: mdi:volume-high
+    initial: 20
+    min: 7
+    max: 75
+    step: 2
+    unit_of_measurement: '%'
+
+  fullykiosk_brightness_slider:
+    name: Ljusstyrka
+    icon: mdi:brightness-6
+    initial: 20
+    min: 0
+    max: 100
+    step: 1
+    unit_of_measurement: '%'
+
+  fan_timer:
+    name: Stäng efter
+    icon: mdi:timer
+    initial: 6
+    min: 1
+    max: 12
+    step: 1
+    unit_of_measurement: 'h'
+
+input_select:
+
+  ####################################################
+  #                                                  #
+  #                      SELECT                      #
+  #                                                  #
+  ####################################################
+
+  hdmi:
+    name: Källa
+    options:
+      ['HDMI 1', 'HDMI 2/MHL', 'HDMI 3', 'HDMI 4']
+    initial: HDMI 1
+    icon: custom:hdmi-source
+
+  hdmi2:
+    name: Källa
+    options:
+      ['TV', 'HDMI']
+    initial: HDMI
+    icon: custom:hdmi-source
+
+  roborock_fan_speed:
+    name: Rengöringsläge
+    options:
+      ['Tyst', 'Standard','Medium', 'Turbo']
+    icon: mdi:format-list-bulleted
+
+  roborock_zone:
+    initial: Ingen vald
+    options:
+      ['Ingen vald', 'Hall', 'Kök','Vardagsrum', 'Studio', 'Sovrum']
+
+  conditional_media:
+    initial: Senast nedladdat
+    options:
+      ['Senast nedladdat', 'Vardagsrum', 'Sovrum', 'PlayStation 4', 'Google Nest Mini']

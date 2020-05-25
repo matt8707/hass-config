@@ -1,0 +1,230 @@
+
+script:
+
+  ####################################################
+  #                                                  #
+  #                     SCRIPTS                      #
+  #                                                  #
+  ####################################################
+
+  dator_on:
+    sequence:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.dator_template
+      - service: shell_command.imac_switchbot_rpi
+      - service: light.turn_on
+        entity_id: 
+          ['light.datorlampa', 'light.taklampor']
+
+  dator_off:
+    sequence:
+      - service_template: >-
+          {% if is_state('input_boolean.lock_computer', 'on') %}
+          script.dator_off_toast {% else %}
+          script.dummy {% endif %}
+      - condition: template
+        value_template: "{{ is_state('input_boolean.lock_computer', 'off') }}"
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.dator_template
+      - service: shell_command.imac_turn_off
+
+  dator_off_toast:
+    sequence:
+      - service: browser_mod.toast
+        data:
+          duration: 8000
+          message: 'Dator är låst från att stängas av...'
+
+  tv_on:
+    sequence:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.sony_bravia_tv
+      - service: remote.send_command
+        data:
+          entity_id: remote.vardagsrum
+          command: menu
+
+  tv_off:
+    sequence:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.sony_bravia_tv
+      - service: media_player.turn_off
+        entity_id: media_player.sony_bravia_tv
+
+  tv2_on:
+    sequence:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.samsung
+      - service: remote.send_command
+        data:
+          entity_id: remote.sovrum
+          command: menu
+
+  tv2_off:
+    sequence:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.samsung
+      - service: media_player.turn_off
+        entity_id: media_player.samsung
+
+  playstation_on:
+    sequence:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.playstation_template
+      - service: media_player.turn_on
+        entity_id: media_player.playstation_4
+
+  playstation_off:
+    sequence:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.playstation_template
+      - service: media_player.turn_off
+        entity_id: media_player.playstation_4
+
+  media_ps4_ps_button:
+    sequence:
+      - service: ps4.send_command
+        data:
+          entity_id: media_player.playstation_4
+          command: ps
+
+  dummy:
+    sequence: []
+
+  auto_hemma:
+    sequence:
+      - service_template: >-
+          {% if is_state('switch.fullykiosk_screen', 'on') and 
+          is_state('switch.fullykiosk_screensaver', 'off') %}
+          script.say_auto_hemma {% else %} 
+          script.dummy {% endif %}
+      - service: scene.turn_on
+        data_template:
+          entity_id: >
+            {% if is_state('sun.sun', 'below_horizon') %}
+            scene.hemma_below_horizon {% else %} 
+            scene.hemma_above_horizon {% endif %}
+      - delay: '00:00:04'
+
+  say_auto_hemma:
+    sequence:
+      - service: media_player.play_media
+        data_template:
+          entity_id: media_player.tablet
+          media_content_id: >
+            {{ ['/local/sound/tts_custom/hej.mp3', 
+            '/local/sound/tts_custom/startar.mp3', 
+            '/local/sound/tts_custom/varmer_upp.mp3', 
+            '/local/sound/tts_custom/valkommen_hem.mp3'] | random }}
+          media_content_type: music
+
+  auto_stang_allt:
+    sequence:
+      - service_template: >-
+          {% if is_state('switch.fullykiosk_screensaver', 'off') %}
+          script.say_auto_stang_allt {% else %}
+          script.dummy {% endif %}
+      - service: light.turn_off
+        entity_id: light.alla_lampor_utom_hall
+      - service: switch.turn_off
+        entity_id: switch.wemo_flakt
+      - service: switch.turn_off
+        entity_id: switch.wemo_monitorer
+      - service_template: >-
+          {% if is_state('switch.dator_template', 'on') %}
+          script.dator_off {% else %}
+          script.dummy {% endif %}
+      - service_template: >-
+          {% if is_state('switch.playstation_template', 'on') %}
+          script.playstation_off {% else %}
+          script.dummy {% endif %}
+      - service_template: >-
+          {% if is_state('switch.tv_template', 'on') %}
+          script.tv_off {% else %}
+          script.dummy {% endif %}
+      - service_template: >-
+          {% if is_state('switch.tv2_template', 'on') %}
+          script.tv2_off {% else %}
+          script.dummy {% endif %}
+      - delay: '00:00:04'
+
+  say_auto_stang_allt:
+    sequence:
+      - service: media_player.play_media
+        data_template:
+          entity_id: media_player.tablet
+          media_content_id: >
+            {{ ['/local/sound/tts_custom/ha_det_bra.mp3',
+                '/local/sound/tts_custom/saknar_dig_redan.mp3',
+                '/local/sound/tts_custom/hej_da.mp3',
+                '/local/sound/tts_custom/stanger_ner_allt.mp3'] | random}}
+          media_content_type: music
+
+  reference_monitors:
+    sequence:
+      - service: shell_command.reference_click
+      - delay:
+          seconds: 0.1
+      - service: shell_command.reference_kill
+      - delay:
+          seconds: 0.1
+      - service: shell_command.reference_monitors
+
+  reference_headphones:
+    sequence:
+      - service: shell_command.reference_click
+      - delay:
+          seconds: 0.1
+      - service: shell_command.reference_kill
+      - delay:
+          seconds: 0.1
+      - service: shell_command.reference_headphones
+
+  monitorer_mute_toggle:
+    sequence:
+      - service: homeassistant.update_entity
+        entity_id: sensor.monitorer_mute_check
+      - service_template: >
+          {% if is_state('sensor.monitorer_mute_check', 'false') %}
+            shell_command.monitorer_mute_on
+          {% else %}
+            shell_command.monitorer_mute_off
+          {% endif %}
+      - service: homeassistant.update_entity
+        entity_id: sensor.monitorer_mute_check
+
+  homeassistant_restart:
+    sequence:
+      - service: browser_mod.toast
+        data:
+          duration: 16000
+          message: 'Startar om Home Assistant...'
+      - service: shell_command.restart_hass_docker
+
+  zoned_cleanup:
+    sequence:
+      - condition: template
+        value_template: "{{ not is_state('input_select.roborock_zone', 'Ingen vald') }}"
+      - service: vacuum.send_command
+        data_template:
+          entity_id: vacuum.rockrobo
+          command: zoned_cleanup
+          params:
+            zone_ids: ["{{ states('input_select.roborock_zone') }}"]
+
+  # Switchbot integration stopped working
+  # dator_on:
+  #   sequence:
+  #     - service: input_boolean.turn_on
+  #       entity_id: input_boolean.dator_template
+  #     - service: switch.toggle
+  #       entity_id: switch.switchbot
+  #     - condition: template
+  #       value_template: "{{ is_state_attr('switch.switchbot', 'last_run_success', false) }}"
+  #     - service: script.turn_on
+  #       entity_id: script.dator_on_retry
+
+  # dator_on_retry:
+  #   sequence:
+  #     - service: script.turn_on
+  #       entity_id: script.dator_on

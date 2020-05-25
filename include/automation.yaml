@@ -1,0 +1,634 @@
+
+automation:
+
+    ####################################################
+    #                                                  #
+    #                   AUTOMATIONS                    #
+    #                                                  #
+    ####################################################
+
+  - alias: homeassistant_start
+    initial_state: true
+    trigger:
+      - platform: homeassistant
+        event: start
+    action:
+      - service: frontend.set_theme
+        data:
+          name: slate
+      - delay: 00:00:30
+      - service: homekit.start
+      - condition: state
+        entity_id: light.hall
+        state: 'off'
+      - service: switch.turn_on
+        entity_id: switch.fullykiosk_screensaver
+
+  - alias: restart_homekit
+    initial_state: true
+    trigger:
+      platform: time
+      at: '04:00:00'
+    action:
+    - service: homekit.start
+
+  - alias: clear_log_filesize
+    initial_state: true
+    trigger:
+    - platform: numeric_state
+      entity_id: sensor.home_assistant_log
+      above: 50
+    action:
+    - service: shell_command.clear_logs
+
+  - alias: dator_on_update
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: switch.dator_template
+        from: 'off'
+        to: 'on'
+    action:
+      - delay: 00:00:05
+      - service: homeassistant.update_entity
+        entity_id:
+          ['sensor.imac_cpu_per', 'sensor.imac_mem_per', 'sensor.imac_system_ssd', 
+          'sensor.imac_macintosh_hd', 'sensor.imac_time_machine', 'sensor.getvolume', 
+          'sensor.macos_uptime']
+
+  - alias: tv_on_lights
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: media_player.sony_bravia_tv
+        from: 'off'
+        to: 'on'
+    action:
+      - service: light.turn_on
+        entity_id: light.tvlampa
+
+  - alias: krisinformation_visibility
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: sensor.krisinformation_time_trigger
+    action:
+      - service_template: >
+          {% if is_state(trigger.entity_id, 'true') %}
+          input_boolean.turn_on {% else %}
+          input_boolean.turn_off {% endif %}
+        data: 
+          entity_id: input_boolean.krisinformation_visibility
+
+    ####################################################
+    #                                                  #
+    #                  NOTIFICATIONS                   #
+    #                                                  #
+    ####################################################
+
+  - alias: toast
+    initial_state: true
+    trigger:
+    - platform: state
+      entity_id:
+        ['input_boolean.motion_garderob', 'input_boolean.motion_badrum', 
+        'binary_sensor.wemo_motion']
+      from: 'off'
+      to: 'on'
+    action:
+    - service: browser_mod.toast
+      data_template:
+        duration: 8000
+        message: Rörelse detekterat i {{ trigger.to_state.name }}
+    - service: input_boolean.turn_off
+      data_template:
+        entity_id: "{{ trigger.entity_id }}"
+
+  - alias: notification_motion_hall
+    initial_state: 'false'
+    trigger:
+      - platform: state
+        entity_id: input_boolean.motion_hall
+        from: 'off'
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: switch.dator_template
+        state: 'on'
+    action:
+      - service: shell_command.imac_notify_motion_hallway
+
+    ####################################################
+    #                                                  #
+    #            CONDITIONAL SCAN INTERVAL             #
+    #                                                  #
+    ####################################################
+
+  - alias: conditional_scan_interval
+    initial_state: true
+    trigger:
+      platform: time_pattern
+      minutes: '/5'
+    condition:
+      - condition: state
+        entity_id: switch.dator_template
+        state: 'on'
+    action:
+      - service: homeassistant.update_entity
+        entity_id:
+          ['sensor.imac_get_ip', 'sensor.imac_system_ssd', 'sensor.imac_macintosh_hd', 
+          'sensor.imac_time_machine', 'sensor.imac_cpu_per', 'sensor.imac_mem_per', 
+          'sensor.getvolume', 'sensor.monitorer_mute_check', 'sensor.macos_uptime']
+
+    ####################################################
+    #                                                  #
+    #                     MONITORS                     #
+    #                                                  #
+    ####################################################
+
+  - alias: monitorer_volume_slider
+    initial_state: true
+    trigger:
+      platform: state
+      entity_id: input_number.monitorer_volume
+    condition:
+      - condition: state
+        entity_id: switch.dator_template
+        state: 'on'
+    action:
+      - service: shell_command.monitorer_volume_slider
+      - service: homeassistant.update_entity
+        entity_id: sensor.monitorer_mute_check
+      - service: homeassistant.update_entity
+        entity_id: sensor.getvolume
+
+  - alias: monitorer_volume_update
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: sensor.getvolume
+    condition:
+      - condition: state
+        entity_id: switch.dator_template
+        state: 'on'
+    action:
+      - service: homeassistant.update_entity
+        entity_id: sensor.monitorer_mute_check
+      - service: input_number.set_value
+        data_template:
+          entity_id: input_number.monitorer_volume
+          value: "{{ states('sensor.getvolume') }}"
+
+  - alias: eq_calibration
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: switch.wemo_monitorer
+    action:
+      - service: script.turn_on
+        data_template:
+          entity_id: >-
+            {% if trigger.from_state.state == 'off' and trigger.to_state.state == 'on' %}
+            script.reference_monitors
+            {% elif trigger.from_state.state == 'on' and trigger.to_state.state == 'off' %}
+            script.reference_headphones 
+            {% else %} script.dummy {% endif %}
+
+  - alias: turn_off_monitorer
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: switch.dator_template
+        from: 'on'
+        to: 'off'
+        for:
+          minutes: 15
+    action:
+    - service: switch.turn_off
+      entity_id: switch.wemo_monitorer
+
+    ####################################################
+    #                                                  #
+    #                       FAN                        #
+    #                                                  #
+    ####################################################
+
+  - alias: turn_off_fläkt
+    initial_state: true
+    trigger:
+      platform: state
+      entity_id: switch.wemo_flakt
+      from: 'off'
+      to: 'on'
+      for: 
+        hours: "{{ states('input_number.fan_timer') | int }}"
+    action:
+      - service: switch.turn_off
+        entity_id: switch.wemo_flakt
+
+  - alias: turn_on_fläkt_temp
+    initial_state: true
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.hall_temperature
+      above: 26
+    condition:
+      condition: and
+      conditions:
+        - condition: time
+          after: '20:00:00'
+          before: '07:00:00'
+        - condition: or
+          conditions:
+            - condition: state
+              entity_id: person.mattias
+              state: 'home'
+            - condition: state
+              entity_id: person.sanja
+              state: 'home'
+    action:
+      - service: switch.turn_on
+        entity_id: switch.wemo_flakt
+
+    ####################################################
+    #                                                  #
+    #                      TABLET                      #
+    #                                                  #
+    ####################################################
+
+  - alias: tablet_brightness_slider
+    initial_state: true
+    trigger:
+      platform: state
+      entity_id: input_number.fullykiosk_brightness_slider
+    action:
+      service: shell_command.fullykiosk_brightness_slider
+
+  - alias: close_popups_on_tablet
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: switch.fullykiosk_screensaver
+        from: 'off'
+        to: 'on'
+        for:
+          minutes: 15
+    action:
+      - service: browser_mod.close_popup
+        data:
+          deviceID: tablet
+
+  - alias: turn_on_fullykiosk_screen
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: input_boolean.motion_hall
+        from: 'off'
+        to: 'on'
+    action:
+      - service: switch.turn_off
+        entity_id: switch.fullykiosk_screensaver
+      - service_template: input_number.set_value
+        data_template:
+          entity_id: input_number.fullykiosk_brightness_slider
+          value: >
+            {% if is_state('sun.sun', 'above_horizon') %}
+            90 {% else %}
+            50 {% endif %}
+      - service: input_boolean.turn_off
+        data_template:
+          entity_id: "{{ trigger.entity_id }}"
+
+  - alias: turn_off_fullykiosk_screen
+    initial_state: true
+    trigger:
+    - platform: state
+      entity_id: light.hall
+      from: 'on'
+      to: 'off'
+    action:
+    - service: switch.turn_on
+      entity_id: switch.fullykiosk_screensaver
+
+    ####################################################
+    #                                                  #
+    #                     LOADING                      #
+    #                                                  #
+    ####################################################
+
+  - alias: turn_off_loading_wheel
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: 
+          ['media_player.sony_bravia_tv', 'media_player.samsung', 
+          'switch.dator_template', 'switch.playstation_template']
+    action:
+      - service: input_boolean.turn_off
+        data_template:
+          entity_id: >-
+            {{ trigger.entity_id | 
+            replace('media_player', 'input_boolean') | 
+            replace('switch', 'input_boolean') }}
+
+  - alias: turn_off_loading_wheel_fail_safe
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: 
+          ['input_boolean.sony_bravia_tv', 'input_boolean.samsung', 
+          'input_boolean.dator_template', 'input_boolean.playstation_template']
+        to: 'on'
+        for:
+          minutes: 1
+    action:
+      - service: input_boolean.turn_off
+        data_template:
+          entity_id: "{{ trigger.entity_id }}"
+
+    ####################################################
+    #                                                  #
+    #                      HDMI                        #
+    #                                                  #
+    ####################################################
+
+  - alias: hdmi_input_select
+    initial_state: true
+    trigger:
+    - platform: state
+      entity_id: input_select.hdmi
+    action:
+    - service: media_player.select_source
+      data_template:
+        entity_id: media_player.sony_bravia_tv
+        source: "{{ states('input_select.hdmi') }}"
+
+  - alias: hdmi2_input_select
+    initial_state: true
+    trigger:
+    - platform: state
+      entity_id: input_select.hdmi2
+    action:
+    - service: media_player.select_source
+      data_template:
+        entity_id: media_player.samsung
+        source: "{{ states('input_select.hdmi2') }}"
+
+    ####################################################
+    #                                                  #
+    #                  LAUNDRY TIMER                   #
+    #                                                  #
+    ####################################################
+
+  - alias: reveal_laundry_timer
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: sensor.tvatta_countdown_timer_trigger
+        to: 'true'
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.laundry_timer_visibility
+      - delay: 04:00:00
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.laundry_timer_visibility
+
+  - alias: alert_laundry_timer_finished
+    initial_state: true
+    trigger:
+      platform: event
+      event_type: timer.finished
+      event_data:
+        entity_id: timer.laundry
+    action:
+      - service: media_player.play_media
+        data:
+          entity_id: media_player.tablet
+          media_content_id: /local/sound/timer.mp3
+          media_content_type: music
+      - delay: 00:00:02
+      - service: media_player.play_media
+        data_template:
+          entity_id: media_player.tablet
+          media_content_id: >
+            {{ ['/local/sound/tts_custom/timer_tvatten_ar_fardig.mp3',
+                '/local/sound/tts_custom/timer_tvatten_ar_klar.mp3',
+                '/local/sound/tts_custom/timer_dags_att_ga_ner.mp3'] | random }}
+          media_content_type: music
+      - service: notify.mobile_app_iphone
+        data_template: 
+          title: "{{'\U0001F9FA'}} {{ ['Tvätten är färdig', 'Tvätten är klar', 'Dags att gå ner'] | random }}"
+          message: " "
+      - service: shell_command.imac_notify_laundry
+      - delay: '00:00:03'
+
+    ####################################################
+    #                                                  #
+    #                      VACUUM                      #
+    #                                                  #
+    ####################################################
+
+  - alias: roborock_fan_speed_input_select
+    initial_state: true
+    trigger:
+    - platform: state
+      entity_id: input_select.roborock_fan_speed
+    action:
+    - service: vacuum.set_fan_speed
+      data_template:
+        entity_id: vacuum.xiaomi_vacuum_cleaner
+        fan_speed: >-
+          {% if is_state('input_select.roborock_fan_speed', 'Tyst') %} Quiet
+          {% elif is_state('input_select.roborock_fan_speed', 'Standard') %} Balanced
+          {% elif is_state('input_select.roborock_fan_speed', 'Medium') %} 75
+          {% elif is_state('input_select.roborock_fan_speed', 'Turbo') %} 100
+          {% else %} Balanced
+          {% endif %}
+
+  - alias: roborock_fan_speed_input_select_update
+    initial_state: true
+    trigger:
+      platform: state
+      entity_id: sensor.roborock_fan_speed
+    action:
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.roborock_fan_speed
+        option: >-
+          {% if is_state('sensor.roborock_fan_speed', 'Quiet') %} Tyst
+          {% elif is_state('sensor.roborock_fan_speed', 'Balanced') %} Standard
+          {% elif is_state('sensor.roborock_fan_speed', '75') %} Medium
+          {% elif is_state('sensor.roborock_fan_speed', '100') %} Turbo
+          {% else %} Standard
+          {% endif %}
+
+      ####################################################
+      #                                                  #
+      #                CONDITIONAL MEDIA                 #
+      #                                                  #
+      ####################################################
+
+  - alias: conditional_media_playing
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: 
+          ['media_player.vardagsrum', 'media_player.sovrum', 
+          'media_player.playstation_4', 'media_player.google_nest_mini']
+        to: playing
+    action:
+      - service: input_select.select_option
+        data_template:
+          entity_id: input_select.conditional_media
+          option: "{{ trigger.to_state.name }}"
+
+  - alias: conditional_media_paused_idle
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: 
+          ['media_player.vardagsrum', 'media_player.sovrum', 
+          'media_player.playstation_4', 'media_player.google_nest_mini']
+        to:
+          ['off', 'idle', 'standby']
+      - platform: state
+        entity_id: 
+          ['media_player.vardagsrum', 'media_player.sovrum', 
+          'media_player.playstation_4', 'media_player.google_nest_mini']
+        to: paused
+        for:
+          minutes: 10
+    action:
+      - service: input_select.select_option
+        data_template:
+          entity_id: input_select.conditional_media
+          option: >-
+            {% set media_players = 
+              [states.media_player.vardagsrum, states.media_player.sovrum, 
+              states.media_player.playstation_4, states.media_player.google_nest_mini] %}
+            {% if media_players | selectattr('state','eq','playing') | list | count == 0 %}
+              {% if media_players | selectattr('state','eq','paused') | list | count == 0 %}
+              Senast nedladdat
+              {% else %}
+              {{ media_players | selectattr('state','eq','paused') | map(attribute='name') | max }}
+              {% endif %}
+            {% else %}
+            {{ media_players | selectattr('state','eq','playing') | map(attribute='name') | max }}
+            {% endif %}
+
+  - alias: conditional_media_all_off
+    initial_state: true
+    trigger:
+      - platform: template
+        value_template: >
+          {{ is_state('media_player.vardagsrum', 'idle') and
+          is_state('media_player.sovrum', 'idle') and
+          is_state('media_player.playstation_4', 'standby') and
+          is_state('media_player.google_nest_mini', 'off') }}
+    action:
+      - service: input_select.select_option
+        data_template:
+          entity_id: input_select.conditional_media
+          option: Senast nedladdat
+
+    ####################################################
+    #                                                  #
+    #                     UI SOUND                     #
+    #                                                  #
+    ####################################################
+
+  - alias: ui_sound_popup
+    initial_state: true
+    trigger:
+      platform: event
+      event_type: call_service
+      event_data: 
+        domain: browser_mod
+        service: popup
+    condition:
+      - condition: state
+        entity_id: switch.fullykiosk_screensaver
+        state: 'off'
+    action:
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.tablet
+        media_content_id: /local/sound/popup.m4a
+        media_content_type: music
+
+  # - alias: ui_sound_on
+  #   initial_state: true
+  #   trigger:
+  #   - platform: state
+  #     entity_id:
+  #       ['light.belysning', 'light.fonsterlampa', 'light.datorlampa', 'light.taklampor', 
+  #       'light.mattias', 'light.sanja', 'light.badrum', 'light.taklampa', 'light.kladkammare_2', 
+  #       'light.hall', 'switch.wemo_flakt', 'switch.wemo_monitorer', 'input_boolean.dator_template', 
+  #       'input_boolean.playstation_template', 'input_boolean.sony_bravia_tv', 
+  #       'input_boolean.samsung']
+  #     from: 'off'
+  #     to: 'on'
+  #   condition:
+  #     - condition: state
+  #       entity_id: switch.fullykiosk_screensaver
+  #       state: 'off'
+  #   action:
+  #   - service: media_player.play_media
+  #     data:
+  #       entity_id: media_player.tablet
+  #       media_content_id: /local/sound/on.m4a
+  #       media_content_type: music
+
+  # - alias: ui_sound_off
+  #   initial_state: true
+  #   trigger:
+  #   - platform: state
+  #     entity_id:
+  #       ['light.belysning', 'light.fonsterlampa', 'light.datorlampa', 'light.taklampor', 
+  #       'light.mattias', 'light.sanja', 'light.badrum', 'light.taklampa', 'light.kladkammare_2', 
+  #       'light.hall', 'switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 
+  #       'switch.playstation_template', 'media_player.sony_bravia_tv', 'media_player.samsung']
+  #     from: 'on'
+  #     to: 'off'
+  #   condition:
+  #     - condition: state
+  #       entity_id: switch.fullykiosk_screensaver
+  #       state: 'off'
+  #   action:
+  #   - service: media_player.play_media
+  #     data:
+  #       entity_id: media_player.tablet
+  #       media_content_id: /local/sound/off.m4a
+  #       media_content_type: music
+
+  - alias: turn_on_tv_fail_safe
+    initial_state: true
+    trigger:
+      platform: event
+      event_type: call_service
+      event_data: 
+        domain: media_player
+        service: turn_on
+        service_data:
+          entity_id: media_player.sony_bravia_tv
+    action:
+      - service: remote.send_command
+        data:
+          entity_id: remote.vardagsrum
+          command: menu
+
+  - alias: turn_on_tv2_fail_safe
+    initial_state: true
+    trigger:
+      platform: event
+      event_type: call_service
+      event_data: 
+        domain: media_player
+        service: turn_on
+        service_data:
+          entity_id: media_player.samsung
+    action:
+      - service: remote.send_command
+        data:
+          entity_id: remote.sovrum
+          command: menu

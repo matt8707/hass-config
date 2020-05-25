@@ -1,0 +1,100 @@
+
+switch:
+
+    ####################################################
+    #                                                  #
+    #                     SWITCHES                     #
+    #                                                  #
+    ####################################################
+
+  - platform: wake_on_lan
+    mac: !secret wake_on_lan_mac_address
+    name: iMac
+    host: !secret wake_on_lan_host
+
+  - platform: rest
+    resource: !secret ha_dockermon_watchtower
+    name: Watchtower
+    body_on: "{'state': 'start'}"
+    body_off: "{'state': 'stop'}"
+    is_on_template: "{{ value_json is not none and value_json.state == 'running' }}"
+
+  - platform: command_line
+    switches:
+      fullykiosk_screen:
+        friendly_name: Display
+        command_on: !secret fullykiosk_screen_on
+        command_off: !secret fullykiosk_screen_off
+        command_state: !secret fullykiosk_screen_state
+        value_template: "{{ value == 'on' }}"
+
+    ####################################################
+    #                                                  #
+    #                     TEMPLATE                     #
+    #                                                  #
+    ####################################################
+
+  - platform: template
+    switches:
+      dator_template:
+        friendly_name: Dator
+        icon_template: custom:imac-alternative
+        value_template: "{{ is_state('switch.imac', 'on') }}"
+        turn_on:
+          service: script.dator_on
+        turn_off:
+          service: script.dator_off
+
+      tv_template:
+        friendly_name: Tv
+        icon_template: custom:tv
+        value_template: "{{ is_state('media_player.sony_bravia_tv', 'on') }}"
+        turn_on:
+          service: script.tv_on
+        turn_off:
+          service: script.tv_off
+
+      tv2_template:
+        friendly_name: 'Tv\u00B2'
+        icon_template: custom:tv
+        value_template: "{{ is_state('media_player.samsung', 'on') }}"
+        turn_on:
+          service: script.tv2_on
+        turn_off:
+          service: script.tv2_off
+
+      playstation_template:
+        friendly_name: Playstation
+        icon_template: mdi:playstation
+        value_template: "{{ is_state('sensor.ps4_state', 'on') }}"
+        turn_on:
+          service: script.playstation_on
+        turn_off:
+          service: script.playstation_off
+
+      auto_stangallt_template:
+        friendly_name: Stäng allt
+        value_template: "{{ states('script.auto_stang_allt') }}"
+        turn_on:
+          service: script.auto_stang_allt
+        turn_off:
+          service: script.auto_stang_allt
+
+      auto_hemma_template:
+        friendly_name: Hemma
+        value_template: "{{ states('script.auto_hemma') }}"
+        turn_on:
+          service: script.auto_hemma
+        turn_off:
+          service: script.auto_hemma
+
+      fullykiosk_screensaver:
+        friendly_name: Skärmsläckare
+        icon_template: mdi:power-sleep
+        value_template: >-
+          {% if is_state_attr('sensor.fullykiosk', 'currentFragment', 'screensaver') %}
+            on {% else %} off {% endif %}
+        turn_on:
+          service: shell_command.fullykiosk_screensaver_on
+        turn_off:
+          service: shell_command.fullykiosk_screensaver_off
