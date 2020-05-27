@@ -8,6 +8,9 @@ homeassistant:
     #                                                  #
     ####################################################
 
+    sensor.processor_use:
+      icon: mdi:chip
+
     binary_sensor.check_plex:
       icon: mdi:plex
 
