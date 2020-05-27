@@ -12,10 +12,10 @@ MERCHANTABLITY OR NON-INFRINGEMENT.
 See the Apache Version 2.0 License for specific language governing permissions
 and limitations under the License.
 ***************************************************************************** */
-function t(t, e, n, s) {
-  var i,
+function t(t, e, n, i) {
+  var s,
       r = arguments.length,
-      o = r < 3 ? e : null === s ? s = Object.getOwnPropertyDescriptor(e, n) : s;if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o = Reflect.decorate(t, e, n, s);else for (var a = t.length - 1; a >= 0; a--) (i = t[a]) && (o = (r < 3 ? i(o) : r > 3 ? i(e, n, o) : i(e, n)) || o);return r > 3 && o && Object.defineProperty(e, n, o), o;
+      o = r < 3 ? e : null === i ? i = Object.getOwnPropertyDescriptor(e, n) : i;if ("object" == typeof Reflect && "function" == typeof Reflect.decorate) o = Reflect.decorate(t, e, n, i);else for (var a = t.length - 1; a >= 0; a--) (s = t[a]) && (o = (r < 3 ? s(o) : r > 3 ? s(e, n, o) : s(e, n)) || o);return r > 3 && o && Object.defineProperty(e, n, o), o;
   /**
    * @license
    * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
@@ -35,12 +35,12 @@ function t(t, e, n, s) {
     const n = e.nextSibling;t.removeChild(e), e = n;
   }
 },
-      s = `{{lit-${String(Math.random()).slice(2)}}}`,
-      i = `\x3c!--${s}--\x3e`,
-      r = new RegExp(`${s}|${i}`);class o {
+      i = `{{lit-${String(Math.random()).slice(2)}}}`,
+      s = `\x3c!--${i}--\x3e`,
+      r = new RegExp(`${i}|${s}`);class o {
   constructor(t, e) {
     this.parts = [], this.element = e;const n = [],
-          i = [],
+          s = [],
           o = document.createTreeWalker(e.content, 133, null, !1);let l = 0,
         u = -1,
         h = 0;const { strings: p, values: { length: m } } = t;for (; h < m;) {
@@ -48,30 +48,30 @@ function t(t, e, n, s) {
         if (u++, 1 === t.nodeType) {
           if (t.hasAttributes()) {
             const e = t.attributes,
-                  { length: n } = e;let s = 0;for (let t = 0; t < n; t++) a(e[t].name, "$lit$") && s++;for (; s-- > 0;) {
+                  { length: n } = e;let i = 0;for (let t = 0; t < n; t++) a(e[t].name, "$lit$") && i++;for (; i-- > 0;) {
               const e = p[h],
                     n = c.exec(e)[2],
-                    s = n.toLowerCase() + "$lit$",
-                    i = t.getAttribute(s);t.removeAttribute(s);const o = i.split(r);this.parts.push({ type: "attribute", index: u, name: n, strings: o }), h += o.length - 1;
+                    i = n.toLowerCase() + "$lit$",
+                    s = t.getAttribute(i);t.removeAttribute(i);const o = s.split(r);this.parts.push({ type: "attribute", index: u, name: n, strings: o }), h += o.length - 1;
             }
-          }"TEMPLATE" === t.tagName && (i.push(t), o.currentNode = t.content);
+          }"TEMPLATE" === t.tagName && (s.push(t), o.currentNode = t.content);
         } else if (3 === t.nodeType) {
-          const e = t.data;if (e.indexOf(s) >= 0) {
-            const s = t.parentNode,
-                  i = e.split(r),
-                  o = i.length - 1;for (let e = 0; e < o; e++) {
+          const e = t.data;if (e.indexOf(i) >= 0) {
+            const i = t.parentNode,
+                  s = e.split(r),
+                  o = s.length - 1;for (let e = 0; e < o; e++) {
               let n,
-                  r = i[e];if ("" === r) n = d();else {
+                  r = s[e];if ("" === r) n = d();else {
                 const t = c.exec(r);null !== t && a(t[2], "$lit$") && (r = r.slice(0, t.index) + t[1] + t[2].slice(0, -"$lit$".length) + t[3]), n = document.createTextNode(r);
-              }s.insertBefore(n, t), this.parts.push({ type: "node", index: ++u });
-            }"" === i[o] ? (s.insertBefore(d(), t), n.push(t)) : t.data = i[o], h += o;
+              }i.insertBefore(n, t), this.parts.push({ type: "node", index: ++u });
+            }"" === s[o] ? (i.insertBefore(d(), t), n.push(t)) : t.data = s[o], h += o;
           }
-        } else if (8 === t.nodeType) if (t.data === s) {
+        } else if (8 === t.nodeType) if (t.data === i) {
           const e = t.parentNode;null !== t.previousSibling && u !== l || (u++, e.insertBefore(d(), t)), l = u, this.parts.push({ type: "node", index: u }), null === t.nextSibling ? t.data = "" : (n.push(t), u--), h++;
         } else {
-          let e = -1;for (; -1 !== (e = t.data.indexOf(s, e + 1));) this.parts.push({ type: "node", index: -1 }), h++;
+          let e = -1;for (; -1 !== (e = t.data.indexOf(i, e + 1));) this.parts.push({ type: "node", index: -1 }), h++;
         }
-      } else o.currentNode = i.pop();
+      } else o.currentNode = s.pop();
     }for (const t of n) t.parentNode.removeChild(t);
   }
 }const a = (t, e) => {
@@ -80,12 +80,12 @@ function t(t, e, n, s) {
       l = t => -1 !== t.index,
       d = () => document.createComment(""),
       c = /([ \x09\x0a\x0c\x0d])([^\0-\x1F\x7F-\x9F "'>=/]+)([ \x09\x0a\x0c\x0d]*=[ \x09\x0a\x0c\x0d]*(?:[^ \x09\x0a\x0c\x0d"'`<>=]*|"[^"]*|'[^']*))$/;function u(t, e) {
-  const { element: { content: n }, parts: s } = t,
-        i = document.createTreeWalker(n, 133, null, !1);let r = p(s),
-      o = s[r],
+  const { element: { content: n }, parts: i } = t,
+        s = document.createTreeWalker(n, 133, null, !1);let r = p(i),
+      o = i[r],
       a = -1,
-      l = 0;const d = [];let c = null;for (; i.nextNode();) {
-    a++;const t = i.currentNode;for (t.previousSibling === c && (c = null), e.has(t) && (d.push(t), null === c && (c = t)), null !== c && l++; void 0 !== o && o.index === a;) o.index = null !== c ? -1 : o.index - l, r = p(s, r), o = s[r];
+      l = 0;const d = [];let c = null;for (; s.nextNode();) {
+    a++;const t = s.currentNode;for (t.previousSibling === c && (c = null), e.has(t) && (d.push(t), null === c && (c = t)), null !== c && l++; void 0 !== o && o.index === a;) o.index = null !== c ? -1 : o.index - l, r = p(i, r), o = i[r];
   }d.forEach(t => t.parentNode.removeChild(t));
 }const h = t => {
   let e = 11 === t.nodeType ? 0 : 1;const n = document.createTreeWalker(t, 133, null, !1);for (; n.nextNode();) e++;return e;
@@ -133,12 +133,12 @@ class y {
   }_clone() {
     const t = e ? this.template.element.content.cloneNode(!0) : document.importNode(this.template.element.content, !0),
           n = [],
-          s = this.template.parts,
-          i = document.createTreeWalker(t, 133, null, !1);let r,
+          i = this.template.parts,
+          s = document.createTreeWalker(t, 133, null, !1);let r,
         o = 0,
         a = 0,
-        d = i.nextNode();for (; o < s.length;) if (r = s[o], l(r)) {
-      for (; a < r.index;) a++, "TEMPLATE" === d.nodeName && (n.push(d), i.currentNode = d.content), null === (d = i.nextNode()) && (i.currentNode = n.pop(), d = i.nextNode());if ("node" === r.type) {
+        d = s.nextNode();for (; o < i.length;) if (r = i[o], l(r)) {
+      for (; a < r.index;) a++, "TEMPLATE" === d.nodeName && (n.push(d), s.currentNode = d.content), null === (d = s.nextNode()) && (s.currentNode = n.pop(), d = s.nextNode());if ("node" === r.type) {
         const t = this.processor.handleTextExpression(this.options);t.insertAfterNode(d.previousSibling), this.__parts.push(t);
       } else this.__parts.push(...this.processor.handleAttributeExpressions(d, r.name, r.strings, this.options));o++;
     } else this.__parts.push(void 0), o++;return e && (document.adoptNode(t), customElements.upgrade(t)), t;
@@ -156,14 +156,14 @@ class y {
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
- */const v = ` ${s} `;class S {
-  constructor(t, e, n, s) {
-    this.strings = t, this.values = e, this.type = n, this.processor = s;
+ */const v = ` ${i} `;class S {
+  constructor(t, e, n, i) {
+    this.strings = t, this.values = e, this.type = n, this.processor = i;
   }getHTML() {
     const t = this.strings.length - 1;let e = "",
         n = !1;for (let r = 0; r < t; r++) {
       const t = this.strings[r],
-            o = t.lastIndexOf("\x3c!--");n = (o > -1 || n) && -1 === t.indexOf("--\x3e", o + 1);const a = c.exec(t);e += null === a ? t + (n ? v : i) : t.substr(0, a.index) + a[1] + a[2] + "$lit$" + a[3] + s;
+            o = t.lastIndexOf("\x3c!--");n = (o > -1 || n) && -1 === t.indexOf("--\x3e", o + 1);const a = c.exec(t);e += null === a ? t + (n ? v : s) : t.substr(0, a.index) + a[1] + a[2] + "$lit$" + a[3] + i;
     }return e += this.strings[t], e;
   }getTemplateElement() {
     const t = document.createElement("template");return t.innerHTML = this.getHTML(), t;
@@ -189,8 +189,8 @@ class y {
     return new x(this);
   }_getValue() {
     const t = this.strings,
-          e = t.length - 1;let n = "";for (let s = 0; s < e; s++) {
-      n += t[s];const e = this.parts[s];if (void 0 !== e) {
+          e = t.length - 1;let n = "";for (let i = 0; i < e; i++) {
+      n += t[i];const e = this.parts[i];if (void 0 !== e) {
         const t = e.value;if (w(t) || !b(t)) n += "string" == typeof t ? t : String(t);else for (const e of t) n += "string" == typeof e ? e : String(e);
       }
     }return n += t[e], n;
@@ -234,11 +234,11 @@ class y {
   }__commitTemplateResult(t) {
     const e = this.options.templateFactory(t);if (this.value instanceof y && this.value.template === e) this.value.update(t.values);else {
       const n = new y(e, t.processor, this.options),
-            s = n._clone();n.update(t.values), this.__commitNode(s), this.value = n;
+            i = n._clone();n.update(t.values), this.__commitNode(i), this.value = n;
     }
   }__commitIterable(t) {
     Array.isArray(this.value) || (this.value = [], this.clear());const e = this.value;let n,
-        s = 0;for (const i of t) n = e[s], void 0 === n && (n = new P(this.options), e.push(n), 0 === s ? n.appendIntoPart(this) : n.insertAfterPart(e[s - 1])), n.setValue(i), n.commit(), s++;s < e.length && (e.length = s, this.clear(n && n.endNode));
+        i = 0;for (const s of t) n = e[i], void 0 === n && (n = new P(this.options), e.push(n), 0 === i ? n.appendIntoPart(this) : n.insertAfterPart(e[i - 1])), n.setValue(s), n.commit(), i++;i < e.length && (e.length = i, this.clear(n && n.endNode));
   }clear(t = this.startNode) {
     n(this.startNode.parentNode, t.nextSibling, this.endNode);
   }
@@ -279,7 +279,7 @@ class y {
     }if (this.__pendingValue === g) return;const t = this.__pendingValue,
           e = this.value,
           n = null == t || null != e && (t.capture !== e.capture || t.once !== e.once || t.passive !== e.passive),
-          s = null != t && (null == e || n);n && this.element.removeEventListener(this.eventName, this.__boundHandleEvent, this.__options), s && (this.__options = A(t), this.element.addEventListener(this.eventName, this.__boundHandleEvent, this.__options)), this.value = t, this.__pendingValue = g;
+          i = null != t && (null == e || n);n && this.element.removeEventListener(this.eventName, this.__boundHandleEvent, this.__options), i && (this.__options = A(t), this.element.addEventListener(this.eventName, this.__boundHandleEvent, this.__options)), this.value = t, this.__pendingValue = g;
   }handleEvent(t) {
     "function" == typeof this.value ? this.value.call(this.eventContext || this.element, t) : this.value.handleEvent(t);
   }
@@ -297,7 +297,7 @@ class y {
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */;function D(t) {
-  let e = V.get(t.type);void 0 === e && (e = { stringsArray: new WeakMap(), keyString: new Map() }, V.set(t.type, e));let n = e.stringsArray.get(t.strings);if (void 0 !== n) return n;const i = t.strings.join(s);return n = e.keyString.get(i), void 0 === n && (n = new o(t, t.getTemplateElement()), e.keyString.set(i, n)), e.stringsArray.set(t.strings, n), n;
+  let e = V.get(t.type);void 0 === e && (e = { stringsArray: new WeakMap(), keyString: new Map() }, V.set(t.type, e));let n = e.stringsArray.get(t.strings);if (void 0 !== n) return n;const s = t.strings.join(i);return n = e.keyString.get(s), void 0 === n && (n = new o(t, t.getTemplateElement()), e.keyString.set(s, n)), e.stringsArray.set(t.strings, n), n;
 }const V = new Map(),
       O = new WeakMap();
 /**
@@ -327,10 +327,10 @@ class y {
  * http://polymer.github.io/PATENTS.txt
  */
 class {
-  handleAttributeExpressions(t, e, n, s) {
-    const i = e[0];if ("." === i) {
+  handleAttributeExpressions(t, e, n, i) {
+    const s = e[0];if ("." === s) {
       return new M(t, e.slice(1), n).parts;
-    }return "@" === i ? [new k(t, e.slice(1), s.eventContext)] : "?" === i ? [new N(t, e.slice(1), n)] : new C(t, e, n).parts;
+    }return "@" === s ? [new k(t, e.slice(1), i.eventContext)] : "?" === s ? [new N(t, e.slice(1), n)] : new C(t, e, n).parts;
   }handleTextExpression(t) {
     return new P(t);
   }
@@ -362,19 +362,19 @@ class {
  * http://polymer.github.io/PATENTS.txt
  */,
       U = (t, e) => `${t}--${e}`;let H = !0;void 0 === window.ShadyCSS ? H = !1 : void 0 === window.ShadyCSS.prepareTemplateDom && (console.warn("Incompatible ShadyCSS version detected. Please update to at least @webcomponents/webcomponentsjs@2.0.2 and @webcomponents/shadycss@1.3.1."), H = !1);const j = t => e => {
-  const n = U(e.type, t);let i = V.get(n);void 0 === i && (i = { stringsArray: new WeakMap(), keyString: new Map() }, V.set(n, i));let r = i.stringsArray.get(e.strings);if (void 0 !== r) return r;const a = e.strings.join(s);if (r = i.keyString.get(a), void 0 === r) {
-    const n = e.getTemplateElement();H && window.ShadyCSS.prepareTemplateDom(n, t), r = new o(e, n), i.keyString.set(a, r);
-  }return i.stringsArray.set(e.strings, r), r;
+  const n = U(e.type, t);let s = V.get(n);void 0 === s && (s = { stringsArray: new WeakMap(), keyString: new Map() }, V.set(n, s));let r = s.stringsArray.get(e.strings);if (void 0 !== r) return r;const a = e.strings.join(i);if (r = s.keyString.get(a), void 0 === r) {
+    const n = e.getTemplateElement();H && window.ShadyCSS.prepareTemplateDom(n, t), r = new o(e, n), s.keyString.set(a, r);
+  }return s.stringsArray.set(e.strings, r), r;
 },
-      F = ["html", "svg"],
-      $ = new Set(),
-      z = (t, e, n) => {
-  $.add(t);const s = n ? n.element : document.createElement("template"),
-        i = e.querySelectorAll("style"),
-        { length: r } = i;if (0 === r) return void window.ShadyCSS.prepareTemplateStyles(s, t);const o = document.createElement("style");for (let t = 0; t < r; t++) {
-    const e = i[t];e.parentNode.removeChild(e), o.textContent += e.textContent;
+      z = ["html", "svg"],
+      F = new Set(),
+      $ = (t, e, n) => {
+  F.add(t);const i = n ? n.element : document.createElement("template"),
+        s = e.querySelectorAll("style"),
+        { length: r } = s;if (0 === r) return void window.ShadyCSS.prepareTemplateStyles(i, t);const o = document.createElement("style");for (let t = 0; t < r; t++) {
+    const e = s[t];e.parentNode.removeChild(e), o.textContent += e.textContent;
   }(t => {
-    F.forEach(e => {
+    z.forEach(e => {
       const n = V.get(U(e, t));void 0 !== n && n.keyString.forEach(t => {
         const { element: { content: e } } = t,
               n = new Set();Array.from(e.querySelectorAll("style")).forEach(t => {
@@ -382,17 +382,17 @@ class {
         }), u(t, n);
       });
     });
-  })(t);const a = s.content;n ? function (t, e, n = null) {
-    const { element: { content: s }, parts: i } = t;if (null == n) return void s.appendChild(e);const r = document.createTreeWalker(s, 133, null, !1);let o = p(i),
+  })(t);const a = i.content;n ? function (t, e, n = null) {
+    const { element: { content: i }, parts: s } = t;if (null == n) return void i.appendChild(e);const r = document.createTreeWalker(i, 133, null, !1);let o = p(s),
         a = 0,
         l = -1;for (; r.nextNode();) {
-      for (l++, r.currentNode === n && (a = h(e), n.parentNode.insertBefore(e, n)); -1 !== o && i[o].index === l;) {
+      for (l++, r.currentNode === n && (a = h(e), n.parentNode.insertBefore(e, n)); -1 !== o && s[o].index === l;) {
         if (a > 0) {
-          for (; -1 !== o;) i[o].index += a, o = p(i, o);return;
-        }o = p(i, o);
+          for (; -1 !== o;) s[o].index += a, o = p(s, o);return;
+        }o = p(s, o);
       }
     }
-  }(n, o, a.firstChild) : a.insertBefore(o, a.firstChild), window.ShadyCSS.prepareTemplateStyles(s, t);const l = a.querySelector("style");if (window.ShadyCSS.nativeShadow && null !== l) e.insertBefore(l.cloneNode(!0), e.firstChild);else if (n) {
+  }(n, o, a.firstChild) : a.insertBefore(o, a.firstChild), window.ShadyCSS.prepareTemplateStyles(i, t);const l = a.querySelector("style");if (window.ShadyCSS.nativeShadow && null !== l) e.insertBefore(l.cloneNode(!0), e.firstChild);else if (n) {
     a.insertBefore(o, a.firstChild);const t = new Set();t.add(o), u(n, t);
   }
 };window.JSCompiler_renameProperty = (t, e) => t;const I = { toAttribute(t, e) {
@@ -411,7 +411,7 @@ class {
     super(), this._updateState = 0, this._instanceProperties = void 0, this._updatePromise = new Promise(t => this._enableUpdatingResolver = t), this._changedProperties = new Map(), this._reflectingProperties = void 0, this.initialize();
   }static get observedAttributes() {
     this.finalize();const t = [];return this._classProperties.forEach((e, n) => {
-      const s = this._attributeNameForProperty(n, e);void 0 !== s && (this._attributeToPropertyMap.set(s, n), t.push(s));
+      const i = this._attributeNameForProperty(n, e);void 0 !== i && (this._attributeToPropertyMap.set(i, n), t.push(i));
     }), t;
   }static _ensureClassProperties() {
     if (!this.hasOwnProperty(JSCompiler_renameProperty("_classProperties", this))) {
@@ -419,12 +419,12 @@ class {
     }
   }static createProperty(t, e = L) {
     if (this._ensureClassProperties(), this._classProperties.set(t, e), e.noAccessor || this.prototype.hasOwnProperty(t)) return;const n = "symbol" == typeof t ? Symbol() : `__${t}`,
-          s = this.getPropertyDescriptor(t, n, e);void 0 !== s && Object.defineProperty(this.prototype, t, s);
+          i = this.getPropertyDescriptor(t, n, e);void 0 !== i && Object.defineProperty(this.prototype, t, i);
   }static getPropertyDescriptor(t, e, n) {
     return { get() {
         return this[e];
       }, set(n) {
-        const s = this[t];this[e] = n, this._requestUpdate(t, s);
+        const i = this[t];this[e] = n, this._requestUpdate(t, i);
       }, configurable: !0, enumerable: !0 };
   }static getPropertyOptions(t) {
     return this._classProperties && this._classProperties.get(t) || L;
@@ -439,11 +439,11 @@ class {
     return n(t, e);
   }static _propertyValueFromAttribute(t, e) {
     const n = e.type,
-          s = e.converter || I,
-          i = "function" == typeof s ? s : s.fromAttribute;return i ? i(t, n) : t;
+          i = e.converter || I,
+          s = "function" == typeof i ? i : i.fromAttribute;return s ? s(t, n) : t;
   }static _propertyValueToAttribute(t, e) {
     if (void 0 === e.reflect) return;const n = e.type,
-          s = e.converter;return (s && s.toAttribute || I.toAttribute)(t, n);
+          i = e.converter;return (i && i.toAttribute || I.toAttribute)(t, n);
   }initialize() {
     this._saveInstanceProperties(), this._requestUpdate();
   }_saveInstanceProperties() {
@@ -461,19 +461,19 @@ class {
   }disconnectedCallback() {}attributeChangedCallback(t, e, n) {
     e !== n && this._attributeToProperty(t, n);
   }_propertyToAttribute(t, e, n = L) {
-    const s = this.constructor,
-          i = s._attributeNameForProperty(t, n);if (void 0 !== i) {
-      const t = s._propertyValueToAttribute(e, n);if (void 0 === t) return;this._updateState = 8 | this._updateState, null == t ? this.removeAttribute(i) : this.setAttribute(i, t), this._updateState = -9 & this._updateState;
+    const i = this.constructor,
+          s = i._attributeNameForProperty(t, n);if (void 0 !== s) {
+      const t = i._propertyValueToAttribute(e, n);if (void 0 === t) return;this._updateState = 8 | this._updateState, null == t ? this.removeAttribute(s) : this.setAttribute(s, t), this._updateState = -9 & this._updateState;
     }
   }_attributeToProperty(t, e) {
     if (8 & this._updateState) return;const n = this.constructor,
-          s = n._attributeToPropertyMap.get(t);if (void 0 !== s) {
-      const t = n.getPropertyOptions(s);this._updateState = 16 | this._updateState, this[s] = n._propertyValueFromAttribute(e, t), this._updateState = -17 & this._updateState;
+          i = n._attributeToPropertyMap.get(t);if (void 0 !== i) {
+      const t = n.getPropertyOptions(i);this._updateState = 16 | this._updateState, this[i] = n._propertyValueFromAttribute(e, t), this._updateState = -17 & this._updateState;
     }
   }_requestUpdate(t, e) {
     let n = !0;if (void 0 !== t) {
-      const s = this.constructor,
-            i = s.getPropertyOptions(t);s._valueHasChanged(this[t], e, i.hasChanged) ? (this._changedProperties.has(t) || this._changedProperties.set(t, e), !0 !== i.reflect || 16 & this._updateState || (void 0 === this._reflectingProperties && (this._reflectingProperties = new Map()), this._reflectingProperties.set(t, i))) : n = !1;
+      const i = this.constructor,
+            s = i.getPropertyOptions(t);i._valueHasChanged(this[t], e, s.hasChanged) ? (this._changedProperties.has(t) || this._changedProperties.set(t, e), !0 !== s.reflect || 16 & this._updateState || (void 0 === this._reflectingProperties && (this._reflectingProperties = new Map()), this._reflectingProperties.set(t, s))) : n = !1;
     }!this._hasRequestedUpdate && n && (this._updatePromise = this._enqueueUpdate());
   }requestUpdate(t, e) {
     return this._requestUpdate(t, e), this.updateComplete;
@@ -546,9 +546,9 @@ found at http://polymer.github.io/PATENTS.txt
     return this.cssText;
   }
 }const Q = (t, ...e) => {
-  const n = e.reduce((e, n, s) => e + (t => {
+  const n = e.reduce((e, n, i) => e + (t => {
     if (t instanceof G) return t.cssText;if ("number" == typeof t) return t;throw new Error(`Value passed to 'css' function must be a 'css' function result: ${t}. Use 'unsafeCSS' to pass non-literal values, but\n            take care to ensure page security.`);
-  })(n) + t[s + 1], t[0]);return new G(n, K);
+  })(n) + t[i + 1], t[0]);return new G(n, K);
 };
 /**
  * @license
@@ -570,7 +570,7 @@ found at http://polymer.github.io/PATENTS.txt
     if (this.hasOwnProperty(JSCompiler_renameProperty("_styles", this))) return;const t = this.getStyles();if (void 0 === t) this._styles = [];else if (Array.isArray(t)) {
       const e = (t, n) => t.reduceRight((t, n) => Array.isArray(n) ? e(n, t) : (t.add(n), t), n),
             n = e(t, new Set()),
-            s = [];n.forEach(t => s.unshift(t)), this._styles = s;
+            i = [];n.forEach(t => i.unshift(t)), this._styles = i;
     } else this._styles = [t];
   }initialize() {
     super.initialize(), this.constructor._getUniqueStyles(), this.renderRoot = this.createRenderRoot(), window.ShadowRoot && this.renderRoot instanceof window.ShadowRoot && this.adoptStyles();
@@ -587,15 +587,15 @@ found at http://polymer.github.io/PATENTS.txt
   }render() {
     return X;
   }
-}tt.finalized = !0, tt.render = (t, e, s) => {
-  if (!s || "object" != typeof s || !s.scopeName) throw new Error("The `scopeName` option is required.");const i = s.scopeName,
+}tt.finalized = !0, tt.render = (t, e, i) => {
+  if (!i || "object" != typeof i || !i.scopeName) throw new Error("The `scopeName` option is required.");const s = i.scopeName,
         r = O.has(e),
         o = H && 11 === e.nodeType && !!e.host,
-        a = o && !$.has(i),
-        l = a ? document.createDocumentFragment() : e;if (((t, e, s) => {
-    let i = O.get(e);void 0 === i && (n(e, e.firstChild), O.set(e, i = new P(Object.assign({ templateFactory: D }, s))), i.appendInto(e)), i.setValue(t), i.commit();
-  })(t, l, Object.assign({ templateFactory: j(i) }, s)), a) {
-    const t = O.get(l);O.delete(l);const s = t.value instanceof y ? t.value.template : void 0;z(i, l, s), n(e, e.firstChild), e.appendChild(l), O.set(e, t);
+        a = o && !F.has(s),
+        l = a ? document.createDocumentFragment() : e;if (((t, e, i) => {
+    let s = O.get(e);void 0 === s && (n(e, e.firstChild), O.set(e, s = new P(Object.assign({ templateFactory: D }, i))), s.appendInto(e)), s.setValue(t), s.commit();
+  })(t, l, Object.assign({ templateFactory: j(s) }, i)), a) {
+    const t = O.get(l);O.delete(l);const i = t.value instanceof y ? t.value.template : void 0;$(s, l, i), n(e, e.firstChild), e.appendChild(l), O.set(e, t);
   }!r && o && window.ShadyCSS.styleElement(e.host);
 };
 /**
@@ -612,28 +612,28 @@ found at http://polymer.github.io/PATENTS.txt
  * http://polymer.github.io/PATENTS.txt
  */
 const et = new WeakMap(),
-      nt = (st = t => e => {
+      nt = (it = t => e => {
   const n = et.get(e);if (void 0 === t && e instanceof x) {
     if (void 0 !== n || !et.has(e)) {
       const t = e.committer.name;e.committer.element.removeAttribute(t);
     }
   } else t !== n && e.setValue(t);et.set(e, t);
 }, (...t) => {
-  const e = st(...t);return m.set(e, !0), e;
-});var st,
-    it = /d{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|Z|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g,
+  const e = it(...t);return m.set(e, !0), e;
+});var it,
+    st = /d{1,4}|M{1,4}|YY(?:YY)?|S{1,3}|Do|ZZ|Z|([HhMsDm])\1?|[aA]|"[^"]*"|'[^']*'/g,
     rt = "[^\\s]+",
     ot = /\[([^]*?)\]/gm;function at(t, e) {
-  for (var n = [], s = 0, i = t.length; s < i; s++) n.push(t[s].substr(0, e));return n;
+  for (var n = [], i = 0, s = t.length; i < s; i++) n.push(t[i].substr(0, e));return n;
 }var lt = function (t) {
   return function (e, n) {
-    var s = n[t].map(function (t) {
+    var i = n[t].map(function (t) {
       return t.toLowerCase();
-    }).indexOf(e.toLowerCase());return s > -1 ? s : null;
+    }).indexOf(e.toLowerCase());return i > -1 ? i : null;
   };
 };function dt(t) {
-  for (var e = [], n = 1; n < arguments.length; n++) e[n - 1] = arguments[n];for (var s = 0, i = e; s < i.length; s++) {
-    var r = i[s];for (var o in r) t[o] = r[o];
+  for (var e = [], n = 1; n < arguments.length; n++) e[n - 1] = arguments[n];for (var i = 0, s = e; i < s.length; i++) {
+    var r = s[i];for (var o in r) t[o] = r[o];
   }return t;
 }var ct = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
     ut = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
@@ -716,12 +716,12 @@ const et = new WeakMap(),
   }return 0;
 }],
     bt = (lt("monthNamesShort"), lt("monthNames"), { default: "ddd MMM DD YYYY HH:mm:ss", shortDate: "M/D/YY", mediumDate: "MMM D, YYYY", longDate: "MMMM D, YYYY", fullDate: "dddd, MMMM D, YYYY", isoDate: "YYYY-MM-DD", isoDateTime: "YYYY-MM-DDTHH:mm:ssZ", shortTime: "HH:mm", mediumTime: "HH:mm:ss", longTime: "HH:mm:ss.SSS" });var Ct = function (t, e, n) {
-  if (void 0 === e && (e = bt.default), void 0 === n && (n = {}), "number" == typeof t && (t = new Date(t)), "[object Date]" !== Object.prototype.toString.call(t) || isNaN(t.getTime())) throw new Error("Invalid Date pass to format");var s = [];e = (e = bt[e] || e).replace(ot, function (t, e) {
-    return s.push(e), "@@@";
-  });var i = dt(dt({}, mt), n);return (e = e.replace(it, function (e) {
-    return gt[e](t, i);
+  if (void 0 === e && (e = bt.default), void 0 === n && (n = {}), "number" == typeof t && (t = new Date(t)), "[object Date]" !== Object.prototype.toString.call(t) || isNaN(t.getTime())) throw new Error("Invalid Date pass to format");var i = [];e = (e = bt[e] || e).replace(ot, function (t, e) {
+    return i.push(e), "@@@";
+  });var s = dt(dt({}, mt), n);return (e = e.replace(st, function (e) {
+    return gt[e](t, s);
   })).replace(/@@@/g, function () {
-    return s.shift();
+    return i.shift();
   });
 },
     xt = (function () {
@@ -746,27 +746,29 @@ const et = new WeakMap(),
     Pt = { alert: "toggle", automation: "toggle", climate: "climate", cover: "cover", fan: "toggle", group: "group", input_boolean: "toggle", input_number: "input-number", input_select: "input-select", input_text: "input-text", light: "toggle", lock: "lock", media_player: "media-player", remote: "toggle", scene: "scene", script: "script", sensor: "sensor", timer: "timer", switch: "toggle", vacuum: "toggle", water_heater: "climate", input_datetime: "input-datetime" },
     Nt = function (t, e) {
   void 0 === e && (e = !1);var n = function (t, e) {
-    return s("hui-error-card", { type: "error", error: t, config: e });
+    return i("hui-error-card", { type: "error", error: t, config: e });
   },
-      s = function (t, e) {
-    var s = window.document.createElement(t);try {
-      s.setConfig(e);
-    } catch (s) {
-      return console.error(t, s), n(s.message, e);
-    }return s;
-  };if (!t || "object" != typeof t || !e && !t.type) return n("No type defined", t);var i = t.type;if (i && i.startsWith("custom:")) i = i.substr("custom:".length);else if (e) {
-    if (xt.has(i)) i = "hui-" + i + "-row";else {
-      if (!t.entity) return n("Invalid config given.", t);var r = t.entity.split(".", 1)[0];i = "hui-" + (Pt[r] || "text") + "-entity-row";
+      i = function (t, e) {
+    var i = window.document.createElement(t);try {
+      i.setConfig(e);
+    } catch (i) {
+      return console.error(t, i), n(i.message, e);
+    }return i;
+  };if (!t || "object" != typeof t || !e && !t.type) return n("No type defined", t);var s = t.type;if (s && s.startsWith("custom:")) s = s.substr("custom:".length);else if (e) {
+    if (xt.has(s)) s = "hui-" + s + "-row";else {
+      if (!t.entity) return n("Invalid config given.", t);var r = t.entity.split(".", 1)[0];s = "hui-" + (Pt[r] || "text") + "-entity-row";
     }
-  } else i = "hui-" + i + "-card";if (customElements.get(i)) return s(i, t);var o = n("Custom element doesn't exist: " + t.type + ".", t);o.style.display = "None";var a = setTimeout(function () {
+  } else s = "hui-" + s + "-card";if (customElements.get(s)) return i(s, t);var o = n("Custom element doesn't exist: " + t.type + ".", t);o.style.display = "None";var a = setTimeout(function () {
     o.style.display = "";
   }, 2e3);return customElements.whenDefined(t.type).then(function () {
-    clearTimeout(a), function (t, e, n, s) {
-      s = s || {}, n = null == n ? {} : n;var i = new Event(e, { bubbles: void 0 === s.bubbles || s.bubbles, cancelable: Boolean(s.cancelable), composed: void 0 === s.composed || s.composed });i.detail = n, t.dispatchEvent(i);
+    clearTimeout(a), function (t, e, n, i) {
+      i = i || {}, n = null == n ? {} : n;var s = new Event(e, { bubbles: void 0 === i.bubbles || i.bubbles, cancelable: Boolean(i.cancelable), composed: void 0 === i.composed || i.composed });s.detail = n, t.dispatchEvent(s);
     }(o, "ll-rebuild", {}, o);
   }), o;
-};console.info("%c STACK-IN-CARD \n%c   Version 0.1.0   ", "color: orange; font-weight: bold; background: black", "color: white; font-weight: bold; background: dimgray");const Mt = window.loadCardHelpers ? window.loadCardHelpers() : void 0;let Tt = class extends tt {
-  set hass(t) {
+};console.info("%c STACK-IN-CARD \n%c   Version 0.1.1   ", "color: orange; font-weight: bold; background: black", "color: white; font-weight: bold; background: dimgray");const Mt = window.loadCardHelpers ? window.loadCardHelpers() : void 0;let Tt = class extends tt {
+  constructor() {
+    super(...arguments), this._initialized = !1;
+  }set hass(t) {
     this._hass = t, this._card && (this._card.hass = t);
   }static get styles() {
     return Q`
@@ -775,24 +777,24 @@ const et = new WeakMap(),
       }
     `;
   }setConfig(t) {
-    var e, n;if (!t.cards) throw new Error("There is no cards parameter defined");this._config = Object.assign(Object.assign({ mode: "vertical" }, t), { keep: Object.assign({ background: !1, margin: !1, box_shadow: !1, border_radius: !1 }, t.keep) }), (null === (e = this._config.keep) || void 0 === e ? void 0 : e.margin) && void 0 === (null === (n = this._config.keep) || void 0 === n ? void 0 : n.outer_padding) && (this._config.keep.outer_padding = !0), this._createCard({ type: `${this._config.mode}-stack`, cards: this._config.cards }).then(t => {
+    var e, n;if (!t.cards) throw new Error("There is no cards parameter defined");this._config = Object.assign(Object.assign({ mode: "vertical" }, t), { keep: Object.assign({ background: !1, margin: !1, box_shadow: !1, border_radius: !1 }, t.keep) }), (null === (e = this._config.keep) || void 0 === e ? void 0 : e.margin) && void 0 === (null === (n = this._config.keep) || void 0 === n ? void 0 : n.outer_padding) && (this._config.keep.outer_padding = !0), this._initialized = !1;
+  }render() {
+    return this._hass && this._config ? (this._initialized || this._createCard({ type: `${this._config.mode}-stack`, cards: this._config.cards }).then(t => {
       this._card = t, this._waitForChildren(t, !1), window.setTimeout(() => {
-        var e, n, s, i, r;if ((null === (n = null === (e = this._config) || void 0 === e ? void 0 : e.keep) || void 0 === n ? void 0 : n.background) || this._waitForChildren(t, !0), (null === (i = null === (s = this._config) || void 0 === s ? void 0 : s.keep) || void 0 === i ? void 0 : i.outer_padding) && (null === (r = this._card) || void 0 === r ? void 0 : r.shadowRoot)) {
+        var e, n, i, s, r;if ((null === (n = null === (e = this._config) || void 0 === e ? void 0 : e.keep) || void 0 === n ? void 0 : n.background) || this._waitForChildren(t, !0), (null === (s = null === (i = this._config) || void 0 === i ? void 0 : i.keep) || void 0 === s ? void 0 : s.outer_padding) && (null === (r = this._card) || void 0 === r ? void 0 : r.shadowRoot)) {
           const t = this._card.shadowRoot.getElementById("root");t && (t.style.padding = "8px");
         }
-      }, 500);
-    });
-  }render() {
-    return this._hass && this._card && this._config ? Y`
+      }, 500), this._initialized = !0;
+    }), Y`
       <ha-card header=${nt(this._config.title)}>
         <div>${this._card}</div>
       </ha-card>
-    ` : Y``;
+    `) : Y``;
   }_updateStyle(t, e) {
-    var n, s, i, r, o, a;t && ((null === (s = null === (n = this._config) || void 0 === n ? void 0 : n.keep) || void 0 === s ? void 0 : s.box_shadow) || (t.style.boxShadow = "none"), !(null === (r = null === (i = this._config) || void 0 === i ? void 0 : i.keep) || void 0 === r ? void 0 : r.background) && e && "true" !== getComputedStyle(t).getPropertyValue("--keep-background").trim() && (t.style.background = "transparent"), (null === (a = null === (o = this._config) || void 0 === o ? void 0 : o.keep) || void 0 === a ? void 0 : a.border_radius) || (t.style.borderRadius = "0"));
+    var n, i, s, r, o, a;t && ((null === (i = null === (n = this._config) || void 0 === n ? void 0 : n.keep) || void 0 === i ? void 0 : i.box_shadow) || (t.style.boxShadow = "none"), !(null === (r = null === (s = this._config) || void 0 === s ? void 0 : s.keep) || void 0 === r ? void 0 : r.background) && e && "true" !== getComputedStyle(t).getPropertyValue("--keep-background").trim() && (t.style.background = "transparent"), (null === (a = null === (o = this._config) || void 0 === o ? void 0 : o.keep) || void 0 === a ? void 0 : a.border_radius) || (t.style.borderRadius = "0"));
   }_loopChildren(t, e) {
     t.childNodes.forEach(t => {
-      var n, s;"STACK-IN-CARD" !== t.tagName && (!(null === (s = null === (n = this._config) || void 0 === n ? void 0 : n.keep) || void 0 === s ? void 0 : s.margin) && t.style && (t.style.margin = "0px"), this._waitForChildren(t, e));
+      var n, i;"STACK-IN-CARD" !== t.tagName && (!(null === (i = null === (n = this._config) || void 0 === n ? void 0 : n.keep) || void 0 === i ? void 0 : i.margin) && t.style && (t.style.margin = "0px"), this._waitForChildren(t, e));
     });
   }_updateChildren(t, e) {
     if (t) if (t.shadowRoot) {
@@ -810,7 +812,7 @@ const et = new WeakMap(),
     }, { once: !0 }), e;
   }async _rebuildCard(t, e) {
     const n = await this._createCard(e);return t.replaceWith(n), this._card = n, window.setTimeout(() => {
-      var t, e, n, s, i;if ((null === (e = null === (t = this._config) || void 0 === t ? void 0 : t.keep) || void 0 === e ? void 0 : e.background) || this._waitForChildren(this._card, !0), (null === (s = null === (n = this._config) || void 0 === n ? void 0 : n.keep) || void 0 === s ? void 0 : s.outer_padding) && (null === (i = this._card) || void 0 === i ? void 0 : i.shadowRoot)) {
+      var t, e, n, i, s;if ((null === (e = null === (t = this._config) || void 0 === t ? void 0 : t.keep) || void 0 === e ? void 0 : e.background) || this._waitForChildren(this._card, !0), (null === (i = null === (n = this._config) || void 0 === n ? void 0 : n.keep) || void 0 === i ? void 0 : i.outer_padding) && (null === (s = this._card) || void 0 === s ? void 0 : s.shadowRoot)) {
         const t = this._card.shadowRoot.getElementById("root");t && (t.style.padding = "8px");
       }
     }, 500), n;
@@ -818,7 +820,7 @@ const et = new WeakMap(),
     return this._card && "function" == typeof this._card.getCardSize ? this._card.getCardSize() : 1;
   }
 };var Et;t([J()], Tt.prototype, "_card", void 0), t([J()], Tt.prototype, "_config", void 0), t([J()], Tt.prototype, "_hass", void 0), Tt = t([(Et = "stack-in-card", t => "function" == typeof t ? ((t, e) => (window.customElements.define(t, e), e))(Et, t) : ((t, e) => {
-  const { kind: n, elements: s } = e;return { kind: n, elements: s, finisher(e) {
+  const { kind: n, elements: i } = e;return { kind: n, elements: i, finisher(e) {
       window.customElements.define(t, e);
     } };
 })(Et, t))], Tt);
