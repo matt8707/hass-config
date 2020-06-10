@@ -33,6 +33,11 @@ sensor:
     name: hass_version_latest
     source: docker
 
+  - platform: version
+    name: hass_version_latest_beta
+    beta: true
+    source: docker
+
   - platform: filesize
     file_paths:
       - /config/home-assistant_v2.db
@@ -60,6 +65,15 @@ sensor:
     select: '.elspot-area-price'
     value_template: "{{ ((value.split(' ')[0]) | replace (',', '.'))}}"
     unit_of_measurement: 'öre/kWh'
+    scan_interval: 1800
+
+  - platform: rest
+    name: covid_19_folkhalsomyndigheten
+    resource: https://www.arcgis.com/sharing/rest/content/items/2dc63e26f509468f896ec69476b0dab3/data
+    value_template: "{% if value_json.embedCode == '' %} Otillgänglig {% else %} Tillgänglig {% endif %}"
+    json_attributes_path: $.widgets.widget_1.config
+    json_attributes: [embedCode]
+    scan_interval: 21600
 
   - platform: dnsip
 
@@ -77,7 +91,7 @@ sensor:
       'ramFreeMemory', 'ramTotalMemory', 'currentFragment']
     resource: !secret fullykiosk_rest_resource
     value_template: '{{ value_json.isScreenOn }}'
-    scan_interval: 3
+    scan_interval: 10
 
   - platform: rest
     name: docker_cpu
