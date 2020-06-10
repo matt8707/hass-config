@@ -508,7 +508,7 @@ e.defineLocale("zh-tw",{months:"一月_二月_三月_四月_五月_六月_七月
  * subject to an additional IP rights grant found at
  * http://polymer.github.io/PATENTS.txt
  */
-var l="{{lit-".concat(String(Math.random()).slice(2),"}}"),c="\x3c!--".concat(l,"--\x3e"),h=new RegExp("".concat(l,"|").concat(c)),M=function e(t,a){!function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}(this,e),this.parts=[],this.element=a;for(var n=[],s=[],r=document.createTreeWalker(a.content,133,null,!1),i=0,d=-1,_=0,o=t.strings,u=t.values.length;_<u;){var m=r.nextNode();if(null!==m){if(d++,1===m.nodeType){if(m.hasAttributes()){for(var c=m.attributes,M=c.length,y=0,f=0;f<M;f++)L(c[f].name,"$lit$")&&y++;for(;y-- >0;){var k=o[_],D=Y.exec(k)[2],g=D.toLowerCase()+"$lit$",v=m.getAttribute(g);m.removeAttribute(g);var T=v.split(h);this.parts.push({type:"attribute",index:d,name:D,strings:T}),_+=T.length-1}}"TEMPLATE"===m.tagName&&(s.push(m),r.currentNode=m.content)}else if(3===m.nodeType){var w=m.data;if(w.indexOf(l)>=0){for(var b=m.parentNode,S=w.split(h),H=S.length-1,j=0;j<H;j++){var x=void 0,P=S[j];if(""===P)x=p();else{var O=Y.exec(P);null!==O&&L(O[2],"$lit$")&&(P=P.slice(0,O.index)+O[1]+O[2].slice(0,-"$lit$".length)+O[3]),x=document.createTextNode(P)}b.insertBefore(x,m),this.parts.push({type:"node",index:++d})}""===S[H]?(b.insertBefore(p(),m),n.push(m)):m.data=S[H],_+=H}}else if(8===m.nodeType)if(m.data===l){var E=m.parentNode;null!==m.previousSibling&&d!==i||(d++,E.insertBefore(p(),m)),i=d,this.parts.push({type:"node",index:d}),null===m.nextSibling?m.data="":(n.push(m),d--),_++}else for(var W=-1;-1!==(W=m.data.indexOf(l,W+1));)this.parts.push({type:"node",index:-1}),_++}else r.currentNode=s.pop()}for(var A=0,F=n;A<F.length;A++){var z=F[A];z.parentNode.removeChild(z)}},L=function(e,t){var a=e.length-t.length;return a>=0&&e.slice(a)===t},y=function(e){return-1!==e.index},p=function(){return document.createComment("")},Y=/([ \x09\x0a\x0c\x0d])([^\0-\x1F\x7F-\x9F "'>=\/]+)([ \x09\x0a\x0c\x0d]*=[ \x09\x0a\x0c\x0d]*(?:[^ \x09\x0a\x0c\x0d"'`<>=]*|"[^"]*|'[^']*))$/;function f(e){return function(e){if(Array.isArray(e)){for(var t=0,a=new Array(e.length);t<e.length;t++)a[t]=e[t];return a}}(e)||function(e){if(Symbol.iterator in Object(e)||"[object Arguments]"===Object.prototype.toString.call(e))return Array.from(e)}(e)||function(){throw new TypeError("Invalid attempt to spread non-iterable instance")}()}function k(e,t){for(var a=0;a<t.length;a++){var n=t[a];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}
+var l="{{lit-".concat(String(Math.random()).slice(2),"}}"),c="\x3c!--".concat(l,"--\x3e"),h=new RegExp("".concat(l,"|").concat(c)),M=function e(t,a){!function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}(this,e),this.parts=[],this.element=a;for(var n=[],s=[],r=document.createTreeWalker(a.content,133,null,!1),i=0,d=-1,_=0,o=t.strings,u=t.values.length;_<u;){var m=r.nextNode();if(null!==m){if(d++,1===m.nodeType){if(m.hasAttributes()){for(var c=m.attributes,M=c.length,y=0,f=0;f<M;f++)L(c[f].name,"$lit$")&&y++;for(;y-- >0;){var k=o[_],D=Y.exec(k)[2],g=D.toLowerCase()+"$lit$",v=m.getAttribute(g);m.removeAttribute(g);var T=v.split(h);this.parts.push({type:"attribute",index:d,name:D,strings:T}),_+=T.length-1}}"TEMPLATE"===m.tagName&&(s.push(m),r.currentNode=m.content)}else if(3===m.nodeType){var w=m.data;if(w.indexOf(l)>=0){for(var b=m.parentNode,S=w.split(h),H=S.length-1,j=0;j<H;j++){var x=void 0,P=S[j];if(""===P)x=p();else{var O=Y.exec(P);null!==O&&L(O[2],"$lit$")&&(P=P.slice(0,O.index)+O[1]+O[2].slice(0,-"$lit$".length)+O[3]),x=document.createTextNode(P)}b.insertBefore(x,m),this.parts.push({type:"node",index:++d})}""===S[H]?(b.insertBefore(p(),m),n.push(m)):m.data=S[H],_+=H}}else if(8===m.nodeType)if(m.data===l){var E=m.parentNode;null!==m.previousSibling&&d!==i||(d++,E.insertBefore(p(),m)),i=d,this.parts.push({type:"node",index:d}),null===m.nextSibling?m.data="":(n.push(m),d--),_++}else for(var W=-1;-1!==(W=m.data.indexOf(l,W+1));)this.parts.push({type:"node",index:-1}),_++}else r.currentNode=s.pop()}for(var A=0,F=n;A<F.length;A++){var z=F[A];z.parentNode.removeChild(z)}},L=function(e,t){var a=e.length-t.length;return a>=0&&e.slice(a)===t},y=function(e){return-1!==e.index},p=function(){return document.createComment("")},Y=/([ \x09\x0a\x0c\x0d])([^\0-\x1F\x7F-\x9F "'>=/]+)([ \x09\x0a\x0c\x0d]*=[ \x09\x0a\x0c\x0d]*(?:[^ \x09\x0a\x0c\x0d"'`<>=]*|"[^"]*|'[^']*))$/;function f(e){return function(e){if(Array.isArray(e)){for(var t=0,a=new Array(e.length);t<e.length;t++)a[t]=e[t];return a}}(e)||function(e){if(Symbol.iterator in Object(e)||"[object Arguments]"===Object.prototype.toString.call(e))return Array.from(e)}(e)||function(){throw new TypeError("Invalid attempt to spread non-iterable instance")}()}function k(e,t){for(var a=0;a<t.length;a++){var n=t[a];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}
 /**
  * @license
  * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
@@ -744,17 +744,21 @@ var Ne,Ce=function(e,t){var a=e.startNode.parentNode,n=void 0===t?e.endNode:t.st
         border-style: solid;
         border-color: var(--accent-color);
         border-width: 1px 0 0 0;
-        margin-top: -7px;
-        margin-left: 0px;
         color: var(--primary-color);
+        display:inline-block;
+        position:relative;
+        top:-7px;
         width: 100%;
+        margin: 0;
     }
 
     .day-wrapper ha-icon.progress-bar {
-        height: 9px;
-        width: 9px;
-        margin-top: 2px;
+        display:block;
+        height:9px;
+        --mdc-icon-size: 9px;
         color: var(--accent-color);
+        position:relative;
+        top:5px;
     }
 
     .day-wrapper .overview {
@@ -778,9 +782,11 @@ var Ne,Ce=function(e,t){var a=e.startNode.parentNode,n=void 0===t?e.endNode:t.st
     }
 
     .event-origin ha-icon {
-        height: 13px;
-        margin-top: -3px;
+        position: relative;
+        top: -1px;
+        left: 4px;
         color: var(--accent-color);
+        --mdc-icon-size: 13px;
     }
 `,tt={title:"Calendar",numberOfDays:7,timeFormat:"HH:mma",dateTopFormat:"DD",dateBottomFormat:"ddd",hideTime:!1,progressBar:!1,showLocation:!1,showLocationIcon:!0,hidePastEvents:!1,showMultiDay:!1,eventsLimit:99,showEventOrigin:!1,hideHeader:!1,highlightToday:!1,ignoreEventsExpression:"",ignoreEventsByLocationExpression:"",removeFromEventTitle:"",maxHeight:!1,hardLimit:!1,hideDeclined:!1,notifyEntity:null,disableLinks:!1,notifyDateTimeFormat:"MM/DD/YYYY HH:mma",fullDayEventText:"All day",startText:"Start",endText:"End"};var at=xe`
     .entities {

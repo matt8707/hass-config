@@ -220,7 +220,7 @@ class HPDeviceData:
             )
 
             printer_jams = self.clean_parameter(printer_data, "Jams")
-            if printer_jams == "N/A":
+            if printer_jams == NOT_AVAILABLE:
                 printer_jams = self.clean_parameter(printer_data, "JamEvents", "0")
 
             cancelled_print_jobs_number = self.clean_parameter(
@@ -252,13 +252,13 @@ class HPDeviceData:
             scanner_jams = self.clean_parameter(scanner_data, "JamEvents", "0")
             scanner_mispick = self.clean_parameter(scanner_data, "MispickEvents", "0")
 
-            if scan_images_count == "N/A":
+            if scan_images_count == NOT_AVAILABLE:
                 new_scan_images_count = 0
 
-                if adf_images_count != "N/A" and int(adf_images_count) > 0:
+                if adf_images_count != NOT_AVAILABLE and int(adf_images_count) > 0:
                     new_scan_images_count = int(adf_images_count)
 
-                if flatbed_images != "N/A" and int(flatbed_images) > 0:
+                if flatbed_images != NOT_AVAILABLE and int(flatbed_images) > 0:
                     new_scan_images_count = new_scan_images_count + int(flatbed_images)
 
                 scan_images_count = new_scan_images_count
@@ -287,6 +287,11 @@ class HPDeviceData:
                 printer_consumable_data, "ConsumableTypeEnum"
             ).capitalize()
             station = self.clean_parameter(printer_consumable_data, "ConsumableStation")
+
+            if NOT_AVAILABLE in head_type.upper() or NOT_AVAILABLE in color:
+                _LOGGER.info(f"Skipped setting using data for {head_type} {color}")
+
+                return
 
             cartridge_key = f"{head_type} {color}"
 
@@ -371,6 +376,11 @@ class HPDeviceData:
                             f"Head type {head_type} color mapping for {consumable_label_code} not available"
                         )
 
+            if NOT_AVAILABLE in head_type.upper() or NOT_AVAILABLE in color:
+                _LOGGER.info(f"Skipped setting {head_type} {color}")
+
+                return
+
             cartridge_key = f"{head_type} {color}"
 
             should_create_cartridges = False
@@ -418,7 +428,7 @@ class HPDeviceData:
             )
 
     @staticmethod
-    def clean_parameter(data_item, data_key, default_value="N/A"):
+    def clean_parameter(data_item, data_key, default_value=NOT_AVAILABLE):
         if data_item is None:
             result = default_value
         else:

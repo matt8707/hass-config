@@ -210,7 +210,7 @@ class y {
       const t = this.value;this.value = _, t(this);
     }this.value !== _ && this.committer.commit();
   }
-}class M {
+}class C {
   constructor(t) {
     this.value = void 0, this.__pendingValue = void 0, this.options = t;
   }appendInto(t) {
@@ -241,11 +241,11 @@ class y {
     }
   }__commitIterable(t) {
     Array.isArray(this.value) || (this.value = [], this.clear());const e = this.value;let i,
-        n = 0;for (const s of t) i = e[n], void 0 === i && (i = new M(this.options), e.push(i), 0 === n ? i.appendIntoPart(this) : i.insertAfterPart(e[n - 1])), i.setValue(s), i.commit(), n++;n < e.length && (e.length = n, this.clear(i && i.endNode));
+        n = 0;for (const s of t) i = e[n], void 0 === i && (i = new C(this.options), e.push(i), 0 === n ? i.appendIntoPart(this) : i.insertAfterPart(e[n - 1])), i.setValue(s), i.commit(), n++;n < e.length && (e.length = n, this.clear(i && i.endNode));
   }clear(t = this.startNode) {
     i(this.startNode.parentNode, t.nextSibling, this.endNode);
   }
-}class O {
+}class M {
   constructor(t, e, i) {
     if (this.value = void 0, this.__pendingValue = void 0, 2 !== i.length || "" !== i[0] || "" !== i[1]) throw new Error("Boolean attributes can only contain a single expression");this.element = t, this.name = e, this.strings = i;
   }setValue(t) {
@@ -255,17 +255,17 @@ class y {
       const t = this.__pendingValue;this.__pendingValue = _, t(this);
     }if (this.__pendingValue === _) return;const t = !!this.__pendingValue;this.value !== t && (t ? this.element.setAttribute(this.name, "") : this.element.removeAttribute(this.name), this.value = t), this.__pendingValue = _;
   }
-}class N extends k {
+}class O extends k {
   constructor(t, e, i) {
     super(t, e, i), this.single = 2 === i.length && "" === i[0] && "" === i[1];
   }_createPart() {
-    return new C(this);
+    return new N(this);
   }_getValue() {
     return this.single ? this.parts[0].value : super._getValue();
   }commit() {
     this.dirty && (this.dirty = !1, this.element[this.name] = this._getValue());
   }
-}class C extends T {}let P = !1;(() => {
+}class N extends T {}let P = !1;(() => {
   try {
     const t = { get capture() {
         return P = !0, !1;
@@ -332,10 +332,10 @@ class y {
 class {
   handleAttributeExpressions(t, e, i, n) {
     const s = e[0];if ("." === s) {
-      return new N(t, e.slice(1), i).parts;
-    }return "@" === s ? [new A(t, e.slice(1), n.eventContext)] : "?" === s ? [new O(t, e.slice(1), i)] : new k(t, e, i).parts;
+      return new O(t, e.slice(1), i).parts;
+    }return "@" === s ? [new A(t, e.slice(1), n.eventContext)] : "?" === s ? [new M(t, e.slice(1), i)] : new k(t, e, i).parts;
   }handleTextExpression(t) {
-    return new M(t);
+    return new C(t);
   }
 }();
 /**
@@ -596,7 +596,7 @@ const K = "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleShe
         a = F && 11 === e.nodeType && !!e.host,
         o = a && !z.has(s),
         l = o ? document.createDocumentFragment() : e;if (((t, e, n) => {
-    let s = H.get(e);void 0 === s && (i(e, e.firstChild), H.set(e, s = new M(Object.assign({ templateFactory: $ }, n))), s.appendInto(e)), s.setValue(t), s.commit();
+    let s = H.get(e);void 0 === s && (i(e, e.firstChild), H.set(e, s = new C(Object.assign({ templateFactory: $ }, n))), s.appendInto(e)), s.setValue(t), s.commit();
   })(t, l, Object.assign({ templateFactory: L(s) }, n)), o) {
     const t = H.get(l);H.delete(l);const n = t.value instanceof y ? t.value.template : void 0;U(s, l, n), i(e, e.firstChild), e.appendChild(l), H.set(e, t);
   }!r && a && window.ShadyCSS.styleElement(e.host);
@@ -660,14 +660,14 @@ class nt {
  * http://polymer.github.io/PATENTS.txt
  */const st = new WeakMap(),
       rt = m(t => e => {
-  if (!(e instanceof T) || e instanceof C || "style" !== e.committer.name || e.committer.parts.length > 1) throw new Error("The `styleMap` directive must be used in the style attribute and must be the only part in the attribute.");const { committer: i } = e,
+  if (!(e instanceof T) || e instanceof N || "style" !== e.committer.name || e.committer.parts.length > 1) throw new Error("The `styleMap` directive must be used in the style attribute and must be the only part in the attribute.");const { committer: i } = e,
         { style: n } = i.element;let s = st.get(e);void 0 === s && (n.cssText = i.strings.join(" "), st.set(e, s = new Set())), s.forEach(e => {
     e in t || (s.delete(e), -1 === e.indexOf("-") ? n[e] = null : n.removeProperty(e));
   });for (const r in t) s.add(r), -1 === r.indexOf("-") ? n[r] = t[r] : n.setProperty(r, t[r]);
 }),
       at = new WeakMap(),
       ot = m(t => e => {
-  if (!(e instanceof M)) throw new Error("unsafeHTML can only be used in text bindings");const i = at.get(e);if (void 0 !== i && S(t) && t === i.value && e.value === i.fragment) return;const n = document.createElement("template");n.innerHTML = t;const s = document.importNode(n.content, !0);e.setValue(s), at.set(e, { value: t, fragment: s });
+  if (!(e instanceof C)) throw new Error("unsafeHTML can only be used in text bindings");const i = at.get(e);if (void 0 !== i && S(t) && t === i.value && e.value === i.fragment) return;const n = document.createElement("template");n.innerHTML = t;const s = document.importNode(n.content, !0);e.setValue(s), at.set(e, { value: t, fragment: s });
 });
 /**
  * @license
@@ -696,7 +696,7 @@ class lt {
   }
 }const ct = new WeakMap(),
       ht = m(t => e => {
-  if (!(e instanceof T) || e instanceof C || "class" !== e.committer.name || e.committer.parts.length > 1) throw new Error("The `classMap` directive must be used in the `class` attribute and must be the only part in the attribute.");const { committer: i } = e,
+  if (!(e instanceof T) || e instanceof N || "class" !== e.committer.name || e.committer.parts.length > 1) throw new Error("The `classMap` directive must be used in the `class` attribute and must be the only part in the attribute.");const { committer: i } = e,
         { element: n } = i;let s = ct.get(e);void 0 === s && (n.setAttribute("class", i.strings.join(" ")), ct.set(e, s = new Set()));const r = n.classList || new lt(n);s.forEach(e => {
     e in t || (r.remove(e), s.delete(e));
   });for (const a in t) {
@@ -787,17 +787,17 @@ class lt {
   return +t - 1;
 },
     Tt = [null, "[1-9]\\d?"],
-    Mt = [null, dt],
-    Ot = ["isPm", dt, function (t, e) {
+    Ct = [null, dt],
+    Mt = ["isPm", dt, function (t, e) {
   var i = t.toLowerCase();return i === e.amPm[0] ? 0 : i === e.amPm[1] ? 1 : null;
 }],
-    Nt = ["timezoneOffset", "[^\\s]*?[\\+\\-]\\d\\d:?\\d\\d|[^\\s]*?Z?", function (t) {
+    Ot = ["timezoneOffset", "[^\\s]*?[\\+\\-]\\d\\d:?\\d\\d|[^\\s]*?Z?", function (t) {
   var e = (t + "").match(/([+-]|\d\d)/gi);if (e) {
     var i = 60 * +e[1] + parseInt(e[2], 10);return "+" === e[0] ? i : -i;
   }return 0;
 }],
-    Ct = (mt("monthNamesShort"), mt("monthNames"), { default: "ddd MMM DD YYYY HH:mm:ss", shortDate: "M/D/YY", mediumDate: "MMM D, YYYY", longDate: "MMMM D, YYYY", fullDate: "dddd, MMMM D, YYYY", isoDate: "YYYY-MM-DD", isoDateTime: "YYYY-MM-DDTHH:mm:ssZ", shortTime: "HH:mm", mediumTime: "HH:mm:ss", longTime: "HH:mm:ss.SSS" });var Pt = function (t, e, i) {
-  if (void 0 === e && (e = Ct.default), void 0 === i && (i = {}), "number" == typeof t && (t = new Date(t)), "[object Date]" !== Object.prototype.toString.call(t) || isNaN(t.getTime())) throw new Error("Invalid Date pass to format");var n = [];e = (e = Ct[e] || e).replace(pt, function (t, e) {
+    Nt = (mt("monthNamesShort"), mt("monthNames"), { default: "ddd MMM DD YYYY HH:mm:ss", shortDate: "M/D/YY", mediumDate: "MMM D, YYYY", longDate: "MMMM D, YYYY", fullDate: "dddd, MMMM D, YYYY", isoDate: "YYYY-MM-DD", isoDateTime: "YYYY-MM-DDTHH:mm:ssZ", shortTime: "HH:mm", mediumTime: "HH:mm:ss", longTime: "HH:mm:ss.SSS" });var Pt = function (t, e, i) {
+  if (void 0 === e && (e = Nt.default), void 0 === i && (i = {}), "number" == typeof t && (t = new Date(t)), "[object Date]" !== Object.prototype.toString.call(t) || isNaN(t.getTime())) throw new Error("Invalid Date pass to format");var n = [];e = (e = Nt[e] || e).replace(pt, function (t, e) {
     return n.push(e), "@@@";
   });var s = gt(gt({}, wt), i);return (e = e.replace(ut, function (e) {
     return xt[e](t, s);
@@ -1173,13 +1173,13 @@ class lt {
     const s = t[n],
           r = i[n];Array.isArray(s) && Array.isArray(r) ? t[n] = s.concat(...r) : e(s) && e(r) ? t[n] = Te(s, r) : t[n] = r;
   }), t), {});
-}function Me(t, e) {
+}function Ce(t, e) {
   let i = [];return t && t.forEach(t => {
     let n = t;e && e.forEach(e => {
       e.id && t.id && e.id == t.id && (n = Te(n, e));
     }), i.push(n);
   }), e && (i = i.concat(e.filter(e => !t || !t.find(t => !(!t.id || !e.id) && t.id == e.id)))), i;
-}const Oe = ((t, ...e) => {
+}const Me = ((t, ...e) => {
   const i = e.reduce((e, i, n) => e + (t => {
     if (t instanceof tt) return t.cssText;if ("number" == typeof t) return t;throw new Error(`Value passed to 'css' function must be a 'css' function result: ${t}. Use 'unsafeCSS' to pass non-literal values, but\n            take care to ensure page security.`);
   })(i) + t[n + 1], t[0]);return new tt(i, Q);
@@ -1582,7 +1582,7 @@ class lt {
       height: 100%;
     }
   }
-`;const Ne = (t, e, i, n) => {
+`;const Oe = (t, e, i, n) => {
   if (!((t, e, i) => {
     const [n, s] = t.split(".", 2);return Number(n) > e || Number(n) === e && Number(s) >= i;
   })(t.config.version, 0, 109)) return function (t, e) {
@@ -1592,23 +1592,25 @@ class lt {
       const e = new Date();return t = new Date(e.getFullYear(), e.getMonth(), e.getDay(), i.attributes.hour, i.attributes.minute), jt(t, n);
     }return t = new Date(i.attributes.year, i.attributes.month - 1, i.attributes.day, i.attributes.hour, i.attributes.minute), $t(t, n);
   }return i.attributes.device_class && e(`component.${s}.state.${i.attributes.device_class}.${i.state}`) || e(`component.${s}.state._.${i.state}`) || i.state;
-};let Ce = window.cardHelpers;const Pe = new Promise(async t => {
-  Ce && t(), window.loadCardHelpers && (Ce = await window.loadCardHelpers(), window.cardHelpers = Ce, t());
-});console.info("%c  BUTTON-CARD  \n%c Version 3.3.5 ", "color: orange; font-weight: bold; background: black", "color: white; font-weight: bold; background: dimgray");let Ae = class extends it {
+};let Ne = window.cardHelpers;const Pe = new Promise(async t => {
+  Ne && t(), window.loadCardHelpers && (Ne = await window.loadCardHelpers(), window.cardHelpers = Ne, t());
+});console.info("%c  BUTTON-CARD  \n%c Version 3.3.6 ", "color: orange; font-weight: bold; background: black", "color: white; font-weight: bold; background: dimgray");let Ae = class extends it {
   constructor() {
-    super(...arguments), this._cards = [], this._entities = [], this._rippleHandlers = new nt(() => this._ripple);
+    super(...arguments), this._cards = {}, this._cardsConfig = {}, this._entities = [], this._initial_setup_complete = !1, this._rippleHandlers = new nt(() => this._ripple);
   }set hass(t) {
-    this._hass = t;for (const e of this._cards) {
-      e.hass = this._hass;
-    }
+    this._hass = t, Object.keys(this._cards).forEach(t => {
+      this._cards[t].hass = this._hass;
+    }), this._initial_setup_complete || this._initConnected();
   }disconnectedCallback() {
     super.disconnectedCallback(), this._clearInterval();
   }connectedCallback() {
-    if (super.connectedCallback(), this._hass && this._config && this._config.entity && "timer" === Se(this._config.entity)) {
+    super.connectedCallback(), this._initial_setup_complete || this._initConnected();
+  }_initConnected() {
+    if (void 0 !== this.hass && void 0 !== this._config && this.isConnected && (this._initial_setup_complete = !0, this._config.entity && "timer" === Se(this._config.entity))) {
       const t = this._hass.states[this._config.entity];this._startInterval(t);
     }
   }_createCard(t) {
-    if (Ce) return Ce.createCardElement(t);{
+    if (Ne) return Ne.createCardElement(t);{
       const e = function (t, e) {
         void 0 === e && (e = !1);var i = function (t, e) {
           return n("hui-error-card", { type: "error", error: t, config: e });
@@ -1633,10 +1635,10 @@ class lt {
       }), e;
     }
   }static get styles() {
-    return Oe;
+    return Me;
   }render() {
-    this._stateObj = this._config.entity ? this._hass.states[this._config.entity] : void 0;try {
-      return this._cards = [], this._evaledVariables = this._config.variables ? this._objectEvalTemplate(this._stateObj, this._config.variables) : void 0, this._config && this._hass ? this._cardHtml() : V``;
+    if (!this._config || !this._hass) return V``;this._stateObj = this._config.entity ? this._hass.states[this._config.entity] : void 0;try {
+      return this._evaledVariables = this._config.variables ? this._objectEvalTemplate(this._stateObj, this._config.variables) : void 0, this._cardHtml();
     } catch (t) {
       t.stack ? console.error(t.stack) : console.error(t);const e = document.createElement("hui-error-card");return e.setConfig({ type: "error", error: t.toString(), origConfig: this._config }), V`
         ${e}
@@ -1737,7 +1739,7 @@ class lt {
     if (!1 === this._config.show_name) return;let i;var n;return e && e.name ? i = e.name : this._config.name ? i = this._config.name : t && (i = t.attributes && t.attributes.friendly_name ? t.attributes.friendly_name : (n = t.entity_id).substr(n.indexOf(".") + 1)), this._getTemplateOrValue(t, i);
   }_buildStateString(t) {
     var e;let i;if (this._config.show_state && t && t.state) {
-      const n = this._buildUnits(t);n ? i = `${t.state} ${n}` : "timer" === Se(t.entity_id) ? "idle" === t.state || 0 === this._timeRemaining ? i = Ne(this._hass, this._hass.localize, t, this._hass.language) : (i = this._computeTimeDisplay(t), "paused" === t.state && (i += ` (${Ne(this._hass, this._hass.localize, t, this._hass.language)})`)) : i = (null === (e = this._config) || void 0 === e ? void 0 : e.show_units) || "sensor" !== Se(t.entity_id) ? Ne(this._hass, this._hass.localize, t, this._hass.language) : t.state;
+      const n = this._buildUnits(t);n ? i = `${t.state} ${n}` : "timer" === Se(t.entity_id) ? "idle" === t.state || 0 === this._timeRemaining ? i = Oe(this._hass, this._hass.localize, t, this._hass.language) : (i = this._computeTimeDisplay(t), "paused" === t.state && (i += ` (${Oe(this._hass, this._hass.localize, t, this._hass.language)})`)) : i = (null === (e = this._config) || void 0 === e ? void 0 : e.show_units) || "sensor" !== Se(t.entity_id) ? Oe(this._hass, this._hass.localize, t, this._hass.language) : t.state;
     }return i;
   }_buildUnits(t) {
     let e;return t && this._config.show_units && (e = t.attributes && t.attributes.unit_of_measurement && !this._config.units ? t.attributes.unit_of_measurement : this._config.units ? this._config.units : void 0), e;
@@ -1770,8 +1772,7 @@ class lt {
       }
     }), Object.keys(s).forEach(n => {
       if (null != s[n]) {
-        const r = Object.assign(Object.assign({}, this._buildCustomStyleGeneric(t, e, n)), { "grid-area": n }),
-              a = this._createCard(s[n]);this._cards.push(a), a.hass = this._hass, i = V`
+        const r = Object.assign(Object.assign({}, this._buildCustomStyleGeneric(t, e, n)), { "grid-area": n });let a;const o = JSON.stringify(s[n]);this._cardsConfig[n] !== o ? (a = this._createCard(s[n]), this._cards[n] = a, this._cardsConfig[n] = o) : a = this._cards[n], a.hass = this._hass, i = V`
           ${i}
           <div
             id=${n}
@@ -1932,10 +1933,10 @@ class lt {
   }_configFromLLTemplates(t, e) {
     const i = e.template;if (!i) return e;let n,
         s = {};const r = i && Array.isArray(i) ? i : [i];return null == r || r.forEach(e => {
-      if (!t.config.button_card_templates || !t.config.button_card_templates[e]) throw new Error(`Button-card template '${e}' is missing!`);const i = this._configFromLLTemplates(t, t.config.button_card_templates[e]);s = Te(s, i), n = Me(n, i.state);
-    }), s = Te(s, e), s.state = Me(n, e.state), s;
+      if (!t.config.button_card_templates || !t.config.button_card_templates[e]) throw new Error(`Button-card template '${e}' is missing!`);const i = this._configFromLLTemplates(t, t.config.button_card_templates[e]);s = Te(s, i), n = Ce(n, i.state);
+    }), s = Te(s, e), s.state = Ce(n, e.state), s;
   }setConfig(t) {
-    if (!t) throw new Error("Invalid configuration");const e = function () {
+    if (!t) throw new Error("Invalid configuration");this._cards = {}, this._cardsConfig = {};const e = function () {
       var t = document.querySelector("home-assistant");if (t = (t = (t = (t = (t = (t = (t = (t = t && t.shadowRoot) && t.querySelector("home-assistant-main")) && t.shadowRoot) && t.querySelector("app-drawer-layout partial-panel-resolver")) && t.shadowRoot || t) && t.querySelector("ha-panel-lovelace")) && t.shadowRoot) && t.querySelector("hui-root")) {
         var e = t.lovelace;return e.current_view = t.___curView, e;
       }return null;
@@ -1949,7 +1950,7 @@ class lt {
             i = n.match(t);null == i || i.forEach(t => {
         const i = t.match(e);i && !this._entities.includes(i[2]) && this._entities.push(i[2]);
       });
-    }this._config.entity && !this._entities.includes(this._config.entity) && this._entities.push(this._config.entity);const s = new RegExp("\\[\\[\\[.*\\]\\]\\]", "gm");this._hasTemplate = !("all" !== this._config.triggers_update || !n.match(s));
+    }this._config.entity && !this._entities.includes(this._config.entity) && this._entities.push(this._config.entity);const s = new RegExp("\\[\\[\\[.*\\]\\]\\]", "gm");this._hasTemplate = !("all" !== this._config.triggers_update || !n.match(s)), this._initial_setup_complete || this._initConnected();
   }getCardSize() {
     return 3;
   }_evalActions(t, e) {

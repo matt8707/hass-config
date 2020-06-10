@@ -67,7 +67,7 @@ class ValetudoMapCard extends HTMLElement {
     return (x < this._config.crop.left) || (x > drawnMapCanvas.width) || (y < config.crop.top) || (y > drawnMapCanvas.height);
   };
 
-  drawMap(mapContainer, mapData, mapHeight, mapWidth, floorColor, obstacleWeakColor, obstacleStrongColor, noGoAreaColor, virtualWallColor, pathColor, chargerColor, vacuumColor) {
+  drawMap(mapContainer, mapData, mapHeight, mapWidth, floorColor, obstacleWeakColor, obstacleStrongColor, currentlyCleanedZonesColor, noGoAreaColor, virtualWallColor, pathColor, chargerColor, vacuumColor) {
     // Points to pixels
     const widthScale = 50 / this._config.map_scale;
     const heightScale = 50 / this._config.map_scale;
@@ -177,6 +177,22 @@ class ValetudoMapCard extends HTMLElement {
       };
     };
 
+    if (mapData.attributes.currently_cleaned_zones && this._config.show_currently_cleaned_zones) {
+      mapCtx.strokeStyle = currentlyCleanedZonesColor;
+      mapCtx.lineWidth = 1;
+      mapCtx.fillStyle = currentlyCleanedZonesColor;
+      mapCtx.beginPath();
+      for (let item of mapData.attributes.currently_cleaned_zones) {
+        let x1 = Math.floor(item[0] / widthScale) - leftOffset;
+        let y1 = Math.floor(item[1] / heightScale) - topOffset;
+        let x2 = Math.floor(item[2] / widthScale) - leftOffset;
+        let y2 = Math.floor(item[3] / heightScale) - topOffset;
+        mapCtx.fillRect(x1, y1, x2 - x1, y2 - y1);
+        if (this.isOutsideBounds(x1, y1, drawnMapCanvas, this._config)) continue;
+        if (this.isOutsideBounds(x2, y2, drawnMapCanvas, this._config)) continue;
+      };
+    };
+
     if (mapData.attributes.no_go_areas && this._config.show_no_go_areas) {
       mapCtx.strokeStyle = noGoAreaColor;
       mapCtx.lineWidth = 1;
@@ -268,6 +284,7 @@ class ValetudoMapCard extends HTMLElement {
     if (this._config.show_vacuum === undefined) this._config.show_vacuum = true;
     if (this._config.show_weak_obstacles === undefined) this._config.show_weak_obstacles = true;
     if (this._config.show_strong_obstacles === undefined) this._config.show_strong_obstacles = true;
+    if (this._config.show_currently_cleaned_zones === undefined) this._config.show_currently_cleaned_zones = true;
     if (this._config.show_no_go_areas === undefined) this._config.show_no_go_areas = true;
     if (this._config.show_virtual_walls === undefined) this._config.show_virtual_walls = true;
     if (this._config.show_path === undefined) this._config.show_path = true;
@@ -390,6 +407,7 @@ class ValetudoMapCard extends HTMLElement {
       const floorColor = this.calculateColor(homeAssistant, this._config.floor_color, '--valetudo-map-floor-color', '--secondary-background-color');
       const obstacleWeakColor = this.calculateColor(homeAssistant, this._config.obstacle_weak_color, '--valetudo-map-obstacle-weak-color', '--divider-color');
       const obstacleStrongColor = this.calculateColor(homeAssistant, this._config.obstacle_strong_color, '--valetudo-map-obstacle-strong-color', '--accent-color');
+      const currentlyCleanedZonesColor = this.calculateColor(homeAssistant, this._config.currently_cleaned_zones_color, '--valetudo-currently_cleaned_zones_color', '--secondary-text-color');
       const noGoAreaColor = this.calculateColor(homeAssistant, this._config.no_go_area_color, '--valetudo-no-go-area-color', '--accent-color');
       const virtualWallColor = this.calculateColor(homeAssistant, this._config.virtual_wall_color, '--valetudo-virtual-wall-color', '--accent-color');
       const pathColor = this.calculateColor(homeAssistant, this._config.path_color, '--valetudo-map-path-color', '--primary-text-color');
@@ -401,7 +419,7 @@ class ValetudoMapCard extends HTMLElement {
         // Start drawing map
         this.drawingMap = true;
 
-        this.drawMap(this.mapContainer, mapEntity, mapHeight, mapWidth, floorColor, obstacleWeakColor, obstacleStrongColor, noGoAreaColor, virtualWallColor, pathColor, chargerColor, vacuumColor);
+        this.drawMap(this.mapContainer, mapEntity, mapHeight, mapWidth, floorColor, obstacleWeakColor, obstacleStrongColor, currentlyCleanedZonesColor, noGoAreaColor, virtualWallColor, pathColor, chargerColor, vacuumColor);
 
         // Done drawing map
         this.lastUpdatedMap = mapEntity.last_updated;

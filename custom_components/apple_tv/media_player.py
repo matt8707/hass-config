@@ -3,7 +3,7 @@ import logging
 
 from pyatv.const import DeviceState, FeatureName, FeatureState, MediaType
 
-from homeassistant.components.media_player import MediaPlayerDevice
+from homeassistant.components.media_player import MediaPlayerEntity
 from homeassistant.components.media_player.const import (
     ATTR_MEDIA_ALBUM_NAME,
     ATTR_MEDIA_ARTIST,
@@ -59,7 +59,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async_add_entities([AppleTvDevice(name, identifier, manager)])
 
 
-class AppleTvDevice(MediaPlayerDevice):
+class AppleTvDevice(MediaPlayerEntity):
     """Representation of an Apple TV device."""
 
     def __init__(self, name, identifier, manager):
