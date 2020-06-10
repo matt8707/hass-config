@@ -55,7 +55,7 @@ switch:
           service: script.tv_off
 
       tv2_template:
-        friendly_name: 'Tv\u00B2'
+        friendly_name: "Tv\u00B2"
         icon_template: custom:tv
         value_template: "{{ is_state('media_player.samsung', 'on') }}"
         turn_on:
