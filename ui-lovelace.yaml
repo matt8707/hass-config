@@ -14,7 +14,7 @@ custom_header:
         kiosk_mode: false
 
 preload_cards:
-  [map, iframe]
+  [map, iframe, markdown]
 preload_rows:
   [input-select-entity]
 
@@ -334,12 +334,17 @@ views:
             $: |
               #image {pointer-events: none;}
 
-          "#root > hui-markdown-card, #root > hui-element > hui-markdown-card":
+          "#root > hui-markdown-card, #key1":
             $: |
               ha-card > ha-markdown {padding: 0 !important;}
-              ha-card > ha-markdown > p > font > ha-icon {vertical-align: 3%; opacity: 0.6;}
-              ha-card > ha-markdown > p > span {font-family: SF Text; font-size: 5vw; 
-              font-weight: 200; margin-left: -0.3vw; letter-spacing: -0.05vw;}
+
+          "#root > hui-markdown-card, #key2":
+            $:
+              "ha-card > ha-markdown":
+                $: |
+                  ha-markdown-element > font > ha-icon {vertical-align: 3%; opacity: 0.6;}
+                  ha-markdown-element > p > span {font-family: SF Text; font-size: 5vw; 
+                  font-weight: 200; margin-left: -0.3vw; letter-spacing: -0.05vw;}
 
           "#root > hui-state-label-element":
             $: |
@@ -360,39 +365,22 @@ views:
 
           - type: custom:hui-markdown-card
             style:
-              top: 93.5%
-              left: 70.2%
-              width: 90vw
-              height: 1px
-              --mdc-icon-size: 1.2vw
-              --ha-card-background: none
-              --ha-card-box-shadow: none
-              --primary-text-color: '#6a7377'
-              font-family: SF Display
-              font-size: 1.15vw
-              font-weight: 400
-              letter-spacing: 0.06vw
-              line-height: 2.05vw
-              opacity: 0.5
+              {top: 93.65%, left: 70.2%, width: 90vw, height: 1px, --mdc-icon-size: 1.2vw, --ha-card-background: none, 
+              --ha-card-box-shadow: none, --primary-text-color: '#6a7377', font-family: SF Display, font-size: 1.26vw, 
+              font-weight: 400, letter-spacing: 0.065vw, line-height: 2.05vw, opacity: 0.5}
             content: >
-              {% if is_state('sensor.sweden_coronavirus_current', 
-              'unavailable') %} {% else %}
-              <font color='#6a7377'>
-              <ha-icon icon="custom:corona-virus"></ha-icon> <b>Coronavirus</b>
-              ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
-              <ha-icon icon="mdi:emoticon-sad"></ha-icon> 
-              <b>{{ states('sensor.sweden_coronavirus_current') }}</b> smittade
-              ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
-              <ha-icon icon="mdi:chart-bar"></ha-icon> 
-              <b>{{ ((states('sensor.sweden_coronavirus_confirmed')
-              | int / 10327589 ) * 100) | round(2) }}%</b> av Sverige
-              ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
-              <ha-icon icon="mdi:emoticon-happy"></ha-icon> 
-              <b>{{ states('sensor.sweden_coronavirus_recovered') }}</b> tillfrisknade
-              ‍  ‍  ‍   ‍  ‍  ‍ <font color='#2f3436'>|‍</font>  ‍  ‍  ‍   ‍  ‍  ‍ 
-              <ha-icon icon="mdi:grave-stone"></ha-icon> 
-              <b>{{ states('sensor.sweden_coronavirus_deaths') }}</b> avlidna
-              </font>
+              {% if is_state('sensor.covid_19_folkhalsomyndigheten', 'Tillgänglig') %}
+                {% set data = state_attr('sensor.covid_19_folkhalsomyndigheten', 'embedCode') %}
+                {% set total = data | regex_findall_index('Totalt[^,]*?(\d+)[^,]*?(\d+)[^,]*?(\d+)') | list %}
+                {% set break = ' ‍ ‍ ‍ ‍ ‍ ‍<font color="#2f3436">|</font> ‍ ‍ ‍ ‍ ‍ ‍' %}
+                <font color='#6a7377'>
+                <ha-icon icon="custom:corona-virus"></ha-icon> <b>Coronavirus</b>{{ break -}}
+                <ha-icon icon="mdi:chart-bar"></ha-icon> <b>{{ ((total[0] | int / 10327589) * 100) | round(2) }}%</b> av Sverige{{ break -}}
+                <ha-icon icon="mdi:emoticon-sad"></ha-icon> <b>{{ total[0] }}</b> fall{{ break -}}
+                <ha-icon icon="mdi:grave-stone"></ha-icon> <b>{{ total[2] }}</b> avlidna{{ break -}}
+                <ha-icon icon="mdi:map-marker-radius"></ha-icon> <b>{{ data | regex_findall_index('Skåne[^,]*?(\d+)') }}</b> fall i Skåne
+                </font>
+              {% else %}
               {% endif %}
 
           ##########################################################################
@@ -408,11 +396,7 @@ views:
             hold_action:
               action: none
             style:
-              top: 50%
-              left: 10.6%
-              width: 21.5%
-              pointer-events: none
-              border-right: 1.5px solid rgba(58,69,73,0.2)
+              {top: 50%, left: 10.6%, width: 21.5%, pointer-events: none, border-right: '1.5px solid rgba(58,69,73,0.2)'}
 
           #################################################
           #                                               #
@@ -420,22 +404,11 @@ views:
           #                                               #
           #################################################
 
-          - type: custom:hui-element
-            card_type: markdown
+          - type: custom:hui-markdown-card
             style:
-              top: 9%
-              left: 11.1%
-              width: 15.5vw
-              height: 1px
-              --ha-card-background: none
-              --ha-card-box-shadow: none
-              --primary-text-color: rgba(255, 255, 255, 0.9)
-              font-family: SF Display
-              font-size: 1.5vw
-              font-weight: 300
-              letter-spacing: 0.06vw
-              line-height: 2.05vw
-              opacity: 0.75
+              {top: 9%, left: 11.1%, width: 15.5vw, height: 1px, --ha-card-background: none, --ha-card-box-shadow: none, 
+              --primary-text-color: 'rgba(255, 255, 255, 0.9)', font-family: SF Display, font-size: 1.5vw, font-weight: 300, 
+              letter-spacing: 0.06vw, line-height: 2.05vw, opacity: 0.75}
             content: >
               <span>{{ states('sensor.time') }}</span>
 
@@ -492,38 +465,22 @@ views:
             elements:
               - type: custom:stack-in-card
                 style:
-                  --ha-card-background: '#5a1f1f'
-                  --ha-card-box-shadow: none
-                  filter: 'drop-shadow(0 0 1vw #1e1e1e)'
-                  --primary-text-color: rgba(255, 255, 255, 0.9)
-                  font-family: SF Display
-                  font-size: 1.3vw
-                  font-weight: 300
-                  height: 1px
-                  max-height: 4vw
-                  left: 10.7%
-                  letter-spacing: 0.06vw
-                  line-height: 1.7vw
-                  max-width: 17vw
-                  position: absolute
-                  top: 18%
-                  width: 17.5vw
-                  hyphens: auto
-                  z-index: 10
-                  --ha-card-border-radius: 0.7vw
-                  --ha-card-border: '0.1vw solid #292c2e'
+                  {--ha-card-background: '#5a1f1f', --ha-card-box-shadow: none, filter: 'drop-shadow(0 0 1vw #1e1e1e)', 
+                  --primary-text-color: 'rgba(255, 255, 255, 0.9)', font-family: SF Display, font-size: 1.3vw, font-weight: 300, 
+                  height: 1px, max-height: 4vw, left: 10.7%, letter-spacing: 0.06vw, line-height: 1.7vw, max-width: 17vw, 
+                  position: absolute, top: 18%, width: 17.5vw, hyphens: auto, z-index: 10, --ha-card-border-radius: 0.7vw, 
+                  --ha-card-border: '0.1vw solid #292c2e'}
                 cards:
 
                 - type: custom:hui-element
                   card_type: markdown
-                  style: "ha-card {padding: 0.4vw;}"
+                  style: "ha-card {padding: 0.6vw;}"
                   content: >
                     {% if is_state_attr('sensor.krisinformation_sverige', 'messages', []) %}
                     {% else %}
                       {{'\u26A0\uFE0F'}} <b>Krisinformation</b><br>
                       {{ as_timestamp(state_attr('sensor.krisinformation_sverige', 
-                      'messages')[0]["Published"]) | timestamp_custom('%Y-%m-%d') }}<br>
-                      {{ state_attr('sensor.krisinformation_sverige', 
+                      'messages')[0]["Published"]) | timestamp_custom('%Y-%m-%d') }}. {{ state_attr('sensor.krisinformation_sverige', 
                       'messages')[0]["Message"] | truncate(280, True, '...', 0) }}
                     {% endif %}
 
@@ -540,7 +497,8 @@ views:
                       [font-size: 1.5vw, background: '#FFFFFF15', border-radius: 0.6vw, font-weight: 500, 
                       letter-spacing: 0.09vw, opacity: 0.65, padding: 0.7vw 1vw 0.8vw 1vw, font-family: SF Display]
                     card:
-                      [width: 4.5vw, height: 5vw, margin-top: -0.5vw, padding-bottom: 1vw, margin-left: 138%]
+                      [width: 4.5vw, height: 6vw, margin-top: -0.5vw, padding-bottom: 1vw, 
+                      margin-left: 138%, --mdc-ripple-press-opacity: 0]
 
           #################################################
           #                                               #
@@ -568,12 +526,12 @@ views:
                     hass.callService('input_boolean', 'turn_off', {entity_id: 'input_boolean.laundry_timer_visibility'}); ]]]
                 styles:
                   card:
-                    [background: '#202a2f30', border-radius: 0.7vw, box-shadow: none, border: '0.1vw solid #292c2e']
+                    [background: '#202a2f30', border-radius: 0.7vw, box-shadow: none, border: '0.2vw solid #292c2e']
                   state:
-                    [font-size: 2.5vw, font-weight: 500, letter-spacing: 0.09vw, opacity: 0.65, padding: 0.5vw 1vw 0.5vw 1vw]
+                    [font-size: 2.7vw, font-family: SF Mono, opacity: 0.65, padding: 0.55vw 1.2vw 0.5vw 1.2vw]
                 style:
-                  top: 78%
-                  left: 10.8%
+                  top: 77%
+                  left: 10.7%
                   font-size: 1.6vw
 
           #################################################
@@ -1025,7 +983,7 @@ views:
             custom_fields:
               icon_fan: >
                 [[[ const path = '<circle cx="25" cy="25" r="6.6"/> <path d="M31.9 30.4c-.5.6-1.1 1.1-1.7 1.5-1.4 1.1-3.2 1.7-5.2 1.7-2.3 0-4.5-.9-6-2.4-.9 1.1-1.6 2.3-2.3 3.2l-4.9 5.4c-1.8 2.7.3 5.6 2.5 7 3.9 2.4 9.8 3.1 14.1 1.9 4.6-1.3 7.9-4.7 7.4-9.7-.2-3.4-1.9-6-3.9-8.6zM17 28.3c-.4-1-.6-2.1-.6-3.3a8.7 8.7 0 0 1 6.4-8.4l-1.6-3.5L19 6.2c-1.5-2.8-5-2.5-7.3-1.2-4 2.2-7.5 6.9-8.7 11.3-1.2 4.6.2 9.2 4.7 11.3 3.1 1.3 6.1 1.2 9.3.7zm26.9-17.6c-3.3-3.4-8-4.6-12.1-1.8-2.8 1.8-4.2 4.6-5.5 7.5 4.2.6 7.4 4.2 7.4 8.6 0 .9-.1 1.7-.4 2.5 1.3.2 2.8.3 3.8.4 2.3.4 4.7 1.3 7.1 1.7 3.2.3 4.7-3 4.8-5.6.3-4.6-1.9-10.1-5.1-13.3z"/>';
-                const style='<svg viewBox="0 0 50 50"> <style>@keyframes rotate{0%{visibility: visible; transform: rotate(0deg);}100%{transform: rotate(1080deg);}}.start{animation: rotate 2.8s ease-in; transform-origin: center; fill: #5daeea; visibility: hidden;}.on{animation: rotate 1.8s linear infinite; transform-origin: center; fill: #5daeea; animation-delay: 2.8s; visibility: hidden;}.end{animation: rotate 2.8s; transform-origin: center; fill: #9ca2a5; animation-timing-function: cubic-bezier(0.61, 1, 0.88, 1);}</style>';
+                const style = '<svg viewBox="0 0 50 50"> <style>@keyframes rotate{0%{visibility: visible; transform: rotate(0deg);}100%{transform: rotate(1080deg);}}.start{animation: rotate 2.8s ease-in; transform-origin: center; fill: #5daeea; visibility: hidden;}.on{animation: rotate 1.8s linear infinite; transform-origin: center; fill: #5daeea; animation-delay: 2.8s; visibility: hidden;}.end{animation: rotate 2.8s; transform-origin: center; fill: #9ca2a5; animation-timing-function: cubic-bezier(0.61, 1, 0.88, 1);}</style>';
                 if (entity.state === 'on') { return `${style}<g class="start">${path}</g><g class="on">${path}</g></svg>`; }
                 else { return `${style}<g class="end">${path}</g></svg>`; } ]]]
             styles:
@@ -1321,7 +1279,7 @@ views:
           #################################################
 
           - type: custom:button-card
-            entity: light.kok
+            entity: light.taklampa
             style:
               top: 64.5%
               left: 66.14%
