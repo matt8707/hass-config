@@ -48,10 +48,10 @@ logger:
   default: warning
   logs:
     homeassistant.components.homekit.type_media_players: fatal
+    homeassistant.components.command_line.sensor: fatal
+    homeassistant.components.rest.sensor: fatal
     bravia_tv.braviarc: fatal
     # homeassistant.components.bluetooth_tracker.device_tracker: fatal
-    # homeassistant.components.command_line.sensor: fatal
-    # homeassistant.components.rest.sensor: fatal
     # homeassistant.helpers.service: fatal
     # homeassistant.components.websocket_api: fatal
     # homeassistant.components.shell_command: fatal
@@ -181,6 +181,14 @@ light:
   - platform: group
     name: Belysning
     entities: ['light.tvlampa', 'light.golvlampa']
+
+  - platform: group
+    name: Hall
+    entities: ['light.hallampa_1', 'light.hallampa_2', 'light.hallampa_3']
+
+  - platform: group
+    name: Badrum
+    entities: ['light.vask_vanster', 'light.vask_hoger']
 
   - platform: group
     name: Taklampor
