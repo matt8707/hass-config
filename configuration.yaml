@@ -9,7 +9,6 @@ homeassistant:
   whitelist_external_dirs: [/config/]
 
 #default_config:
-config:
 history:
 mobile_app:
 sun:
@@ -51,9 +50,9 @@ logger:
     homeassistant.components.command_line.sensor: fatal
     homeassistant.components.rest.sensor: fatal
     bravia_tv.braviarc: fatal
+    homeassistant.components.websocket_api: fatal
+    homeassistant.helpers.service: fatal
     # homeassistant.components.bluetooth_tracker.device_tracker: fatal
-    # homeassistant.helpers.service: fatal
-    # homeassistant.components.websocket_api: fatal
     # homeassistant.components.shell_command: fatal
 
 recorder:
@@ -90,6 +89,12 @@ hue:
   bridges:
     - host: !secret hue_host
       allow_unreachable: true
+
+remote:
+  - platform: broadlink
+    host: !secret broadlink_host
+    mac: !secret broadlink_mac
+    type: rm4_pro
 
 wemo:
   discovery: false
@@ -207,11 +212,15 @@ homekit:
   filter:
     include_entities:
       ['switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 'media_player.sony_bravia_tv', 
-      'media_player.samsung', 'switch.playstation_template', 'input_boolean.motion_hall', 
+      'media_player.samsung', 'switch.playstation_template', 'input_boolean.motion_hall', 'switch.fan_anslut', 'script.samsung_tv_energy_saving', 
       'input_boolean.motion_garderob', 'input_boolean.motion_badrum', 'script.auto_hemma', 'script.auto_stang_allt']
   entity_config:
     switch.wemo_flakt:
       name: Fläkt
+    switch.fan_anslut:
+      name: Fläkt 2
+    script.samsung_tv_energy_saving:
+      name: Eko
     switch.wemo_monitorer:
       name: Monitorer
       type: outlet
@@ -237,12 +246,20 @@ cloud:
     filter:
       include_entities:
         ['switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 'media_player.sony_bravia_tv', 
-        'media_player.samsung', 'switch.playstation_template', 'media_player.playstation_4', 
+        'media_player.samsung', 'switch.playstation_template', 'media_player.playstation_4', 'switch.fan_anslut', 'script.samsung_tv_energy_saving', 
         'switch.fullykiosk_screen', 'switch.fullykiosk_screensaver', 'script.auto_hemma', 'script.auto_stang_allt']
     entity_config:
       switch.wemo_flakt:
         name: Fläkt
         aliases: ['Fläkt', 'Fläkten']
+        room: Studio
+      switch.fan_anslut:
+        name: Fläkt
+        aliases: ['Fläkt', 'Fläkten']
+        room: Sovrum
+      script.samsung_tv_energy_saving:
+        name: Eko
+        aliases: ['Eko', 'Eko-läge', 'Samsung eko']
         room: Sovrum
       switch.wemo_monitorer:
         name: Monitorer
