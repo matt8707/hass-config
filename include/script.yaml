@@ -201,7 +201,7 @@ script:
       - service: browser_mod.toast
         data:
           duration: 16000
-          message: 'Startar om Home Assistant...'
+          message: 'Startar om Home Assistant container...'
       - service: shell_command.restart_hass_docker
 
   zoned_cleanup:
@@ -215,19 +215,110 @@ script:
           params:
             zone_ids: ["{{ states('input_select.roborock_zone') }}"]
 
-  # Switchbot integration stopped working
-  # dator_on:
-  #   sequence:
-  #     - service: input_boolean.turn_on
-  #       entity_id: input_boolean.dator_template
-  #     - service: switch.toggle
-  #       entity_id: switch.switchbot
-  #     - condition: template
-  #       value_template: "{{ is_state_attr('switch.switchbot', 'last_run_success', false) }}"
-  #     - service: script.turn_on
-  #       entity_id: script.dator_on_retry
+  fan_anslut_oscillate:
+    sequence:
+      - service: remote.send_command
+        data:
+          entity_id: remote.broadlink
+          device: fläkt
+          delay_secs: 0.2
+          command: swing_1
 
-  # dator_on_retry:
+  fan_anslut_speed_1:
+    sequence:
+      - service: remote.send_command
+        data:
+          entity_id: remote.broadlink
+          device: fläkt
+          delay_secs: 0.2
+          command: speed_1
+
+  fan_anslut_speed_2:
+    sequence:
+      - service: remote.send_command
+        data:
+          entity_id: remote.broadlink
+          device: fläkt
+          delay_secs: 0.2
+          num_repeats: 2
+          command: speed_1
+
+  fan_anslut_on:
+    sequence:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.fan_anslut
+      - service: remote.send_command
+        data:
+          entity_id: remote.broadlink
+          device: fläkt
+          delay_secs: 0.2
+          command: power_1
+      - service_template: >-
+          {% if is_state('input_boolean.fan_anslut_oscillate', 'on') %}
+          script.fan_anslut_oscillate
+          {% else %}
+          script.dummy
+          {% endif %}
+      - service_template: >-
+          {% if is_state('input_select.fan_anslut_speed', 'Max') %}
+          script.fan_anslut_speed_2
+          {% elif is_state('input_select.fan_anslut_speed', 'Medium') %}
+          script.fan_anslut_speed_1
+          {% else %}
+          script.dummy
+          {% endif %}
+
+  fan_anslut_off:
+    sequence:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.fan_anslut
+      - service: remote.send_command
+        data:
+          entity_id: remote.broadlink
+          device: fläkt
+          command: power_1
+
+  samsung_tv_energy_saving:
+    sequence:
+      - service: browser_mod.toast
+        data:
+          duration: 8000
+          message: 'Ställer in eko-läge på Tv i sovrummet...'
+      - service: remote.send_command
+        data:
+          entity_id: remote.broadlink
+          delay_secs: 0.8
+          device: samsung_tv
+          command:
+            ['exit_15', 'settings_1', 'down_2', 'down_2' , 'down_2', 'enter_5', 'down_2', 'down_2', 'down_2', 
+            'down_2', 'enter_5', 'enter_5', 'down_2', 'down_2', 'enter_5', 'exit_15', 'exit_15']
+
+  air_purifier_on:
+    sequence:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.air_purifier
+      - service: remote.send_command
+        data:
+          entity_id: remote.broadlink
+          device: air_purifier
+          command: power_1
+
+  air_purifier_off:
+    sequence:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.air_purifier
+      - service: remote.send_command
+        data:
+          entity_id: remote.broadlink
+          device: air_purifier
+          command: power_1
+
+  # air_purifier_mode:
   #   sequence:
-  #     - service: script.turn_on
-  #       entity_id: script.dator_on
+  #     - service: remote.send_command
+  #       data:
+  #         entity_id: remote.broadlink
+  #         device: air_purifier
+  #         command:
+  #           - turbo_1
+  #           - auto_1
