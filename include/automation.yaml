@@ -230,7 +230,7 @@ automation:
 
     ####################################################
     #                                                  #
-    #                       FAN                        #
+    #                       FAN 1                      #
     #                                                  #
     ####################################################
 
@@ -270,6 +270,85 @@ automation:
     action:
       - service: switch.turn_on
         entity_id: switch.wemo_flakt
+
+    ####################################################
+    #                                                  #
+    #                       FAN 2                      #
+    #                                                  #
+    ####################################################
+
+  - alias: turn_off_fan_anslut
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: switch.fan_anslut
+        from: 'off'
+        to: 'on'
+        for: 
+          hours: "{{ states('input_number.fan_anslut_timer') | int }}"
+    action:
+      - service: switch.turn_off
+        entity_id: switch.fan_anslut
+
+  - alias: turn_on_fan_anslut_temp
+    initial_state: true
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.hall_temperature
+        above: 26
+    condition:
+      condition: and
+      conditions:
+        - condition: time
+          after: '20:00:00'
+          before: '07:00:00'
+        - condition: or
+          conditions:
+            - condition: state
+              entity_id: person.mattias
+              state: 'home'
+            - condition: state
+              entity_id: person.sanja
+              state: 'home'
+    action:
+      - service: switch.turn_on
+        entity_id: switch.fan_anslut
+
+  - alias: sovrum_fan_swing_input_boolean
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: input_boolean.fan_anslut_oscillate
+    action:
+      - service: script.turn_on
+        data:
+          entity_id: script.fan_anslut_oscillate
+
+  - alias: fan_anslut_input_select
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: input_select.fan_anslut_speed
+    action:
+      - service: script.turn_on
+        data_template:
+          entity_id: >-
+            {% set from = trigger.from_state.state %}
+            {% set to = trigger.to_state.state %}
+
+            {% if from == 'Max' and to == 'Tyst' or 
+            from == 'Medium' and to == 'Max' or 
+            from == 'Tyst' and to == 'Medium' %}
+            script.fan_anslut_speed_1
+
+            {% elif from == 'Max' and to == 'Medium' or 
+            from == 'Medium' and to == 'Tyst' or 
+            from == 'Tyst' and to == 'Max' %}
+            script.fan_anslut_speed_2
+            
+            {% else %}
+            script.dummy
+            {% endif %}
 
     ####################################################
     #                                                  #
