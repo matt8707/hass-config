@@ -4,7 +4,7 @@
 .DS_Store
 .google.token
 .homekit.state
-.ps4-games.json
+.ps4-games*
 .ssh
 .storage
 .vscode
