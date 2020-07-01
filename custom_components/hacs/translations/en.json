@@ -126,6 +126,7 @@
         "available_version": "Available version",
         "changelog": "Changelog",
         "installed_version": "Installed version",
+        "releasenotes": "Releasenotes for {release}",
         "title": "Update pending"
     },
     "entry": {

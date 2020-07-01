@@ -36,6 +36,7 @@
         "theme_plural": "Temaer",
         "themes": "Temaer",
         "uninstall": "Afinstaller",
+        "update": "Opdater",
         "version": "Version"
     },
     "config": {
@@ -106,6 +107,7 @@
         "install": "Installer dette repository i HACS",
         "loading": "Indlæser oplysninger...",
         "no_info": "Udvikleren har ikke givet flere oplysninger om dette repository",
+        "open_issues": "Åbn issues",
         "open_repo": "Åbn repository",
         "stars": "Stjerner",
         "version_installed": "Installeret version"
@@ -121,6 +123,7 @@
         "available_version": "Tilgængelig version",
         "changelog": "Udgivelsesnoter",
         "installed_version": "Installeret version",
+        "releasenotes": "Udgivelsesnoter for {release}",
         "title": "Ventende opdatering"
     },
     "entry": {
@@ -201,10 +204,12 @@
         "new_repository": "Nyt repository",
         "not_loaded": "Ikke indlæst",
         "open_issue": "Opret issue",
+        "open_source": "Åbn kilde",
         "pending_restart": "Afventer genstart",
         "pending_update": "Ventende opdatering",
         "reinstall": "Geninstaller",
-        "report": "Rapporter til fjernelse"
+        "report": "Rapporter til fjernelse",
+        "update_information": "Opdater oplysninger"
     },
     "repository": {
         "add_to_lovelace": "Tilføj til Lovelace",
@@ -293,7 +298,7 @@
         "last_updated": "Sidst opdateret",
         "name": "Navn",
         "new_repositories": "Nye repositories",
-        "new_repositories_note": "Du har over 10 nye repositories, der vises her, hvis du vil rydde dem alle, skal du klikke på de 3 prikker i øverste højre hjørne og afvise dem alle.",
+        "new_repositories_note": "Du har over 10 nye repositories, der vises her. Hvis du vil rydde dem alle, skal du klikke på de 3 prikker i øverste højre hjørne og afvise dem alle.",
         "no_repositories": "Ingen repositories",
         "no_repositories_desc1": "Det ser ud til, at du ikke har nogen repositories installeret i denne sektion endnu.",
         "no_repositories_desc2": "Klik på + i nederste hjørne for at tilføje dit første!",

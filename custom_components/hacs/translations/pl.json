@@ -1,6 +1,7 @@
 {
     "common": {
         "about": "O",
+        "add": "dodaj",
         "appdaemon": "AppDaemon",
         "appdaemon_apps": "Aplikacje AppDaemon",
         "appdaemon_plural": "Aplikacje AppDaemon",
@@ -9,7 +10,9 @@
         "continue": "Kontynuuj",
         "disabled": "Wyłączony",
         "documentation": "Dokumentacja",
+        "element": "element",
         "hacs_is_disabled": "HACS jest wyłączony",
+        "install": "Zainstaluj",
         "installed": "zainstalowane",
         "integration": "Integracja",
         "integration_plural": "Integracje",
@@ -28,10 +31,13 @@
         "python_script_plural": "Skrypty języka Python",
         "python_scripts": "Skrypty Python",
         "repositories": "Repozytoria",
+        "repository": "Repozytorium",
         "settings": "ustawienia",
         "theme": "Motyw",
         "theme_plural": "Motywy",
         "themes": "Motywy",
+        "uninstall": "Odinstaluj",
+        "update": "Uaktualnij",
         "version": "Wersja"
     },
     "config": {
@@ -79,6 +85,94 @@
         "upgrade_all": "To uaktualni wszystkie te repozytoria, upewnij się, że przeczytałeś uwagi do wydania dla wszystkich z nich przed kontynuacją.",
         "yes": "Tak"
     },
+    "dialog_about": {
+        "frontend_version": "Wersja interfejsu użytkownika",
+        "installed_repositories": "Zainstalowane repozytoria",
+        "integration_version": "Wersja integracji",
+        "useful_links": "Przydatne linki"
+    },
+    "dialog_add_repo": {
+        "limit": "Wyświetlanych jest tylko pierwszych 100 repozytoriów, użyj wyszukiwania, aby przefiltrować potrzebne informacje",
+        "no_match": "Nie znaleziono repozytoriów pasujących do filtra",
+        "sort_by": "Sortuj według",
+        "title": "Dodawanie repozytorium"
+    },
+    "dialog_custom_repositories": {
+        "category": "Kategoria",
+        "no_category": "Brak kategorii",
+        "no_repository": "Brak repozytorium",
+        "title": "Niestandardowe repozytoria",
+        "url_placeholder": "Adres URL niestandardowego repozytorium"
+    },
+    "dialog_info": {
+        "author": "Autor",
+        "downloads": "Ilość pobrań",
+        "install": "Zainstaluj to repozytorium w HACS",
+        "loading": "Pobieranie informacji...",
+        "no_info": "Deweloper nie dostarczył więcej informacji na temat tego repozytorium",
+        "open_issues": "Problemy",
+        "open_repo": "Otwórz repozytorium",
+        "stars": "Gwiazdki",
+        "version_installed": "Wersja zainstalowana"
+    },
+    "dialog_install": {
+        "restart": "Pamiętaj, że musisz ponownie uruchomić Home Assistanta by zastosować zmiany w integracjach (custom_components).",
+        "select_version": "Wybierz wersję",
+        "show_beta": "Wyświetl wydania beta",
+        "type": "Typ",
+        "url": "URL"
+    },
+    "dialog_update": {
+        "available_version": "Dostępna wersja",
+        "changelog": "Lista zmian",
+        "installed_version": "Zainstalowana wersja",
+        "releasenotes": "Informacje o {release}",
+        "title": "Dostępna aktualizacja"
+    },
+    "entry": {
+        "information": "Informacje",
+        "intro": "Aktualizacje i ważne komunikaty będą wyświetlane w tym miejscu",
+        "messages": {
+            "disabled": {
+                "content": "Sprawdź log, aby uzyskać więcej informacji",
+                "title": "HACS jest wyłączony"
+            },
+            "has_pending_tasks": {
+                "content": "Dopóki nie zostaną zakończone, niektóre repozytoria mogą nie być wyświetlane",
+                "title": "Wykonywane są zadania w tle"
+            },
+            "resources": {
+                "content": "Elementy Lovelace, które nie zostały poprawnie załadowane: {number}",
+                "title": "Nie załadowano w Lovelace"
+            },
+            "restart": {
+                "content": "Integracje, które wymagają ponownego uruchomienia Home Assistanta: {number}\nMożesz to zrobić w sekcji 'Kontrola serwera' konfiguracji Home Assistanta.",
+                "title": "Oczekiwanie na restart"
+            },
+            "startup": {
+                "content": "HACS uruchamia się, w tym czasie może brakować pewnych informacji lub mogą one być nieprawidłowe.",
+                "title": "HACS uruchamia się"
+            },
+            "wrong_frontend_installed": {
+                "content": "Masz zainstalowany interfejs HACS w wersji {running}, a wersja {expected} była oczekiwana. Komunikat ten oznacza, że Home Assistant nie mógł zainstalować nowej wersji interfejsu HACS, spróbuj ponownie uruchomić Home Assistanta.",
+                "title": "Nieoczekiwana wersja interfejsu"
+            },
+            "wrong_frontend_loaded": {
+                "content": "Używasz wersji {running} interfejsu HACS, a wersja {expected} była oczekiwana, powinieneś wyczyścić pamięć podręczną przeglądarki.",
+                "title": "Nieoczekiwana wersja interfejsu"
+            }
+        },
+        "pending_updates": "Oczekujące aktualizacje"
+    },
+    "menu": {
+        "about": "O HACS",
+        "clear": "Wyczyść oznaczenia nowych",
+        "custom_repositories": "Niestandardowe repozytoria",
+        "dismiss": "Odrzuć wszystkie nowe repozytoria",
+        "documentation": "Dokumentacja",
+        "open_issue": "Powiadom o problemie",
+        "reload": "Załaduj ponownie okno"
+    },
     "options": {
         "step": {
             "user": {
@@ -105,6 +199,20 @@
         "plugin_not_loaded": "Ta wtyczka nie jest dodana do zasobów Lovelace.",
         "restart": "Musisz ponownie uruchomić Home Assistant'a.",
         "restart_pending": "Oczekiwanie na ponowne uruchomienie"
+    },
+    "repository_card": {
+        "dismiss": "odrzuć",
+        "hide": "Ukryj",
+        "information": "Informacje",
+        "new_repository": "Nowe repozytorium",
+        "not_loaded": "Nie załadowano",
+        "open_issue": "Powiadom o problemie",
+        "open_source": "Otwarte źródło",
+        "pending_restart": "Oczekiwanie na restart",
+        "pending_update": "Oczekująca aktualizacja",
+        "reinstall": "Przeinstaluj",
+        "report": "Zgłoś do usunięcia",
+        "update_information": "Uaktualnij informacje"
     },
     "repository": {
         "add_to_lovelace": "Dodaj do Lovelace",
@@ -140,21 +248,27 @@
         "update_information": "Uaktualnij informacje",
         "upgrade": "Uaktualnij"
     },
+    "search": {
+        "placeholder": "Wyszukaj repozytorium"
+    },
     "sections": {
         "about": {
-            "description": "Pokaż informacje o HACS"
+            "description": "Informacje o HACS",
+            "title": "O HACS"
         },
         "automation": {
-            "description": "Tutaj znajdziesz skrypty Pythona, aplikacje AppDaemon i NetDaemon",
-            "title": "Automatyzacja"
+            "description": "Skrypty Pythona, aplikacje AppDaemon i NetDaemon",
+            "title": "Automatyzacje"
         },
         "frontend": {
-            "description": "Tutaj znajdziesz motywy, niestandardowe karty i inne elementy dla Lovelace"
+            "description": "Motywy, niestandardowe karty i inne elementy interfejsu użytkownika",
+            "title": "Interfejs użytkownika"
         },
         "integrations": {
-            "description": "Tutaj znajdziesz niestandardowe integracje (custom_components)",
+            "description": "Niestandardowe integracje (custom_components)",
             "title": "Integracje"
-        }
+        },
+        "pending_repository_upgrade": "Używasz wersji {installed}, wersja {available} jest dostępna"
     },
     "settings": {
         "add_custom_repository": "DODAJ REPOZYTORIUM NIESTANDARDOWE",
@@ -187,6 +301,12 @@
         "last_updated": "Ostatnia aktualizacja",
         "name": "Nazwa",
         "new_repositories": "Nowe repozytoria",
+        "new_repositories_note": "Jest ponad 10 nowych repozytoriów, jeśli chcesz je wyczyścić, kliknij menu z trzema kropkami w prawym górnym rogu i odrzuć je wszystkie.",
+        "no_repositories": "Brak repozytoriów",
+        "no_repositories_desc1": "Wygląda na to, że nie masz jeszcze zainstalowanych repozytoriów w tej sekcji.",
+        "no_repositories_desc2": "Kliknij + w dolnym rogu, aby dodać pierwsze!",
+        "no_repositories_found_desc1": "W tej sekcji nie znaleziono zainstalowanych repozytoriów pasujących do \"{searchInput}\".",
+        "no_repositories_found_desc2": "Spróbuj wyszukać czegoś innego!",
         "pending_upgrades": "Oczekujące aktualizacje",
         "placeholder_search": "Wprowadź wyszukiwane hasło...",
         "sort": "sortowanie",

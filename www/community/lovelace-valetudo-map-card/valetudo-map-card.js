@@ -67,7 +67,7 @@ class ValetudoMapCard extends HTMLElement {
     return (x < this._config.crop.left) || (x > drawnMapCanvas.width) || (y < config.crop.top) || (y > drawnMapCanvas.height);
   };
 
-  drawMap(mapContainer, mapData, mapHeight, mapWidth, floorColor, obstacleWeakColor, obstacleStrongColor, currentlyCleanedZonesColor, noGoAreaColor, virtualWallColor, pathColor, chargerColor, vacuumColor) {
+  drawMap(mapContainer, mapData, mapHeight, mapWidth, floorColor, obstacleWeakColor, obstacleStrongColor, currentlyCleanedZoneColor, noGoAreaColor, virtualWallColor, pathColor, chargerColor, vacuumColor) {
     // Points to pixels
     const widthScale = 50 / this._config.map_scale;
     const heightScale = 50 / this._config.map_scale;
@@ -133,6 +133,8 @@ class ValetudoMapCard extends HTMLElement {
 
     const mapCtx = drawnMapCanvas.getContext("2d");
     if (this._config.show_floor) {
+      mapCtx.globalAlpha = this._config.floor_opacity;
+
       mapCtx.strokeStyle = floorColor;
       mapCtx.lineWidth = 1;
       mapCtx.fillStyle = floorColor;
@@ -145,9 +147,13 @@ class ValetudoMapCard extends HTMLElement {
           mapCtx.fillRect(x, y, this._config.map_scale, this._config.map_scale);
         };
       };
+
+      mapCtx.globalAlpha = 1;
     };
 
     if (this._config.show_weak_obstacles) {
+      mapCtx.globalAlpha = this._config.weak_obstacle_opacity;
+
       mapCtx.strokeStyle = obstacleStrongColor;
       mapCtx.lineWidth = 1;
       mapCtx.fillStyle = obstacleWeakColor;
@@ -160,9 +166,13 @@ class ValetudoMapCard extends HTMLElement {
           mapCtx.fillRect(x, y, this._config.map_scale, this._config.map_scale);
         };
       };
+
+      mapCtx.globalAlpha = 1;
     };
 
     if (this._config.show_strong_obstacles) {
+      mapCtx.globalAlpha = this._config.obstacle_strong_opacity;
+
       mapCtx.strokeStyle = obstacleStrongColor;
       mapCtx.lineWidth = 1;
       mapCtx.fillStyle = obstacleStrongColor;
@@ -175,25 +185,33 @@ class ValetudoMapCard extends HTMLElement {
           mapCtx.fillRect(x, y, this._config.map_scale, this._config.map_scale);
         };
       };
+
+      mapCtx.globalAlpha = 1.0;
     };
 
     if (mapData.attributes.currently_cleaned_zones && this._config.show_currently_cleaned_zones) {
-      mapCtx.strokeStyle = currentlyCleanedZonesColor;
+      mapCtx.globalAlpha = this._config.currently_cleaned_zone_opacity;
+
+      mapCtx.strokeStyle = currentlyCleanedZoneColor;
       mapCtx.lineWidth = 1;
-      mapCtx.fillStyle = currentlyCleanedZonesColor;
+      mapCtx.fillStyle = currentlyCleanedZoneColor;
       mapCtx.beginPath();
       for (let item of mapData.attributes.currently_cleaned_zones) {
         let x1 = Math.floor(item[0] / widthScale) - leftOffset;
         let y1 = Math.floor(item[1] / heightScale) - topOffset;
         let x2 = Math.floor(item[2] / widthScale) - leftOffset;
         let y2 = Math.floor(item[3] / heightScale) - topOffset;
-        mapCtx.fillRect(x1, y1, x2 - x1, y2 - y1);
         if (this.isOutsideBounds(x1, y1, drawnMapCanvas, this._config)) continue;
         if (this.isOutsideBounds(x2, y2, drawnMapCanvas, this._config)) continue;
+        mapCtx.fillRect(x1, y1, x2 - x1, y2 - y1);
       };
+
+      mapCtx.globalAlpha = 1.0;
     };
 
     if (mapData.attributes.no_go_areas && this._config.show_no_go_areas) {
+      mapCtx.globalAlpha = this._config.no_go_area_opacity;
+
       mapCtx.strokeStyle = noGoAreaColor;
       mapCtx.lineWidth = 1;
       mapCtx.fillStyle = noGoAreaColor;
@@ -211,9 +229,13 @@ class ValetudoMapCard extends HTMLElement {
         };
         mapCtx.fill();
       };
+
+      mapCtx.globalAlpha = 1.0;
     };
 
     if (mapData.attributes.virtual_walls && this._config.show_virtual_walls && this._config.virtual_wall_width > 0) {
+      mapCtx.globalAlpha = this._config.virtual_wall_opacity;
+
       mapCtx.strokeStyle = virtualWallColor;
       mapCtx.lineWidth = this._config.virtual_wall_width;
       mapCtx.beginPath();
@@ -228,10 +250,14 @@ class ValetudoMapCard extends HTMLElement {
         mapCtx.lineTo(toX, toY);
         mapCtx.stroke();
       };
+
+      mapCtx.globalAlpha = 1;
     };
     
     if (mapData.attributes.path && mapData.attributes.path.points) {
       const pathCtx = pathCanvas.getContext("2d");
+      pathCtx.globalAlpha = this._config.path_opacity;
+
       pathCtx.strokeStyle = pathColor;
       pathCtx.lineWidth = this._config.path_width;
 
@@ -264,6 +290,8 @@ class ValetudoMapCard extends HTMLElement {
       if (!first) {
         vacuumHTML.style.transform = `scale(${this._config.icon_scale}, ${this._config.icon_scale}) rotate(${(Math.atan2(y - prevY, x - prevX) * 180 / Math.PI) + 90}deg)`;
       };
+
+      pathCtx.globalAlpha = 1;
     };
 
     // Put our newly generated map in there
@@ -276,9 +304,10 @@ class ValetudoMapCard extends HTMLElement {
   setConfig(config) {
     this._config = Object.assign({}, config);
 
+    // Title settings
     if (this._config.title === undefined) this._config.title = "Vacuum";
-    if (this._config.virtual_wall_width === undefined) this._config.virtual_wall_width = 1;
-    if (this._config.path_width === undefined) this._config.path_width = 1;
+
+    // Show settings
     if (this._config.show_floor === undefined) this._config.show_floor = true;
     if (this._config.show_dock === undefined) this._config.show_dock = true;
     if (this._config.show_vacuum === undefined) this._config.show_vacuum = true;
@@ -288,10 +317,29 @@ class ValetudoMapCard extends HTMLElement {
     if (this._config.show_no_go_areas === undefined) this._config.show_no_go_areas = true;
     if (this._config.show_virtual_walls === undefined) this._config.show_virtual_walls = true;
     if (this._config.show_path === undefined) this._config.show_path = true;
+
+    // Width settings
+    if (this._config.virtual_wall_width === undefined) this._config.virtual_wall_width = 1;
+    if (this._config.path_width === undefined) this._config.path_width = 1;
+
+    // Scale settings
     if (this._config.map_scale === undefined) this._config.map_scale = 1;
     if (this._config.icon_scale === undefined) this._config.icon_scale = 1;
+
+    // Opacity settings
+    if (this._config.floor_opacity === undefined) this._config.floor_opacity = 1;
+    if (this._config.obstacle_weak_opacity === undefined) this._config.obstacle_weak_opacity = 1;
+    if (this._config.obstacle_strong_opacity === undefined) this._config.obstacle_strong_opacity = 1;
+    if (this._config.currently_cleaned_zone_opacity === undefined) this._config.currently_cleaned_zone_opacity = 0.5;
+    if (this._config.no_go_area_opacity === undefined) this._config.no_go_area_opacity = 0.5;
+    if (this._config.virtual_wall_opacity === undefined) this._config.virtual_wall_opacity = 1;
+    if (this._config.path_opacity === undefined) this._config.path_opacity = 1;
+
+    // Rotation settings
     if (this._config.rotate === undefined) this._config.rotate = 0;
     if (Number(this._config.rotate)) this._config.rotate = `${this._config.rotate}deg`;
+
+    // Crop settings
     if (this._config.crop !== Object(this._config.crop)) this._config.crop = {};
     if (this._config.crop.top === undefined) this._config.crop.top = 0;
     if (this._config.crop.bottom === undefined) this._config.crop.bottom = 0;
@@ -407,7 +455,7 @@ class ValetudoMapCard extends HTMLElement {
       const floorColor = this.calculateColor(homeAssistant, this._config.floor_color, '--valetudo-map-floor-color', '--secondary-background-color');
       const obstacleWeakColor = this.calculateColor(homeAssistant, this._config.obstacle_weak_color, '--valetudo-map-obstacle-weak-color', '--divider-color');
       const obstacleStrongColor = this.calculateColor(homeAssistant, this._config.obstacle_strong_color, '--valetudo-map-obstacle-strong-color', '--accent-color');
-      const currentlyCleanedZonesColor = this.calculateColor(homeAssistant, this._config.currently_cleaned_zones_color, '--valetudo-currently_cleaned_zones_color', '--secondary-text-color');
+      const currentlyCleanedZoneColor = this.calculateColor(homeAssistant, this._config.currently_cleaned_zone_color, '--valetudo-currently_cleaned_zone_color', '--secondary-text-color');
       const noGoAreaColor = this.calculateColor(homeAssistant, this._config.no_go_area_color, '--valetudo-no-go-area-color', '--accent-color');
       const virtualWallColor = this.calculateColor(homeAssistant, this._config.virtual_wall_color, '--valetudo-virtual-wall-color', '--accent-color');
       const pathColor = this.calculateColor(homeAssistant, this._config.path_color, '--valetudo-map-path-color', '--primary-text-color');
@@ -419,7 +467,7 @@ class ValetudoMapCard extends HTMLElement {
         // Start drawing map
         this.drawingMap = true;
 
-        this.drawMap(this.mapContainer, mapEntity, mapHeight, mapWidth, floorColor, obstacleWeakColor, obstacleStrongColor, currentlyCleanedZonesColor, noGoAreaColor, virtualWallColor, pathColor, chargerColor, vacuumColor);
+        this.drawMap(this.mapContainer, mapEntity, mapHeight, mapWidth, floorColor, obstacleWeakColor, obstacleStrongColor, currentlyCleanedZoneColor, noGoAreaColor, virtualWallColor, pathColor, chargerColor, vacuumColor);
 
         // Done drawing map
         this.lastUpdatedMap = mapEntity.last_updated;

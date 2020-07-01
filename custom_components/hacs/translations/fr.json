@@ -1,28 +1,43 @@
 {
     "common": {
         "about": "À propos de",
+        "add": "ajouter",
         "appdaemon": "AppDaemon",
         "appdaemon_apps": "Applications AppDaemon",
+        "appdaemon_plural": "AppDaemon Apps",
         "background_task": "Tache de fond en cours, cette page se rechargera une fois terminée",
         "check_log_file": "Consultez votre fichier journal pour plus de détails.",
         "continue": "Continuer",
         "disabled": "Désactivé",
         "documentation": "Documentation",
+        "element": "élément",
         "hacs_is_disabled": "HACS est désactivé",
+        "install": "Installer",
         "installed": "installés",
         "integration": "Intégration",
+        "integration_plural": "Intégrations",
         "integrations": "Intégrations",
+        "lovelace": "Lovelace",
+        "lovelace_element": "Élément Lovelace",
+        "lovelace_elements": "Éléments Lovelace",
         "manage": "gérer",
         "netdaemon": "NetDaemon",
         "netdaemon_apps": "Applications NetDaemon",
+        "netdaemon_plural": "NetDaemon Apps",
         "plugin": "Lovelace",
+        "plugin_plural": "Éléments Lovelace",
         "plugins": "Éléments Lovelace",
         "python_script": "Script Python",
+        "python_script_plural": "Scripts Python",
         "python_scripts": "Scripts Python",
         "repositories": "Dépôts",
+        "repository": "Dépôt",
         "settings": "paramètres",
         "theme": "Thème",
+        "theme_plural": "Thèmes",
         "themes": "Thèmes",
+        "uninstall": "Désinstaller",
+        "update": "Mise à jour",
         "version": "Version"
     },
     "config": {
@@ -70,6 +85,94 @@
         "upgrade_all": "Cela mettra à niveau tous ces dépôts, assurez-vous d'avoir lu les notes de publication pour chacun d'entre eux avant de continuer.",
         "yes": "Oui"
     },
+    "dialog_about": {
+        "frontend_version": "Version frontend",
+        "installed_repositories": "Dépôts installés",
+        "integration_version": "Version d'intégration",
+        "useful_links": "Liens utiles"
+    },
+    "dialog_add_repo": {
+        "limit": "Seuls les 100 premiers dépôts sont affichés, utilisez la recherche pour filtrer ce dont vous avez besoin",
+        "no_match": "Aucun dépôt trouvé correspondant à votre filtre",
+        "sort_by": "Trier par",
+        "title": "Ajouter un dépôt"
+    },
+    "dialog_custom_repositories": {
+        "category": "Catégorie",
+        "no_category": "Catégorie manquante",
+        "no_repository": "Dépôt manquant",
+        "title": "Dépôts personnalisés",
+        "url_placeholder": "Ajouter une URL de dépôt personnalisée"
+    },
+    "dialog_info": {
+        "author": "Auteur",
+        "downloads": "Téléchargements",
+        "install": "Installer ce dépôt dans HACS",
+        "loading": "Chargement des informations ...",
+        "no_info": "Le développeur n'a pas fourni plus d'informations pour ce dépôt",
+        "open_issues": "Open issues",
+        "open_repo": "Dépôt ouvert",
+        "stars": "Étoiles",
+        "version_installed": "Version installée"
+    },
+    "dialog_install": {
+        "restart": "N'oubliez pas que vous devez redémarrer Home Assistant avant que les modifications aux intégrations (custom_components) soient appliquées.",
+        "select_version": "Sélectionnez une version",
+        "show_beta": "Afficher les versions bêta",
+        "type": "Type",
+        "url": "URL"
+    },
+    "dialog_update": {
+        "available_version": "Version disponible",
+        "changelog": "Changelog",
+        "installed_version": "Version installée",
+        "releasenotes": "Notes de version pour {release}",
+        "title": "Mise à jour en attente"
+    },
+    "entry": {
+        "information": "Information",
+        "intro": "Les mises à jour et les messages importants s'afficheront ici s'il y en a",
+        "messages": {
+            "disabled": {
+                "content": "Vérifiez votre fichier journal pour plus de détails",
+                "title": "HACS est désactivé"
+            },
+            "has_pending_tasks": {
+                "content": "Certains dépôts peuvent ne pas apparaître tant que cette opération n'est pas terminée",
+                "title": "Tâches d’arrière-plan en attente"
+            },
+            "resources": {
+                "content": "Vous avez {number} éléments Lovelace qui ne sont pas chargés correctement dans Lovelace.",
+                "title": "Non chargé dans Lovelace"
+            },
+            "restart": {
+                "content": "Vous disposez de {number} intégrations qui nécessitent un redémarrage de Home Assistant, vous pouvez le faire à partir de la section \"Commandes du serveur\" sous la partie configuration de l'interface utilisateur de Home Assistant.",
+                "title": "En attente de redémarrage"
+            },
+            "startup": {
+                "content": "HACS démarre, pendant ce temps, certaines informations peuvent être manquantes ou incorrectes",
+                "title": "HACS est en train de démarrer"
+            },
+            "wrong_frontend_installed": {
+                "content": "Vous avez {running} du frontend HACS installé, mais la version {expected} était attendue. Si ce message s'affiche, Home Assistant n'a pas pu installer la nouvelle version, essayez de redémarrer Home Assistant.",
+                "title": "Version frontend inattendue"
+            },
+            "wrong_frontend_loaded": {
+                "content": "Vous exécutez la version {running} de l'interface HACS, mais la version {expected} était attendue, vous devez vider le cache de votre navigateur.",
+                "title": "Version frontend inattendue"
+            }
+        },
+        "pending_updates": "Mises à jour en attente"
+    },
+    "menu": {
+        "about": "À propos de HACS",
+        "clear": "Effacer tous les nouveaux",
+        "custom_repositories": "Dépôts personnalisés",
+        "dismiss": "Rejeter tous les nouveaux dépôts",
+        "documentation": "Documentation",
+        "open_issue": "Open issue",
+        "reload": "Recharger la fenêtre"
+    },
     "options": {
         "step": {
             "user": {
@@ -97,6 +200,20 @@
         "restart": "Vous devez redémarrer Home Assistant.",
         "restart_pending": "Redémarrage en attente"
     },
+    "repository_card": {
+        "dismiss": "rejeter",
+        "hide": "Cacher",
+        "information": "Information",
+        "new_repository": "Nouveau dépôt",
+        "not_loaded": "Non chargé",
+        "open_issue": "Ouvrir issue",
+        "open_source": "Open source",
+        "pending_restart": "Redémarrage en attente",
+        "pending_update": "Mise à jour en attente",
+        "reinstall": "Réinstaller",
+        "report": "Rapport de suppression",
+        "update_information": "Mettre à jour les informations"
+    },
     "repository": {
         "add_to_lovelace": "Ajouter à Lovelace",
         "authors": "Auteurs",
@@ -122,7 +239,7 @@
         "note_plugin": "Vous devez toujours l'ajouter à votre configuration lovelace ('ui-lovelace.yaml' ou l'éditeur de configuration de l'interface)",
         "note_plugin_post_107": "Vous devez toujours l'ajouter à votre configuration lovelace ('configuration.yaml' ou l'éditeur de configuration de l'interface '\/config\/lovelace\/resources')",
         "open_issue": "Ouvrir un ticket",
-        "open_plugin": "Ouvrir le plugin",
+        "open_plugin": "Ouvrir l'élément",
         "reinstall": "Réinstaller",
         "repository": "Dépôt",
         "restart_home_assistant": "Redémarrer Home Assistant",
@@ -130,6 +247,28 @@
         "uninstall": "Désinstaller",
         "update_information": "Mettre à jour les informations",
         "upgrade": "Mettre à jour"
+    },
+    "search": {
+        "placeholder": "Rechercher un dépôt"
+    },
+    "sections": {
+        "about": {
+            "description": "Afficher des informations sur le système HACS",
+            "title": "À propos de"
+        },
+        "automation": {
+            "description": "C'est ici que vous trouverez les scripts python, les applications AppDaemon et NetDaemon",
+            "title": "Automatisation"
+        },
+        "frontend": {
+            "description": "C'est ici que vous trouverez des thèmes, des cartes personnalisées et d'autres éléments pour lovelace",
+            "title": "Frontend"
+        },
+        "integrations": {
+            "description": "C'est ici que vous trouverez les intégrations personnalisées (custom_components)",
+            "title": "Intégrations"
+        },
+        "pending_repository_upgrade": "Vous utilisez la version {installed} , la version {available} est disponible"
     },
     "settings": {
         "add_custom_repository": "AJOUTER UN DÉPÔT PERSONNALISÉ",
@@ -162,6 +301,12 @@
         "last_updated": "Dernière mise à jour",
         "name": "Nom",
         "new_repositories": "Nouveaux dépôts",
+        "new_repositories_note": "Vous avez plus de 10 nouveaux dépôts qui apparaissent ici. Si vous voulez les effacer tous, cliquez sur les 3 points en haut à droite de l'écran et ignorez-les tous.",
+        "no_repositories": "Aucun dépôt",
+        "no_repositories_desc1": "Il semble que vous n’avez pas de dépôts installés dans cette section encore.",
+        "no_repositories_desc2": "Cliquez sur le + dans le coin inférieur pour ajouter votre premier !",
+        "no_repositories_found_desc1": "Aucun référentiel installé correspondant à \" {searchInput} \" n'a été trouvé dans cette section.",
+        "no_repositories_found_desc2": "Essayez de chercher autre chose !",
         "pending_upgrades": "Mises à niveau en attente",
         "placeholder_search": "Veuillez entrer un terme de recherche...",
         "sort": "Trier",

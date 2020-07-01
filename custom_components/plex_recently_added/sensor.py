@@ -10,17 +10,39 @@ https://github.com/custom-cards/upcoming-media-card
 import os.path
 import logging
 import json
-import requests
+import aiohttp
+import asyncio
+import async_timeout
 import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
-from datetime import datetime
+from datetime import datetime, timedelta
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import CONF_HOST, CONF_NAME, CONF_PORT, CONF_SSL
 from homeassistant.helpers.entity import Entity
 
-__version__ = '0.3.1'
-
+SCAN_INTERVAL = timedelta(minutes=3)
 _LOGGER = logging.getLogger(__name__)
+
+
+async def fetch(session, url, self, ssl, content):
+    try:
+        with async_timeout.timeout(8):
+            async with session.get(
+                url, ssl=ssl, headers={
+                    "Accept": "application/json", "X-Plex-Token": self.token}
+            ) as response:
+                if content:
+                    return await response.content.read()
+                else:
+                    return await response.text()
+    except:
+        pass
+
+
+async def request(url, self, content=False, ssl=False):
+    async with aiohttp.ClientSession() as session:
+        return await fetch(session, url, self, ssl, content)
+
 
 CONF_DL_IMAGES = 'download_images'
 DEFAULT_NAME = 'Plex Recently Added'
@@ -31,6 +53,7 @@ CONF_MAX = 'max'
 CONF_IMG_CACHE = 'img_dir'
 CONF_SECTION_TYPES = 'section_types'
 CONF_RESOLUTION = 'image_resolution'
+CONF_ON_DECK = 'on_deck'
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
@@ -40,13 +63,14 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_MAX, default=5): cv.string,
     vol.Optional(CONF_SERVER): cv.string,
     vol.Optional(CONF_DL_IMAGES, default=True): cv.boolean,
+    vol.Optional(CONF_ON_DECK, default=False): cv.boolean,
     vol.Optional(CONF_HOST, default='localhost'): cv.string,
     vol.Optional(CONF_PORT, default=32400): cv.port,
     vol.Optional(CONF_SECTION_TYPES,
-                default=['movie', 'show']): vol.All(cv.ensure_list, [cv.string]),
+                 default=['movie', 'show']): vol.All(cv.ensure_list, [cv.string]),
     vol.Optional(CONF_RESOLUTION, default=200): cv.positive_int,
-    vol.Optional(CONF_IMG_CACHE, 
-                default='/upcoming-media-card-images/plex/'): cv.string
+    vol.Optional(CONF_IMG_CACHE,
+                 default='/upcoming-media-card-images/plex/'): cv.string
 })
 
 
@@ -74,11 +98,13 @@ class PlexRecentlyAddedSensor(Entity):
         self.server_name = conf.get(CONF_SERVER)
         self.max_items = int(conf.get(CONF_MAX))
         self.dl_images = conf.get(CONF_DL_IMAGES)
+        self.on_deck = conf.get(CONF_ON_DECK)
         self.sections = conf.get(CONF_SECTION_TYPES)
         self.resolution = conf.get(CONF_RESOLUTION)
         if self.server_name:
-            self.server_ip, self.local_ip, self.port = get_server_ip(
-                self.server_name, self.token)
+            _LOGGER.warning(
+                "Plex Recently Added: The server_name option has been removed. Use host and port options instead.")
+            return
         else:
             self.server_ip = conf.get(CONF_HOST)
             self.local_ip = conf.get(CONF_HOST)
@@ -97,10 +123,14 @@ class PlexRecentlyAddedSensor(Entity):
 
     @property
     def state(self):
+        if self.server_name:
+            return "server_name is no longer an option, use host and port."
         return self._state
 
     @property
     def device_state_attributes(self):
+        if self.server_name:
+            return
         import math
         attributes = {}
         if self.change_detected:
@@ -181,129 +211,130 @@ class PlexRecentlyAddedSensor(Entity):
                     else:
                         card_item['fanart'] = ''
                 else:
-                    card_item['poster'] = image_url(self.url_elements,
+                    card_item['poster'] = image_url(self,
                                                     False, poster, self.resolution)
-                    card_item['fanart'] = image_url(self.url_elements,
+                    card_item['fanart'] = image_url(self,
                                                     False, fanart, self.resolution)
                 self.card_json.append(card_item)
                 self.change_detected = False
         attributes['data'] = self.card_json
         return attributes
 
-    def update(self):
-        import re
+    async def async_update(self):
         import os
-        plex = requests.Session()
-        if not self.cert:
-            """Default SSL certificate is for plex.tv not our api server"""
-            plex.verify = False
-        headers = {"Accept": "application/json", "X-Plex-Token": self.token}
+        import re
+        if self.server_name:
+            return
         url_base = 'http{0}://{1}:{2}/library/sections'.format(self.ssl,
                                                                self.server_ip,
                                                                self.port)
         all_libraries = url_base + '/all'
         recently_added = (url_base + '/{0}/recentlyAdded?X-Plex-Container-'
                                      'Start=0&X-Plex-Container-Size={1}')
+        on_deck = (url_base + '/{0}/onDeck?X-Plex-Container-'
+                   'Start=0&X-Plex-Container-Size={1}')
 
         """Find the ID of all libraries in Plex."""
         sections = []
         try:
-            libraries = plex.get(all_libraries, headers=headers, timeout=10)
-            for lib_section in libraries.json()['MediaContainer']['Directory']:
+            libraries = await request(all_libraries, self)
+            if not libraries:
+                self._state = '%s cannot be reached' % self.server_ip
+                return
+            libraries = json.loads(libraries)
+            for lib_section in libraries['MediaContainer']['Directory']:
                 if lib_section['type'] in self.sections:
                     sections.append(lib_section['key'])
         except OSError:
             _LOGGER.warning("Host %s is not available", self.server_ip)
             self._state = '%s cannot be reached' % self.server_ip
             return
-        if libraries.status_code == 200:
-            self.api_json = []
-            self._state = 'Online'
-            """Get JSON for each library, combine and sort."""
-            for library in sections:
-                sub_sec = plex.get(recently_added.format(
-                    library, self.max_items * 2), headers=headers, timeout=10)
-                try:
-                    self.api_json += sub_sec.json()['MediaContainer']['Metadata']
-                except:
-                    _LOGGER.warning('No Metadata field for "{}"'.format(sub_sec.json()['MediaContainer']['librarySectionTitle']))
-                    pass
-            self.api_json = sorted(self.api_json, key=lambda i: i['addedAt'],
-                                   reverse=True)[:self.max_items]
+        self.api_json = []
+        self._state = 'Online'
+        """Get JSON for each library, combine and sort."""
+        for library in sections:
+            recent_or_deck = on_deck if self.on_deck else recently_added
+            sub_sec = await request(recent_or_deck.format(
+                library, self.max_items * 2), self)
+            sub_sec = json.loads(sub_sec)
+            try:
+                self.api_json += sub_sec['MediaContainer']['Metadata']
+            except:
+                _LOGGER.warning('No Metadata field for "{}"'.format(
+                    sub_sec['MediaContainer']['librarySectionTitle']))
+                pass
+        self.api_json = sorted(self.api_json, key=lambda i: i['addedAt'],
+                               reverse=True)[:self.max_items]
 
-            """Update attributes if view count changes"""
-            if view_count(self.api_json) != view_count(self.data):
-                self.change_detected = True
+        """Update attributes if view count changes"""
+        if view_count(self.api_json) != view_count(self.data):
+            self.change_detected = True
+            self.data = self.api_json
+
+        api_ids = media_ids(self.api_json, True)
+        data_ids = media_ids(self.data, True)
+        if self.dl_images:
+            directory = self.conf_dir + 'www' + self._dir
+            if not os.path.exists(directory):
+                os.makedirs(directory, mode=0o777)
+
+            """Make list of images in dir that use our naming scheme"""
+            dir_re = re.compile(r'[pf]\d+\.jpg')  # p1234.jpg or f1234.jpg
+            dir_images = list(filter(dir_re.search,
+                                     os.listdir(directory)))
+            dir_ids = [file[1:-4] for file in dir_images]
+            dir_ids.sort(key=int)
+
+            """Update if media items have changed or images are missing"""
+            if dir_ids != api_ids or data_ids != api_ids:
+                self.change_detected = True  # Tell attributes to update
+                self.data = self.api_json
+                """Remove images not in list"""
+                for file in dir_images:
+                    if not any(str(ids) in file for ids in data_ids):
+                        os.remove(directory + file)
+                """Retrieve image from Plex if it doesn't exist"""
+                for media in self.data:
+                    if 'type' not in media:
+                        continue
+                    elif media['type'] == 'movie':
+                        poster = media.get('thumb', '')
+                        fanart = media.get('art', '')
+                    elif media['type'] == 'episode':
+                        poster = media.get('grandparentThumb', '')
+                        fanart = media.get('grandparentArt', '')
+                    else:
+                        _LOGGER.error("Media type: %s", media['type'])
+                        continue
+                    poster_jpg = '{}p{}.jpg'.format(directory,
+                                                    media['ratingKey'])
+                    fanart_jpg = '{}f{}.jpg'.format(directory,
+                                                    media['ratingKey'])
+                    if not os.path.isfile(fanart_jpg):
+                        fanart_image = await request(image_url(
+                            self, True, fanart, self.resolution), self, True, True)
+                        if fanart_image:
+                            open(fanart_jpg, 'wb').write(fanart_image)
+                        else:
+                            pass
+                    if not os.path.isfile(poster_jpg):
+                        poster_image = await request(image_url(
+                            self, True, poster, self.resolution), self, True, True)
+                        if poster_image:
+                            open(poster_jpg, 'wb').write(poster_image)
+                        else:
+                            continue
+        else:
+            """Update if media items have changed"""
+            if api_ids != data_ids:
+                self.change_detected = True  # Tell attributes to update
                 self.data = self.api_json
 
-            api_ids = media_ids(self.api_json, True)
-            data_ids = media_ids(self.data, True)
-            if self.dl_images:
-                directory = self.conf_dir + 'www' + self._dir
-                if not os.path.exists(directory):
-                    os.makedirs(directory, mode=0o777)
 
-                """Make list of images in dir that use our naming scheme"""
-                dir_re = re.compile(r'[pf]\d+\.jpg')  # p1234.jpg or f1234.jpg
-                dir_images = list(filter(dir_re.search,
-                                         os.listdir(directory)))
-                dir_ids = [file[1:-4] for file in dir_images]
-                dir_ids.sort(key=int)
-
-                """Update if media items have changed or images are missing"""
-                if dir_ids != api_ids or data_ids != api_ids:
-                    self.change_detected = True  # Tell attributes to update
-                    self.data = self.api_json
-                    """Remove images not in list"""
-                    for file in dir_images:
-                        if not any(str(ids) in file for ids in data_ids):
-                            os.remove(directory + file)
-                    """Retrieve image from Plex if it doesn't exist"""
-                    for media in self.data:
-                        if 'type' not in media:
-                            continue
-                        elif media['type'] == 'movie':
-                            poster = media.get('thumb', '')
-                            fanart = media.get('art', '')
-                        elif media['type'] == 'episode':
-                            poster = media.get('grandparentThumb', '')
-                            fanart = media.get('grandparentArt', '')
-                        else:
-                            _LOGGER.error("Media type: %s", media['type'])
-                            continue
-                        poster_jpg = '{}p{}.jpg'.format(directory,
-                                                        media['ratingKey'])
-                        fanart_jpg = '{}f{}.jpg'.format(directory,
-                                                        media['ratingKey'])
-                        if not os.path.isfile(fanart_jpg):
-                            if image_url(self.url_elements, True, fanart):
-                                image = plex.get(image_url(
-                                    self.url_elements, True, fanart, self.resolution),
-                                    headers=headers, timeout=10).content
-                                open(fanart_jpg, 'wb').write(image)
-                            else:
-                                pass
-                        if not os.path.isfile(poster_jpg):
-                            if image_url(self.url_elements, True, poster):
-                                image = plex.get(image_url(
-                                    self.url_elements, True, poster, self.resolution),
-                                    headers=headers, timeout=10).content
-                                open(poster_jpg, 'wb').write(image)
-                            else:
-                                continue
-            else:
-                """Update if media items have changed"""
-                if api_ids != data_ids:
-                    self.change_detected = True  # Tell attributes to update
-                    self.data = self.api_json
-        else:
-            self._state = '%s cannot be reached' % self.server_ip
-
-
-def image_url(url_elements, cert_check, img, resolution=200):
+def image_url(self, cert_check, img, resolution=200):
     """Plex can resize images with a long & partially % encoded url."""
     from urllib.parse import quote
-    ssl, host, local, port, token, self_cert, dl_images = url_elements
+    ssl, host, local, port, token, self_cert, dl_images = self.url_elements
     if not cert_check and not self_cert:
         ssl = ''
     if dl_images:
@@ -313,35 +344,12 @@ def image_url(url_elements, cert_check, img, resolution=200):
                                                                    port,
                                                                    img,
                                                                    token),
-                                                                   safe='')
+                    safe='')
     url = ('http{0}://{1}:{2}/photo/:/transcode?width={5}&height={5}'
            '&minSize=1&url={3}&X-Plex-Token={4}').format(ssl, host, port,
                                                          encoded, token,
                                                          resolution)
-    """Check if image exists"""
-    if not self_cert:
-        r = requests.head(url, verify=False)
-    else:
-        r = requests.head(url)
-    if r.status_code == 200:
-        return url
-    else:
-        return False
-
-
-def get_server_ip(name, token):
-    """With a token and server name we get server's ip, local ip, and port"""
-    import xml.etree.ElementTree as ET
-    from unicodedata import normalize
-    plex_tv = requests.get(
-        'https://plex.tv/api/servers.xml?X-Plex-Token=' + token, timeout=10)
-    plex_xml = ET.fromstring(plex_tv.content)
-    for server in plex_xml.findall('Server'):
-        server_name = server.get('name').casefold()
-        name = name.casefold()
-        if normalize('NFKD', server_name) == normalize('NFKD', name):
-            return (server.get('address'), server.get('localAddresses'),
-                    server.get('port'))
+    return url
 
 
 def days_since(date, tz):

@@ -1,28 +1,43 @@
 {
     "common": {
         "about": "Over",
+        "add": "toevoegen",
         "appdaemon": "AppDaemon",
         "appdaemon_apps": "AppDaemon Apps",
+        "appdaemon_plural": "AppDaemon Apps",
         "background_task": "Achtergrond taak is draaiende, de pagina herhaalt zichzelf wanneer dit klaar is.",
         "check_log_file": "Controleer het logbestand voor meer details.",
         "continue": "Doorgaan",
         "disabled": "Uitgeschakeld",
         "documentation": "Documentatie",
+        "element": "element",
         "hacs_is_disabled": "HACS is uitgeschakeld",
+        "install": "Installeer",
         "installed": "geinstalleerd",
         "integration": "Integratie",
+        "integration_plural": "Integraties",
         "integrations": "Integraties",
+        "lovelace": "Lovelace",
+        "lovelace_element": "Lovelace-element",
+        "lovelace_elements": "Lovelace-elementen",
         "manage": "beheer",
         "netdaemon": "NetDaemon",
         "netdaemon_apps": "NetDaemon Apps",
+        "netdaemon_plural": "NetDaemon Apps",
         "plugin": "Lovelace",
+        "plugin_plural": "Lovelace-elementen",
         "plugins": "Plugins",
         "python_script": "Python Script",
+        "python_script_plural": "Python Scripts",
         "python_scripts": "Python Scripts",
         "repositories": "Repositories",
+        "repository": "Repository",
         "settings": "instellingen",
         "theme": "Thema",
+        "theme_plural": "Themas",
         "themes": "Themas",
+        "uninstall": "Verwijderen",
+        "update": "Update",
         "version": "Versie"
     },
     "config": {
@@ -70,6 +85,94 @@
         "upgrade_all": "Hiermee worden al deze repositories geüpgraded. Zorg ervoor dat u de release-opmerkingen van allen heeft gelezen voordat u doorgaat.",
         "yes": "Ja"
     },
+    "dialog_about": {
+        "frontend_version": "Frontend versie",
+        "installed_repositories": "Geïnstalleerde repositories",
+        "integration_version": "Integratieversie",
+        "useful_links": "Nuttige links"
+    },
+    "dialog_add_repo": {
+        "limit": "Alleen de eerste 100 repositories worden getoond, gebruik de zoekopdracht om te filteren wat je nodig hebt",
+        "no_match": "Er zijn geen repositories gevonden die overeenkomen met uw filter",
+        "sort_by": "Sorteren op",
+        "title": "Repository toevoegen"
+    },
+    "dialog_custom_repositories": {
+        "category": "Categorie",
+        "no_category": "Ontbrekende categorie",
+        "no_repository": "Ontbrekende repository",
+        "title": "Aangepaste repositories",
+        "url_placeholder": "Voeg een aangepaste repository-URL toevoegen"
+    },
+    "dialog_info": {
+        "author": "Auteur",
+        "downloads": "Downloads",
+        "install": "Installeer deze repository in HACS",
+        "loading": "Informatie laden ...",
+        "no_info": "De ontwikkelaar heeft geen verdere informatie verstrekt voor deze repository",
+        "open_issues": "Openstaande problemen",
+        "open_repo": "Open repository",
+        "stars": "Sterren",
+        "version_installed": "Versie geïnstalleerd"
+    },
+    "dialog_install": {
+        "restart": "Onthoud dat u Home Assistant opnieuw moet opstarten voordat wijzigingen aan integraties (custom_components) worden toegepast.",
+        "select_version": "Selecteer versie",
+        "show_beta": "Bètaversies weergeven",
+        "type": "Type",
+        "url": "URL"
+    },
+    "dialog_update": {
+        "available_version": "Beschikbare versie",
+        "changelog": "Changelog",
+        "installed_version": "Geïnstalleerde versie",
+        "releasenotes": "Releasenotes voor {release}",
+        "title": "Update in behandeling"
+    },
+    "entry": {
+        "information": "Informatie",
+        "intro": "Updates en belangrijke berichten worden hier weergegeven als die er zijn",
+        "messages": {
+            "disabled": {
+                "content": "Controleer uw logbestand voor meer details",
+                "title": "HACS is uitgeschakeld"
+            },
+            "has_pending_tasks": {
+                "content": "Sommige repositories worden mogelijk pas weergegeven als dit is voltooid",
+                "title": "Achtergrondtaken in behandeling"
+            },
+            "resources": {
+                "content": "Je hebt {number} Lovelace-elementen die niet correct zijn geladen in Lovelace.",
+                "title": "Niet geladen in Lovelace"
+            },
+            "restart": {
+                "content": "Je hebt {number} integraties waarvoor de Home Assistant opnieuw moet worden opgestart, je kunt dat doen via het gedeelte 'Serverbeheer' onder het configuratiegedeelte van de Home Assistant UI.",
+                "title": "In afwachting van herstart"
+            },
+            "startup": {
+                "content": "HACS is aan het opstarten, gedurende deze tijd kan er informatie ontbreken of onjuist zijn",
+                "title": "HACS is aan het opstarten"
+            },
+            "wrong_frontend_installed": {
+                "content": "Je hebt {running} van de HACS-frontend geïnstalleerd, maar versie {expected} werd verwacht. Als je dit bericht ziet, kon Home Assistant de nieuwe versie niet installeren, probeer dan Home Assistant opnieuw op te starten.",
+                "title": "Onverwachte frontend-versie"
+            },
+            "wrong_frontend_loaded": {
+                "content": "U gebruikt versie {running} van de HACS-frontend, maar versie {expected} werd verwacht, u moet uw browsercache wissen.",
+                "title": "Onverwachte frontend-versie"
+            }
+        },
+        "pending_updates": "In afwachting van updates"
+    },
+    "menu": {
+        "about": "Over HACS",
+        "clear": "Wis alle nieuwe",
+        "custom_repositories": "Aangepaste repositories",
+        "dismiss": "Sluit alle nieuwe repositories af",
+        "documentation": "Documentatie",
+        "open_issue": "Meld probleem",
+        "reload": "Herlaad venster"
+    },
     "options": {
         "step": {
             "user": {
@@ -96,6 +199,20 @@
         "plugin_not_loaded": "Deze plugin wordt niet toegevoegd aan je Lovelace resources.",
         "restart": "U moet Home Assistant opnieuw starten.",
         "restart_pending": "Wachten op herstart"
+    },
+    "repository_card": {
+        "dismiss": "afwijzen",
+        "hide": "Verbergen",
+        "information": "Informatie",
+        "new_repository": "Nieuwe repository",
+        "not_loaded": "Niet geladen",
+        "open_issue": "Meld probleem",
+        "open_source": "Open source",
+        "pending_restart": "In afwachting van herstart",
+        "pending_update": "In afwachting van update",
+        "reinstall": "Herinstalleer",
+        "report": "Rapport voor verwijdering",
+        "update_information": "Update informatie"
     },
     "repository": {
         "add_to_lovelace": "Toevoegen aan Lovelace",
@@ -131,6 +248,28 @@
         "update_information": "Update informatie",
         "upgrade": "Update"
     },
+    "search": {
+        "placeholder": "Zoek naar repository"
+    },
+    "sections": {
+        "about": {
+            "description": "Toon informatie over HACS",
+            "title": "Over"
+        },
+        "automation": {
+            "description": "Hier vind je python_scripts, AppDaemon-apps en NetDaemon-apps",
+            "title": "Automatisering"
+        },
+        "frontend": {
+            "description": "Dit is waar je thema's, aangepaste kaarten en andere elementen voor lovelace",
+            "title": "Frontend"
+        },
+        "integrations": {
+            "description": "Hier vindt u aangepaste integraties (custom_components)",
+            "title": "Integraties"
+        },
+        "pending_repository_upgrade": "U gebruikt versie {installed} , versie {available} is beschikbaar"
+    },
     "settings": {
         "add_custom_repository": "VOEG EIGEN REPOSITORY TOE",
         "adding_new_repo": "Nieuwe repository '{repo}' toevoegen",
@@ -162,6 +301,12 @@
         "last_updated": "Laatste update",
         "name": "Naam",
         "new_repositories": "Nieuwe Repositories",
+        "new_repositories_note": "Je hebt meer dan 10 nieuwe repositories die hier worden weergegeven, als je ze allemaal wilt wissen, klik dan op de 3 puntjes in de rechterbovenhoek en wijs ze af.",
+        "no_repositories": "Geen repositories",
+        "no_repositories_desc1": "Het lijkt erop dat je nog geen repositories hebt geïnstalleerd in deze sectie.",
+        "no_repositories_desc2": "Klik op de + in de benedenhoek om je eerste toe te voegen!",
+        "no_repositories_found_desc1": "Er zijn geen geïnstalleerde repositories die overeenkomen met {searchInput}\" in deze sectie.",
+        "no_repositories_found_desc2": "Probeer iets anders te zoeken!",
         "pending_upgrades": "Upgrades in afwachting",
         "placeholder_search": "Typ iets om te zoeken...",
         "sort": "sorteer",
