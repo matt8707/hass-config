@@ -98,3 +98,19 @@ switch:
           service: shell_command.fullykiosk_screensaver_on
         turn_off:
           service: shell_command.fullykiosk_screensaver_off
+
+      fan_anslut:
+        friendly_name: Fläkt
+        value_template: "{{ states('input_boolean.fan_anslut') }}"
+        turn_on:
+          service: script.fan_anslut_on
+        turn_off:
+          service: script.fan_anslut_off
+
+      air_purifier:
+        friendly_name: Luftrenare
+        value_template: "{{ states('input_boolean.air_purifier') }}"
+        turn_on:
+          service: script.air_purifier_on
+        turn_off:
+          service: script.air_purifier_off
