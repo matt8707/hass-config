@@ -367,7 +367,7 @@ views:
             style:
               {top: 93.65%, left: 70.2%, width: 90vw, height: 1px, --mdc-icon-size: 1.2vw, --ha-card-background: none, 
               --ha-card-box-shadow: none, --primary-text-color: '#6a7377', font-family: SF Display, font-size: 1.26vw, 
-              font-weight: 400, letter-spacing: 0.065vw, line-height: 2.05vw, opacity: 0.5}
+              font-weight: 400, letter-spacing: 0.065vw, line-height: 2.05vw, opacity: 0.5, pointer-events: none}
             content: >
               {% if is_state('sensor.covid_19_folkhalsomyndigheten', 'Tillgänglig') %}
                 {% set data = state_attr('sensor.covid_19_folkhalsomyndigheten', 'embedCode') %}
@@ -408,7 +408,7 @@ views:
             style:
               {top: 9%, left: 11.1%, width: 15.5vw, height: 1px, --ha-card-background: none, --ha-card-box-shadow: none, 
               --primary-text-color: 'rgba(255, 255, 255, 0.9)', font-family: SF Display, font-size: 1.5vw, font-weight: 300, 
-              letter-spacing: 0.06vw, line-height: 2.05vw, opacity: 0.75}
+              letter-spacing: 0.06vw, line-height: 2.05vw, opacity: 0.75, pointer-events: none}
             content: >
               <span>{{ states('sensor.time') }}</span>
 
@@ -972,7 +972,7 @@ views:
           #################################################
 
           - type: custom:button-card
-            entity: switch.wemo_flakt
+            entity: switch.fan_anslut
             style:
               top: 37.9%
               left: 80.05%
@@ -981,7 +981,7 @@ views:
               action: toggle
             hold_action: !include popup/sovrum_flakt.yaml
             custom_fields:
-              icon_fan: >
+              icon_fan: &icon_fan >
                 [[[ const path = '<circle cx="25" cy="25" r="6.6"/> <path d="M31.9 30.4c-.5.6-1.1 1.1-1.7 1.5-1.4 1.1-3.2 1.7-5.2 1.7-2.3 0-4.5-.9-6-2.4-.9 1.1-1.6 2.3-2.3 3.2l-4.9 5.4c-1.8 2.7.3 5.6 2.5 7 3.9 2.4 9.8 3.1 14.1 1.9 4.6-1.3 7.9-4.7 7.4-9.7-.2-3.4-1.9-6-3.9-8.6zM17 28.3c-.4-1-.6-2.1-.6-3.3a8.7 8.7 0 0 1 6.4-8.4l-1.6-3.5L19 6.2c-1.5-2.8-5-2.5-7.3-1.2-4 2.2-7.5 6.9-8.7 11.3-1.2 4.6.2 9.2 4.7 11.3 3.1 1.3 6.1 1.2 9.3.7zm26.9-17.6c-3.3-3.4-8-4.6-12.1-1.8-2.8 1.8-4.2 4.6-5.5 7.5 4.2.6 7.4 4.2 7.4 8.6 0 .9-.1 1.7-.4 2.5 1.3.2 2.8.3 3.8.4 2.3.4 4.7 1.3 7.1 1.7 3.2.3 4.7-3 4.8-5.6.3-4.6-1.9-10.1-5.1-13.3z"/>';
                 const style = '<svg viewBox="0 0 50 50"> <style>@keyframes rotate{0%{visibility: visible; transform: rotate(0deg);}100%{transform: rotate(1080deg);}}.start{animation: rotate 2.8s ease-in; transform-origin: center; fill: #5daeea; visibility: hidden;}.on{animation: rotate 1.8s linear infinite; transform-origin: center; fill: #5daeea; animation-delay: 2.8s; visibility: hidden;}.end{animation: rotate 2.8s; transform-origin: center; fill: #9ca2a5; animation-timing-function: cubic-bezier(0.61, 1, 0.88, 1);}</style>';
                 if (entity.state === 'on') { return `${style}<g class="start">${path}</g><g class="on">${path}</g></svg>`; }
@@ -1477,4 +1477,26 @@ views:
                 icon_home:
                   [top: 10.5%, left: 10.1%, width: 2.9vw, position: absolute,
                   fill: "[[[ return entity.state === 'on' ? '#c7983e' : '#9da0a2'; ]]]"]
+            template: switch
+
+
+          ### temp fan
+          - type: custom:button-card
+            aspect_ratio: 3/1
+            name: Fläkt 2
+            state_display: ' '
+            entity: switch.wemo_flakt
+            style:
+              top: 5%
+              left: 66.14%
+              width: 10%
+            tap_action:
+              action: toggle
+            hold_action: !include popup/studio_flakt.yaml
+            styles:
+              name: [top: 21.5%, left: 39%, position: absolute, line-height: 2vw]
+              custom_fields:
+                icon_fan: [top: 20%, left: 10%, width: 2vw, position: absolute]
+            custom_fields:
+              icon_fan: *icon_fan
             template: switch
