@@ -29,20 +29,35 @@
                       show_header_toggle: false
                       entities:
 
-                        - entity: switch.wemo_flakt
+                        - entity: switch.fan_anslut
+                          icon: custom:pedestal-fan
                           secondary_info: last-changed
                           style: |
                             :host {
                             --paper-item-icon-color: 
-                              {% if is_state('switch.wemo_flakt', 'on') %}
+                              {% if is_state('switch.fan_anslut', 'on') %}
                                 #3182b7
                               {% else %}
                                 #9e9e9e
                               {% endif %};
                               }
 
+                        - entity: input_boolean.fan_anslut_oscillate
+                          name: Oscillera
+                          icon: mdi:arrow-left-right
+
+                        - entity: input_select.fan_anslut_speed
+
+                        - entity: switch.air_purifier
+                          name: Luftrenare
+                          icon: mdi:air-purifier
+
+                        - entity: automation.turn_on_fan_anslut_temp
+                          icon: mdi:chart-bell-curve-cumulative
+                          name: Slå på om 26 °C överskrids
+
                         - type: custom:slider-entity-row
-                          entity: input_number.fan_timer
+                          entity: input_number.fan_anslut_timer
                           style: |
                             div {
                               max-width: 60%;
@@ -51,10 +66,6 @@
                             hui-generic-entity-row > div > span {
                               display: block;
                             }
-
-                        - entity: automation.turn_on_flakt_temp
-                          icon: mdi:chart-bell-curve-cumulative
-                          name: Slå på om 26 °C överskrids
 
                     - type: custom:mini-graph-card
                       entities:
