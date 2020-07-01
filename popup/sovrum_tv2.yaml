@@ -27,6 +27,10 @@
                       name: Samsung TV
                       secondary_info: last-changed
 
+                    - entity: script.samsung_tv_energy_saving
+                      name: Eko-läge
+                      icon: mdi:leaf
+
                     - entity: input_select.hdmi2
 
                     - type: custom:hui-horizontal-stack-card
