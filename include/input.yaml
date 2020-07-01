@@ -15,6 +15,10 @@ input_boolean:
   krisinformation_visibility:
   laundry_timer_visibility:
 
+  fan_anslut:
+  fan_anslut_oscillate:
+  air_purifier:
+
   motion_hall:
     name: hallen
     initial: off
@@ -60,6 +64,15 @@ input_number:
     step: 1
     unit_of_measurement: 'h'
 
+  fan_anslut_timer:
+    name: Stäng efter
+    icon: mdi:timer
+    initial: 6
+    min: 1
+    max: 12
+    step: 1
+    unit_of_measurement: 'h'
+
 input_select:
 
   ####################################################
@@ -85,13 +98,18 @@ input_select:
   roborock_fan_speed:
     name: Rengöringsläge
     options:
-      ['Tyst', 'Standard','Medium', 'Turbo']
+      ['Tyst', 'Standard', 'Medium', 'Turbo']
     icon: mdi:format-list-bulleted
+
+  fan_anslut_speed:
+    name: Fläkthastighet
+    options:
+      ['Tyst', 'Medium', 'Max']
 
   roborock_zone:
     initial: Ingen vald
     options:
-      ['Ingen vald', 'Hall', 'Kök','Vardagsrum', 'Studio', 'Sovrum']
+      ['Ingen vald', 'Hall', 'Kök', 'Vardagsrum', 'Studio', 'Sovrum']
 
   conditional_media:
     initial: Senast nedladdat
