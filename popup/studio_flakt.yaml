@@ -1,0 +1,108 @@
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                title: Stäng
+                deviceID: this
+                style:
+                  --ha-card-border-radius: 1em
+                  --more-info-header-color: rgba(255,255,255,0.6)
+                  background: none
+                  box-shadow: none
+                card:
+                  type: custom:stack-in-card
+                  style: |
+                    ha-card {
+                      animation: pop-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; transform-origin: center;
+                      box-shadow: none; border-radius: 1em;
+                      background: linear-gradient(180deg, rgba(48,52,52,1) 0%, rgba(48,52,52,1) 4.8em, rgba(34,38,39,1) 4.8em, rgba(34,38,39,1) 100%); }
+                    @keyframes pop-in {
+                      0% { transform: scale(0.6); opacity: 0; } 20% { opacity: 0; } 100% { transform: scale(1); opacity: 0.9; }}
+                  cards:
+                    - type: entities
+                      title: Fläkt
+                      style: |
+                        ha-card {
+                          box-shadow: none; border-radius: 1em; padding: 0.3em 1.25em 0.4em 0.5em; 
+                          background: linear-gradient(180deg, rgba(48,52,52,1) 0%, rgba(48,52,52,1) 4.8em, rgba(34,38,39,1) 4.8em, rgba(34,38,39,1) 100%); }
+                        .card-header {
+                          margin: -0.4em 0 1.4em 0.4em; font-family: sf text; letter-spacing: 0.005em; font-size: 1.5em;}
+                      show_header_toggle: false
+                      entities:
+
+                        - entity: switch.wemo_flakt
+                          secondary_info: last-changed
+                          style: |
+                            :host {
+                            --paper-item-icon-color: 
+                              {% if is_state('switch.wemo_flakt', 'on') %}
+                                #3182b7
+                              {% else %}
+                                #9e9e9e
+                              {% endif %};
+                              }
+
+                        - type: custom:slider-entity-row
+                          entity: input_number.fan_timer
+                          style: |
+                            div {
+                              max-width: 60%;
+                              margin: auto;
+                            }
+                            hui-generic-entity-row > div > span {
+                              display: block;
+                            }
+
+                        - entity: automation.turn_on_flakt_temp
+                          icon: mdi:chart-bell-curve-cumulative
+                          name: Slå på om 26 °C överskrids
+
+                    - type: custom:mini-graph-card
+                      entities:
+                        - color: '#385581'
+                          entity: sensor.hall_temperature
+                      line_width: 8
+                      hour24: true
+                      group: true
+                      align_icon: left
+                      align_state: right
+                      align_header: left
+                      hours_to_show: 24
+                      show:
+                        fill: fade
+                        icon: true
+                        name: true
+                        state: true
+                        name_adaptive_color: false
+                        labels: hover
+                        legend: false
+                      style: |
+                        ha-card {
+                          border-radius: 0.35em;
+                          background: none;
+                          box-shadow: none;
+                          margin-top: -0.4em;
+                        }
+                        .name > span, .state > span.state__value.ellipsis, 
+                        .state > span.state__uom.ellipsis {
+                          font-size: 14px !important;
+                          font-weight: 400 !important;
+                          opacity: 1 !important;
+                        }
+                        .name > span {
+                          margin-left: 16px !important;
+                        }
+                        .icon {
+                          margin-left: 31px !important;
+                        }
+                        .state {
+                          margin-top: -36px;
+                          margin-right: 33px;
+                        }
+                        .state > span.state__uom.ellipsis {
+                          margin-top: -3px;
+                        }
+                        .state > div {
+                          opacity: 0;
+                        }
+                      tap_action:
+                        action: none
