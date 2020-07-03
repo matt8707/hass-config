@@ -181,7 +181,7 @@ button_card_templates:
                               brightness: false
                               color_temp: true
                               full_width_sliders: true
-                              header: false
+                              hide_header: true
                               show_slider_percent: true
                               smooth_color_wheel: true
 
