@@ -236,7 +236,7 @@
                         @keyframes pop-in {
                           0% { transform: scale(0.6); opacity: 0; } 20% { opacity: 0; } 100% { transform: scale(1); opacity: 0.9; }}
                         #states > div > mini-graph-card {
-                          margin: 0 -34px -21px -23px;
+                          margin: -39px -34px -21px -23px;
                         }
                       entities:
                         - entity: sensor.synology_dsm_status
@@ -341,8 +341,7 @@
                               border-radius: 1em;
                               background: none;
                               box-shadow: none;
-                              height: 8.4em;
-                              margin-top: -4.42em;
+                              height: 1px;
                             }
                           tap_action:
                             action: none
