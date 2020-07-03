@@ -996,7 +996,7 @@ sensor:
         entity_id: sensor.oresundskraft
         icon_template: mdi:poll-box
         friendly_name_template: > 
-          Totalt för {{ now().year }}
+          Totalt {{ now().year }}
         value_template: "{{ states('sensor.oresundskraft').split('total=')[1]}}"
         unit_of_measurement: 'kWh'
 
