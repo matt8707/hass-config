@@ -330,15 +330,23 @@ views:
             #root > hui-icon-element:hover {color: rgba(255, 255, 255, 0.25) !important; transition: none;}
             #root > hui-icon-element:active {color: rgba(255, 255, 255, 0.35) !important; transition: none;}
 
+            #root > hui-icon-element:nth-child(9) {
+              {% if states('sensor.hass_version_installed') != states('sensor.hass_version_latest') or 
+              not is_state('sensor.hacs', '0') and not is_state('sensor.hacs', 'unknown') %}
+                color: #234e6a !important;
+                {% else %}
+                {% endif %}
+              }
+
           "#root > hui-image":
             $: |
               #image {pointer-events: none;}
 
-          "#root > hui-markdown-card, #key1":
+          "#root > hui-element > hui-markdown-card, #key1":
             $: |
               ha-card > ha-markdown {padding: 0 !important;}
 
-          "#root > hui-markdown-card, #key2":
+          "#root > hui-element > hui-markdown-card, #key2":
             $:
               "ha-card > ha-markdown":
                 $: |
@@ -363,7 +371,8 @@ views:
           #                                               #
           #################################################
 
-          - type: custom:hui-markdown-card
+          - type: custom:hui-element
+            card_type: markdown
             style:
               {top: 93.65%, left: 70.2%, width: 90vw, height: 1px, --mdc-icon-size: 1.2vw, --ha-card-background: none, 
               --ha-card-box-shadow: none, --primary-text-color: '#6a7377', font-family: SF Display, font-size: 1.26vw, 
@@ -404,7 +413,8 @@ views:
           #                                               #
           #################################################
 
-          - type: custom:hui-markdown-card
+          - type: custom:hui-element
+            card_type: markdown
             style:
               {top: 9%, left: 11.1%, width: 15.5vw, height: 1px, --ha-card-background: none, --ha-card-box-shadow: none, 
               --primary-text-color: 'rgba(255, 255, 255, 0.9)', font-family: SF Display, font-size: 1.5vw, font-weight: 300, 
@@ -568,81 +578,22 @@ views:
               --mdc-icon-size: 4vw
             tap_action: !include popup/sidebar_information.yaml
 
-          - type: conditional
-            conditions:
-              - entity: sensor.hass_version_template
-                state_not: Senaste
-              - entity: sensor.hass_version_template
-                state_not: unknown
-            elements:
-              - type: image
-                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'%3E%3Ccircle cx='25' cy='25' r='20.3' fill='%23ac2e2e' /%3E%3Cpath d='M24.4 18.3h0L19 21.9v-3.4l5.3-3.7H28v20.4h-3.6V18.3z' fill='%23bcbebf' /%3E%3C/svg%3E"
-                style:
-                  top: 85%
-                  left: 12.2%
-                  width: 1.7%
-                  pointer-events: none
-
           #################################################
           #                                               #
-          #                 SCENES BUTTON                 #
+          #                UPDATES BUTTON                 #
           #                                               #
           #################################################
 
           - type: icon
-            icon: mdi:home-heart
-            title: Scenarier
+            icon: mdi:arrow-up-bold-circle-outline
+            title: Uppdateringar
             style:
-              top: 87.55%
+              top: 87.41%
               left: 16.55%
               color: rgba(255, 255, 255, 0.10)
               padding: 0.8vw
-              --mdc-icon-size: 4.6vw
-            tap_action: !include popup/sidebar_scenarier.yaml
-
-          #################################################
-          #                                               #
-          #                  HACS SENSOR                  #
-          #                                               #
-          #################################################
-
-          - type: conditional
-            conditions:
-              - entity: sensor.hacs
-                state_not: '0'
-              - entity: sensor.hacs
-                state_not: unknown
-            elements:
-              - type: custom:button-card
-                style:
-                  top: 95%
-                  left: 10.45%
-                name: >
-                  [[[ if (parseInt(states['sensor.hacs'].state) === 1) {
-                  return states['sensor.hacs'].state + ' uppdatering tillgänglig'; }
-                  else { return states['sensor.hacs'].state + ' uppdateringar tillgängliga'; } ]]]
-                styles:
-                  name:
-                    [letter-spacing: 0.06vw, font-family: SF Display, font-weight: 500, 
-                    font-size: 1.15vw, color: '#6a7377', padding: 0.4vw 1.2vw 0.4vw 1.2vw]
-                  card:
-                    [background: '#202a2f90', border-radius: 0.7vw, opacity: 0.5]
-                tap_action:
-                  action: call-service
-                  service: browser_mod.popup
-                  service_data:
-                    title: Stäng
-                    deviceID: this
-                    style:
-                      background: none
-                      box-shadow: none
-                      width: 75em
-                    card:
-                      type: custom:hui-element
-                      card_type: iframe
-                      url: !secret hacs_url
-                      aspect_ratio: 60%
-                      style: 'ha-card { border-radius: 1em;}'
+              --mdc-icon-size: 4vw
+            tap_action: !include popup/sidebar_update.yaml
 
           ##########################################################################
           #                                                                        #
@@ -727,7 +678,8 @@ views:
                 hass.callService('media_player', 'turn_on', {entity_id: entity.entity_id}); }
                 if (entity.state === 'on') {
                 hass.callService('input_boolean', 'turn_on', {entity_id: entity.entity_id.replace('media_player', 'input_boolean')});
-                hass.callService('media_player', 'turn_off', {entity_id: entity.entity_id}); } ]]]
+                hass.callService('media_player', 'turn_off', {entity_id: entity.entity_id});
+                hass.callService('media_player', 'turn_off', {entity_id: entity.entity_id.replace('sony_bravia_tv', 'vardagsrum').replace('samsung', 'sovrum')}); } ]]]
             hold_action: !include popup/vardagsrum_tv.yaml
             custom_fields:
               icon_tv: &icon_tv >
@@ -926,12 +878,12 @@ views:
 
           #################################################
           #                                               #
-          #                 MATTIAS LIGHT                 #
+          #                  SÄNGLAMPOR                   #
           #                                               #
           #################################################
 
           - type: custom:button-card
-            entity: light.mattias
+            entity: light.sanglampor
             style:
               top: 20.35%
               left: 80.05%
@@ -950,20 +902,31 @@ views:
 
           #################################################
           #                                               #
-          #                  SANJA LIGHT                  #
+          #                 AIR PURIFIER                  #
           #                                               #
           #################################################
 
           - type: custom:button-card
-            entity: light.sanja
+            entity: switch.air_purifier
+            triggers_update:
+              ['switch.air_purifier', 'input_boolean.air_purifier']
             style:
               top: 20.35%
               left: 91.05%
               width: 10%
+            tap_action:
+              action: toggle
+            hold_action: !include popup/sovrum_luftrenare.yaml
             custom_fields:
-              icon_lamp: *icon_lamp
-            styles: *icon_lamp_styles
-            template: light
+              icon_air_purifier: >
+                <svg viewBox="0 0 50 50"><path d="M36.8 1.2v1.7a5.34 5.34 0 0 1-5.3 5.3H18.4a5.34 5.34 0 0 1-5.3-5.3V1.2c-2.6.4-4.7 2.8-4.7 5.6v36.5c0 3.1 2.6 5.7 5.7 5.7h21.8c3.1 0 5.7-2.6 5.7-5.7V6.8c0-2.8-2.1-5.2-4.8-5.6zm-1.7 35.6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1 .3-1.8.7-2.1.9l-.6.3a9.75 9.75 0 0 1-1.4.6c-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1 .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5 2.1.5h.1v2.7zm0-6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1 .3-1.8.7-2.1.9l-.6.3a9.75 9.75 0 0 1-1.4.6c-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1 .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5 2.1.5h.1v2.7zm0-6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1 .3-1.8.7-2.1.9l-.6.3c-.4.2-.8.4-1.4.6-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1 .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5 2.1.5h.1v2.7zM15.7 1.9v-.8h18.6V3c0 1.5-1.2 2.8-2.8 2.8H18.4c-1.5 0-2.8-1.2-2.8-2.8V1.9z"/></svg>
+              loading: *loading
+            styles:
+              custom_fields:
+                icon_air_purifier:
+                  [top: 11%, left: 6.3%, width: 3.05vw, position: absolute,
+                  fill: "[[[ return entity.state === 'on' ? '#5daeea' : '#9da0a2'; ]]]"]
+            template: switch
 
           #################################################
           #                                               #
@@ -973,6 +936,8 @@ views:
 
           - type: custom:button-card
             entity: switch.fan_anslut
+            triggers_update:
+              ['switch.fan_anslut', 'input_boolean.fan_anslut']
             style:
               top: 37.9%
               left: 80.05%
@@ -981,11 +946,15 @@ views:
               action: toggle
             hold_action: !include popup/sovrum_flakt.yaml
             custom_fields:
-              icon_fan: &icon_fan >
-                [[[ const path = '<circle cx="25" cy="25" r="6.6"/> <path d="M31.9 30.4c-.5.6-1.1 1.1-1.7 1.5-1.4 1.1-3.2 1.7-5.2 1.7-2.3 0-4.5-.9-6-2.4-.9 1.1-1.6 2.3-2.3 3.2l-4.9 5.4c-1.8 2.7.3 5.6 2.5 7 3.9 2.4 9.8 3.1 14.1 1.9 4.6-1.3 7.9-4.7 7.4-9.7-.2-3.4-1.9-6-3.9-8.6zM17 28.3c-.4-1-.6-2.1-.6-3.3a8.7 8.7 0 0 1 6.4-8.4l-1.6-3.5L19 6.2c-1.5-2.8-5-2.5-7.3-1.2-4 2.2-7.5 6.9-8.7 11.3-1.2 4.6.2 9.2 4.7 11.3 3.1 1.3 6.1 1.2 9.3.7zm26.9-17.6c-3.3-3.4-8-4.6-12.1-1.8-2.8 1.8-4.2 4.6-5.5 7.5 4.2.6 7.4 4.2 7.4 8.6 0 .9-.1 1.7-.4 2.5 1.3.2 2.8.3 3.8.4 2.3.4 4.7 1.3 7.1 1.7 3.2.3 4.7-3 4.8-5.6.3-4.6-1.9-10.1-5.1-13.3z"/>';
-                const style = '<svg viewBox="0 0 50 50"> <style>@keyframes rotate{0%{visibility: visible; transform: rotate(0deg);}100%{transform: rotate(1080deg);}}.start{animation: rotate 2.8s ease-in; transform-origin: center; fill: #5daeea; visibility: hidden;}.on{animation: rotate 1.8s linear infinite; transform-origin: center; fill: #5daeea; animation-delay: 2.8s; visibility: hidden;}.end{animation: rotate 2.8s; transform-origin: center; fill: #9ca2a5; animation-timing-function: cubic-bezier(0.61, 1, 0.88, 1);}</style>';
-                if (entity.state === 'on') { return `${style}<g class="start">${path}</g><g class="on">${path}</g></svg>`; }
-                else { return `${style}<g class="end">${path}</g></svg>`; } ]]]
+              icon_fan: >
+                [[[ const boolean = states[entity.entity_id.replace('switch', 'input_boolean')].state;
+                const style = '<svg viewBox="0 0 50 50"> <style>@keyframes rotate{0%{visibility:visible;transform:rotate(0deg)}100%{transform:rotate(1080deg)}}.start{animation:rotate 2.8s ease-in;transform-origin:center;fill:#5daeea;visibility:hidden}.on_delay{animation:rotate 1.8s linear infinite;transform-origin:center;fill:#5daeea;animation-delay:2.8s;visibility:hidden}.on{animation:rotate 1.8s linear infinite;transform-origin:center;fill:#5daeea;visibility:hidden}.end{animation:rotate 2.8s;transform-origin:center;fill:#9ca2a5;animation-timing-function:cubic-bezier(.61,1,.88,1)}</style>';
+                const path = '<circle cx="25" cy="25" r="6.6"/> <path d="M31.9 30.4c-.5.6-1.1 1.1-1.7 1.5-1.4 1.1-3.2 1.7-5.2 1.7-2.3 0-4.5-.9-6-2.4-.9 1.1-1.6 2.3-2.3 3.2l-4.9 5.4c-1.8 2.7.3 5.6 2.5 7 3.9 2.4 9.8 3.1 14.1 1.9 4.6-1.3 7.9-4.7 7.4-9.7-.2-3.4-1.9-6-3.9-8.6zM17 28.3c-.4-1-.6-2.1-.6-3.3a8.7 8.7 0 0 1 6.4-8.4l-1.6-3.5L19 6.2c-1.5-2.8-5-2.5-7.3-1.2-4 2.2-7.5 6.9-8.7 11.3-1.2 4.6.2 9.2 4.7 11.3 3.1 1.3 6.1 1.2 9.3.7zm26.9-17.6c-3.3-3.4-8-4.6-12.1-1.8-2.8 1.8-4.2 4.6-5.5 7.5 4.2.6 7.4 4.2 7.4 8.6 0 .9-.1 1.7-.4 2.5 1.3.2 2.8.3 3.8.4 2.3.4 4.7 1.3 7.1 1.7 3.2.3 4.7-3 4.8-5.6.3-4.6-1.9-10.1-5.1-13.3z"/>';
+                if (entity.state === 'off' && boolean === 'off') { return `${style}<g class="end">${path}</g></svg>`; }
+                if (entity.state === 'on' && boolean === 'off') { return `${style}<g class="start">${path}</g><g class="on_delay">${path}</g></svg>`; }
+                if (entity.state === 'on' && boolean === 'on') { return `${style}<g class="on">${path}</g></svg>`; }
+                else if (entity.state==='off' && boolean==='on') { return `${style}<g fill="#9ca2a5">${path}</g></svg>`; } ]]]
+              loading: *loading
             styles:
               custom_fields:
                 icon_fan:
@@ -1483,7 +1452,6 @@ views:
           ### temp fan
           - type: custom:button-card
             aspect_ratio: 3/1
-            name: Fläkt 2
             state_display: ' '
             entity: switch.wemo_flakt
             style:
@@ -1498,5 +1466,9 @@ views:
               custom_fields:
                 icon_fan: [top: 20%, left: 10%, width: 2vw, position: absolute]
             custom_fields:
-              icon_fan: *icon_fan
+              icon_fan: >
+                [[[ const path = '<circle cx="25" cy="25" r="6.6"/> <path d="M31.9 30.4c-.5.6-1.1 1.1-1.7 1.5-1.4 1.1-3.2 1.7-5.2 1.7-2.3 0-4.5-.9-6-2.4-.9 1.1-1.6 2.3-2.3 3.2l-4.9 5.4c-1.8 2.7.3 5.6 2.5 7 3.9 2.4 9.8 3.1 14.1 1.9 4.6-1.3 7.9-4.7 7.4-9.7-.2-3.4-1.9-6-3.9-8.6zM17 28.3c-.4-1-.6-2.1-.6-3.3a8.7 8.7 0 0 1 6.4-8.4l-1.6-3.5L19 6.2c-1.5-2.8-5-2.5-7.3-1.2-4 2.2-7.5 6.9-8.7 11.3-1.2 4.6.2 9.2 4.7 11.3 3.1 1.3 6.1 1.2 9.3.7zm26.9-17.6c-3.3-3.4-8-4.6-12.1-1.8-2.8 1.8-4.2 4.6-5.5 7.5 4.2.6 7.4 4.2 7.4 8.6 0 .9-.1 1.7-.4 2.5 1.3.2 2.8.3 3.8.4 2.3.4 4.7 1.3 7.1 1.7 3.2.3 4.7-3 4.8-5.6.3-4.6-1.9-10.1-5.1-13.3z"/>';
+                const style = '<svg viewBox="0 0 50 50"> <style>@keyframes rotate{0%{visibility: visible; transform: rotate(0deg);}100%{transform: rotate(1080deg);}}.start{animation: rotate 2.8s ease-in; transform-origin: center; fill: #5daeea; visibility: hidden;}.on{animation: rotate 1.8s linear infinite; transform-origin: center; fill: #5daeea; animation-delay: 2.8s; visibility: hidden;}.end{animation: rotate 2.8s; transform-origin: center; fill: #9ca2a5; animation-timing-function: cubic-bezier(0.61, 1, 0.88, 1);}</style>';
+                if (entity.state === 'on') { return `${style}<g class="start">${path}</g><g class="on">${path}</g></svg>`; }
+                else { return `${style}<g class="end">${path}</g></svg>`; } ]]]
             template: switch
