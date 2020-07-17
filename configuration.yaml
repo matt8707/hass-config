@@ -32,6 +32,7 @@ lovelace:
       {url: /hacsfiles/lovelace-card-preloader/lovelace-card-preloader.js,       type: module},
       {url: /hacsfiles/lovelace-hui-element/hui-element.js,                      type: module},
       {url: /hacsfiles/lovelace-layout-card/layout-card.js,                      type: module},
+      {url: /hacsfiles/lovelace-slider-entity-row/slider-entity-row.js,          type: module},
       {url: /hacsfiles/lovelace-valetudo-map-card/valetudo-map-card.js,          type: js},
       {url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js,                type: module},
       {url: /hacsfiles/mini-media-player/mini-media-player-bundle.js,            type: module},
@@ -39,7 +40,6 @@ lovelace:
       {url: /hacsfiles/stack-in-card/stack-in-card.js,                           type: module},
       {url: /hacsfiles/swipe-card/swipe-card.js,                                 type: module},
 
-      {url: '/hacsfiles/lovelace-slider-entity-row/slider-entity-row.js?v=12',   type: module},
       {url: '/local/custom_icons.js?v=25052001',                                 type: module},
       {url: /local/font.css,                                                     type: css} ]
 
@@ -52,8 +52,6 @@ logger:
     bravia_tv.braviarc: fatal
     homeassistant.components.websocket_api: fatal
     homeassistant.helpers.service: fatal
-    # homeassistant.components.bluetooth_tracker.device_tracker: fatal
-    # homeassistant.components.shell_command: fatal
 
 recorder:
   purge_keep_days: 2
@@ -96,7 +94,7 @@ remote:
     mac: !secret broadlink_mac
     type: rm4_pro
 
-wemo:
+wemo_custom:
   discovery: false
   static: !secret wemo_static
 
@@ -198,6 +196,10 @@ light:
   - platform: group
     name: Taklampor
     entities: ['light.spot_1', 'light.spot_2']
+
+  - platform: group
+    name: Sänglampor
+    entities: ['light.mattias', 'light.sanja']
 
   - platform: group
     name: alla_lampor_utom_hall
