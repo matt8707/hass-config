@@ -15,7 +15,8 @@
                   column_width: [400, 555]
                   layout: vertical
                   cards:
-                    - type: custom:hui-vertical-stack-card
+                    - type: custom:hui-element
+                      card_type: vertical-stack
                       cards:
                         - type: entities
                           title: Dammsugare
@@ -103,7 +104,8 @@
 
                           - entity: input_select.roborock_fan_speed
 
-                          - type: custom:hui-horizontal-stack-card
+                          - type: custom:hui-element
+                            card_type: horizontal-stack
                             style: |
                               #root {
                                 justify-content: space-evenly;

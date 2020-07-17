@@ -656,7 +656,8 @@
                         type: entities
                         entities:
 
-                          - type: custom:hui-horizontal-stack-card
+                          - type: custom:hui-element
+                            card_type: horizontal-stack
                             style: |
                               #root {
                                 justify-content: space-evenly;

@@ -1,0 +1,160 @@
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                title: Stäng
+                deviceID: this
+                style:
+                  --ha-card-border-radius: 1em
+                  --more-info-header-color: rgba(255,255,255,0.6)
+                  background: none
+                  box-shadow: none
+                  width: 50em
+                card:
+                  type: entities
+                  title: Uppdateringar
+                  show_header_toggle: false
+                  style:
+                    .: |
+                      ha-card {
+                        animation: pop-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; transform-origin: center;
+                        box-shadow: none; border-radius: 1em; padding: 0.3em 1.25em 0.4em 0.5em; 
+                        background: linear-gradient(180deg, rgba(48,52,52,1) 0%, rgba(48,52,52,1) 4.8em, rgba(34,38,39,1) 4.8em, rgba(34,38,39,1) 100%); }
+                      .card-header {
+                        margin: -0.4em 0 1.4em 0.4em; font-family: sf text; letter-spacing: 0.005em; font-size: 1.5em;}
+                      @keyframes pop-in {
+                        0% { transform: scale(0.6); opacity: 0; } 20% { opacity: 0; } 100% { transform: scale(1); opacity: 0.9; }}
+
+                    "#states > div > hui-element > hui-markdown-card":
+                      $:
+                        "ha-card > ha-markdown":
+                          $: |
+                            ha-markdown-element > p > span {font-family: SF Text; font-size: 1.5em; font-weight: 500;}
+                            ha-markdown-element > p > b {font-family: SF Text; font-size: 1.2em; font-weight: 500; line-height: 1.9em; opacity: 0.5;}
+                            ha-markdown-element > ul {font-family: SF Display; font-size: 1.1em; padding-left: 2.5em;}
+                            ha-markdown-element > ul > li {margin-bottom: 0.4em;}
+                            ha-markdown-element > ul > li:last-child {margin-bottom: 0px;}
+
+                  entities:
+
+                    - type: custom:hui-element
+                      card_type: markdown
+                      content: >
+                        {% if states('sensor.hass_version_installed') == states('sensor.hass_version_latest') %}
+                        <span><ha-icon icon="mdi:home-assistant"></ha-icon> Home Assistant</span><br>
+                        <b>Inga uppdateringar - {{ state_attr('sensor.hass_release_template', 'friendly_name') }} {{ states('sensor.hass_release_template') | lower }}</b>
+                        {% else %}
+                        {% endif %}
+
+
+
+                        {% if states('sensor.hass_version_installed') != states('sensor.hass_version_latest') %}
+                        <span><ha-icon icon="mdi:home-assistant"></ha-icon> Home Assistant</span><br>
+                        <b>{{ states('sensor.hass_version_latest') }} tillgänglig</b> {{ '\U0001f389' }}
+                    
+                        {% if states('sensor.hass_version_latest') == states('sensor.hass_release_notes') %}
+                        {{- state_attr('sensor.hass_release_notes', 'body') }}
+
+                        {% else %}
+                        {% endif %}
+                        {% else %}
+                        {% endif %}
+
+                      style: |
+                        ha-card {
+                          background: none;
+                          box-shadow: none;
+                          cursor: default;
+                          margin-top: -0.5em;
+                        }
+                    - type: custom:hui-element
+                      card_type: horizontal-stack
+                      style: |
+                        #root {
+                          margin-left: 1em;
+                          filter: 
+                            {% if is_state('sensor.hass_version_template', 'Senaste') %}
+                            opacity(30%); 
+                            {% else %} 
+                            drop-shadow(3px 3px 5px #00000050); 
+                            {% endif %}
+                        }
+                      cards:
+
+                        - type: custom:button-card
+                          name: >
+                            [[[ return 
+                            '<ha-icon icon="mdi:update">
+                            </ha-icon> Uppdatera HASS'; ]]]
+                          tap_action:
+                            services: |
+                              [[[ hass.callService('browser_mod', 'toast', {message: 'Startar watchtower...'});
+                              hass.callService('switch', 'turn_on', {entity_id: 'switch.watchtower'}); ]]]
+                          template: name_action
+
+                    - type: custom:hui-element
+                      card_type: markdown
+                      content: >
+                        {% if is_state('sensor.hacs', '0') %}
+                        <span><ha-icon icon="hacs:hacs"></ha-icon> Community Store</span><br>
+                        <b>Inga uppdateringar</b>
+                        {% else %}
+                        {% endif %}
+
+
+                        {% if not is_state('sensor.hacs', '0') %}
+                        <span><ha-icon icon="hacs:hacs"></ha-icon> Community Store</span><br>
+                        {% if is_state('sensor.hacs', '1') %}
+                        <b>{{ states('sensor.hacs') }} uppdatering tillgänglig</b>
+                        {% else %}
+                        <b>{{ states('sensor.hacs') }} uppdateringar tillgängliga</b>
+                        {% endif %}
+
+
+                        {% for repo in state_attr('sensor.hacs', 'repositories') %}
+                        * {{ repo.display_name }} - Version {{ repo.available_version }} ([{{ repo.installed_version }}](#))
+
+                        {% endfor %}
+                        {% else %}
+                        {% endif %}
+                      style: |
+                        ha-card {
+                          background: none;
+                          box-shadow: none;
+                          cursor: default;
+                        }
+
+                    - type: custom:hui-element
+                      card_type: horizontal-stack
+                      style: |
+                        #root {
+                          margin-left: 1em;
+                          filter: 
+                            {% if is_state('sensor.hacs', '0') %}
+                            opacity(30%); 
+                            {% else %} 
+                            drop-shadow(3px 3px 5px #00000050); 
+                            {% endif %}
+                        }
+                      cards:
+                        - type: custom:button-card
+                          name: >
+                            [[[ return 
+                            '<ha-icon icon="mdi:open-in-new">
+                            </ha-icon> Öppna HACS'; ]]]
+                          tap_action:
+                            action: call-service
+                            service: browser_mod.popup
+                            service_data:
+                              title: Stäng
+                              deviceID: this
+                              style:
+                                background: none
+                                box-shadow: none
+                                width: 75em
+                              card:
+                                type: custom:hui-element
+                                card_type: iframe
+                                url: !secret hacs_url
+                                aspect_ratio: 60%
+                                style: 'ha-card { border-radius: 1em;}'
+                          template: name_action

@@ -33,7 +33,8 @@
 
                     - entity: input_select.hdmi2
 
-                    - type: custom:hui-horizontal-stack-card
+                    - type: custom:hui-element
+                      card_type: horizontal-stack
                       style: |
                         #root { justify-content: space-evenly;
                         margin: 1.4em -0.7em 0.7em 0; }

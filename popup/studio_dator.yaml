@@ -29,7 +29,7 @@
                       style: |
                         :host {
                         --paper-item-icon-color: 
-                          {% if is_state('switch.dator_template', 'on') %} #3182b7
+                          {% if is_state(config.entity, 'on') %} #3182b7
                           {% else %} #9e9e9e {% endif %}; }
 
                     - type: custom:bar-card
@@ -95,7 +95,7 @@
                       style: |
                         :host {
                         --paper-item-icon-color: 
-                          {% if is_state('automation.notification_motion_hall', 'on') %} #3182b7
+                          {% if is_state(config.entity, 'on') %} #3182b7
                           {% else %} #9e9e9e {% endif %}; }
 
                     - entity: sensor.macos_uptime_template
@@ -109,7 +109,7 @@
                       style: |
                         :host {
                         --paper-item-icon-color: 
-                          {% if not is_state('sensor.vpn_imac', 'Ansluten') %} red
+                          {% if not is_state(config.entity, 'Ansluten') %} red
                           {% else %} #9e9e9e {% endif %}; }
 
                     - entity: input_boolean.lock_computer
@@ -118,7 +118,7 @@
                       style: |
                         :host {
                         --paper-item-icon-color: 
-                          {% if is_state('input_boolean.lock_computer', 'on') %} #3182b7
+                          {% if is_state(config.entity, 'on') %} #3182b7
                           {% else %} #9e9e9e {% endif %}; }
 
                     - entities:
@@ -154,7 +154,8 @@
                       width: 55%
                       type: custom:bar-card
 
-                    - type: custom:hui-horizontal-stack-card
+                    - type: custom:hui-element
+                      card_type: horizontal-stack
                       style: |
                         #root {
                           justify-content: space-evenly;

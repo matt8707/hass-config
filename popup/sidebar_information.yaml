@@ -44,7 +44,7 @@
                           icon: mdi:file-document
                           name: Loggfil
 
-                        - entity: sensor.docker_uptime
+                        - entity: sensor.hass_uptime
 
                         - entities:
                             - entity: sensor.docker_cpu
@@ -100,7 +100,8 @@
                           width: 55%
                           type: custom:bar-card
 
-                        - type: custom:hui-horizontal-stack-card
+                        - type: custom:hui-element
+                          card_type: horizontal-stack
                           style: &horizontal-style |
                             #root {
                               justify-content: space-evenly;
@@ -152,14 +153,8 @@
 
                         - type: custom:slider-entity-row
                           entity: input_number.fullykiosk_brightness_slider
-                          style: |
-                            div {
-                              max-width: 60%;
-                              margin: auto;
-                            }
-                            hui-generic-entity-row > div > span {
-                              display: block;
-                            }
+                          hide_state: false
+
                         - entity: switch.fullykiosk_screensaver
 
                         - entity: sensor.fullykiosk_battery_level
@@ -195,7 +190,8 @@
                           width: 55%
                           type: custom:bar-card
 
-                        - type: custom:hui-horizontal-stack-card
+                        - type: custom:hui-element
+                          card_type: horizontal-stack
                           style: *horizontal-style
                           cards:
 
@@ -236,7 +232,7 @@
                         @keyframes pop-in {
                           0% { transform: scale(0.6); opacity: 0; } 20% { opacity: 0; } 100% { transform: scale(1); opacity: 0.9; }}
                         #states > div > mini-graph-card {
-                          margin: -39px -34px -21px -23px;
+                          margin: -22.7px -34px -21px -23px;
                         }
                       entities:
                         - entity: sensor.synology_dsm_status
@@ -247,7 +243,7 @@
                           style: |
                             :host {
                             --paper-item-icon-color: 
-                              {% if is_state('sensor.vpn_nas', 'Ansluten') %}
+                              {% if is_state(config.entity, 'Ansluten') %}
                                 #9e9e9e
                               {% else %}
                                 red
@@ -285,7 +281,8 @@
                           width: 55%
                           type: custom:bar-card
 
-                        - type: custom:hui-horizontal-stack-card
+                        - type: custom:hui-element
+                          card_type: horizontal-stack
                           cards:
                             - entities:
                                 - entity: sensor.nas_net_down
@@ -341,7 +338,6 @@
                               border-radius: 1em;
                               background: none;
                               box-shadow: none;
-                              height: 1px;
                             }
                           tap_action:
                             action: none

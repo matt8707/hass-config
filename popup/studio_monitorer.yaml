@@ -28,21 +28,15 @@
 
                     - type: custom:slider-entity-row
                       entity: input_number.monitorer_volume
+                      hide_state: false
                       style: |
-                        div {
-                          max-width: 60%;
-                          margin: auto;
-                        }
-                        hui-generic-entity-row > div > span {
-                          display: block;
-                        }
                         :host {
                         --paper-item-icon-color: 
                           {% if is_state('sensor.monitorer_mute_check', 'true') %}
                             #FFFFFF20
-                          {% elif states('input_number.monitorer_volume') | int == 0 %}
+                          {% elif states(config.entity) | int == 0 %}
                             #9da0a2
-                          {% elif states('input_number.monitorer_volume') | int < 60 %}
+                          {% elif states(config.entity) | int < 60 %}
                             #3182b7
                           {% else %}
                             red
@@ -57,7 +51,8 @@
                       name: Automatisk kalibrationsprofil
                       icon: custom:eq-calibrate
 
-                    - type: custom:hui-horizontal-stack-card
+                    - type: custom:hui-element
+                      card_type: horizontal-stack
                       style: |
                         #root {
                           justify-content: space-evenly;

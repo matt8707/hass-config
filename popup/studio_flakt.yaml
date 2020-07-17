@@ -34,7 +34,7 @@
                           style: |
                             :host {
                             --paper-item-icon-color: 
-                              {% if is_state('switch.wemo_flakt', 'on') %}
+                              {% if is_state(config.entity, 'on') %}
                                 #3182b7
                               {% else %}
                                 #9e9e9e
@@ -43,14 +43,7 @@
 
                         - type: custom:slider-entity-row
                           entity: input_number.fan_timer
-                          style: |
-                            div {
-                              max-width: 60%;
-                              margin: auto;
-                            }
-                            hui-generic-entity-row > div > span {
-                              display: block;
-                            }
+                          hide_state: false
 
                         - entity: automation.turn_on_flakt_temp
                           icon: mdi:chart-bell-curve-cumulative
