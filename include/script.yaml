@@ -17,7 +17,7 @@ script:
       - service: shell_command.imac_switchbot_rpi
       - service: light.turn_on
         entity_id: 
-          ['light.datorlampa', 'light.taklampor']
+          ['light.datorlampa']
 
   dator_off:
     sequence:
@@ -107,7 +107,7 @@ script:
             {% if is_state('sun.sun', 'below_horizon') %}
             scene.hemma_below_horizon {% else %} 
             scene.hemma_above_horizon {% endif %}
-      - delay: '00:00:04'
+      - delay: 00:00:04
 
   say_auto_hemma:
     sequence:
@@ -149,7 +149,15 @@ script:
           {% if is_state('switch.tv2_template', 'on') %}
           script.tv2_off {% else %}
           script.dummy {% endif %}
-      - delay: '00:00:04'
+      - service_template: >-
+          {% if is_state('switch.fan_anslut', 'on') %}
+          script.fan_anslut_off {% else %}
+          script.dummy {% endif %}
+      - service_template: >-
+          {% if is_state('switch.air_purifier', 'on') %}
+          script.air_purifier_off {% else %}
+          script.dummy {% endif %}
+      - delay: 00:00:04
 
   say_auto_stang_allt:
     sequence:
@@ -250,6 +258,12 @@ script:
       - service: remote.send_command
         data:
           entity_id: remote.broadlink
+          device: test
+          delay_secs: 0.2
+          command: empty
+      - service: remote.send_command
+        data:
+          entity_id: remote.broadlink
           device: fläkt
           delay_secs: 0.2
           command: power_1
@@ -267,16 +281,74 @@ script:
           {% else %}
           script.dummy
           {% endif %}
+      - delay: 00:00:03
+      - service: mqtt.publish
+        data:
+          topic: cmnd/gosund1/status
+          payload: 10
+      - condition: state
+        entity_id: sensor.gosund1_power
+        state: 'off'
+      - delay: 00:00:05
+      - service: mqtt.publish
+        data:
+          topic: cmnd/gosund1/status
+          payload: 10
+      - condition: state
+        entity_id: sensor.gosund1_power
+        state: 'off'
+      - delay: 00:00:05
+      - service: mqtt.publish
+        data:
+          topic: cmnd/gosund1/status
+          payload: 10
+      - condition: state
+        entity_id: sensor.gosund1_power
+        state: 'off'
+      - delay: 00:00:05
+      - service: mqtt.publish
+        data:
+          topic: cmnd/gosund1/status
+          payload: 10
 
   fan_anslut_off:
     sequence:
-      - service: input_boolean.turn_off
+      - service: input_boolean.turn_on
         entity_id: input_boolean.fan_anslut
       - service: remote.send_command
         data:
           entity_id: remote.broadlink
           device: fläkt
           command: power_1
+      - delay: 00:00:03
+      - service: mqtt.publish
+        data:
+          topic: cmnd/gosund1/status
+          payload: 10
+      - condition: state
+        entity_id: sensor.gosund1_power
+        state: 'on'
+      - delay: 00:00:05
+      - service: mqtt.publish
+        data:
+          topic: cmnd/gosund1/status
+          payload: 10
+      - condition: state
+        entity_id: sensor.gosund1_power
+        state: 'on'
+      - delay: 00:00:05
+      - service: mqtt.publish
+        data:
+          topic: cmnd/gosund1/status
+          payload: 10
+      - condition: state
+        entity_id: sensor.gosund1_power
+        state: 'on'
+      - delay: 00:00:05
+      - service: mqtt.publish
+        data:
+          topic: cmnd/gosund1/status
+          payload: 10
 
   samsung_tv_energy_saving:
     sequence:
@@ -287,7 +359,7 @@ script:
       - service: remote.send_command
         data:
           entity_id: remote.broadlink
-          delay_secs: 0.8
+          delay_secs: 1
           device: samsung_tv
           command:
             ['exit_15', 'settings_1', 'down_2', 'down_2' , 'down_2', 'enter_5', 'down_2', 'down_2', 'down_2', 
@@ -302,23 +374,71 @@ script:
           entity_id: remote.broadlink
           device: air_purifier
           command: power_1
+      - delay: 00:00:03
+      - service: mqtt.publish
+        data:
+          topic: cmnd/gosund2/status
+          payload: 10
+      - condition: state
+        entity_id: sensor.gosund2_power
+        state: 'off'
+      - delay: 00:00:05
+      - service: mqtt.publish
+        data:
+          topic: cmnd/gosund2/status
+          payload: 10
+      - condition: state
+        entity_id: sensor.gosund2_power
+        state: 'off'
+      - delay: 00:00:05
+      - service: mqtt.publish
+        data:
+          topic: cmnd/gosund2/status
+          payload: 10
+      - condition: state
+        entity_id: sensor.gosund2_power
+        state: 'off'
+      - delay: 00:00:05
+      - service: mqtt.publish
+        data:
+          topic: cmnd/gosund2/status
+          payload: 10
 
   air_purifier_off:
     sequence:
-      - service: input_boolean.turn_off
+      - service: input_boolean.turn_on
         entity_id: input_boolean.air_purifier
       - service: remote.send_command
         data:
           entity_id: remote.broadlink
           device: air_purifier
           command: power_1
-
-  # air_purifier_mode:
-  #   sequence:
-  #     - service: remote.send_command
-  #       data:
-  #         entity_id: remote.broadlink
-  #         device: air_purifier
-  #         command:
-  #           - turbo_1
-  #           - auto_1
+      - delay: 00:00:03
+      - service: mqtt.publish
+        data:
+          topic: cmnd/gosund2/status
+          payload: 10
+      - condition: state
+        entity_id: sensor.gosund2_power
+        state: 'on'
+      - delay: 00:00:05
+      - service: mqtt.publish
+        data:
+          topic: cmnd/gosund2/status
+          payload: 10
+      - condition: state
+        entity_id: sensor.gosund2_power
+        state: 'on'
+      - delay: 00:00:05
+      - service: mqtt.publish
+        data:
+          topic: cmnd/gosund2/status
+          payload: 10
+      - condition: state
+        entity_id: sensor.gosund2_power
+        state: 'on'
+      - delay: 00:00:05
+      - service: mqtt.publish
+        data:
+          topic: cmnd/gosund2/status
+          payload: 10

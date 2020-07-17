@@ -55,6 +55,9 @@ sensor:
       - type: processor_use
       - type: last_boot
 
+  - platform: uptime
+    unit_of_measurement: minutes
+
   - platform: time_date
     display_options:
       ['time', 'date']
@@ -73,6 +76,13 @@ sensor:
     value_template: "{% if value_json.embedCode == '' %} Otillgänglig {% else %} Tillgänglig {% endif %}"
     json_attributes_path: $.widgets.widget_1.config
     json_attributes: [embedCode]
+    scan_interval: 21600
+
+  - platform: rest
+    name: hass_release_notes
+    resource: https://api.github.com/repos/home-assistant/core/releases/latest
+    value_template: "{{ value_json.name }}"
+    json_attributes: [body]
     scan_interval: 21600
 
   - platform: dnsip
@@ -144,6 +154,28 @@ sensor:
     name: xiaomi_map
     value_template: 'OK'
     scan_interval: 5
+
+  - platform: mqtt
+    state_topic: 'stat/gosund1/STATUS10'
+    name: gosund1_power
+    force_update: true
+    value_template: >
+      {% if value_json.StatusSNS.ENERGY.Power | int > 10 %}
+      on
+      {% else %}
+      off
+      {% endif %}
+
+  - platform: mqtt
+    state_topic: 'stat/gosund2/STATUS10'
+    name: gosund2_power
+    force_update: true
+    value_template: >
+      {% if value_json.StatusSNS.ENERGY.Power | int > 0 %}
+      on
+      {% else %}
+      off
+      {% endif %}
 
   - platform: krisinformation
     county: !secret krisinformation_county
@@ -252,7 +284,8 @@ sensor:
           {% set lights_name = lights | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
 
           {% set switches = [states.switch.dator_template, states.switch.tv_template, states.switch.tv2_template, 
-          states.switch.playstation_template, states.switch.wemo_monitorer, states.switch.wemo_flakt] %}
+          states.switch.playstation_template, states.switch.wemo_monitorer, states.switch.wemo_flakt, 
+          states.switch.fan_anslut, states.switch.air_purifier] %}
           {% set switches_on = switches | selectattr('state','eq','on') | list %} 
           {% set switches_name = switches | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
 
@@ -768,6 +801,28 @@ sensor:
           {% elif time <= 3600 %} {{ minutes }}m
           {% elif time <= 86400 %} {{ hours }}h
           {% elif time > 86400 %} {{ days }}d 
+          {% endif %}
+
+      hass_uptime:
+        entity_id: sensor.time
+        value_template: >-
+          {% set uptime = states('sensor.uptime') | float %}
+          {% if uptime < 1 %}
+          {{ (uptime * 60) | int }} sekunder sedan
+          {% elif uptime | int == 1 %}
+          1 minut sedan
+          {% elif uptime | int > 1 %}
+            {% if uptime | int < 60 %}
+            {{ uptime | int }} minuter sedan
+            {% elif uptime | int / 60 == 24 %}
+            {{ (uptime | int / 60 / 24) | int }} dag sedan
+            {% elif uptime | int / 60 >= 24 %}
+            {{ (uptime | int / 60 / 24) | int }} dagar sedan
+            {% elif uptime | int >= 60 and uptime | int < 120 %}
+            {{ (uptime | int / 60) | int }} timme sedan
+            {% elif uptime | int >= 120 %}
+            {{ (uptime | int / 60) | int }} timmar sedan
+            {% endif %}
           {% endif %}
 
     ####################################################

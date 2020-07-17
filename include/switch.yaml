@@ -12,6 +12,10 @@ switch:
     name: iMac
     host: !secret wake_on_lan_host
 
+  - platform: broadlink
+    host: !secret broadlink_host
+    mac: !secret broadlink_mac
+
   - platform: rest
     resource: !secret ha_dockermon_watchtower
     name: Watchtower
@@ -27,6 +31,30 @@ switch:
         command_off: !secret fullykiosk_screen_off
         command_state: !secret fullykiosk_screen_state
         value_template: "{{ value == 'on' }}"
+
+  - platform: mqtt
+    name: gosund1
+    command_topic: cmnd/gosund1/POWER1
+    payload_on: 'ON'
+    payload_off: 'OFF'
+    availability_topic: tele/gosund1/LWT
+    payload_available: Online
+    payload_not_available: Offline
+    state_topic: stat/gosund1/POWER1
+    qos: 1
+    retain: false
+
+  - platform: mqtt
+    name: gosund2
+    command_topic: cmnd/gosund2/POWER1
+    payload_on: 'ON'
+    payload_off: 'OFF'
+    availability_topic: tele/gosund2/LWT
+    payload_available: Online
+    payload_not_available: Offline
+    state_topic: stat/gosund2/POWER1
+    qos: 1
+    retain: false
 
     ####################################################
     #                                                  #
@@ -101,7 +129,7 @@ switch:
 
       fan_anslut:
         friendly_name: Fläkt
-        value_template: "{{ states('input_boolean.fan_anslut') }}"
+        value_template: "{{ is_state('sensor.gosund1_power', 'on') }}"
         turn_on:
           service: script.fan_anslut_on
         turn_off:
@@ -109,7 +137,7 @@ switch:
 
       air_purifier:
         friendly_name: Luftrenare
-        value_template: "{{ states('input_boolean.air_purifier') }}"
+        value_template: "{{ is_state('sensor.gosund2_power', 'on') }}"
         turn_on:
           service: script.air_purifier_on
         turn_off:

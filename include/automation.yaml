@@ -17,6 +17,10 @@ automation:
         data:
           name: slate
       - service: shell_command.fullykiosk_restart_app
+      - service: mqtt.publish
+        data:
+          topic: cmnd/tasmotas/status
+          payload: 10
       - delay: 00:00:30
       - service: homekit.start
       - condition: state
@@ -24,6 +28,17 @@ automation:
         state: 'off'
       - service: switch.turn_on
         entity_id: switch.fullykiosk_screensaver
+
+  - alias: check_plug_power_state
+    initial_state: true
+    trigger:
+      - platform: time_pattern
+        minutes: /5
+    action:
+      - service: mqtt.publish
+        data:
+          topic: cmnd/tasmotas/status
+          payload: 10
 
   - alias: notify_hass_rc
     initial_state: true
@@ -149,7 +164,7 @@ automation:
     initial_state: true
     trigger:
       - platform: time_pattern
-        minutes: '/5'
+        minutes: /5
     condition:
       - condition: state
         entity_id: switch.dator_template
@@ -421,8 +436,8 @@ automation:
     trigger:
       - platform: state
         entity_id: 
-          ['media_player.sony_bravia_tv', 'media_player.samsung', 
-          'switch.dator_template', 'switch.playstation_template']
+          ['media_player.sony_bravia_tv', 'media_player.samsung', 'switch.dator_template', 
+          'switch.playstation_template', 'switch.fan_anslut', 'switch.air_purifier']
     action:
       - service: input_boolean.turn_off
         data_template:
@@ -436,8 +451,8 @@ automation:
     trigger:
       - platform: state
         entity_id: 
-          ['input_boolean.sony_bravia_tv', 'input_boolean.samsung', 
-          'input_boolean.dator_template', 'input_boolean.playstation_template']
+          ['input_boolean.sony_bravia_tv', 'input_boolean.samsung', 'input_boolean.dator_template', 
+          'input_boolean.playstation_template', 'input_boolean.fan_anslut', 'input_boolean.air_purifier']
         to: 'on'
         for:
           minutes: 1
@@ -518,9 +533,9 @@ automation:
       - service: notify.mobile_app_iphone
         data_template: 
           title: "{{'\U0001F9FA'}} {{ ['Tvätten är färdig', 'Tvätten är klar', 'Dags att gå ner'] | random }}"
-          message: " "
+          message: ' '
       - service: shell_command.imac_notify_laundry
-      - delay: '00:00:03'
+      - delay: 00:00:03
 
     ####################################################
     #                                                  #
@@ -646,10 +661,16 @@ automation:
           entity_id: input_select.conditional_media
           option: >-
             {% set media_players = 
-              [states.media_player.sovrum, states.media_player.playstation_4, 
+              [states.media_player.vardagsrum, states.media_player.playstation_4, 
                states.media_player.google_nest_mini] %}
             {% if media_players | selectattr('state','eq','playing') | list | count == 0 %}
               {% if media_players | selectattr('state','eq','paused') | list | count == 0 %}
+              Senast nedladdat
+              {% elif is_state('media_player.vardagsrum', 'paused') and 
+              is_state_attr('media_player.vardagsrum', 'media_title', 'No title') or
+              is_state('media_player.sovrum', 'paused') and 
+              is_state_attr('media_player.sovrum', 'media_title', 'No title')
+              %}
               Senast nedladdat
               {% else %}
               {{ media_players | selectattr('state','eq','paused') | map(attribute='name') | max }}
@@ -677,6 +698,12 @@ automation:
                states.media_player.google_nest_mini] %}
             {% if media_players | selectattr('state','eq','playing') | list | count == 0 %}
               {% if media_players | selectattr('state','eq','paused') | list | count == 0 %}
+              Senast nedladdat
+              {% elif is_state('media_player.vardagsrum', 'paused') and 
+              is_state_attr('media_player.vardagsrum', 'media_title', 'No title') or
+              is_state('media_player.sovrum', 'paused') and 
+              is_state_attr('media_player.sovrum', 'media_title', 'No title')
+              %}
               Senast nedladdat
               {% else %}
               {{ media_players | selectattr('state','eq','paused') | map(attribute='name') | max }}
@@ -766,6 +793,10 @@ automation:
           service_data:
             entity_id: media_player.sony_bravia_tv
     action:
+      - service: media_player.turn_on
+        data:
+          entity_id: media_player.vardagsrum
+      - delay: 00:00:01
       - service: remote.send_command
         data:
           entity_id: remote.vardagsrum
@@ -782,7 +813,63 @@ automation:
           service_data:
             entity_id: media_player.samsung
     action:
+      - service: media_player.turn_on
+        data:
+          entity_id: media_player.sovrum
+      - delay: 00:00:01
       - service: remote.send_command
         data:
           entity_id: remote.sovrum
           command: menu
+
+#test
+
+  - alias: conditional_tv_off_apple_tv_off
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: media_player.sony_bravia_tv
+      - platform: state
+        entity_id: media_player.samsung
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: media_player.sony_bravia_tv
+          state: 'off'
+        - condition: state
+          entity_id: media_player.samsung
+          state: 'off'
+    action:
+      - service: input_select.select_option
+        data:
+          entity_id: input_select.conditional_media
+          option: Senast nedladdat
+
+  - alias: update_hass_release_notes
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: sensor.hass_version_template
+    condition:
+      condition: not
+      conditions:
+        - condition: state
+          entity_id: sensor.hass_version_template
+          state: Senaste
+    action:
+      - service: homeassistant.update_entity
+        entity_id: sensor.hass_release_notes
+
+  - alias: no_motion_bathroom
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: input_boolean.motion_badrum
+        to: 'off'
+        for:
+          minutes: 30
+    action:
+      - service: light.turn_off
+        data:
+          entity_id: light.badrum

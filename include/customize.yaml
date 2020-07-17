@@ -37,6 +37,10 @@ homeassistant:
       friendly_name: Senast omstart
       icon: mdi:update
 
+    sensor.hass_uptime:
+      friendly_name: Senast omstart
+      icon: mdi:update
+
     sensor.drifttid:
       icon: mdi:calendar-clock
 
@@ -123,7 +127,7 @@ homeassistant:
       icon: custom:studio-monitor
 
     switch.wemo_flakt:
-      friendly_name: Fläkt
+      friendly_name: "Fläkt\u00B2"
       icon: custom:pedestal-fan
 
     light.spot_1:
