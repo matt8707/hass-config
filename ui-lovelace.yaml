@@ -342,11 +342,11 @@ views:
             $: |
               #image {pointer-events: none;}
 
-          "#root > hui-element > hui-markdown-card, #key1":
+          "#root > hui-markdown-card, #key1":
             $: |
               ha-card > ha-markdown {padding: 0 !important;}
 
-          "#root > hui-element > hui-markdown-card, #key2":
+          "#root > hui-markdown-card, #key2":
             $:
               "ha-card > ha-markdown":
                 $: |
@@ -365,14 +365,21 @@ views:
 
         elements:
 
+          # markdown fix
+          - type: custom:hui-element
+            card_type: markdown
+            style:
+              {top: -50%, left: -50%, --ha-card-background: none, 
+              --ha-card-box-shadow: none, pointer-events: none}
+            content: ' '
+
           #################################################
           #                                               #
           #                   COVID-19                    #
           #                                               #
           #################################################
 
-          - type: custom:hui-element
-            card_type: markdown
+          - type: custom:hui-markdown-card
             style:
               {top: 93.65%, left: 70.2%, width: 90vw, height: 1px, --mdc-icon-size: 1.2vw, --ha-card-background: none, 
               --ha-card-box-shadow: none, --primary-text-color: '#6a7377', font-family: SF Display, font-size: 1.26vw, 
@@ -413,8 +420,7 @@ views:
           #                                               #
           #################################################
 
-          - type: custom:hui-element
-            card_type: markdown
+          - type: custom:hui-markdown-card
             style:
               {top: 9%, left: 11.1%, width: 15.5vw, height: 1px, --ha-card-background: none, --ha-card-box-shadow: none, 
               --primary-text-color: 'rgba(255, 255, 255, 0.9)', font-family: SF Display, font-size: 1.5vw, font-weight: 300, 
