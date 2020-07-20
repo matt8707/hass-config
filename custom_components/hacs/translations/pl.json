@@ -212,7 +212,7 @@
         "pending_update": "Oczekująca aktualizacja",
         "reinstall": "Przeinstaluj",
         "report": "Zgłoś do usunięcia",
-        "update_information": "Uaktualnij informacje"
+        "update_information": "Uaktualnij dane"
     },
     "repository": {
         "add_to_lovelace": "Dodaj do Lovelace",
@@ -245,7 +245,7 @@
         "restart_home_assistant": "Uruchom ponownie Home Assistant'a",
         "show_beta": "Wyświetl wydania beta",
         "uninstall": "Odinstaluj",
-        "update_information": "Uaktualnij informacje",
+        "update_information": "Uaktualnij dane",
         "upgrade": "Uaktualnij"
     },
     "search": {

@@ -110,7 +110,7 @@
         "install": "Instalar este repositorio en HACS",
         "loading": "Cargando información ...",
         "no_info": "El desarrollador no ha proporcionado más información para este repositorio",
-        "open_issues": "Abrir issue",
+        "open_issues": "Abrir incidencias",
         "open_repo": "Abrir repositorio",
         "stars": "Estrellas",
         "version_installed": "Versión instalada"

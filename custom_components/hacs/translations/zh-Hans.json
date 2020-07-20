@@ -119,7 +119,7 @@
         "restart": "请记住，在应用对集成（custom_components）所做的更改之前，您需要重新启动Home Assistant。",
         "select_version": "选择版本",
         "show_beta": "显示测试版",
-        "type": "类型",
+        "type": "Type",
         "url": "URL"
     },
     "dialog_update": {

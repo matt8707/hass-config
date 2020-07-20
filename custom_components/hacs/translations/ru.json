@@ -190,6 +190,7 @@
         }
     },
     "repository_banner": {
+        "config_flow_title": "Поддерживается настройка из пользовательского интерфейса",
         "integration_not_loaded": "Эта интеграция не загружена в Home Assistant.",
         "no_restart_required": "Перезагрузка не требуется",
         "not_loaded": "Не загружено",
