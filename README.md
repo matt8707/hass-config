@@ -4,7 +4,7 @@
 
 If you like anything here, Be sure to :star2: my repo!
 
-![screenshot](www/img/screenshot.png)
+![screenshot](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/screenshot.png)
 
 ### New April 2020
 
@@ -18,7 +18,7 @@ This config is now fully configurable with code and easier to maintain. I've tra
 * [Applying sound](https://github.com/thomasloven/hass-browser_mod#media_player) to UI using automations listening for events.
 * [CSS Animations](https://www.w3schools.com/css/css3_animations.asp) based on state:
 
-![animations](www/img/animations.gif)
+![animations](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/animations.gif)
 
 ### The sidebar
 
@@ -38,13 +38,13 @@ The three icons at the bottom in order
 * Monitor [Home Assistant](https://home-assistant.io/), [tablet](https://www.samsung.com/us/mobile/tablets/galaxy-tab-a/galaxy-tab-a-10-1-2019-32gb-black-wi-fi-sm-t510nzkaxar/) and [Network Attached Storage](https://www.synology.com/products/DS918+).
 * A list of [scenes](https://www.home-assistant.io/integrations/scene/) with a legend.
 
-![info](www/img/info.png)
+![info](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/info.png)
 
 ### Media
 
 Conditionally displaying media player controls based on last active device such as [Apple TV](https://www.home-assistant.io/integrations/apple_tv/), [Playstation 4](https://www.home-assistant.io/integrations/ps4/), [Google Nest Mini](https://www.home-assistant.io/integrations/cast/). If nothing is active for 15 minutes then a poster of last downloaded movie/episode is shown ([Radarr](https://github.com/Radarr/Radarr)/[Sonarr](https://github.com/Sonarr/Sonarr)). Swipe to reveal other than last active media players.
 
-![media](www/img/media.gif)
+![media](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/media.gif)
 
 ### Lights and sensors
 
@@ -54,7 +54,7 @@ All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.m
 * Injecting current lamp color to only parts of an icon.
 * Brightness percentage in a ~~circle sensor~~ custom field (SVG+JS).
 
-![light](www/img/light.gif)
+![light](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/light.gif)
 
 ***
 
@@ -64,7 +64,7 @@ All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.m
 * [Belkin WeMo Switch](https://www.belkin.com/) to control studio monitors (speakers) with automations to apply [EQ calibration](https://www.sonarworks.com/reference) and volume control through AppleScript.
 * Control a pedestal fan, using [Belkin WeMo Switch](https://www.belkin.com/) and hue motion sensor temperature data to automate on summer nights.
 
-![info_light](www/img/info_light.png)
+![info_light](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/info_light.png)
 
 ***
 
@@ -72,17 +72,17 @@ All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.m
 
 I made some custom icons located in `www/custom_icons.js`. If you want to make your own I recommend reading the [material design principles](https://material.io/design/iconography/system-icons.html#design-principles).
 
-![custom_icons](www/img/custom_icons.png)
+![custom_icons](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/custom_icons.png)
 
 ### Misc
 
-![vacuum](www/img/vacuum.png)
+![vacuum](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/vacuum.png)
 
-![misc](www/img/misc.png)
+![misc](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/misc.png)
 
-![tracker](www/img/tracker.png)
+![tracker](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/tracker.png)
 
 ***
 
 **Home Assistant Community Topic**  
-[https://community.home-assistant.io/t/a-different-take-on-designing-a-lovelace-ui/](https://community.home-assistant.io/t/a-different-take-on-designing-a-lovelace-ui/)
+[https://community.home-assistant.io/t/a-different-take-on-designing-a-lovelace-ui/162594](https://community.home-assistant.io/t/a-different-take-on-designing-a-lovelace-ui/162594)
