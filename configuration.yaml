@@ -6,7 +6,7 @@ homeassistant:
   unit_system: metric
   time_zone: Europe/Stockholm
   packages: !include_dir_named include
-  whitelist_external_dirs: [/config/]
+  allowlist_external_dirs: [/config/]
 
 #default_config:
 history:
@@ -36,7 +36,6 @@ lovelace:
       {url: /hacsfiles/lovelace-valetudo-map-card/valetudo-map-card.js,          type: js},
       {url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js,                type: module},
       {url: /hacsfiles/mini-media-player/mini-media-player-bundle.js,            type: module},
-      {url: /hacsfiles/popup-backdrop-filter/popup-backdrop-filter.js,           type: module},
       {url: /hacsfiles/stack-in-card/stack-in-card.js,                           type: module},
       {url: /hacsfiles/swipe-card/swipe-card.js,                                 type: module},
 
@@ -83,11 +82,6 @@ device_tracker:
 
   - platform: bluetooth_tracker
 
-hue:
-  bridges:
-    - host: !secret hue_host
-      allow_unreachable: true
-
 remote:
   - platform: broadlink
     host: !secret broadlink_host
@@ -99,8 +93,6 @@ wemo_custom:
   static: !secret wemo_static
 
 cast:
-  media_player:
-    - host: !secret google_cast_host
 
 samsungtv:
   - host: !secret samsungtv_host
@@ -155,15 +147,15 @@ shell_command:
   # ssh-copy-id -i /config/.ssh/id_rsa USER@XXX.XXX.X.X
 
   imac_switchbot_rpi: !secret imac_switchbot_rpi
-  imac_turn_off: !secret imac_turn_off
+  imac_off: !secret imac_off
   imac_sleep: !secret imac_sleep
   imac_restart: !secret imac_restart
   imac_notify_motion_hallway: !secret imac_notify_motion_hallway
   imac_notify_laundry: !secret imac_notify_laundry
 
-  monitorer_volume_slider: !secret monitorer_volume_slider
-  monitorer_mute_off: !secret monitorer_mute_off
-  monitorer_mute_on: !secret monitorer_mute_on
+  monitors_volume_slider: !secret monitors_volume_slider
+  monitors_mute_off: !secret monitors_mute_off
+  monitors_mute_on: !secret monitors_mute_on
 
   fullykiosk_brightness_slider: !secret fullykiosk_brightness_slider
   fullykiosk_load_start_url: !secret fullykiosk_load_start_url
@@ -176,9 +168,9 @@ shell_command:
   reference_monitors: !secret reference_monitors
   reference_headphones: !secret reference_headphones
 
-  restart_hass_docker: !secret restart_hass_docker
+  ha_dockermon_restart_container: !secret ha_dockermon_restart_container
   clear_logs: truncate -s 0 /config/home-assistant.log
-  update_data_kwh: !secret update_data_kwh
+  kwh_data_update: !secret kwh_data_update
 
 light:
   - platform: group
@@ -213,22 +205,22 @@ homekit:
   auto_start: false
   filter:
     include_entities:
-      ['switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 'media_player.sony_bravia_tv', 
-      'media_player.samsung', 'switch.playstation_template', 'input_boolean.motion_hall', 'switch.fan_anslut', 'script.samsung_tv_energy_saving', 
-      'input_boolean.motion_garderob', 'input_boolean.motion_badrum', 'script.auto_hemma', 'script.auto_stang_allt']
+      ['switch.wemo_fan', 'switch.wemo_monitors', 'switch.computer_imac', 'media_player.sony_bravia', 
+      'media_player.samsung', 'switch.playstation_4', 'input_boolean.motion_hall', 'switch.fan_anslut', 'script.samsung_tv_energy_saving', 
+      'input_boolean.motion_garderob', 'input_boolean.motion_badrum', 'script.home_arrive', 'script.home_leave']
   entity_config:
-    switch.wemo_flakt:
+    switch.wemo_fan:
       name: Fläkt
     switch.fan_anslut:
       name: Fläkt 2
     script.samsung_tv_energy_saving:
       name: Eko
-    switch.wemo_monitorer:
+    switch.wemo_monitors:
       name: Monitorer
       type: outlet
-    switch.dator_template:
+    switch.computer_imac:
       name: Dator
-    media_player.sony_bravia_tv:
+    media_player.sony_bravia:
       name: Tv
       feature_list:
         - feature: on_off
@@ -236,22 +228,22 @@ homekit:
       name: Samsung Tv
       feature_list:
         - feature: on_off
-    switch.playstation_template:
+    switch.playstation_4:
       name: Playstation
-    script.auto_hemma:
+    script.home_arrive:
       name: Hemma
-    script.auto_stang_allt:
+    script.home_leave:
       name: Stäng allt
 
 cloud:
   google_actions:
     filter:
       include_entities:
-        ['switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 'media_player.sony_bravia_tv', 
-        'media_player.samsung', 'switch.playstation_template', 'media_player.playstation_4', 'switch.fan_anslut', 'script.samsung_tv_energy_saving', 
-        'switch.fullykiosk_screen', 'switch.fullykiosk_screensaver', 'script.auto_hemma', 'script.auto_stang_allt']
+        ['switch.wemo_fan', 'switch.wemo_monitors', 'switch.computer_imac', 'media_player.sony_bravia', 
+        'media_player.samsung', 'switch.playstation_4', 'media_player.playstation_4', 'switch.fan_anslut', 'script.samsung_tv_energy_saving', 
+        'switch.fullykiosk_screen', 'switch.fullykiosk_screensaver', 'script.home_arrive', 'script.home_leave']
     entity_config:
-      switch.wemo_flakt:
+      switch.wemo_fan:
         name: Fläkt
         aliases: ['Fläkt', 'Fläkten']
         room: Studio
@@ -263,14 +255,14 @@ cloud:
         name: Eko
         aliases: ['Eko', 'Eko-läge', 'Samsung eko']
         room: Sovrum
-      switch.wemo_monitorer:
+      switch.wemo_monitors:
         name: Monitorer
         room: Studio
-      switch.dator_template:
+      switch.computer_imac:
         name: Dator
         aliases: ['Dator', 'Datorn', 'Datan', 'iMac']
         room: Studio
-      media_player.sony_bravia_tv:
+      media_player.sony_bravia:
         name: Tv
         aliases:
           ['Tv', 'Sony Tv', 'Sony Bravia Tv', 'Bravia Tv', 
@@ -280,15 +272,15 @@ cloud:
         name: Samsung Tv
         aliases: ['Samsung Tv', 'Sovrums Tv', 'Sovrums Teven', 'Tv Sovrum']
         room: Sovrum
-      switch.playstation_template:
+      switch.playstation_4:
         name: Playstation
         aliases: ['Playstation', 'PS4', 'Playstation 4']
         room: Vardagsrum
-      script.auto_hemma:
+      script.home_arrive:
         name: Hemma
         aliases: ['Hemma', 'Auto hemma', 'Jag är hemma']
         room: Hall
-      script.auto_stang_allt:
+      script.home_leave:
         name: Stäng allt
         aliases: ['Stäng allt', 'Auto Stäng allt']
         room: Hall
