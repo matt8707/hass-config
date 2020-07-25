@@ -4,29 +4,21 @@
                 title: popup
                 hide_header: true
                 deviceID: this
-                style:
-                  .: |
-                    :host .content {
-                      width: calc(400px + 400px + 400px);
-                    }
+                style: |
+                  :host .content {
+                    width: calc(380px + 380px + 380px);
+                    max-width: 90vw;
+                  }
                 card:
                   type: custom:layout-card
                   column_num: 3
-                  column_width: [400, 400, 400]
+                  column_width: [380, 380, 380]
                   layout: vertical
                   cards:
                     - type: entities
                       title: Home Assistant
                       show_header_toggle: false
-                      style: |
-                        ha-card {
-                          animation: pop-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; transform-origin: center;
-                          box-shadow: none; border-radius: 1em; padding: 0.3em 1.25em 0.4em 0.5em; 
-                          background: linear-gradient(180deg, rgba(48,52,52,1) 0%, rgba(48,52,52,1) 4.8em, rgba(34,38,39,1) 4.8em, rgba(34,38,39,1) 100%); }
-                        .card-header {
-                          margin: -0.4em 0 1em 0.4em; font-family: sf text; letter-spacing: 0.005em; font-size: 1.5em;}
-                        @keyframes pop-in {
-                          0% { transform: scale(0.6); opacity: 0; } 20% { opacity: 0; } 100% { transform: scale(1); opacity: 0.9; }}
+                      class: animate_popup
                       entities:
 
                         - entity: sensor.hass_version
@@ -137,15 +129,7 @@
                     - type: entities
                       title: Väggplattan
                       show_header_toggle: false
-                      style: |
-                        ha-card {
-                          animation: pop-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.05s; transform-origin: center;
-                          box-shadow: none; border-radius: 1em; padding: 0.3em 1.25em 0.4em 0.5em; 
-                          background: linear-gradient(180deg, rgba(48,52,52,1) 0%, rgba(48,52,52,1) 4.8em, rgba(34,38,39,1) 4.8em, rgba(34,38,39,1) 100%); }
-                        .card-header {
-                          margin: -0.4em 0 1em 0.4em; font-family: sf text; letter-spacing: 0.005em; font-size: 1.5em;}
-                        @keyframes pop-in {
-                          0% { transform: scale(0.6); opacity: 0; } 20% { opacity: 0; } 100% { transform: scale(1); opacity: 0.9; }}
+                      class: animate_popup
                       entities:
 
                         - entity: switch.fullykiosk_screen
@@ -222,15 +206,8 @@
                     - type: entities
                       title: Synology NAS
                       show_header_toggle: false
+                      class: animate_popup
                       style: |
-                        ha-card {
-                          animation: pop-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.1s; transform-origin: center;
-                          box-shadow: none; border-radius: 1em; padding: 0.3em 1.25em 0.4em 0.5em; 
-                          background: linear-gradient(180deg, rgba(48,52,52,1) 0%, rgba(48,52,52,1) 4.8em, rgba(34,38,39,1) 4.8em, rgba(34,38,39,1) 100%); }
-                        .card-header {
-                          margin: -0.4em 0 1em 0.4em; font-family: sf text; letter-spacing: 0.005em; font-size: 1.5em;}
-                        @keyframes pop-in {
-                          0% { transform: scale(0.6); opacity: 0; } 20% { opacity: 0; } 100% { transform: scale(1); opacity: 0.9; }}
                         #states > div > mini-graph-card {
                           margin: -22.7px -34px -21px -23px;
                         }
@@ -290,13 +267,7 @@
                                     :host {
                                     --paper-item-icon-color: green;
                                       }
-                              style: |
-                                ha-card {
-                                  box-shadow: none;
-                                  background: none;
-                                  margin-top: -0.7em;
-                                  z-index: 2;
-                                }
+                              class: net_up_down
                               type: entities
                             - entities:
                                 - entity: sensor.nas_net_up
@@ -304,13 +275,7 @@
                                     :host {
                                     --paper-item-icon-color: #385581;
                                       }
-                              style: |
-                                ha-card {
-                                  box-shadow: none;
-                                  background: none;
-                                  margin-top: -0.7em;
-                                  z-index: 2;
-                                } 
+                              class: net_up_down
                               type: entities
 
                         - type: custom:mini-graph-card

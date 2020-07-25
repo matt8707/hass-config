@@ -6,26 +6,13 @@
                 deviceID: this
                 card:
                   type: custom:stack-in-card
-                  style: |
-                    ha-card {
-                      animation: pop-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; transform-origin: center;
-                      box-shadow: none; border-radius: 1em;
-                      background: linear-gradient(180deg, rgba(48,52,52,1) 0%, rgba(48,52,52,1) 4.8em, rgba(34,38,39,1) 4.8em, rgba(34,38,39,1) 100%); }
-                    @keyframes pop-in {
-                      0% { transform: scale(0.6); opacity: 0; } 20% { opacity: 0; } 100% { transform: scale(1); opacity: 0.9; }}
+                  class: animate_popup
                   cards:
                     - type: entities
                       title: Mattias
                       entities:
                         - entity: person.mattias
                           secondary_info: last-changed
-                      style: |
-                        ha-card {
-                          box-shadow: none; border-radius: 1em; padding: 0.3em 1.25em 0.4em 1em; 
-                          background: linear-gradient(180deg, rgba(48,52,52,1) 0%, rgba(48,52,52,1) 4.8em, rgba(34,38,39,1) 4.8em, rgba(34,38,39,1) 100%); }
-                        .card-header {
-                          margin: -0.4em 0 1.4em 0.4em; font-family: sf text; letter-spacing: 0.005em; font-size: 1.5em;}
-
                     - type: history-graph
                       entities:
                         - entity: person.mattias

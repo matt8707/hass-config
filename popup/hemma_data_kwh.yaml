@@ -4,22 +4,14 @@
                 title: popup
                 hide_header: true
                 deviceID: this
-                style:
-                  .: |
-                    :host .content {
-                      width: 38em;
-                    }
+                style: |
+                  :host .content {
+                    width: 38em;
+                  }
                 card:
                   type: custom:stack-in-card
+                  class: animate_popup
                   style:
-                    .: |
-                      ha-card {
-                        animation: pop-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; transform-origin: center;
-                        box-shadow: none; border-radius: 1em; height: 49.2em;
-                        background: linear-gradient(180deg, rgba(48,52,52,1) 0%, rgba(48,52,52,1) 4.8em, rgba(34,38,39,1) 4.8em, rgba(34,38,39,1) 100%); }
-                      @keyframes pop-in {
-                        0% { transform: scale(0.6); opacity: 0; } 20% { opacity: 0; } 100% { transform: scale(1); opacity: 0.9; }}
-
                     ha-card > div > hui-vertical-stack-card:
                       $:
                         '#root > hui-horizontal-stack-card:nth-child(1)':
@@ -32,6 +24,7 @@
                       cards:
                         - entities:
                             - entity: sensor.oresundskraft_year
+                          class: disable_default
                           style: |
                             :host {
                             --paper-item-icon-color: 
@@ -43,6 +36,7 @@
                           type: entities
                         - entities:
                             - entity: sensor.oresundskraft_last_year
+                          class: disable_default
                           style: |
                             :host {
                             --paper-item-icon-color: 
@@ -639,6 +633,7 @@
                             }
 
                         - type: entities
+                          class: disable_default
                           entities:
                             - entity: sensor.oresundskraft_last_month_price
                             - entity: sensor.oresundskraft_total_year_kwh
@@ -654,6 +649,7 @@
                           state: 'on'
                       card:
                         type: entities
+                        class: disable_default
                         entities:
 
                           - type: custom:hui-element
