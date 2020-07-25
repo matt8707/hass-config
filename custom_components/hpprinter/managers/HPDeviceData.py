@@ -47,6 +47,8 @@ class HPDeviceData:
         return self.config_data.host
 
     async def initialize(self):
+        _LOGGER.debug("Initialize")
+
         self.device_data = await self._storage_manager.async_load_from_store()
 
         if self.device_data is None:

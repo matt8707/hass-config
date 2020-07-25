@@ -15,7 +15,7 @@ from homeassistant.helpers.entity_registry import (
     EntityRegistry,
     async_get_registry as er_async_get_registry,
 )
-from homeassistant.helpers.event import async_call_later, async_track_time_interval
+from homeassistant.helpers.event import async_track_time_interval
 
 from ..helpers.const import *
 from ..managers.HPDeviceData import HPDeviceData
@@ -85,43 +85,30 @@ class HPPrinterHomeAssistant:
             self._entity_manager = EntityManager(self._hass, self)
             self._device_manager = DeviceManager(self._hass, self)
 
-            await self._data_manager.initialize()
-
-            def internal_async_init(now):
-                self._hass.async_create_task(self._async_init(now))
-
-            self._entity_registry = await er_async_get_registry(self._hass)
-
-            async_call_later(self._hass, 2, internal_async_init)
-
-            self._is_initialized = True
+            self._hass.loop.create_task(self._async_init())
         except Exception as ex:
             exc_type, exc_obj, tb = sys.exc_info()
             line_number = tb.tb_lineno
 
             _LOGGER.error(f"Failed to async_init, error: {ex}, line: {line_number}")
 
-    async def _async_init(self, event_time):
-        if not self._is_initialized:
-            _LOGGER.info(
-                f"NOT INITIALIZED - Failed finalizing initialization of integration ({self.config_data.host})"
-            )
-            return
+    async def _async_init(self):
+        await self._data_manager.initialize()
 
-        _LOGGER.info(
-            f"Finalizing initialization of integration ({self.config_data.host}) at {event_time}"
-        )
+        self._entity_registry = await er_async_get_registry(self._hass)
 
         load = self._hass.config_entries.async_forward_entry_setup
 
         for domain in SIGNALS:
-            self._hass.async_create_task(
-                load(self._config_manager.config_entry, domain)
-            )
+            await load(self._config_manager.config_entry, domain)
+
+        self._is_initialized = True
 
         await self.async_update_entry()
 
     async def async_update_entry(self, entry: ConfigEntry = None):
+        _LOGGER.debug("Updating config entry")
+
         is_update = entry is not None
 
         if is_update:
@@ -158,7 +145,8 @@ class HPPrinterHomeAssistant:
         await self.async_update(datetime.now())
 
     async def async_remove(self):
-        _LOGGER.info(f"Removing current integration - {self.config_data.host}")
+        config_entry = self._config_manager.config_entry
+        _LOGGER.info(f"Removing current integration - {config_entry.title}")
 
         if self._remove_async_track_time is not None:
             self._remove_async_track_time()
@@ -167,13 +155,11 @@ class HPPrinterHomeAssistant:
         unload = self._hass.config_entries.async_forward_entry_unload
 
         for domain in SIGNALS:
-            self._hass.async_create_task(
-                unload(self._config_manager.config_entry, domain)
-            )
+            await unload(config_entry, domain)
 
         await self._device_manager.async_remove()
 
-        _LOGGER.info(f"Current integration ({self.config_data.host}) removed")
+        _LOGGER.info(f"Current integration ({config_entry.title}) removed")
 
     async def async_update(self, event_time):
         if not self._is_initialized:
