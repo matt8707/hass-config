@@ -6,12 +6,11 @@
 ##########################################################################
 
 custom_header:
-  kiosk_mode: true
   exceptions:
     - conditions:
-        user_agent: Mobile
+        query_string: kiosk
       config:
-        kiosk_mode: false
+        kiosk_mode: true
 
 preload_cards:
   [map, iframe, markdown]
@@ -76,13 +75,14 @@ button_card_templates:
       action: call-service
       service: browser_mod.popup
       service_data:
-        title: Stäng
+        title: popup
+        hide_header: true
         deviceID: this
         style:
-          --ha-card-border-radius: 1em
-          --more-info-header-color: rgba(255,255,255,0.6)
-          background: none
-          box-shadow: none
+          .: |
+            :host .content {
+              width: 25em;
+            }
         card:
           type: vertical-stack
           cards:
@@ -146,13 +146,14 @@ button_card_templates:
                       color: "#ce944b"
                     - service: browser_mod.popup
                       service_data:
-                        title: Stäng
+                        title: popup
+                        hide_header: true
                         deviceID: this
                         style:
-                          --ha-card-border-radius: 1em
-                          --more-info-header-color: rgba(255,255,255,0.6)
-                          background: none
-                          box-shadow: none
+                          .: |
+                            :host .content {
+                              width: 25em;
+                            }
                         card:
                           type: entities
                           title: Färginställningar
@@ -330,7 +331,7 @@ views:
             #root > hui-icon-element:hover {color: rgba(255, 255, 255, 0.25) !important; transition: none;}
             #root > hui-icon-element:active {color: rgba(255, 255, 255, 0.35) !important; transition: none;}
 
-            #root > hui-icon-element:nth-child(9) {
+            #root > hui-icon-element:nth-child(10) {
               {% if states('sensor.hass_version_installed') != states('sensor.hass_version_latest') or 
               not is_state('sensor.hacs', '0') and not is_state('sensor.hacs', 'unknown') %}
                 color: #234e6a !important;
@@ -368,10 +369,8 @@ views:
           # markdown fix
           - type: custom:hui-element
             card_type: markdown
-            style:
-              {top: -50%, left: -50%, --ha-card-background: none, 
-              --ha-card-box-shadow: none, pointer-events: none}
-            content: ' '
+            style: {opacity: 0}
+            content: preload
 
           #################################################
           #                                               #
@@ -429,8 +428,8 @@ views:
               <span>{{ states('sensor.time') }}</span>
 
 
-              <font color='#6a7377'><b>{{ states('sensor.dag') }}</b><br>
-              <b>{{ states('sensor.datum') }}</b> </font><br> 
+              <font color='#6a7377'><b>{{ states('sensor.sidebar_day') }}</b><br>
+              <b>{{ states('sensor.sidebar_date') }}</b> </font><br> 
 
 
               <b>{{ states('sensor.sidebar_greeting') }}</b>
@@ -455,12 +454,12 @@ views:
               {{ states('sensor.mathem_countdown') }}
 
 
-              {% if states('sensor.imac_get_ip') == states('sensor.public_ip') 
+              {% if states('sensor.imac_ip') == states('sensor.public_ip') 
                  or states('sensor.myip') == states('sensor.public_ip') %}
               {{'\u26A0\uFE0F'}} Kontrollera VPN-anslutning. {% endif %}
               
 
-              {% if is_state('binary_sensor.check_plex', 'off') %}
+              {% if is_state('binary_sensor.plex_availability', 'off') %}
               {{'\u26A0\uFE0F'}} Plex är nere...{% endif %}
 
 
@@ -670,9 +669,9 @@ views:
           #################################################
 
           - type: custom:button-card
-            entity: media_player.sony_bravia_tv
+            entity: media_player.sony_bravia
             triggers_update:
-              ['media_player.sony_bravia_tv', 'input_boolean.sony_bravia_tv']
+              ['media_player.sony_bravia', 'input_boolean.sony_bravia']
             style:
               top: 37.9%
               left: 30.31%
@@ -685,7 +684,7 @@ views:
                 if (entity.state === 'on') {
                 hass.callService('input_boolean', 'turn_on', {entity_id: entity.entity_id.replace('media_player', 'input_boolean')});
                 hass.callService('media_player', 'turn_off', {entity_id: entity.entity_id});
-                hass.callService('media_player', 'turn_off', {entity_id: entity.entity_id.replace('sony_bravia_tv', 'vardagsrum').replace('samsung', 'sovrum')}); } ]]]
+                hass.callService('media_player', 'turn_off', {entity_id: entity.entity_id.replace('sony_bravia', 'vardagsrum').replace('samsung', 'sovrum')}); } ]]]
             hold_action: !include popup/vardagsrum_tv.yaml
             custom_fields:
               icon_tv: &icon_tv >
@@ -714,9 +713,9 @@ views:
           #################################################
 
           - type: custom:button-card
-            entity: switch.playstation_template
+            entity: switch.playstation_4
             triggers_update:
-              ['switch.playstation_template', 'input_boolean.playstation_template']
+              ['switch.playstation_4', 'input_boolean.playstation_4']
             style:
               top: 37.9%
               left: 41.31%
@@ -797,10 +796,10 @@ views:
           #################################################
 
           - type: custom:button-card
-            entity: switch.dator_template
+            entity: switch.computer_imac
             triggers_update:
-              ['switch.dator_template', 'input_boolean.dator_template', 
-              'input_boolean.lock_computer', 'script.auto_stang_allt']
+              ['switch.computer_imac', 'input_boolean.computer_imac', 
+              'input_boolean.computer_lock', 'script.home_leave']
             style:
               top: 37.9%
               left: 55.18%
@@ -808,7 +807,7 @@ views:
             tap_action:
               action: toggle
               animate_locked: |
-                [[[ if (states['input_boolean.lock_computer'].state === 'on' && states['input_boolean.dator_template'].state === 'off') {
+                [[[ if (states['input_boolean.computer_lock'].state === 'on' && states['input_boolean.computer_imac'].state === 'off') {
                 this.shadowRoot.getElementById('lock').classList.add('locked');
                 window.setTimeout(() => { this.shadowRoot.getElementById('lock').classList.remove('locked'); }, 1100) } ]]]
             hold_action: !include popup/studio_dator.yaml
@@ -819,8 +818,8 @@ views:
                 <path class="${state}" d="M31.9 44.5c-1-.3-1.9.4-1.9-3.7h-9.9c0 4.2-.9 3.4-1.9 3.7s-.2.7-.2.7h14.1s.8-.3-.2-.7zM47.6 4.8H2.5c-1.1 0-2 .9-2 2v30.1c0 1.1.9 2 2 2h45c1.1 0 2-.9 2-2v-30a1.95 1.95 0 0 0-1.9-2.1zm-.7 26.4H3.2V7.6H47v23.6z"/></svg>`; ]]]
               loading: *loading
               icon_lock: >
-                [[[ const state = states['script.auto_stang_allt'].state === 'on' ? 'locked' : null;
-                if (states['input_boolean.lock_computer'].state === 'on' && states['input_boolean.dator_template'].state === 'off') {
+                [[[ const state = states['script.home_leave'].state === 'on' ? 'locked' : null;
+                if (states['input_boolean.computer_lock'].state === 'on' && states['input_boolean.computer_imac'].state === 'off') {
                 return `<svg viewBox="0 0 50 50"><style>@keyframes locked{from, to{transform: translateX(0);}10%, 30%, 50%, 70%, 90%{transform: translateX(-8%);}20%, 40%, 60%, 80%{transform: translateX(8%);}}.locked{animation: locked 1.1s;}</style>
                 <path id="lock" class="${state}" d="M8.2 22.6h2.4v-7.2C10.6 7.5 17.1 1 25 1s14.4 6.4 14.4 14.4v7.2h2.4V49H8.2m26.4-26.4v-7.2c0-5.3-4.3-9.6-9.6-9.6s-9.6 4.3-9.6 9.6v7.2"/></svg>`; } ]]]
             styles:
@@ -839,9 +838,9 @@ views:
           #################################################
 
           - type: custom:button-card
-            entity: switch.wemo_monitorer
+            entity: switch.wemo_monitors
             triggers_update:
-              ['switch.wemo_monitorer', 'sensor.getvolume']
+              ['switch.wemo_monitors', 'sensor.monitors_volume']
             style:
               top: 37.9%
               left: 66.14%
@@ -857,7 +856,7 @@ views:
                 else { return '<svg viewBox="0 0 50 50"><path fill="#9da0a2" d="M25 18.6c-4.6 0-8.4 3.8-8.4 8.4s3.8 8.4 8.4 8.4 8.4-3.8 8.4-8.4-3.7-8.4-8.4-8.4zm0 11.7a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c0 1.8-1.4 3.3-3.3 3.3zM39.2 1H10.9C9.4 1 8.3 2.1 8.3 3.6v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3a2.65 2.65 0 0 0 2.6-2.6v-43C41.7 2 40.5.9 39.2 1zM25 7c1.3 0 2.4 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4S23.7 7 25 7zm10.3 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6l-.4-1.9c-.2-.9.6-.9.6-.9h19.3s.9.1.6.9zM25 38.2c-6.2 0-11.3-5.1-11.3-11.3a11.29 11.29 0 1 1 22.6 0c.1 6.3-5 11.3-11.3 11.3z"/></svg>'; } ]]]
               volume: >
                 [[[ if (entity.state === 'on') {
-                const volume = states['sensor.getvolume'].state;
+                const volume = states['sensor.monitors_volume'].state;
                 const radius = 20.5; const circumference = radius * 2 * Math.PI;
                 return `<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="${radius}" stroke="#b2b2b2" stroke-width="1.5" fill="none" style="
                 transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: ${circumference}; stroke-dashoffset: ${circumference - volume / 100 * circumference};" />
@@ -1402,7 +1401,7 @@ views:
           #################################################
 
           - type: custom:button-card
-            entity: switch.auto_stangallt_template
+            entity: switch.home_leave
             state_display: Auto
             style:
               top: 82.1%
@@ -1432,7 +1431,7 @@ views:
           #################################################
 
           - type: custom:button-card
-            entity: switch.auto_hemma_template
+            entity: switch.home_arrive
             state_display: Auto
             style:
               top: 82.1%
@@ -1459,7 +1458,7 @@ views:
           - type: custom:button-card
             aspect_ratio: 3/1
             state_display: ' '
-            entity: switch.wemo_flakt
+            entity: switch.wemo_fan
             style:
               top: 5%
               left: 66.14%
