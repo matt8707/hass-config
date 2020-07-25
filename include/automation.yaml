@@ -666,6 +666,7 @@ automation:
 
   - alias: conditional_media_playing
     initial_state: true
+    mode: restart
     trigger:
       - platform: state
         entity_id: 
@@ -680,6 +681,7 @@ automation:
 
   - alias: conditional_media_paused_idle
     initial_state: true
+    mode: restart
     trigger:
       - platform: state
         entity_id: 
@@ -694,7 +696,6 @@ automation:
         to: paused
         for:
           minutes: 10
-    mode: parallel
     action:
       - service: input_select.select_option
         data_template:

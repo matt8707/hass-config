@@ -366,7 +366,7 @@ sensor:
             mdi:shield-check
           {% endif %}
 
-      imac_uptime:
+      computer_imac_uptime:
         entity_id: sensor.time
         friendly_name: Drifttid
         icon_template: mdi:calendar-clock

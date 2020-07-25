@@ -112,12 +112,123 @@ frontend:
       # barcard
       bar-card-border-radius: '0.3em'
 
+    ####################################################
+    #                                                  #
+    #                     CARD MOD                     #
+    #                                                  #
+    ####################################################
+
       card-mod-theme: tablet
+
+      card-mod-root: |
+        ha-app-layout {
+          background: url('/local/background.png') !important;
+          background-size: cover !important;
+        }
+
+      card-mod-card: |
+        ha-card {
+          background: none;
+          --keep-background: true;
+          box-shadow: none;
+          border-radius: 1em;
+        }
+
+        .card-header {
+          margin: -0.38em 0 1.4em 0.4em;
+          font-family: SF Text;
+          letter-spacing: 0.005em;
+          font-size: 1.5em;
+        }
+
+        /* * * * * * * * * * * * * * * * * *
+         *                                 *
+         *              TYPES              *
+         *                                 *
+         * * * * * * * * * * * * * * * * * */
+
+        ha-card.type-entities {
+          background: linear-gradient(180deg,
+            rgba(48,52,52,1) 0%,
+            rgba(48,52,52,1) 4.8em,
+            rgba(34,38,39,1) 4.8em,
+            rgba(34,38,39,1) 100%);
+          padding: 0.3em 1.25em 0.4em 0.5em;
+        }
+
+        ha-card.type-custom-stack-in-card {
+          background: rgba(34,38,39,1);
+        }
+
+        ha-card.type-custom-hui-markdown-card {
+          font-family: SF Display;
+          line-height: 2.05vw;
+          letter-spacing: 0.06vw;
+          color: rgba(255, 255, 255, 0.9);
+          pointer-events: none;
+        }
+
+        /* * * * * * * * * * * * * * * * * *
+         *                                 *
+         *             CLASSES             *
+         *                                 *
+         * * * * * * * * * * * * * * * * * */
+
+        ha-card.sidebar {
+          font-size: 1.5vw;
+          font-weight: 300;
+          opacity: 0.75;
+          width: 15.5vw;
+          height: 1px;
+        }
+
+        ha-card.coronavirus {
+          font-size: 1.26vw;
+          color: #6a7377;
+          font-weight: 400;
+          opacity: 0.5;
+          width: 90vw;
+          height: 1px;
+          letter-spacing: 0.065vw;
+          --mdc-icon-size: 1.2vw;
+        }
+
+        ha-card.net_up_down {
+          background: none;
+          margin-top: -0.7em;
+          z-index: 2;
+          padding: 0;
+        }
+
+        ha-card.disable_default {
+          background: none;
+          border-radius: none;
+          padding: 0;
+        }
+
+        ha-card.animate_popup {
+          animation: animate_popup 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+          transform-origin: center;
+        }
+        @keyframes animate_popup {
+          0% {
+            transform: scale(0.6);
+            opacity: 0;
+          }
+          20% {
+            opacity: 0;
+          }
+          100% {
+            transform: scale(1);
+            opacity: 0.9;
+          }
+        }
+
       card-mod-more-info-yaml: |
         $: |
           .mdc-dialog {
-            backdrop-filter: blur(10px);
-            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(25px) brightness(60%);
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
           }
           .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
             background: none;
