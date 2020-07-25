@@ -1,13 +1,9 @@
               action: call-service
               service: browser_mod.popup
               service_data:
-                title: Stäng
+                title: popup
+                hide_header: true
                 deviceID: this
-                style:
-                  --ha-card-border-radius: 1em
-                  --more-info-header-color: rgba(255,255,255,0.6)
-                  background: none
-                  box-shadow: none
                 card:
                   type: custom:stack-in-card
                   style: |
@@ -43,11 +39,9 @@
                               }
 
                         - entity: input_select.fan_anslut_speed
+                          name: TODO
 
-                        - entity: switch.gosund2
+                        - entity: switch.gosund_air_purifier
                           name: Strömbrytare
                           icon: mdi:power-socket-de
 
-                        - entity: automation.turn_on_fan_anslut_temp
-                          icon: mdi:chart-bell-curve-cumulative
-                          name: Automatisera innan läggdags

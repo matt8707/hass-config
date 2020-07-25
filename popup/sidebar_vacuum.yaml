@@ -1,14 +1,14 @@
               action: call-service
               service: browser_mod.popup
               service_data:
-                title: Stäng
+                title: popup
+                hide_header: true
                 deviceID: this
                 style:
-                  --ha-card-border-radius: 1em
-                  --more-info-header-color: rgba(255,255,255,0.6)
-                  background: none
-                  box-shadow: none
-                  width: calc(400px + 555px)
+                  .: |
+                    :host .content {
+                      width: calc(400px + 555px);
+                    }
                 card:
                   type: custom:layout-card
                   column_num: 2
@@ -33,7 +33,7 @@
                           entities:
 
                           - entity: sensor.roborock_state
-                          - entity: sensor.roborock_battery_level
+                          - entity: sensor.roborock_battery
                           - entity: sensor.roborock_last_clean
 
                           - type: custom:bar-card
@@ -44,24 +44,24 @@
                                   service: homeassistant.update_entity
                                   service_data:
                                     entity_id: sensor.roborock_filter
-                              - entity: sensor.roborock_huvudborste
+                              - entity: sensor.roborock_mainbrush
                                 tap_action:
                                   action: call-service
                                   service: homeassistant.update_entity
                                   service_data:
-                                    entity_id: sensor.roborock_huvudborste
-                              - entity: sensor.roborock_sidoborste
+                                    entity_id: sensor.roborock_mainbrush
+                              - entity: sensor.roborock_sidebrush
                                 tap_action:
                                   action: call-service
                                   service: homeassistant.update_entity
                                   service_data:
-                                    entity_id: sensor.roborock_sidoborste
-                              - entity: sensor.roborock_sensorer
+                                    entity_id: sensor.roborock_sidebrush
+                              - entity: sensor.roborock_sensors
                                 tap_action:
                                   action: call-service
                                   service: homeassistant.update_entity
                                   service_data:
-                                    entity_id: sensor.roborock_sensorer
+                                    entity_id: sensor.roborock_sensors
                             positions:
                               icon: outside
                               indicator: 'off'
@@ -102,7 +102,7 @@
                             height: 2em
                             width: 55%
 
-                          - entity: input_select.roborock_fan_speed
+                          - entity: input_select.roborock_speed
 
                           - type: custom:hui-element
                             card_type: horizontal-stack
@@ -162,11 +162,11 @@
                         ha-card {
                           animation: pop-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.05s; transform-origin: center;
                           box-shadow: none; border-radius: 1em; padding: 0.3em 1.25em 0.4em 0.5em; 
-                          background: linear-gradient(180deg, rgba(48,52,52,1) 0%, rgba(48,52,52,1) 4.8em, rgba(34,38,39,1) 4.8em, rgba(34,38,39,1) 100%); }
+                          background: linear-gradient(180deg, rgba(48,52,52,1) 0%, rgba(48,52,52,1) 4.8em, rgba(34,38,39,0.9) 4.8em, rgba(34,38,39,0.9) 100%); }
                         .card-header {
                           margin: -0.4em 0 1.4em 0.4em; font-family: sf text; letter-spacing: 0.005em; font-size: 1.5em;}
                         @keyframes pop-in {
-                          0% { transform: scale(0.6); opacity: 0; } 20% { opacity: 0; } 100% { transform: scale(1); opacity: 0.9; }}
+                          0% { transform: scale(0.6); } 100% { transform: scale(1); }}
                       elements:
 
                         - type: custom:valetudo-map-card

@@ -1,13 +1,9 @@
               action: call-service
               service: browser_mod.popup
               service_data:
-                title: Stäng
+                title: popup
+                hide_header: true
                 deviceID: this
-                style:
-                  --ha-card-border-radius: 1em
-                  --more-info-header-color: rgba(255,255,255,0.6)
-                  background: none
-                  box-shadow: none
                 card:
                   type: custom:stack-in-card
                   style: |
@@ -48,11 +44,11 @@
 
                         - entity: input_select.fan_anslut_speed
 
-                        - entity: switch.gosund1
+                        - entity: switch.gosund_fan
                           name: Strömbrytare
                           icon: mdi:power-socket-de
 
-                        - entity: automation.turn_on_fan_anslut_temp
+                        - entity: automation.fan_anslut_turn_on_temp
                           icon: mdi:chart-bell-curve-cumulative
                           name: Slå på om 26 °C överskrids
 

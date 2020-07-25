@@ -1,14 +1,14 @@
               action: call-service
               service: browser_mod.popup
               service_data:
-                title: Stäng
+                title: popup
+                hide_header: true
                 deviceID: this
                 style:
-                  --ha-card-border-radius: 1em
-                  --more-info-header-color: rgba(255,255,255,0.6)
-                  background: none
-                  box-shadow: none
-                  width: calc(400px + 400px + 400px)
+                  .: |
+                    :host .content {
+                      width: calc(400px + 400px + 400px);
+                    }
                 card:
                   type: custom:layout-card
                   column_num: 3
@@ -29,12 +29,12 @@
                           0% { transform: scale(0.6); opacity: 0; } 20% { opacity: 0; } 100% { transform: scale(1); opacity: 0.9; }}
                       entities:
 
-                        - entity: sensor.hass_version_template
+                        - entity: sensor.hass_version
 
                         - entity: switch.watchtower
                           icon: custom:docker-watchtower
 
-                        - entity: sensor.hass_release_template
+                        - entity: sensor.hass_dev_release
 
                         - entity: sensor.home_assistant_v2_db
                           icon: mdi:database
@@ -53,12 +53,12 @@
                                 service: homeassistant.update_entity
                                 service_data:
                                   entity_id: sensor.docker_cpu
-                            - entity: sensor.docker_mem
+                            - entity: sensor.dockermon_mem
                               tap_action:
                                 action: call-service
                                 service: homeassistant.update_entity
                                 service_data:
-                                  entity_id: sensor.docker_mem
+                                  entity_id: sensor.dockermon_mem
                           positions: &bar_card_positions
                             icon: outside
                             indicator: 'off'
@@ -157,29 +157,29 @@
 
                         - entity: switch.fullykiosk_screensaver
 
-                        - entity: sensor.fullykiosk_battery_level
+                        - entity: sensor.fullykiosk_battery
 
                         - entity: sensor.fullykiosk_plugged
 
-                        - entity: sensor.fullykiosk_motion_detector_state
+                        - entity: sensor.fullykiosk_motion
 
                         - entities:
-                            - entity: sensor.fullykiosk_memory_percentage
+                            - entity: sensor.fullykiosk_memory
                               name: Minne - 2GB
                               icon: mdi:memory
                               tap_action:
                                 action: call-service
                                 service: homeassistant.update_entity
                                 service_data:
-                                  entity_id: sensor.fullykiosk_memory_percentage
-                            - entity: sensor.fullykiosk_storage_percentage
+                                  entity_id: sensor.fullykiosk_memory
+                            - entity: sensor.fullykiosk_storage
                               name: Lagring - 32GB
                               icon: mdi:sd
                               tap_action:
                                 action: call-service
                                 service: homeassistant.update_entity
                                 service_data:
-                                  entity_id: sensor.fullykiosk_storage_percentage
+                                  entity_id: sensor.fullykiosk_storage
                           positions: *bar_card_positions
                           severity: *bar_card_severity
                           decimal: 0
@@ -235,11 +235,11 @@
                           margin: -22.7px -34px -21px -23px;
                         }
                       entities:
-                        - entity: sensor.synology_dsm_status
+                        - entity: sensor.nas_status
                           icon: custom:synology-nas
                         - entity: sensor.nas_disk_temp
                         - entity: sensor.drifttid
-                        - entity: sensor.vpn_nas
+                        - entity: sensor.nas_vpn
                           style: |
                             :host {
                             --paper-item-icon-color: 

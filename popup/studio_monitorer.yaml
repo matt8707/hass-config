@@ -1,13 +1,9 @@
               action: call-service
               service: browser_mod.popup
               service_data:
-                title: Stäng
+                title: popup
+                hide_header: true
                 deviceID: this
-                style:
-                  --ha-card-border-radius: 1em
-                  --more-info-header-color: rgba(255,255,255,0.6)
-                  background: none
-                  box-shadow: none
                 card:
                   type: entities
                   title: Monitorer
@@ -23,16 +19,16 @@
                       0% { transform: scale(0.6); opacity: 0; } 20% { opacity: 0; } 100% { transform: scale(1); opacity: 0.9; }}
                   entities:
 
-                    - entity: switch.wemo_monitorer
+                    - entity: switch.wemo_monitors
                       secondary_info: last-changed
 
                     - type: custom:slider-entity-row
-                      entity: input_number.monitorer_volume
+                      entity: input_number.monitors_volume
                       hide_state: false
                       style: |
                         :host {
                         --paper-item-icon-color: 
-                          {% if is_state('sensor.monitorer_mute_check', 'true') %}
+                          {% if is_state('sensor.monitors_mute_check', 'true') %}
                             #FFFFFF20
                           {% elif states(config.entity) | int == 0 %}
                             #9da0a2
@@ -66,7 +62,7 @@
                           action: call-service
                           service: script.turn_on
                           service_data:
-                            entity_id: script.monitorer_mute_toggle
+                            entity_id: script.monitors_mute
                         template: icon_action
 
                       - type: custom:button-card
@@ -75,7 +71,7 @@
                           action: call-service
                           service: input_number.decrement
                           service_data:
-                            entity_id: input_number.monitorer_volume
+                            entity_id: input_number.monitors_volume
                         template: icon_action
 
                       - type: custom:button-card
@@ -84,5 +80,5 @@
                           action: call-service
                           service: input_number.increment
                           service_data:
-                            entity_id: input_number.monitorer_volume
+                            entity_id: input_number.monitors_volume
                         template: icon_action

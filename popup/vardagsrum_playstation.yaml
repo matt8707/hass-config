@@ -1,13 +1,9 @@
               action: call-service
               service: browser_mod.popup
               service_data:
-                title: Stäng
+                title: popup
+                hide_header: true
                 deviceID: this
-                style:
-                  --ha-card-border-radius: 1em
-                  --more-info-header-color: rgba(255,255,255,0.6)
-                  background: none
-                  box-shadow: none
                 card:
                   type: custom:stack-in-card
                   style: |
@@ -27,7 +23,7 @@
                         .card-header {
                           margin: -0.4em 0 1.4em 0.4em; font-family: sf text; letter-spacing: 0.005em; font-size: 1.5em;}
                       entities:
-                        - entity: switch.playstation_template
+                        - entity: switch.playstation_4
                           name: Playstation 4
                           secondary_info: last-changed
 

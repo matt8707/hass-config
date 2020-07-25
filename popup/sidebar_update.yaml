@@ -1,14 +1,14 @@
               action: call-service
               service: browser_mod.popup
               service_data:
-                title: Stäng
+                title: popup
+                hide_header: true
                 deviceID: this
                 style:
-                  --ha-card-border-radius: 1em
-                  --more-info-header-color: rgba(255,255,255,0.6)
-                  background: none
-                  box-shadow: none
-                  width: 50em
+                  .: |
+                    :host .content {
+                      width: 60em;
+                    }
                 card:
                   type: entities
                   title: Uppdateringar
@@ -41,7 +41,7 @@
                       content: >
                         {% if states('sensor.hass_version_installed') == states('sensor.hass_version_latest') %}
                         <span><ha-icon icon="mdi:home-assistant"></ha-icon> Home Assistant</span><br>
-                        <b>Inga uppdateringar - {{ state_attr('sensor.hass_release_template', 'friendly_name') }} {{ states('sensor.hass_release_template') | lower }}</b>
+                        <b>Inga uppdateringar - {{ state_attr('sensor.hass_dev_release', 'friendly_name') }} {{ states('sensor.hass_dev_release') | lower }}</b>
                         {% else %}
                         {% endif %}
 
@@ -72,7 +72,7 @@
                         #root {
                           margin-left: 1em;
                           filter: 
-                            {% if is_state('sensor.hass_version_template', 'Senaste') %}
+                            {% if is_state('sensor.hass_version', 'Senaste') %}
                             opacity(30%); 
                             {% else %} 
                             drop-shadow(3px 3px 5px #00000050); 
@@ -145,12 +145,14 @@
                             action: call-service
                             service: browser_mod.popup
                             service_data:
-                              title: Stäng
+                              title: popup
+                              hide_header: true
                               deviceID: this
                               style:
-                                background: none
-                                box-shadow: none
-                                width: 75em
+                                .: |
+                                  :host .content {
+                                    width: 75em;
+                                  }
                               card:
                                 type: custom:hui-element
                                 card_type: iframe

@@ -1,13 +1,9 @@
               action: call-service
               service: browser_mod.popup
               service_data:
-                title: Stäng
+                title: popup
+                hide_header: true
                 deviceID: this
-                style:
-                  --ha-card-border-radius: 1em
-                  --more-info-header-color: rgba(255,255,255,0.6)
-                  background: none
-                  box-shadow: none
                 card:
                   type: entities
                   title: Vardagsrum Tv
@@ -23,7 +19,7 @@
                   show_header_toggle: false
                   entities:
 
-                    - entity: switch.tv_template
+                    - entity: switch.tv_sony
                       name: Sony Bravia
                       secondary_info: last-changed
 
@@ -43,14 +39,14 @@
                       - type: custom:button-card
                         icon: mdi:volume-mute
                         triggers_update:
-                          ['media_player.sony_bravia_tv']
+                          ['media_player.sony_bravia']
                         tap_action:
                           action: call-service
                           service: media_player.volume_mute
                           service_data:
-                            entity_id: media_player.sony_bravia_tv
+                            entity_id: media_player.sony_bravia
                             is_volume_muted: >
-                              [[[ if (states['media_player.sony_bravia_tv'].attributes.is_volume_muted === 'false')
+                              [[[ if (states['media_player.sony_bravia'].attributes.is_volume_muted === 'false')
                               return 'true'; else return 'false'; ]]]
                         template: icon_action
 
@@ -60,7 +56,7 @@
                           action: call-service
                           service: media_player.volume_down
                           service_data:
-                            entity_id: media_player.sony_bravia_tv
+                            entity_id: media_player.sony_bravia
                         template: icon_action
 
                       - type: custom:button-card
@@ -69,5 +65,5 @@
                           action: call-service
                           service: media_player.volume_up
                           service_data:
-                            entity_id: media_player.sony_bravia_tv
+                            entity_id: media_player.sony_bravia
                         template: icon_action

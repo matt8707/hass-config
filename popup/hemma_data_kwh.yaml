@@ -1,14 +1,14 @@
               action: call-service
               service: browser_mod.popup
               service_data:
-                title: Stäng
+                title: popup
+                hide_header: true
                 deviceID: this
                 style:
-                  --ha-card-border-radius: 1em
-                  --more-info-header-color: rgba(255,255,255,0.6)
-                  background: none
-                  box-shadow: none
-                  width: 38em
+                  .: |
+                    :host .content {
+                      width: 38em;
+                    }
                 card:
                   type: custom:stack-in-card
                   style:
@@ -31,7 +31,7 @@
                       title: Elförbrukning kWh
                       cards:
                         - entities:
-                            - entity: sensor.year
+                            - entity: sensor.oresundskraft_year
                           style: |
                             :host {
                             --paper-item-icon-color: 
@@ -42,7 +42,7 @@
                              }
                           type: entities
                         - entities:
-                            - entity: sensor.last_year
+                            - entity: sensor.oresundskraft_last_year
                           style: |
                             :host {
                             --paper-item-icon-color: 
@@ -640,8 +640,8 @@
 
                         - type: entities
                           entities:
-                            - entity: sensor.last_month_price
-                            - entity: sensor.total_year_kwh
+                            - entity: sensor.oresundskraft_last_month_price
+                            - entity: sensor.oresundskraft_total_year_kwh
                           style: |
                             ha-card {
                               margin-right: 1.8em;
@@ -650,7 +650,7 @@
 
                     - type: conditional
                       conditions:
-                        - entity: switch.dator_template
+                        - entity: switch.computer_imac
                           state: 'on'
                       card:
                         type: entities
@@ -672,5 +672,5 @@
                                 </ha-icon> Uppdatera elförbrukning'; ]]]
                               tap_action:
                                 action: call-service
-                                service: shell_command.update_data_kwh
+                                service: shell_command.kwh_data_update
                               template: name_action
