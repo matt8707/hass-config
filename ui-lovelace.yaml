@@ -78,25 +78,16 @@ button_card_templates:
         title: popup
         hide_header: true
         deviceID: this
-        style:
-          .: |
-            :host .content {
-              width: 25em;
-            }
+        style: |
+          :host .content {
+            width: 25em;
+          }
         card:
           type: vertical-stack
           cards:
             - type: entities
               title: '[[[ return entity.attributes.friendly_name ]]]'
-              style: &popup_style |
-                ha-card {
-                  animation: pop-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; transform-origin: center;
-                  box-shadow: none; border-radius: 1em; padding: 0.3em 1.25em 0.4em 0.5em; 
-                  background: linear-gradient(180deg, rgba(48,52,52,1) 0%, rgba(48,52,52,1) 4.8em, rgba(34,38,39,1) 4.8em, rgba(34,38,39,1) 100%); }
-                .card-header {
-                  margin: -0.4em 0 1.4em 0.4em; font-family: sf text; letter-spacing: 0.005em; font-size: 1.5em;}
-                @keyframes pop-in {
-                  0% { transform: scale(0.6); opacity: 0; } 20% { opacity: 0; } 100% { transform: scale(1); opacity: 0.9; }}
+              class: animate_popup
               show_header_toggle: false
               entities:
                 - type: custom:light-popup-card
@@ -149,15 +140,14 @@ button_card_templates:
                         title: popup
                         hide_header: true
                         deviceID: this
-                        style:
-                          .: |
-                            :host .content {
-                              width: 25em;
-                            }
+                        style: |
+                          :host .content {
+                            width: 25em;
+                          }
                         card:
                           type: entities
                           title: Färginställningar
-                          style: *popup_style
+                          class: animate_popup
                           show_header_toggle: false
                           entities:
                             - entity: '[[[ return entity.entity_id ]]]'
@@ -379,10 +369,9 @@ views:
           #################################################
 
           - type: custom:hui-markdown-card
+            class: coronavirus
             style:
-              {top: 93.65%, left: 70.2%, width: 90vw, height: 1px, --mdc-icon-size: 1.2vw, --ha-card-background: none, 
-              --ha-card-box-shadow: none, --primary-text-color: '#6a7377', font-family: SF Display, font-size: 1.26vw, 
-              font-weight: 400, letter-spacing: 0.065vw, line-height: 2.05vw, opacity: 0.5, pointer-events: none}
+              {top: 93.65%, left: 70.2%}
             content: >
               {% if is_state('sensor.covid_19_folkhalsomyndigheten', 'Tillgänglig') %}
                 {% set data = state_attr('sensor.covid_19_folkhalsomyndigheten', 'embedCode') %}
@@ -420,10 +409,9 @@ views:
           #################################################
 
           - type: custom:hui-markdown-card
+            class: sidebar
             style:
-              {top: 9%, left: 11.1%, width: 15.5vw, height: 1px, --ha-card-background: none, --ha-card-box-shadow: none, 
-              --primary-text-color: 'rgba(255, 255, 255, 0.9)', font-family: SF Display, font-size: 1.5vw, font-weight: 300, 
-              letter-spacing: 0.06vw, line-height: 2.05vw, opacity: 0.75, pointer-events: none}
+              {top: 9%, left: 11.1%}
             content: >
               <span>{{ states('sensor.time') }}</span>
 
@@ -1477,3 +1465,4 @@ views:
                 if (entity.state === 'on') { return `${style}<g class="start">${path}</g><g class="on">${path}</g></svg>`; }
                 else { return `${style}<g class="end">${path}</g></svg>`; } ]]]
             template: switch
+      
