@@ -11,7 +11,7 @@ homeassistant:
     sensor.processor_use:
       icon: mdi:chip
 
-    binary_sensor.check_plex:
+    binary_sensor.plex_availability:
       icon: mdi:plex
 
     binary_sensor.nas_internet_access:
@@ -50,7 +50,7 @@ homeassistant:
     sensor.xiaomi_map:
       icon: mdi:map
 
-    sensor.imac_get_ip:
+    sensor.imac_ip:
       icon: mdi:web
 
     sensor.imac_system_ssd:
@@ -65,21 +65,21 @@ homeassistant:
       friendly_name: Time Machine
       icon: mdi:harddisk
 
-    sensor.imac_cpu_per:
+    sensor.imac_cpu:
       friendly_name: Processor
       icon: mdi:chip
 
-    sensor.imac_mem_per:
+    sensor.imac_mem:
       friendly_name: Minne
       icon: mdi:memory
 
-    sensor.getvolume:
+    sensor.monitors_volume:
       icon: mdi:volume-high
 
-    sensor.monitorer_mute_check:
+    sensor.monitors_mute_check:
       icon: mdi:volume-mute
 
-    media_player.sony_bravia_tv:
+    media_player.sony_bravia:
       friendly_name: Tv
       device_class: tv
       source_list: ['HDMI 1', 'HDMI 2/MHL', 'HDMI 3', 'HDMI 4']
@@ -122,11 +122,11 @@ homeassistant:
     light.sanja:
       icon: mdi:floor-lamp
 
-    switch.wemo_monitorer:
+    switch.wemo_monitors:
       friendly_name: Monitorer
       icon: custom:studio-monitor
 
-    switch.wemo_flakt:
+    switch.wemo_fan:
       friendly_name: "Fläkt\u00B2"
       icon: custom:pedestal-fan
 

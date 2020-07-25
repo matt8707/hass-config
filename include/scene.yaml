@@ -406,7 +406,7 @@ scene:
         xy_color:
         - 0.417
         - 0.372
-      switch.tv_template:
+      switch.tv_sony:
         friendly_name: Tv
         icon: mdi:television
         state: 'on'

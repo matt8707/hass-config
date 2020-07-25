@@ -8,8 +8,8 @@ binary_sensor:
     ####################################################
 
   - platform: command_line
-    name: check_plex
-    command: !secret check_plex
+    name: plex_availability
+    command: !secret plex_availability
     scan_interval: 300
     payload_on: 'on'
     payload_off: 'off'
@@ -65,9 +65,9 @@ sensor:
   - platform: scrape
     resource: https://elen.nu/timpriser-pa-el-for-elomrade-se4-malmo
     name: Aktuellt spotpris
-    select: '.elspot-area-price'
+    select: .elspot-area-price
     value_template: "{{ ((value.split(' ')[0]) | replace (',', '.'))}}"
-    unit_of_measurement: 'öre/kWh'
+    unit_of_measurement: öre/kWh
     scan_interval: 1800
 
   - platform: rest
@@ -91,7 +91,7 @@ sensor:
     api_key: !secret darksky_api_key
     language: sv
     monitored_conditions:
-      ['precip_probability', 'temperature', 'apparent_temperature', 'icon']
+      ['precip_probability', 'temperature', 'apparent_temperature']
 
   - platform: rest
     name: fullykiosk
@@ -131,13 +131,13 @@ sensor:
       {% set days = ((uptime | int) / 8640000) | int %}
       {% set hours = ((uptime | int) / 360000) | int %}
       {% set minutes = ((uptime | int) / 6000) | int %}
-      {% if days >= 2 %}{{ days }} dagar
-      {% elif days >= 1 %}{{ days }} dag
-      {% elif minutes < 1 %}Mindre än 1 minut
-      {% elif minutes <= 1 %}{{ minutes }} minut
-      {% elif minutes < 60 %}{{ minutes }} minuter
-      {% elif hours <= 1 %}{{ hours }} timme
-      {% elif hours < 24 %}{{ hours }} timmar
+      {% if days >= 2 %} {{ days }} dagar
+      {% elif days >= 1 %} {{ days }} dag
+      {% elif minutes < 1 %} Mindre än 1 minut
+      {% elif minutes <= 1 %} {{ minutes }} minut
+      {% elif minutes < 60 %} {{ minutes }} minuter
+      {% elif hours <= 1 %} {{ hours }} timme
+      {% elif hours < 24 %} {{ hours }} timmar
       {% endif %}
 
   - platform: plex_recently_added
@@ -149,42 +149,30 @@ sensor:
     image_resolution: 500
 
   - platform: mqtt
-    state_topic: 'valetudo/rockrobo/state'
-    json_attributes_topic: 'valetudo/rockrobo/map_data'
+    state_topic: valetudo/rockrobo/state
+    json_attributes_topic: valetudo/rockrobo/map_data
     name: xiaomi_map
-    value_template: 'OK'
+    value_template: OK
     scan_interval: 5
 
   - platform: mqtt
-    state_topic: 'stat/gosund1/STATUS10'
-    name: gosund1_power
+    state_topic: stat/gosund1/STATUS10
+    name: gosund_fan
     force_update: true
     value_template: >
       {% if value_json.StatusSNS.ENERGY.Power | int > 10 %}
-      on
-      {% else %}
-      off
-      {% endif %}
+      on {% else %} off {% endif %}
 
   - platform: mqtt
-    state_topic: 'stat/gosund2/STATUS10'
-    name: gosund2_power
+    state_topic: stat/gosund2/STATUS10
+    name: gosund_air_purifier
     force_update: true
     value_template: >
       {% if value_json.StatusSNS.ENERGY.Power | int > 0 %}
-      on
-      {% else %}
-      off
-      {% endif %}
+      on {% else %} off {% endif %}
 
   - platform: krisinformation
-    county: !secret krisinformation_county
-    latitude: !secret homeassistant_latitude
-    longitude: !secret homeassistant_longitude
-    radius: 50
-
-  - platform: krisinformation
-    country: 'Sverige'
+    country: Sverige
 
     ####################################################
     #                                                  #
@@ -193,9 +181,9 @@ sensor:
     ####################################################
 
   - platform: command_line
-    name: imac_get_ip
+    name: imac_ip
     scan_interval: 86400
-    command: !secret imac_get_ip
+    command: !secret imac_ip
 
   - platform: command_line
     name: imac_system_ssd
@@ -216,31 +204,31 @@ sensor:
     command: !secret imac_time_machine
 
   - platform: command_line
-    name: imac_cpu_per
+    name: imac_cpu
     scan_interval: 86400
     unit_of_measurement: '%'
-    command: !secret imac_cpu_per
+    command: !secret imac_cpu
 
   - platform: command_line
-    name: imac_mem_per
+    name: imac_mem
     scan_interval: 86400
     unit_of_measurement: '%'
-    command: !secret imac_mem_per
+    command: !secret imac_mem
 
   - platform: command_line
-    name: getvolume
+    name: monitors_volume
     scan_interval: 86400
-    command: !secret monitorer_update_volume
+    command: !secret monitors_update_volume
 
   - platform: command_line
-    name: monitorer_mute_check
+    name: monitors_mute_check
     scan_interval: 86400
-    command: !secret monitorer_mute_check
+    command: !secret monitors_mute_check
 
   - platform: command_line
-    name: macos_uptime
+    name: imac_uptime
     scan_interval: 86400
-    command: !secret macos_uptime
+    command: !secret imac_uptime
 
   - platform: command_line
     name: skanetrafiken
@@ -283,8 +271,8 @@ sensor:
           {% set lights_on = lights | selectattr('state','eq','on') | list %}
           {% set lights_name = lights | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
 
-          {% set switches = [states.switch.dator_template, states.switch.tv_template, states.switch.tv2_template, 
-          states.switch.playstation_template, states.switch.wemo_monitorer, states.switch.wemo_flakt, 
+          {% set switches = [states.switch.computer_imac, states.switch.tv_sony, states.switch.tv_samsung, 
+          states.switch.playstation_4, states.switch.wemo_monitors, states.switch.wemo_fan, 
           states.switch.fan_anslut, states.switch.air_purifier] %}
           {% set switches_on = switches | selectattr('state','eq','on') | list %} 
           {% set switches_name = switches | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
@@ -356,45 +344,44 @@ sensor:
       placeholder:
         value_template: ' '
 
-      docker_mem:
+      dockermon_mem:
         friendly_name: Minne
         icon_template: mdi:memory
         value_template: >-
           {{ (state_attr('sensor.docker_cpu', 'memory_stats')['usage'] / 
           state_attr('sensor.docker_cpu', 'memory_stats')['limit'] * 100) | round(1) }}
 
-      vpn_imac:
+      imac_vpn:
         friendly_name: VPN
         value_template: >-
-          {% if states('sensor.imac_get_ip') == states('sensor.public_ip') %}
+          {% if states('sensor.imac_ip') == states('sensor.public_ip') %}
             Ej Ansluten
           {% else %}
             Ansluten
           {% endif %}
         icon_template: >-
-          {% if states('sensor.imac_get_ip') == states('sensor.public_ip') %}
+          {% if states('sensor.imac_ip') == states('sensor.public_ip') %}
             mdi:shield-alert
           {% else %}
             mdi:shield-check
           {% endif %}
 
-      macos_uptime_template:
+      imac_uptime:
         entity_id: sensor.time
         friendly_name: Drifttid
         icon_template: mdi:calendar-clock
         value_template: >
-          {% set uptime = 
-          (as_timestamp(now()) - as_timestamp(states('sensor.macos_uptime') | int | timestamp_local | default(0))) %}
-          {% if uptime | timestamp_custom('%d') | int-1 == 1 %}{{ uptime | timestamp_custom('%d') | int-1}} dag
-          {% elif uptime | timestamp_custom('%d') | int-1 >= 2 %}{{ uptime | timestamp_custom('%d') | int-1}} dagar
-          {% elif uptime | timestamp_custom('%H') | int-1 == 1 %}{{ uptime | timestamp_custom('%H') | int-1}} timme
-          {% elif uptime | timestamp_custom('%H') | int-1 >= 2 %}{{ uptime | timestamp_custom('%H') | int-1}} timmar
-          {% elif uptime | timestamp_custom('%M') | int == 1 %}{{ uptime | timestamp_custom('%M') | int}} minut
-          {% elif uptime | timestamp_custom('%M') | int >= 2 %}{{ uptime | timestamp_custom('%M') | int}} minuter
-          {% else %}Minde än 1 minut
+          {% set uptime = (as_timestamp(now()) - as_timestamp(states('sensor.imac_uptime') | int | timestamp_local | default(0))) %}
+          {% if uptime | timestamp_custom('%d') | int-1 == 1 %} {{ uptime | timestamp_custom('%d') | int-1}} dag
+          {% elif uptime | timestamp_custom('%d') | int-1 >= 2 %} {{ uptime | timestamp_custom('%d') | int-1}} dagar
+          {% elif uptime | timestamp_custom('%H') | int-1 == 1 %} {{ uptime | timestamp_custom('%H') | int-1}} timme
+          {% elif uptime | timestamp_custom('%H') | int-1 >= 2 %} {{ uptime | timestamp_custom('%H') | int-1}} timmar
+          {% elif uptime | timestamp_custom('%M') | int == 1 %} {{ uptime | timestamp_custom('%M') | int}} minut
+          {% elif uptime | timestamp_custom('%M') | int >= 2 %} {{ uptime | timestamp_custom('%M') | int}} minuter
+          {% else %} Minde än 1 minut
           {% endif %}
 
-      hass_version_template:
+      hass_version:
         icon_template: mdi:home-assistant
         friendly_name_template: >-
           Installerad {{ states('sensor.hass_version_installed') }}
@@ -405,26 +392,27 @@ sensor:
             {{ states('sensor.hass_version_latest') }}
           {% endif %}
 
-      hass_release_template:
+      hass_dev_release:
         entity_id: sensor.time
         icon_template: mdi:dev-to
         friendly_name_template: >-
-          {% set d = ((as_timestamp(state_attr('calendar.home_assistant_devs', 
-          'start_time')) - as_timestamp(now())) / 86400) %}
-          {% if d > 20 %} Planerad beta
-          {% else %} {{ state_attr('calendar.home_assistant_devs','message') }}
+          {% if ((as_timestamp(state_attr('calendar.home_assistant_devs', 
+          'start_time')) - as_timestamp(now())) / 86400) > 20 %}
+            Planerad beta
+          {% else %}
+            {{ state_attr('calendar.home_assistant_devs','message') }}
           {% endif %}
         value_template: >-
-          {% set d = ((as_timestamp(state_attr('calendar.home_assistant_devs', 
+          {% set dev = ((as_timestamp(state_attr('calendar.home_assistant_devs', 
           'start_time')) - as_timestamp(now())) / 86400) %}
-          {% if d < -1 %} Släppt
-          {% elif d < 0 %} Idag 
-          {% elif d < 1 %} Imorgon 
-          {% elif d > 20 %} Ingen
-          {% else %} {{ d | int + 1 }} dagar
+          {% if dev < -1 %} Släppt
+          {% elif dev < 0 %} Idag
+          {% elif dev < 1 %} Imorgon
+          {% elif dev > 20 %} Ingen
+          {% else %} {{ dev | int + 1 }} dagar
           {% endif %}
 
-      printer_status_template:
+      printer_status:
         friendly_name: Status
         icon_template: mdi:printer-wireless
         value_template: >-
@@ -448,55 +436,7 @@ sensor:
             {{ states('sensor.hp_printer_status') }}
           {% endif %}
 
-      # mattias_battery_level:
-      #   friendly_name: Batteri
-      #   unit_of_measurement: '%'
-      #   value_template: "{{ states('sensor.battery_level') }}"
-      #   icon_template: >-
-      #     {% set battery_level = states('sensor.battery_level')|int('unknown') %}
-      #     {% set battery_round = (battery_level|int / 10)|int * 10 %}
-      #     {% if battery_level == 'unknown' %}
-      #       mdi:battery-unknown
-      #     {% else %}
-      #       {% if battery_round >= 100 %}
-      #         mdi:battery
-      #       {% elif battery_round > 0 %}
-      #         mdi:battery-{{ battery_round }}
-      #       {% else %}
-      #         mdi:battery-alert
-      #       {% endif %}
-      #     {% endif %}
-
-      # darksky_emoji:
-      #   value_template: >-
-      #     {% if is_state('sensor.dark_sky_icon','clear-day') %} {{ '\u2600\uFE0F' }}
-      #     {% elif is_state('sensor.dark_sky_icon','clear-night') %} {{ '\U0001F319' }}
-      #     {% elif is_state('sensor.dark_sky_icon','rain') %} {{ '\U0001F327' }}
-      #     {% elif is_state('sensor.dark_sky_icon','snow') %} {{ '\U0001F328' }}
-      #     {% elif is_state('sensor.dark_sky_icon','fog') %} {{ '\u2601\uFE0F' }}
-      #     {% elif is_state('sensor.dark_sky_icon','sleet') %} {{ '\U0001F328' }}
-      #     {% elif is_state('sensor.dark_sky_icon','wind') %} {{ '\U0001F32C' }}
-      #     {% elif is_state('sensor.dark_sky_icon','cloudy') %} {{ '\u2601\uFE0F' }}
-      #     {% elif is_state('sensor.dark_sky_icon','partly-cloudy-day') %} {{ '\u26C5\uFE0F' }}
-      #     {% elif is_state('sensor.dark_sky_icon','partly-cloudy-night') %} {{ '\u2601\uFE0F' }}
-      #     {% elif is_state('sensor.dark_sky_icon','hail') %} {{ '\U0001F328' }}
-      #     {% elif is_state('sensor.dark_sky_icon','lightning') %} {{ '\U0001F329' }}
-      #     {% elif is_state('sensor.dark_sky_icon','thunderstorm') %} {{ '\u26C8' }}
-      #     {% elif is_state('sensor.dark_sky_icon','tornado') %} {{ '\U0001F32A' }}
-      #     {% endif %}
-
-      # last_motion_sensor_triggered:
-      #   value_template: >-
-      #     {% set sensors = [states.input_boolean.motion_hall, states.input_boolean.motion_badrum, 
-      #     states.input_boolean.motion_garderob, states.binary_sensor.wemo_motion] %}
-      #     {% for sensor in sensors %}
-      #       {% if as_timestamp(sensor.last_changed) == 
-      #       as_timestamp(sensors | map(attribute='last_changed') | max) %}
-      #         {{ sensor.entity_id }}
-      #       {% endif %}
-      #     {% endfor %}
-
-      ps4_state:
+      playstation_4:
         icon_template: mdi:sony-playstation
         value_template: >-
           {% if is_state('media_player.playstation_4', 'off') or 
@@ -513,7 +453,7 @@ sensor:
     #                                                  #
     ####################################################
 
-      roborock_battery_level:
+      roborock_battery:
         friendly_name: Batteri
         unit_of_measurement: '%'
         value_template: "{{ state_attr('vacuum.xiaomi_vacuum_cleaner', 'battery_level') }}"
@@ -535,7 +475,7 @@ sensor:
           {{ states('vacuum.xiaomi_vacuum_cleaner') }}
           {% endif %}
 
-      roborock_fan_speed:
+      roborock_speed:
         value_template: "{{ state_attr('vacuum.xiaomi_vacuum_cleaner', 'fan_speed') }}"
 
       roborock_filter:
@@ -549,7 +489,7 @@ sensor:
           {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'filter_left') / 1.5) | round }}
           {% endif %}
 
-      roborock_huvudborste:
+      roborock_mainbrush:
         friendly_name: Huvudborste
         icon_template: custom:roborock-mainbrush
         unit_of_measurement: '%'
@@ -560,7 +500,7 @@ sensor:
           {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'main_brush_left') / 3) | round }}
           {% endif %}
 
-      roborock_sensorer:
+      roborock_sensors:
         friendly_name: Sensorer
         icon_template: custom:roborock-sensor
         unit_of_measurement: '%'
@@ -571,7 +511,7 @@ sensor:
           {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'sensor_dirty_left') / 0.3) | round }}
           {% endif %}
 
-      roborock_sidoborste:
+      roborock_sidebrush:
         friendly_name: Sidoborste
         icon_template: custom:roborock-sidebrush
         unit_of_measurement: '%'
@@ -592,13 +532,13 @@ sensor:
           {% else %}
             {% set clean_stop = 
             (as_timestamp(now()) - as_timestamp(state_attr('vacuum.xiaomi_vacuum_cleaner', 'clean_stop') | default(0))) %}
-            {% if clean_stop | timestamp_custom('%d') | int-1 == 1 %}{{ clean_stop | timestamp_custom('%d') | int-1}} dag sedan
-            {% elif clean_stop | timestamp_custom('%d') | int-1 >= 2 %}{{ clean_stop | timestamp_custom('%d') | int-1}} dagar sedan
-            {% elif clean_stop | timestamp_custom('%H') | int-1 == 1 %}{{ clean_stop | timestamp_custom('%H') | int-1}} timme sedan
-            {% elif clean_stop | timestamp_custom('%H') | int-1 >= 2 %}{{ clean_stop | timestamp_custom('%H') | int-1}} timmar sedan
-            {% elif clean_stop | timestamp_custom('%M')|int == 1 %}{{ clean_stop | timestamp_custom('%M') | int}} minut sedan
-            {% elif clean_stop | timestamp_custom('%M')|int >= 2 %}{{ clean_stop | timestamp_custom('%M') | int}} minuter sedan
-            {% else %}Minde än 1 minut sedan
+            {% if clean_stop | timestamp_custom('%d') | int-1 == 1 %} {{ clean_stop | timestamp_custom('%d') | int-1}} dag sedan
+            {% elif clean_stop | timestamp_custom('%d') | int-1 >= 2 %} {{ clean_stop | timestamp_custom('%d') | int-1}} dagar sedan
+            {% elif clean_stop | timestamp_custom('%H') | int-1 == 1 %} {{ clean_stop | timestamp_custom('%H') | int-1}} timme sedan
+            {% elif clean_stop | timestamp_custom('%H') | int-1 >= 2 %} {{ clean_stop | timestamp_custom('%H') | int-1}} timmar sedan
+            {% elif clean_stop | timestamp_custom('%M')|int == 1 %} {{ clean_stop | timestamp_custom('%M') | int}} minut sedan
+            {% elif clean_stop | timestamp_custom('%M')|int >= 2 %} {{ clean_stop | timestamp_custom('%M') | int}} minuter sedan
+            {% else %} Minde än 1 minut sedan
             {% endif %}
           {% endif %}
 
@@ -615,7 +555,7 @@ sensor:
         icon_template: >-
           {% if is_state_attr('sensor.fullykiosk', 'plugged', true) %} mdi:power-plug {% else %} mdi:power-plug-off {% endif %}
 
-      fullykiosk_storage_percentage:
+      fullykiosk_storage:
         friendly_name: Lagring
         icon_template: mdi:sd
         unit_of_measurement: '%'
@@ -626,7 +566,7 @@ sensor:
           state_attr('sensor.fullykiosk', 'internalStorageTotalSpace') * 100 ) | int }}
           {% endif %}
 
-      fullykiosk_memory_percentage:
+      fullykiosk_memory:
         friendly_name: Minne
         icon_template: mdi:memory
         unit_of_measurement: '%'
@@ -637,7 +577,7 @@ sensor:
           state_attr('sensor.fullykiosk', 'ramTotalMemory') * 100 ) | int }}
           {% endif %}
 
-      fullykiosk_motion_detector_state:
+      fullykiosk_motion:
         friendly_name: Kamera
         icon_template: mdi:camera
         value_template: >-
@@ -647,13 +587,13 @@ sensor:
           På
           {% endif %}
 
-      fullykiosk_battery_level:
+      fullykiosk_battery:
         friendly_name: Batteri
         unit_of_measurement: '%'
         value_template: "{{ state_attr('sensor.fullykiosk', 'batteryLevel') }}"
         icon_template: >-
-          {% set battery_level = state_attr('sensor.fullykiosk', 'batteryLevel')|int('unknown') %}
-          {% set battery_round = (battery_level|int / 10)|int * 10 %}
+          {% set battery_level = state_attr('sensor.fullykiosk', 'batteryLevel') | int ('unknown') %}
+          {% set battery_round = (battery_level | int / 10) | int * 10 %}
           {% if battery_level == 'unknown' %}
             mdi:battery-unknown
           {% else %}
@@ -672,14 +612,14 @@ sensor:
     #                                                  #
     ####################################################
 
-      dag:
+      sidebar_day:
         entity_id: sensor.date
         icon_template: mdi:calendar
         value_template: >
           {% set days = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'] %}
           {{ days[now().weekday()] }}
 
-      datum:
+      sidebar_date:
         icon_template: mdi:calendar
         value_template: >
           {% set months = ['Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni', 
@@ -846,7 +786,7 @@ sensor:
           {% if down < 1000 %}
           {{ down | round(0) }} kb/s
           {% elif down >= 1000 %}
-          {{ ((down / 1000) | round(2)|string).rstrip('.0') }} Mb/s
+          {{ ((down / 1000) | round(2) | string).rstrip('.0') }} Mb/s
           {% endif %}
 
       nas_net_up:
@@ -857,10 +797,10 @@ sensor:
           {% if up < 1000 %}
           {{ up | round(0) }} kb/s
           {% elif up >= 1000 %}
-          {{ ((up / 1000) | round(2)|string).rstrip('.0') }} Mb/s
+          {{ ((up / 1000) | round(2) | string).rstrip('.0') }} Mb/s
           {% endif %}
 
-      synology_dsm_status:
+      nas_status:
         friendly_name: Systemhälsa
         icon_template: mdi:nas
         value_template: >-
@@ -870,7 +810,7 @@ sensor:
             {{ states('sensor.synology_status_volume_1') }}
           {% endif %}
 
-      vpn_nas:
+      nas_vpn:
         friendly_name: VPN
         value_template: >-
           {% if states('sensor.myip') == states('sensor.public_ip') %}
@@ -995,7 +935,7 @@ sensor:
           '%Y-%m-%d')) | timestamp_custom('%b') }}
         value_template: "{{ states('sensor.oresundskraft').split(',')[11].split(' ')[2] | int }}"
 
-      last_month_kwh:
+      oresundskraft_last_month_kwh:
         icon_template: mdi:power-socket-de
         unit_of_measurement: 'kWh'
         value_template: >
@@ -1006,7 +946,7 @@ sensor:
             {% endif %}
           {% endfor %}
 
-      last_month_price:
+      oresundskraft_last_month_price:
         entity_id: sensor.oresundskraft
         icon_template: mdi:calculator
         friendly_name_template: >
@@ -1035,8 +975,8 @@ sensor:
               {% endfor %}
             {% endif %}
           {% endset %}
-          {% set kwh = states('sensor.last_month_kwh') | float %}
-            {% set eon_solkraft = states('sensor.last_month_kwh') | float * 0.05 %}
+          {% set kwh = states('sensor.oresundskraft_last_month_kwh') | float %}
+            {% set eon_solkraft = states('sensor.oresundskraft_last_month_kwh') | float * 0.05 %}
             {% set eon_arsavgift = 480 / 366 * dagar | float %}
               {% set spotpris = states('sensor.aktuellt_spotpris') | float / 100 %}
             {% set ore_abonnemang = 1020 / 366 * dagar | float %}
@@ -1047,7 +987,7 @@ sensor:
           {{ (eon + ore) | round }}
         unit_of_measurement: 'kr'
 
-      total_year_kwh:
+      oresundskraft_total_year_kwh:
         entity_id: sensor.oresundskraft
         icon_template: mdi:poll-box
         friendly_name_template: > 
@@ -1055,13 +995,13 @@ sensor:
         value_template: "{{ states('sensor.oresundskraft').split('total=')[1]}}"
         unit_of_measurement: 'kWh'
 
-      year:
+      oresundskraft_year:
         entity_id: sensor.time
         icon_template: mdi:checkbox-blank
         friendly_name_template: "{{ now().year }}"
         value_template: ' '
 
-      last_year:
+      oresundskraft_last_year:
         entity_id: sensor.time
         icon_template: mdi:checkbox-blank
         friendly_name_template: "{{ now().year-1 }}"

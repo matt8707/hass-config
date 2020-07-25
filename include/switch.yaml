@@ -8,17 +8,17 @@ switch:
     ####################################################
 
   - platform: wake_on_lan
-    mac: !secret wake_on_lan_mac_address
-    name: iMac
+    name: wol_imac
     host: !secret wake_on_lan_host
+    mac: !secret wake_on_lan_mac
 
   - platform: broadlink
     host: !secret broadlink_host
     mac: !secret broadlink_mac
 
   - platform: rest
-    resource: !secret ha_dockermon_watchtower
     name: Watchtower
+    resource: !secret ha_dockermon_watchtower
     body_on: '{"state": "start"}'
     body_off: '{"state": "stop"}'
     is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
@@ -33,7 +33,7 @@ switch:
         value_template: "{{ value == 'on' }}"
 
   - platform: mqtt
-    name: gosund1
+    name: gosund_fan
     command_topic: cmnd/gosund1/POWER1
     payload_on: 'ON'
     payload_off: 'OFF'
@@ -45,7 +45,7 @@ switch:
     retain: false
 
   - platform: mqtt
-    name: gosund2
+    name: gosund_air_purifier
     command_topic: cmnd/gosund2/POWER1
     payload_on: 'ON'
     payload_off: 'OFF'
@@ -64,64 +64,62 @@ switch:
 
   - platform: template
     switches:
-      dator_template:
+      computer_imac:
         friendly_name: Dator
         icon_template: custom:imac-alternative
-        value_template: "{{ is_state('switch.imac', 'on') }}"
+        value_template: "{{ is_state('switch.wol_imac', 'on') }}"
         turn_on:
-          service: script.dator_on
+          service: script.computer_imac
         turn_off:
-          service: script.dator_off
+          service: script.computer_imac
 
-      tv_template:
+      tv_sony:
         friendly_name: Tv
         icon_template: custom:tv
-        value_template: "{{ is_state('media_player.sony_bravia_tv', 'on') }}"
+        value_template: "{{ is_state('media_player.sony_bravia', 'on') }}"
         turn_on:
-          service: script.tv_on
+          service: script.tv_sony
         turn_off:
-          service: script.tv_off
+          service: script.tv_sony
 
-      tv2_template:
+      tv_samsung:
         friendly_name: "Tv\u00B2"
         icon_template: custom:tv
         value_template: "{{ is_state('media_player.samsung', 'on') }}"
         turn_on:
-          service: script.tv2_on
+          service: script.tv_samsung
         turn_off:
-          service: script.tv2_off
+          service: script.tv_samsung
 
-      playstation_template:
+      playstation_4:
         friendly_name: Playstation
-        icon_template: mdi:playstation
-        value_template: "{{ is_state('sensor.ps4_state', 'on') }}"
+        icon_template: mdi:sony-playstation
+        value_template: "{{ is_state('sensor.playstation_4', 'on') }}"
         turn_on:
-          service: script.playstation_on
+          service: script.playstation_4
         turn_off:
-          service: script.playstation_off
+          service: script.playstation_4
 
-      auto_stangallt_template:
+      home_leave:
         friendly_name: Stäng allt
-        value_template: "{{ states('script.auto_stang_allt') }}"
+        value_template: "{{ is_state('script.home_leave', 'on') }}"
         turn_on:
-          service: script.auto_stang_allt
+          service: script.home_leave
         turn_off:
-          service: script.auto_stang_allt
+          service: script.home_leave
 
-      auto_hemma_template:
+      home_arrive:
         friendly_name: Hemma
-        value_template: "{{ states('script.auto_hemma') }}"
+        value_template: "{{ is_state('script.home_arrive', 'on') }}"
         turn_on:
-          service: script.auto_hemma
+          service: script.home_arrive
         turn_off:
-          service: script.auto_hemma
+          service: script.home_arrive
 
       fullykiosk_screensaver:
         friendly_name: Skärmsläckare
         icon_template: mdi:power-sleep
-        value_template: >-
-          {% if is_state_attr('sensor.fullykiosk', 'currentFragment', 'screensaver') %}
-            on {% else %} off {% endif %}
+        value_template: "{{ is_state_attr('sensor.fullykiosk', 'currentFragment', 'screensaver') }}"
         turn_on:
           service: shell_command.fullykiosk_screensaver_on
         turn_off:
@@ -129,16 +127,16 @@ switch:
 
       fan_anslut:
         friendly_name: Fläkt
-        value_template: "{{ is_state('sensor.gosund1_power', 'on') }}"
+        value_template: "{{ is_state('sensor.gosund_fan', 'on') }}"
         turn_on:
-          service: script.fan_anslut_on
+          service: script.fan_anslut
         turn_off:
-          service: script.fan_anslut_off
+          service: script.fan_anslut
 
       air_purifier:
         friendly_name: Luftrenare
-        value_template: "{{ is_state('sensor.gosund2_power', 'on') }}"
+        value_template: "{{ is_state('sensor.gosund_air_purifier', 'on') }}"
         turn_on:
-          service: script.air_purifier_on
+          service: script.air_purifier
         turn_off:
-          service: script.air_purifier_off
+          service: script.air_purifier

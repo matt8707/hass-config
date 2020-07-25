@@ -15,30 +15,25 @@ automation:
     action:
       - service: frontend.set_theme
         data:
-          name: slate
+          name: tablet
       - service: shell_command.fullykiosk_restart_app
       - service: mqtt.publish
         data:
           topic: cmnd/tasmotas/status
           payload: 10
-      - delay: 00:00:30
+      - delay:
+          seconds: 5
+      - choose:
+        - conditions:
+            - condition: state
+              entity_id: light.hall
+              state: 'off'
+          sequence:
+            - service: switch.turn_on
+              entity_id: switch.fullykiosk_screensaver
+      - delay:
+          seconds: 30
       - service: homekit.start
-      - condition: state
-        entity_id: light.hall
-        state: 'off'
-      - service: switch.turn_on
-        entity_id: switch.fullykiosk_screensaver
-
-  - alias: check_plug_power_state
-    initial_state: true
-    trigger:
-      - platform: time_pattern
-        minutes: /5
-    action:
-      - service: mqtt.publish
-        data:
-          topic: cmnd/tasmotas/status
-          payload: 10
 
   - alias: notify_hass_rc
     initial_state: true
@@ -49,22 +44,22 @@ automation:
       condition: or
       conditions:
         - condition: state
-          entity_id: sensor.hass_release_template
+          entity_id: sensor.hass_dev_release
           state: Idag
         - condition: state
-          entity_id: sensor.hass_release_template
+          entity_id: sensor.hass_dev_release
           state: Släppt
     action:
       - service: notify.mobile_app_iphone
         data_template: 
           title: "{{ states('sensor.hass_version_latest_beta') }} släppt"
-          message: " "
+          message: ' '
 
   - alias: restart_homekit
     initial_state: true
     trigger:
       - platform: time
-        at: '04:00:00'
+        at: 04:00:00
     action:
       - service: homekit.start
 
@@ -77,26 +72,25 @@ automation:
     action:
       - service: shell_command.clear_logs
 
-  - alias: dator_on_update
+  - alias: computer_on_update
     initial_state: true
     trigger:
       - platform: state
-        entity_id: switch.dator_template
+        entity_id: switch.computer_imac
         from: 'off'
         to: 'on'
     action:
-      - delay: 00:00:05
       - service: homeassistant.update_entity
         entity_id:
-          ['sensor.imac_cpu_per', 'sensor.imac_mem_per', 'sensor.imac_system_ssd', 
-          'sensor.imac_macintosh_hd', 'sensor.imac_time_machine', 'sensor.getvolume', 
-          'sensor.macos_uptime']
+          ['sensor.imac_cpu', 'sensor.imac_mem', 'sensor.imac_system_ssd', 
+          'sensor.imac_macintosh_hd', 'sensor.imac_time_machine', 'sensor.monitors_volume', 
+          'sensor.imac_uptime']
 
   - alias: tv_on_lights
     initial_state: true
     trigger:
       - platform: state
-        entity_id: media_player.sony_bravia_tv
+        entity_id: media_player.sony_bravia
         from: 'off'
         to: 'on'
     action:
@@ -109,12 +103,17 @@ automation:
       - platform: state
         entity_id: sensor.krisinformation_time_trigger
     action:
-      - service_template: >
-          {% if is_state(trigger.entity_id, 'true') %}
-          input_boolean.turn_on {% else %}
-          input_boolean.turn_off {% endif %}
-        data: 
-          entity_id: input_boolean.krisinformation_visibility
+      - choose:
+        - conditions:
+            - condition: state
+              entity_id: sensor.krisinformation_time_trigger
+              state: 'true'
+          sequence:
+            - service: input_boolean.turn_on
+              entity_id: input_boolean.krisinformation_visibility
+        default:
+          - service: input_boolean.turn_off
+            entity_id: input_boolean.krisinformation_visibility
 
     ####################################################
     #                                                  #
@@ -149,14 +148,14 @@ automation:
         to: 'on'
     condition:
       - condition: state
-        entity_id: switch.dator_template
+        entity_id: switch.computer_imac
         state: 'on'
     action:
       - service: shell_command.imac_notify_motion_hallway
 
     ####################################################
     #                                                  #
-    #            CONDITIONAL SCAN INTERVAL             #
+    #                  SCAN INTERVAL                   #
     #                                                  #
     ####################################################
 
@@ -167,14 +166,25 @@ automation:
         minutes: /5
     condition:
       - condition: state
-        entity_id: switch.dator_template
+        entity_id: switch.computer_imac
         state: 'on'
     action:
       - service: homeassistant.update_entity
         entity_id:
-          ['sensor.imac_get_ip', 'sensor.imac_system_ssd', 'sensor.imac_macintosh_hd', 
-          'sensor.imac_time_machine', 'sensor.imac_cpu_per', 'sensor.imac_mem_per', 
-          'sensor.getvolume', 'sensor.monitorer_mute_check', 'sensor.macos_uptime']
+          ['sensor.imac_ip', 'sensor.imac_system_ssd', 'sensor.imac_macintosh_hd', 
+          'sensor.imac_time_machine', 'sensor.imac_cpu', 'sensor.imac_mem', 
+          'sensor.monitors_volume', 'sensor.monitors_mute_check', 'sensor.imac_uptime']
+
+  - alias: tasmota_scan_interval
+    initial_state: true
+    trigger:
+      - platform: time_pattern
+        minutes: /5
+    action:
+      - service: mqtt.publish
+        data:
+          topic: cmnd/tasmotas/status
+          payload: 10
 
     ####################################################
     #                                                  #
@@ -182,66 +192,82 @@ automation:
     #                                                  #
     ####################################################
 
-  - alias: monitorer_volume_slider
+  - alias: monitors_volume_slider
     initial_state: true
     trigger:
       - platform: state
-        entity_id: input_number.monitorer_volume
+        entity_id: input_number.monitors_volume
     condition:
       - condition: state
-        entity_id: switch.dator_template
+        entity_id: switch.computer_imac
         state: 'on'
     action:
-      - service: shell_command.monitorer_volume_slider
+      - service: shell_command.monitors_volume_slider
       - service: homeassistant.update_entity
-        entity_id: sensor.monitorer_mute_check
+        entity_id: sensor.monitors_mute_check
       - service: homeassistant.update_entity
-        entity_id: sensor.getvolume
+        entity_id: sensor.monitors_volume
 
-  - alias: monitorer_volume_update
+  - alias: monitors_volume_update
     initial_state: true
     trigger:
       - platform: state
-        entity_id: sensor.getvolume
+        entity_id: sensor.monitors_volume
     condition:
       - condition: state
-        entity_id: switch.dator_template
+        entity_id: switch.computer_imac
         state: 'on'
     action:
       - service: homeassistant.update_entity
-        entity_id: sensor.monitorer_mute_check
+        entity_id: sensor.monitors_mute_check
       - service: input_number.set_value
         data_template:
-          entity_id: input_number.monitorer_volume
-          value: "{{ states('sensor.getvolume') }}"
+          entity_id: input_number.monitors_volume
+          value: >
+            {% if states('sensor.monitors_volume') | int > 75 %} 75
+            {% else %} {{ states('sensor.monitors_volume') }}
+            {% endif %}
 
   - alias: eq_calibration
     initial_state: true
     trigger:
       - platform: state
-        entity_id: switch.wemo_monitorer
+        entity_id: switch.wemo_monitors
     action:
-      - service: script.turn_on
-        data_template:
-          entity_id: >-
-            {% if trigger.from_state.state == 'off' and trigger.to_state.state == 'on' %}
-            script.reference_monitors
-            {% elif trigger.from_state.state == 'on' and trigger.to_state.state == 'off' %}
-            script.reference_headphones 
-            {% else %} script.dummy {% endif %}
+      - choose:
+        - conditions:
+            - condition: state
+              entity_id: switch.wemo_monitors
+              state: 'on'
+          sequence:
+            - service: shell_command.reference_click
+            - delay:
+                milliseconds: 100
+            - service: shell_command.reference_kill
+            - delay:
+                milliseconds: 100
+            - service: shell_command.reference_monitors
+        default:
+          - service: shell_command.reference_click
+          - delay:
+              milliseconds: 100
+          - service: shell_command.reference_kill
+          - delay:
+              milliseconds: 100
+          - service: shell_command.reference_headphones
 
   - alias: turn_off_monitorer
     initial_state: true
     trigger:
       - platform: state
-        entity_id: switch.dator_template
+        entity_id: switch.computer_imac
         from: 'on'
         to: 'off'
         for:
-          minutes: 15
+          minutes: 5
     action:
       - service: switch.turn_off
-        entity_id: switch.wemo_monitorer
+        entity_id: switch.wemo_monitors
 
     ####################################################
     #                                                  #
@@ -249,25 +275,25 @@ automation:
     #                                                  #
     ####################################################
 
-  - alias: turn_off_fläkt
+  - alias: wemo_fan_turn_off
     initial_state: true
     trigger:
       - platform: state
-        entity_id: switch.wemo_flakt
+        entity_id: switch.wemo_fan
         from: 'off'
         to: 'on'
         for: 
-          hours: "{{ states('input_number.fan_timer') | int }}"
+          hours: "{{ states('input_number.wemo_fan_timer') | int }}"
     action:
       - service: switch.turn_off
-        entity_id: switch.wemo_flakt
+        entity_id: switch.wemo_fan
 
-  - alias: turn_on_fläkt_temp
+  - alias: wemo_fan_turn_on_temp
     initial_state: true
     trigger:
       - platform: numeric_state
         entity_id: sensor.hall_temperature
-        above: 26
+        above: 24
     condition:
       condition: and
       conditions:
@@ -278,13 +304,13 @@ automation:
           conditions:
             - condition: state
               entity_id: person.mattias
-              state: 'home'
+              state: home
             - condition: state
               entity_id: person.sanja
-              state: 'home'
+              state: home
     action:
       - service: switch.turn_on
-        entity_id: switch.wemo_flakt
+        entity_id: switch.wemo_fan
 
     ####################################################
     #                                                  #
@@ -292,7 +318,7 @@ automation:
     #                                                  #
     ####################################################
 
-  - alias: turn_off_fan_anslut
+  - alias: fan_anslut_turn_off
     initial_state: true
     trigger:
       - platform: state
@@ -305,12 +331,12 @@ automation:
       - service: switch.turn_off
         entity_id: switch.fan_anslut
 
-  - alias: turn_on_fan_anslut_temp
+  - alias: fan_anslut_turn_on_temp
     initial_state: true
     trigger:
       - platform: numeric_state
         entity_id: sensor.hall_temperature
-        above: 26
+        above: 24
     condition:
       condition: and
       conditions:
@@ -321,49 +347,61 @@ automation:
           conditions:
             - condition: state
               entity_id: person.mattias
-              state: 'home'
+              state: home
             - condition: state
               entity_id: person.sanja
-              state: 'home'
+              state: home
     action:
       - service: switch.turn_on
         entity_id: switch.fan_anslut
 
-  - alias: sovrum_fan_swing_input_boolean
+  - alias: fan_anslut_oscillate
     initial_state: true
     trigger:
       - platform: state
         entity_id: input_boolean.fan_anslut_oscillate
     action:
-      - service: script.turn_on
+      - service: remote.send_command
         data:
-          entity_id: script.fan_anslut_oscillate
+          entity_id: remote.broadlink
+          device: fläkt
+          delay_secs: 0.2
+          command: swing_1
 
-  - alias: fan_anslut_input_select
+  - alias: fan_anslut_speed
     initial_state: true
     trigger:
       - platform: state
         entity_id: input_select.fan_anslut_speed
     action:
-      - service: script.turn_on
-        data_template:
-          entity_id: >-
-            {% set from = trigger.from_state.state %}
-            {% set to = trigger.to_state.state %}
-
-            {% if from == 'Max' and to == 'Tyst' or 
-            from == 'Medium' and to == 'Max' or 
-            from == 'Tyst' and to == 'Medium' %}
-            script.fan_anslut_speed_1
-
-            {% elif from == 'Max' and to == 'Medium' or 
-            from == 'Medium' and to == 'Tyst' or 
-            from == 'Tyst' and to == 'Max' %}
-            script.fan_anslut_speed_2
-            
-            {% else %}
-            script.dummy
-            {% endif %}
+      - choose:
+        - conditions:
+            - condition: template
+              value_template: >
+                {{ trigger.from_state.state == 'Max' and trigger.to_state.state == 'Medium' or 
+                trigger.from_state.state == 'Medium' and trigger.to_state.state == 'Tyst' or 
+                trigger.from_state.state == 'Tyst' and trigger.to_state.state == 'Max' }}
+          sequence:
+            - service: remote.send_command
+              data:
+                entity_id: remote.broadlink
+                device: fläkt
+                delay_secs: 0.2
+                command: speed_1
+                num_repeats: 2
+        - conditions:
+            - condition: template
+              value_template: >
+                {{ trigger.from_state.state == 'Max' and trigger.to_state.state == 'Tyst' or 
+                trigger.from_state.state == 'Medium' and trigger.to_state.state == 'Max' or 
+                trigger.from_state.state == 'Tyst' and trigger.to_state.state == 'Medium' }}
+          sequence:
+            - service: remote.send_command
+              data:
+                entity_id: remote.broadlink
+                device: fläkt
+                delay_secs: 0.2
+                command: speed_1
 
     ####################################################
     #                                                  #
@@ -371,7 +409,7 @@ automation:
     #                                                  #
     ####################################################
 
-  - alias: tablet_brightness_slider
+  - alias: fullykiosk_brightness_slider
     initial_state: true
     trigger:
       - platform: state
@@ -379,7 +417,7 @@ automation:
     action:
       - service: shell_command.fullykiosk_brightness_slider
 
-  - alias: close_popups_on_tablet
+  - alias: fullykiosk_close_popup
     initial_state: true
     trigger:
       - platform: state
@@ -387,13 +425,13 @@ automation:
         from: 'off'
         to: 'on'
         for:
-          minutes: 15
+          minutes: 10
     action:
       - service: browser_mod.close_popup
         data:
           deviceID: tablet
 
-  - alias: turn_on_fullykiosk_screen
+  - alias: fullykiosk_turn_on_screen
     initial_state: true
     trigger:
       - platform: state
@@ -414,7 +452,7 @@ automation:
         data_template:
           entity_id: "{{ trigger.entity_id }}"
 
-  - alias: turn_off_fullykiosk_screen
+  - alias: fullykiosk_turn_off_screen
     initial_state: true
     trigger:
       - platform: state
@@ -436,8 +474,8 @@ automation:
     trigger:
       - platform: state
         entity_id: 
-          ['media_player.sony_bravia_tv', 'media_player.samsung', 'switch.dator_template', 
-          'switch.playstation_template', 'switch.fan_anslut', 'switch.air_purifier']
+          ['media_player.sony_bravia', 'media_player.samsung', 'switch.computer_imac', 
+          'switch.playstation_4', 'switch.fan_anslut', 'switch.air_purifier']
     action:
       - service: input_boolean.turn_off
         data_template:
@@ -446,13 +484,13 @@ automation:
             replace('media_player', 'input_boolean') | 
             replace('switch', 'input_boolean') }}
 
-  - alias: turn_off_loading_wheel_fail_safe
+  - alias: turn_off_loading_wheel_failsafe
     initial_state: true
     trigger:
       - platform: state
         entity_id: 
-          ['input_boolean.sony_bravia_tv', 'input_boolean.samsung', 'input_boolean.dator_template', 
-          'input_boolean.playstation_template', 'input_boolean.fan_anslut', 'input_boolean.air_purifier']
+          ['input_boolean.sony_bravia', 'input_boolean.samsung', 'input_boolean.computer_imac', 
+          'input_boolean.playstation_4', 'input_boolean.fan_anslut', 'input_boolean.air_purifier']
         to: 'on'
         for:
           minutes: 1
@@ -463,7 +501,7 @@ automation:
 
     ####################################################
     #                                                  #
-    #                      HDMI                        #
+    #                    HDMI / TV                     #
     #                                                  #
     ####################################################
 
@@ -475,7 +513,7 @@ automation:
     action:
       - service: media_player.select_source
         data_template:
-          entity_id: media_player.sony_bravia_tv
+          entity_id: media_player.sony_bravia
           source: "{{ states('input_select.hdmi') }}"
 
   - alias: hdmi2_input_select
@@ -489,13 +527,53 @@ automation:
           entity_id: media_player.samsung
           source: "{{ states('input_select.hdmi2') }}"
 
+  - alias: turn_on_tv_failsafe
+    initial_state: true
+    trigger:
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: media_player
+          service: turn_on
+          service_data:
+            entity_id: media_player.sony_bravia
+    action:
+      - service: media_player.turn_on
+        data:
+          entity_id: media_player.vardagsrum
+      - delay: 00:00:01
+      - service: remote.send_command
+        data:
+          entity_id: remote.vardagsrum
+          command: menu
+
+  - alias: turn_on_tv2_failsafe
+    initial_state: true
+    trigger:
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: media_player
+          service: turn_on
+          service_data:
+            entity_id: media_player.samsung
+    action:
+      - service: media_player.turn_on
+        data:
+          entity_id: media_player.sovrum
+      - delay: 00:00:01
+      - service: remote.send_command
+        data:
+          entity_id: remote.sovrum
+          command: menu
+
     ####################################################
     #                                                  #
     #                  LAUNDRY TIMER                   #
     #                                                  #
     ####################################################
 
-  - alias: reveal_laundry_timer
+  - alias: laundry_timer_reveal
     initial_state: true
     trigger:
       - platform: state
@@ -504,11 +582,12 @@ automation:
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.laundry_timer_visibility
-      - delay: 04:00:00
+      - delay:
+          hours: 4
       - service: input_boolean.turn_off
         entity_id: input_boolean.laundry_timer_visibility
 
-  - alias: alert_laundry_timer_finished
+  - alias: laundry_timer_alert
     initial_state: true
     trigger:
       - platform: event
@@ -521,7 +600,8 @@ automation:
           entity_id: media_player.tablet
           media_content_id: /local/sound/timer.mp3
           media_content_type: music
-      - delay: 00:00:02
+      - delay:
+          seconds: 2
       - service: media_player.play_media
         data_template:
           entity_id: media_player.tablet
@@ -535,7 +615,8 @@ automation:
           title: "{{'\U0001F9FA'}} {{ ['Tvätten är färdig', 'Tvätten är klar', 'Dags att gå ner'] | random }}"
           message: ' '
       - service: shell_command.imac_notify_laundry
-      - delay: 00:00:03
+      - delay:
+          seconds: 3
 
     ####################################################
     #                                                  #
@@ -543,37 +624,37 @@ automation:
     #                                                  #
     ####################################################
 
-  - alias: roborock_fan_speed_input_select
+  - alias: roborock_speed
     initial_state: true
     trigger:
       - platform: state
-        entity_id: input_select.roborock_fan_speed
+        entity_id: input_select.roborock_speed
     action:
       - service: vacuum.set_fan_speed
         data_template:
           entity_id: vacuum.xiaomi_vacuum_cleaner
           fan_speed: >-
-            {% if is_state('input_select.roborock_fan_speed', 'Tyst') %} Silent
-            {% elif is_state('input_select.roborock_fan_speed', 'Standard') %} Standard
-            {% elif is_state('input_select.roborock_fan_speed', 'Medium') %} Medium
-            {% elif is_state('input_select.roborock_fan_speed', 'Turbo') %} Turbo
+            {% if is_state('input_select.roborock_speed', 'Tyst') %} Silent
+            {% elif is_state('input_select.roborock_speed', 'Standard') %} Standard
+            {% elif is_state('input_select.roborock_speed', 'Medium') %} Medium
+            {% elif is_state('input_select.roborock_speed', 'Turbo') %} Turbo
             {% else %} Standard
             {% endif %}
 
-  - alias: roborock_fan_speed_input_select_update
+  - alias: roborock_speed_update
     initial_state: true
     trigger:
       - platform: state
-        entity_id: sensor.roborock_fan_speed
+        entity_id: sensor.roborock_speed
     action:
       - service: input_select.select_option
         data_template:
-          entity_id: input_select.roborock_fan_speed
+          entity_id: input_select.roborock_speed
           option: >-
-            {% if is_state('sensor.roborock_fan_speed', 'Silent') %} Tyst
-            {% elif is_state('sensor.roborock_fan_speed', 'Standard') %} Standard
-            {% elif is_state('sensor.roborock_fan_speed', 'Medium') %} Medium
-            {% elif is_state('sensor.roborock_fan_speed', 'Turbo') %} Turbo
+            {% if is_state('sensor.roborock_speed', 'Silent') %} Tyst
+            {% elif is_state('sensor.roborock_speed', 'Standard') %} Standard
+            {% elif is_state('sensor.roborock_speed', 'Medium') %} Medium
+            {% elif is_state('sensor.roborock_speed', 'Turbo') %} Turbo
             {% else %} Standard
             {% endif %}
 
@@ -613,6 +694,7 @@ automation:
         to: paused
         for:
           minutes: 10
+    mode: parallel
     action:
       - service: input_select.select_option
         data_template:
@@ -737,125 +819,44 @@ automation:
           media_content_id: /local/sound/popup.m4a
           media_content_type: music
 
-  # - alias: ui_sound_on
+    ####################################################
+    #                                                  #
+    #                       TEST                       #
+    #                                                  #
+    ####################################################
+
+  # - alias: conditional_tv_off_apple_tv_off
   #   initial_state: true
   #   trigger:
-  #   - platform: state
-  #     entity_id:
-  #       ['light.belysning', 'light.fonsterlampa', 'light.datorlampa', 'light.taklampor', 
-  #       'light.mattias', 'light.sanja', 'light.badrum', 'light.taklampa', 'light.kladkammare_2', 
-  #       'light.hall', 'switch.wemo_flakt', 'switch.wemo_monitorer', 'input_boolean.dator_template', 
-  #       'input_boolean.playstation_template', 'input_boolean.sony_bravia_tv', 
-  #       'input_boolean.samsung']
-  #     from: 'off'
-  #     to: 'on'
+  #     - platform: state
+  #       entity_id: media_player.sony_bravia
+  #     - platform: state
+  #       entity_id: media_player.samsung
   #   condition:
-  #     - condition: state
-  #       entity_id: switch.fullykiosk_screensaver
-  #       state: 'off'
+  #     condition: and
+  #     conditions:
+  #       - condition: state
+  #         entity_id: media_player.sony_bravia
+  #         state: 'off'
+  #       - condition: state
+  #         entity_id: media_player.samsung
+  #         state: 'off'
   #   action:
-  #   - service: media_player.play_media
-  #     data:
-  #       entity_id: media_player.tablet
-  #       media_content_id: /local/sound/on.m4a
-  #       media_content_type: music
-
-  # - alias: ui_sound_off
-  #   initial_state: true
-  #   trigger:
-  #   - platform: state
-  #     entity_id:
-  #       ['light.belysning', 'light.fonsterlampa', 'light.datorlampa', 'light.taklampor', 
-  #       'light.mattias', 'light.sanja', 'light.badrum', 'light.taklampa', 'light.kladkammare_2', 
-  #       'light.hall', 'switch.wemo_flakt', 'switch.wemo_monitorer', 'switch.dator_template', 
-  #       'switch.playstation_template', 'media_player.sony_bravia_tv', 'media_player.samsung']
-  #     from: 'on'
-  #     to: 'off'
-  #   condition:
-  #     - condition: state
-  #       entity_id: switch.fullykiosk_screensaver
-  #       state: 'off'
-  #   action:
-  #   - service: media_player.play_media
-  #     data:
-  #       entity_id: media_player.tablet
-  #       media_content_id: /local/sound/off.m4a
-  #       media_content_type: music
-
-  - alias: turn_on_tv_fail_safe
-    initial_state: true
-    trigger:
-      - platform: event
-        event_type: call_service
-        event_data:
-          domain: media_player
-          service: turn_on
-          service_data:
-            entity_id: media_player.sony_bravia_tv
-    action:
-      - service: media_player.turn_on
-        data:
-          entity_id: media_player.vardagsrum
-      - delay: 00:00:01
-      - service: remote.send_command
-        data:
-          entity_id: remote.vardagsrum
-          command: menu
-
-  - alias: turn_on_tv2_fail_safe
-    initial_state: true
-    trigger:
-      - platform: event
-        event_type: call_service
-        event_data:
-          domain: media_player
-          service: turn_on
-          service_data:
-            entity_id: media_player.samsung
-    action:
-      - service: media_player.turn_on
-        data:
-          entity_id: media_player.sovrum
-      - delay: 00:00:01
-      - service: remote.send_command
-        data:
-          entity_id: remote.sovrum
-          command: menu
-
-#test
-
-  - alias: conditional_tv_off_apple_tv_off
-    initial_state: true
-    trigger:
-      - platform: state
-        entity_id: media_player.sony_bravia_tv
-      - platform: state
-        entity_id: media_player.samsung
-    condition:
-      condition: and
-      conditions:
-        - condition: state
-          entity_id: media_player.sony_bravia_tv
-          state: 'off'
-        - condition: state
-          entity_id: media_player.samsung
-          state: 'off'
-    action:
-      - service: input_select.select_option
-        data:
-          entity_id: input_select.conditional_media
-          option: Senast nedladdat
+  #     - service: input_select.select_option
+  #       data:
+  #         entity_id: input_select.conditional_media
+  #         option: Senast nedladdat
 
   - alias: update_hass_release_notes
     initial_state: true
     trigger:
       - platform: state
-        entity_id: sensor.hass_version_template
+        entity_id: sensor.hass_version
     condition:
       condition: not
       conditions:
         - condition: state
-          entity_id: sensor.hass_version_template
+          entity_id: sensor.hass_version
           state: Senaste
     action:
       - service: homeassistant.update_entity
@@ -873,3 +874,14 @@ automation:
       - service: light.turn_off
         data:
           entity_id: light.badrum
+
+  - alias: update_person_last_changed
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id:
+          ['person.mattias', 'person.sanja']
+    action:
+      - service: homeassistant.update_entity
+        entity_id:
+          ['sensor.mattias_last_changed', 'sensor.sanja_last_changed']

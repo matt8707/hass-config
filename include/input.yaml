@@ -7,11 +7,11 @@ input_boolean:
   #                                                  #
   ####################################################
 
-  dator_template:
-  sony_bravia_tv:
+  computer_imac:
+  sony_bravia:
   samsung:
-  playstation_template:
-  lock_computer:
+  playstation_4:
+  computer_lock:
   krisinformation_visibility:
   laundry_timer_visibility:
 
@@ -37,7 +37,7 @@ input_number:
   #                                                  #
   ####################################################
 
-  monitorer_volume:
+  monitors_volume:
     name: Volym
     icon: mdi:volume-high
     initial: 20
@@ -55,9 +55,9 @@ input_number:
     step: 1
     unit_of_measurement: '%'
 
-  fan_timer:
+  wemo_fan_timer:
     name: Stäng efter
-    icon: mdi:timer
+    icon: mdi:timer-outline
     initial: 6
     min: 1
     max: 12
@@ -66,7 +66,7 @@ input_number:
 
   fan_anslut_timer:
     name: Stäng efter
-    icon: mdi:timer
+    icon: mdi:timer-outline
     initial: 6
     min: 1
     max: 12
@@ -95,7 +95,7 @@ input_select:
     initial: HDMI
     icon: custom:hdmi-source
 
-  roborock_fan_speed:
+  roborock_speed:
     name: Rengöringsläge
     options:
       ['Tyst', 'Standard', 'Medium', 'Turbo']

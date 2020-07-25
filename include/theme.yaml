@@ -10,7 +10,7 @@ frontend:
 
     # Based on https://github.com/seangreen2/slate_theme
 
-    slate:
+    tablet:
       # Main colors
       primary-color: '#434b4d'
       accent-color: '#b4b6b630'
@@ -111,3 +111,16 @@ frontend:
       iron-overlay-backdrop-opacity: '1'
       # barcard
       bar-card-border-radius: '0.3em'
+
+      card-mod-theme: tablet
+      card-mod-more-info-yaml: |
+        $: |
+          .mdc-dialog {
+            backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.5);
+          }
+          .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
+            background: none;
+            box-shadow: none;
+            border-radius: 1em;
+          }
