@@ -1,15 +1,12 @@
               action: call-service
               service: browser_mod.popup
               service_data:
-                title: popup
-                hide_header: true
+                title: Playstation 4
                 deviceID: this
                 card:
                   type: custom:stack-in-card
-                  class: animate_popup
                   cards:
                     - type: entities
-                      title: Playstation 4
                       entities:
                         - entity: switch.playstation_4
                           name: Playstation 4

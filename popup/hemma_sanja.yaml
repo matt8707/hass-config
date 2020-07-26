@@ -1,16 +1,13 @@
               action: call-service
               service: browser_mod.popup
               service_data:
-                title: popup
-                hide_header: true
+                title: Sanja
                 deviceID: this
                 card:
                   type: custom:stack-in-card
-                  class: animate_popup
                   cards:
 
                     - type: entities
-                      title: Sanja
                       entities:
                         - entity: person.sanja
                           secondary_info: last-changed
@@ -64,7 +61,13 @@
                       show_header_toggle: false
                       style: |
                         ha-card {
-                          margin-top: 0.5em;
+                          margin-top: -1.4em;
+                          padding: 0 1.2em 0.4em 0.5em;
+                        }
+                        .card-header {
+                          margin-left: 0.45em;
+                          margin-bottom: -0.001em;
+                          font-size: 1.5em;
                         }
                       entities:
 

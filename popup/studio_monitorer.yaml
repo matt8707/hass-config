@@ -1,14 +1,11 @@
               action: call-service
               service: browser_mod.popup
               service_data:
-                title: popup
-                hide_header: true
+                title: Monitorer
                 deviceID: this
                 card:
                   type: entities
-                  title: Monitorer
                   show_header_toggle: false
-                  class: animate_popup
                   entities:
 
                     - entity: switch.wemo_monitors

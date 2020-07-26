@@ -1,30 +1,18 @@
               action: call-service
               service: browser_mod.popup
               service_data:
-                title: popup
-                hide_header: true
+                title: Elförbrukning kWh
                 deviceID: this
-                style: |
-                  :host .content {
-                    width: 38em;
-                  }
+                style: ':host .content {width: 38em;}'
                 card:
                   type: custom:stack-in-card
-                  class: animate_popup
-                  style:
-                    ha-card > div > hui-vertical-stack-card:
-                      $:
-                        '#root > hui-horizontal-stack-card:nth-child(1)':
-                          $: |
-                            div.card-header { margin: -0.2em 0 0 0.75em; font-family: sf text; letter-spacing: 0.005em; font-size: 1.5em;}
                   cards:
 
                     - type: horizontal-stack
-                      title: Elförbrukning kWh
                       cards:
-                        - entities:
+                        - type: entities
+                          entities:
                             - entity: sensor.oresundskraft_year
-                          class: disable_default
                           style: |
                             :host {
                             --paper-item-icon-color: 
@@ -33,16 +21,15 @@
                             ha-card {
                             margin-left: 50%;
                              }
-                          type: entities
-                        - entities:
+
+                        - type: entities
+                          entities:
                             - entity: sensor.oresundskraft_last_year
-                          class: disable_default
                           style: |
                             :host {
                             --paper-item-icon-color: 
                                #323637;
                              }
-                          type: entities
 
                     - type: custom:mod-card
                       style: |
@@ -633,7 +620,6 @@
                             }
 
                         - type: entities
-                          class: disable_default
                           entities:
                             - entity: sensor.oresundskraft_last_month_price
                             - entity: sensor.oresundskraft_total_year_kwh
@@ -649,7 +635,6 @@
                           state: 'on'
                       card:
                         type: entities
-                        class: disable_default
                         entities:
 
                           - type: custom:hui-element

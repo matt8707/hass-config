@@ -1,7 +1,7 @@
               action: call-service
               service: browser_mod.popup
               service_data:
-                title: popup
+                title: Information
                 hide_header: true
                 deviceID: this
                 style: |
@@ -17,8 +17,8 @@
                   cards:
                     - type: entities
                       title: Home Assistant
+                      class: add_header
                       show_header_toggle: false
-                      class: animate_popup
                       entities:
 
                         - entity: sensor.hass_version
@@ -128,8 +128,8 @@
 
                     - type: entities
                       title: Väggplattan
+                      class: add_header
                       show_header_toggle: false
-                      class: animate_popup
                       entities:
 
                         - entity: switch.fullykiosk_screen
@@ -205,8 +205,8 @@
 
                     - type: entities
                       title: Synology NAS
+                      class: add_header
                       show_header_toggle: false
-                      class: animate_popup
                       style: |
                         #states > div > mini-graph-card {
                           margin: -22.7px -34px -21px -23px;
@@ -267,7 +267,7 @@
                                     :host {
                                     --paper-item-icon-color: green;
                                       }
-                              class: net_up_down
+                              class: information_network
                               type: entities
                             - entities:
                                 - entity: sensor.nas_net_up
@@ -275,7 +275,7 @@
                                     :host {
                                     --paper-item-icon-color: #385581;
                                       }
-                              class: net_up_down
+                              class: information_network
                               type: entities
 
                         - type: custom:mini-graph-card

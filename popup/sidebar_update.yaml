@@ -1,8 +1,7 @@
               action: call-service
               service: browser_mod.popup
               service_data:
-                title: popup
-                hide_header: true
+                title: Uppdateringar
                 deviceID: this
                 style: |
                   :host .content {
@@ -10,9 +9,7 @@
                   }
                 card:
                   type: entities
-                  title: Uppdateringar
                   show_header_toggle: false
-                  class: animate_popup
                   style:
                     "#states > div > hui-element > hui-markdown-card":
                       $:

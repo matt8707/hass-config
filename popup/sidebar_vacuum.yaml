@@ -1,7 +1,7 @@
               action: call-service
               service: browser_mod.popup
               service_data:
-                title: popup
+                title: Dammsugare
                 hide_header: true
                 deviceID: this
                 style: |
@@ -20,7 +20,7 @@
                         - type: entities
                           title: Dammsugare
                           show_header_toggle: false
-                          class: animate_popup
+                          class: add_header
                           entities:
 
                           - entity: sensor.roborock_state
@@ -149,15 +149,11 @@
                     - type: picture-elements
                       title: Kartläggning
                       image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50' /%3E"
+                      class: add_header
                       style: |
-                        ha-card {
-                          animation: pop-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.05s; transform-origin: center;
-                          box-shadow: none; border-radius: 1em; padding: 0.3em 1.25em 0.4em 0.5em; 
-                          background: linear-gradient(180deg, rgba(48,52,52,1) 0%, rgba(48,52,52,1) 4.8em, rgba(34,38,39,0.9) 4.8em, rgba(34,38,39,0.9) 100%); }
                         .card-header {
-                          margin: -0.4em 0 1.4em 0.4em; font-family: sf text; letter-spacing: 0.005em; font-size: 1.5em;}
-                        @keyframes pop-in {
-                          0% { transform: scale(0.6); } 100% { transform: scale(1); }}
+                          margin: -0.2em 0 0 0.75em;
+                        }
                       elements:
 
                         - type: custom:valetudo-map-card

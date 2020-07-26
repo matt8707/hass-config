@@ -1,15 +1,12 @@
               action: call-service
               service: browser_mod.popup
               service_data:
-                title: popup
-                hide_header: true
+                title: Luftrenare
                 deviceID: this
                 card:
                   type: custom:stack-in-card
-                  class: animate_popup
                   cards:
                     - type: entities
-                      title: Luftrenare
                       show_header_toggle: false
                       entities:
 

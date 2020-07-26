@@ -1,13 +1,10 @@
               action: call-service
               service: browser_mod.popup
               service_data:
-                title: popup
-                hide_header: true
+                title: Sovrum Tv
                 deviceID: this
                 card:
                   type: entities
-                  title: Sovrum Tv
-                  class: animate_popup
                   show_header_toggle: false
                   entities:
 
