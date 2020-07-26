@@ -75,19 +75,12 @@ button_card_templates:
       action: call-service
       service: browser_mod.popup
       service_data:
-        title: popup
-        hide_header: true
+        title: '[[[ return entity.attributes.friendly_name ]]]'
         deviceID: this
-        style: |
-          :host .content {
-            width: 25em;
-          }
         card:
           type: vertical-stack
           cards:
             - type: entities
-              title: '[[[ return entity.attributes.friendly_name ]]]'
-              class: animate_popup
               show_header_toggle: false
               entities:
                 - type: custom:light-popup-card
@@ -137,38 +130,16 @@ button_card_templates:
                       color: "#ce944b"
                     - service: browser_mod.popup
                       service_data:
-                        title: popup
-                        hide_header: true
+                        title: '[[[ return entity.attributes.friendly_name ]]]'
                         deviceID: this
-                        style: |
-                          :host .content {
-                            width: 25em;
-                          }
                         card:
                           type: entities
-                          title: Färginställningar
-                          class: animate_popup
                           show_header_toggle: false
                           entities:
                             - entity: '[[[ return entity.entity_id ]]]'
                               secondary_info: last-changed
                             - type: custom:light-entity-card
                               entity: '[[[ return entity.entity_id ]]]'
-                              style:
-                                .: |
-                                  ha-card {
-                                    background: none; box-shadow: none; margin: -0.5em -1em -0.5em -0.7em; }
-                                  ha-card > div.light-entity-card-sliders.ha-slider-full-width { 
-                                    margin-bottom: 0.75em; }
-                                  ha-card > div.light-entity-card-sliders.ha-slider-full-width > div > ha-icon {
-                                    margin: auto; width: 34px; height: 34px; cursor: default; 
-                                    padding-right: 0.49em; color: var(--paper-item-icon-color);}
-                                  ha-card > div.light-entity-card-sliders.ha-slider-full-width > div > div {
-                                    margin: auto; padding: 0 1.4em 0 1em; max-width: 1em; cursor: default;}
-                                'ha-card > div.light-entity-card-sliders.ha-slider-full-width > div > ha-slider':
-                                  $: |
-                                    #sliderContainer { 
-                                      --calculated-paper-slider-height: var(--paper-slider-height, 5px); }
                               brightness: false
                               color_temp: true
                               full_width_sliders: true
@@ -1465,4 +1436,3 @@ views:
                 if (entity.state === 'on') { return `${style}<g class="start">${path}</g><g class="on">${path}</g></svg>`; }
                 else { return `${style}<g class="end">${path}</g></svg>`; } ]]]
             template: switch
-      
