@@ -119,6 +119,8 @@ frontend:
     ####################################################
 
       card-mod-theme: tablet
+      card-color: rgba(34,38,39,0.9)
+      card-header: rgba(48,52,52,0.8)
 
       card-mod-root: |
         ha-app-layout {
@@ -129,9 +131,8 @@ frontend:
       card-mod-card: |
         ha-card {
           background: none;
-          --keep-background: true;
           box-shadow: none;
-          border-radius: 1em;
+          border-radius: 0 0 1em 1em;
         }
 
         .card-header {
@@ -148,16 +149,12 @@ frontend:
          * * * * * * * * * * * * * * * * * */
 
         ha-card.type-entities {
-          background: linear-gradient(180deg,
-            rgba(48,52,52,1) 0%,
-            rgba(48,52,52,1) 4.8em,
-            rgba(34,38,39,1) 4.8em,
-            rgba(34,38,39,1) 100%);
+          background: var(--card-color);
           padding: 0.3em 1.25em 0.4em 0.5em;
         }
 
         ha-card.type-custom-stack-in-card {
-          background: rgba(34,38,39,1);
+          background: var(--card-color);
         }
 
         ha-card.type-custom-hui-markdown-card {
@@ -174,7 +171,16 @@ frontend:
          *                                 *
          * * * * * * * * * * * * * * * * * */
 
-        ha-card.sidebar {
+        ha-card.add_header {
+          background: linear-gradient(180deg,
+            var(--card-header) 0%,
+            var(--card-header) 4.8em,
+            var(--card-color) 4.8em,
+            var(--card-color) 100%);
+          border-radius: 1em;
+        }
+
+        .sidebar {
           font-size: 1.5vw;
           font-weight: 300;
           opacity: 0.75;
@@ -182,7 +188,7 @@ frontend:
           height: 1px;
         }
 
-        ha-card.coronavirus {
+        .coronavirus {
           font-size: 1.26vw;
           color: #6a7377;
           font-weight: 400;
@@ -193,42 +199,31 @@ frontend:
           --mdc-icon-size: 1.2vw;
         }
 
-        ha-card.net_up_down {
+        ha-card.information_network {
           background: none;
           margin-top: -0.7em;
           z-index: 2;
-          padding: 0;
-        }
-
-        ha-card.disable_default {
-          background: none;
-          border-radius: none;
-          padding: 0;
-        }
-
-        ha-card.animate_popup {
-          animation: animate_popup 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-          transform-origin: center;
-        }
-        @keyframes animate_popup {
-          0% {
-            transform: scale(0.6);
-            opacity: 0;
-          }
-          20% {
-            opacity: 0;
-          }
-          100% {
-            transform: scale(1);
-            opacity: 0.9;
-          }
+          padding: 1.9px;
         }
 
       card-mod-more-info-yaml: |
+        .: |
+          app-toolbar {
+            background: var(--card-header) !important;
+          }
+          mwc-icon-button {
+            margin-top: -3px;
+            color: #9e9e9e;
+          }
+          .main-title {
+            margin-top: 5px;
+            font-family: SF Text;
+            letter-spacing: 0.005em;
+          }
+        
         $: |
           .mdc-dialog {
-            backdrop-filter: blur(25px) brightness(60%);
-            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            backdrop-filter: blur(20px) brightness(70%);
           }
           .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
             background: none;
