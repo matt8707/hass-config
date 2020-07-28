@@ -78,74 +78,71 @@ button_card_templates:
         title: '[[[ return entity.attributes.friendly_name ]]]'
         deviceID: this
         card:
-          type: vertical-stack
-          cards:
-            - type: entities
-              show_header_toggle: false
-              entities:
-                - type: custom:light-popup-card
-                  entity: '[[[ return entity.entity_id ]]]'
-                  icon: none
-                  fullscreen: false
-                  brightnessWidth: 130px
-                  brightnessHeight: 360px
-                  borderRadius: 1.7em
-                  sliderColor: '#c7c7c7'
-                  sliderTrackColor: rgba(25, 25, 25, 0.9)
-                  actionSize: 4.5em
-                  actionsInARow: 2
-                  style: |
-                    #popup { 
-                      margin: -2.4em 0 1.4em 0; }
-                    #popup > div.range-holder > input[type=range] {
-                      cursor: grab; }
-                    #brightnessValue {
-                      color: rgba(255, 255, 255, 0.8); margin: -1em 0 0 0; font-size: 2em; font-weight: 400; 
-                      position: absolute; z-index: 100; font-family: SF Display; letter-spacing: 0.02em; pointer-events: none; 
-                      mix-blend-mode: difference; text-align:center; width: 3.4em; height: 3.4em; }
-                    #popup > div.range-holder > input[type=range]::-webkit-slider-thumb {
-                      border: 0; eight: 0; width: 0; cursor: grabbing; }
-                    #popup > div.action-holder > div > div {
-                      margin: 0.8em 0.5em -0.8em 0.5em; }
-                    #popup > div.action-holder > div:nth-child(2) > div:nth-child(2) > span {
-                      background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 80%), 
-                      conic-gradient(rgb(120,39,230), rgb(230,34,231), rgb(228,5,136), rgb(228,25,25), rgb(229,105,30), rgb(232,226,46), 
-                      rgb(125,230,41), rgb(52,232,40), rgb(51,231,92), rgb(52,232,224),rgb(32,125,229), rgb(18,39,229), rgb(120,39,230));
-                      border-width: 2px; border-color: #e6e6e6; --size: 4.4em !important; }
-                  actions:
-                    - service: light.turn_on
-                      service_data:
-                        entity_id: '[[[ return entity.entity_id ]]]'
-                        color_temp: 153
-                      color: "#d8d9e1"
-                    - service: light.turn_on
-                      service_data:
-                        entity_id: '[[[ return entity.entity_id ]]]'
-                        color_temp: 326
-                      color: "#d5b08d"
-                    - service: light.turn_on
-                      service_data:
-                        entity_id: '[[[ return entity.entity_id ]]]'
-                        color_temp: 500
-                      color: "#ce944b"
-                    - service: browser_mod.popup
-                      service_data:
-                        title: '[[[ return entity.attributes.friendly_name ]]]'
-                        deviceID: this
-                        card:
-                          type: entities
-                          show_header_toggle: false
-                          entities:
-                            - entity: '[[[ return entity.entity_id ]]]'
-                              secondary_info: last-changed
-                            - type: custom:light-entity-card
-                              entity: '[[[ return entity.entity_id ]]]'
-                              brightness: false
-                              color_temp: true
-                              full_width_sliders: true
-                              hide_header: true
-                              show_slider_percent: true
-                              smooth_color_wheel: true
+          type: entities
+          entities:
+            - type: custom:light-popup-card
+              entity: '[[[ return entity.entity_id ]]]'
+              icon: none
+              fullscreen: false
+              brightnessWidth: 130px
+              brightnessHeight: 360px
+              borderRadius: 1.7em
+              sliderColor: '#c7c7c7'
+              sliderTrackColor: rgba(25, 25, 25, 0.9)
+              actionSize: 4.5em
+              actionsInARow: 2
+              style: |
+                #popup {
+                  margin: -2.4em 0 1.4em 0; }
+                #popup > div.range-holder > input[type=range] {
+                  cursor: grab; }
+                #brightnessValue {
+                  color: rgba(255, 255, 255, 0.8); margin: -1em 0 0 0; font-size: 2em; font-weight: 400; 
+                  position: absolute; z-index: 100; font-family: SF Display; letter-spacing: 0.02em; pointer-events: none; 
+                  mix-blend-mode: difference; text-align:center; width: 3.4em; height: 3.4em; }
+                #popup > div.range-holder > input[type=range]::-webkit-slider-thumb {
+                  border: 0; eight: 0; width: 0; cursor: grabbing; }
+                #popup > div.action-holder > div > div {
+                  margin: 0.8em 0.5em -0.8em 0.5em; }
+                #popup > div.action-holder > div:nth-child(2) > div:nth-child(2) > span {
+                  background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 80%), 
+                  conic-gradient(rgb(120,39,230), rgb(230,34,231), rgb(228,5,136), rgb(228,25,25), rgb(229,105,30), rgb(232,226,46), 
+                  rgb(125,230,41), rgb(52,232,40), rgb(51,231,92), rgb(52,232,224),rgb(32,125,229), rgb(18,39,229), rgb(120,39,230));
+                  border-width: 2px; border-color: #e6e6e6; --size: 4.4em !important; }
+              actions:
+                - service: light.turn_on
+                  service_data:
+                    entity_id: '[[[ return entity.entity_id ]]]'
+                    color_temp: 153
+                  color: "#d8d9e1"
+                - service: light.turn_on
+                  service_data:
+                    entity_id: '[[[ return entity.entity_id ]]]'
+                    color_temp: 326
+                  color: "#d5b08d"
+                - service: light.turn_on
+                  service_data:
+                    entity_id: '[[[ return entity.entity_id ]]]'
+                    color_temp: 500
+                  color: "#ce944b"
+                - service: browser_mod.popup
+                  service_data:
+                    title: '[[[ return entity.attributes.friendly_name ]]]'
+                    deviceID: this
+                    card:
+                      type: entities
+                      show_header_toggle: false
+                      entities:
+                        - entity: '[[[ return entity.entity_id ]]]'
+                          secondary_info: last-changed
+                        - type: custom:light-entity-card
+                          entity: '[[[ return entity.entity_id ]]]'
+                          brightness: false
+                          color_temp: true
+                          full_width_sliders: true
+                          hide_header: true
+                          show_slider_percent: true
+                          smooth_color_wheel: true
 
   switch:
     aspect_ratio: 1/1
@@ -349,7 +346,7 @@ views:
                 {% set total = data | regex_findall_index('Totalt[^,]*?(\d+)[^,]*?(\d+)[^,]*?(\d+)') | list %}
                 {% set break = ' ‍ ‍ ‍ ‍ ‍ ‍<font color="#2f3436">|</font> ‍ ‍ ‍ ‍ ‍ ‍' %}
                 <font color='#6a7377'>
-                <ha-icon icon="custom:corona-virus"></ha-icon> <b>Coronavirus</b>{{ break -}}
+                <ha-icon icon="mdi:virus"></ha-icon> <b>Coronavirus</b>{{ break -}}
                 <ha-icon icon="mdi:chart-bar"></ha-icon> <b>{{ ((total[0] | int / 10327589) * 100) | round(2) }}%</b> av Sverige{{ break -}}
                 <ha-icon icon="mdi:emoticon-sad"></ha-icon> <b>{{ total[0] }}</b> fall{{ break -}}
                 <ha-icon icon="mdi:grave-stone"></ha-icon> <b>{{ total[2] }}</b> avlidna{{ break -}}
@@ -1360,7 +1357,7 @@ views:
           #################################################
 
           - type: custom:button-card
-            entity: switch.home_leave
+            entity: script.home_leave
             state_display: Auto
             style:
               top: 82.1%
@@ -1390,7 +1387,7 @@ views:
           #################################################
 
           - type: custom:button-card
-            entity: switch.home_arrive
+            entity: script.home_arrive
             state_display: Auto
             style:
               top: 82.1%
