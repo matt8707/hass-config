@@ -5,19 +5,31 @@
                 deviceID: this
                 card:
                   type: entities
+                  state_color: true
                   show_header_toggle: false
                   entities:
 
                     - entity: switch.computer_imac
                       name: iMac
                       secondary_info: last-changed
-                      style: |
-                        :host {
-                        --paper-item-icon-color: 
-                          {% if is_state(config.entity, 'on') %} #3182b7
-                          {% else %} #9e9e9e {% endif %}; }
 
                     - type: custom:bar-card
+                      width: 55%
+                      height: 2em
+                      decimal: 0
+                      unit_of_measurement: '%'
+                      positions: &pos
+                        icon: outside
+                        indicator: 'off'
+                        name: outside
+                      severity: &sev
+                        - color: '#303435'
+                          from: 0
+                          to: 89
+                        - color: '#6d2525'
+                          from: 90
+                          to: 100
+                      entity_row: true
                       entities:
 
                         - entity: sensor.imac_cpu
@@ -34,54 +46,7 @@
                             service_data:
                               entity_id: sensor.imac_mem
 
-                      width: 55%
-                      height: 2em
-                      unit_of_measurement: '%'
-                      positions: &bar_card_positions
-                        icon: outside
-                        indicator: 'off'
-                        name: outside
-                      severity: &bar_card_severity
-                        - color: '#303435'
-                          from: 0
-                          to: 89
-                        - color: '#6d2525'
-                          from: 90
-                          to: 100
-                      decimal: 0
-                      entity_row: true
-                      style: &bar_card_style |
-                        bar-card-iconbar {
-                          padding-left: 0.23em;
-                        }
-                        bar-card-name {
-                          padding-left: 0.25em;
-                        }
-                        bar-card-value {
-                          margin-right: auto;
-                          color: #e0e1e1;
-                          text-shadow: none;
-                          font-size: 1em;
-                          font-weight: 400;
-                          letter-spacing: 0.01em;
-                        }
-                        bar-card-background {
-                          background: radial-gradient(circle, rgba(52, 57, 58, 0.1) 0%, rgba(17,18,18,0.2) 75%);
-                          box-shadow: inset 0 0 25px #00000045;
-                          border-radius: 0.3em;
-                        }
-                        bar-card-backgroundbar {
-                          background: none;
-                        }
-
                     - entity: automation.notification_motion_hall
-                      icon: mdi:bell
-                      name: Mottag notiser
-                      style: |
-                        :host {
-                        --paper-item-icon-color: 
-                          {% if is_state(config.entity, 'on') %} #3182b7
-                          {% else %} #9e9e9e {% endif %}; }
 
                     - entity: sensor.computer_imac_uptime
 
@@ -93,20 +58,21 @@
                           entity_id: sensor.imac_ip
                       style: |
                         :host {
-                        --paper-item-icon-color: 
-                          {% if not is_state(config.entity, 'Ansluten') %} red
-                          {% else %} #9e9e9e {% endif %}; }
+                          --paper-item-icon-color: 
+                            {{ '#9e9e9e' if is_state(config.entity, 'Ansluten') else 'red' }};
+                          }
 
                     - entity: input_boolean.computer_lock
-                      icon: custom:lock
-                      name: Avstängningslås
-                      style: |
-                        :host {
-                        --paper-item-icon-color: 
-                          {% if is_state(config.entity, 'on') %} #3182b7
-                          {% else %} #9e9e9e {% endif %}; }
 
-                    - entities:
+                    - type: custom:bar-card
+                      width: 55%
+                      height: 2em
+                      decimal: 0
+                      unit_of_measurement: '%'
+                      positions: *pos
+                      severity: *sev
+                      entity_row: true
+                      entities:
 
                         - entity: sensor.imac_system_ssd
                           tap_action:
@@ -129,16 +95,6 @@
                             service_data:
                               entity_id: sensor.imac_time_machine
 
-                      positions: *bar_card_positions
-                      severity: *bar_card_severity
-                      decimal: 0
-                      entity_row: true
-                      style: *bar_card_style
-                      unit_of_measurement: '%'
-                      height: 2em
-                      width: 55%
-                      type: custom:bar-card
-
                     - type: custom:hui-element
                       card_type: horizontal-stack
                       style: |
@@ -150,9 +106,7 @@
 
                       - type: custom:button-card
                         name: >
-                          [[[ return 
-                          '<ha-icon icon="mdi:power-sleep">
-                          </ha-icon> Försätt i vila'; ]]]
+                          <ha-icon icon="mdi:power-sleep"></ha-icon> Försätt i vila
                         tap_action:
                           action: call-service
                           service: shell_command.imac_sleep
@@ -160,9 +114,7 @@
 
                       - type: custom:button-card
                         name: >
-                          [[[ return 
-                          '<ha-icon icon="mdi:restart">
-                          </ha-icon> Starta om'; ]]]
+                          <ha-icon icon="mdi:restart"></ha-icon> Starta om
                         tap_action:
                           action: call-service
                           service: shell_command.imac_restart

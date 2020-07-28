@@ -9,18 +9,47 @@
                   }
                 card:
                   type: entities
-                  show_header_toggle: false
                   style:
+                    .: |
+                      #states > div > button-card {
+                        margin: -0.5em 0 1.4em 1.05em;
+                      }
+
                     "#states > div > hui-element > hui-markdown-card":
                       $:
                         "ha-card > ha-markdown":
                           $: |
-                            ha-markdown-element > p > span {font-family: SF Text; font-size: 1.5em; font-weight: 500;}
-                            ha-markdown-element > p > b {font-family: SF Text; font-size: 1.2em; font-weight: 500; line-height: 1.9em; opacity: 0.5;}
-                            ha-markdown-element > ul {font-family: SF Display; font-size: 1.1em; padding-left: 2.5em;}
-                            ha-markdown-element > ul > li {margin-bottom: 0.4em;}
-                            ha-markdown-element > ul > li:last-child {margin-bottom: 0px;}
-
+                            ha-markdown-element {
+                              cursor: default;
+                            }
+                            ha-markdown-element > p > span {
+                              font-family: SF Text;
+                              font-size: 1.5em;
+                              font-weight: 500;
+                              vertical-align: 30%;
+                            }
+                            ha-markdown-element > p > span > ha-icon {
+                              vertical-align: 10%;
+                              opacity: 0.5;
+                            }
+                            ha-markdown-element > p > b {
+                              font-family: SF Text;
+                              font-size: 1.2em;
+                              font-weight: 500;
+                              line-height: 1.9em;
+                              opacity: 0.5;
+                            }
+                            ha-markdown-element > ul {
+                              font-family: SF Display;
+                              font-size: 1.1em;
+                              padding-left: 2.5em;
+                            }
+                            ha-markdown-element > ul > li {
+                              margin-bottom: 0.4em;
+                            }
+                            ha-markdown-element > ul > li:last-child {
+                              margin-bottom: 0px;
+                            }
                   entities:
 
                     - type: custom:hui-element
@@ -46,37 +75,18 @@
                         {% else %}
                         {% endif %}
 
-                      style: |
-                        ha-card {
-                          background: none;
-                          box-shadow: none;
-                          cursor: default;
-                          margin-top: -0.5em;
-                        }
-                    - type: custom:hui-element
-                      card_type: horizontal-stack
-                      style: |
-                        #root {
-                          margin-left: 1em;
-                          filter: 
-                            {% if is_state('sensor.hass_version', 'Senaste') %}
-                            opacity(30%); 
-                            {% else %} 
-                            drop-shadow(3px 3px 5px #00000050); 
-                            {% endif %}
-                        }
-                      cards:
-
-                        - type: custom:button-card
-                          name: >
-                            [[[ return 
-                            '<ha-icon icon="mdi:update">
-                            </ha-icon> Uppdatera HASS'; ]]]
-                          tap_action:
-                            services: |
-                              [[[ hass.callService('browser_mod', 'toast', {message: 'Startar watchtower...'});
-                              hass.callService('switch', 'turn_on', {entity_id: 'switch.watchtower'}); ]]]
-                          template: name_action
+                    - type: custom:button-card
+                      entity: sensor.hass_version
+                      show_icon: false
+                      name: '<ha-icon icon="mdi:update"></ha-icon> Uppdatera HASS'
+                      styles:
+                        card:
+                          [filter: "[[[ return entity.state === 'Senaste' ? 'opacity(30%)' : 'drop-shadow(3px 3px 5px #00000050)'; ]]]"]
+                      tap_action:
+                        services: |
+                          [[[ hass.callService('browser_mod', 'toast', {message: 'Startar watchtower...'});
+                          hass.callService('switch', 'turn_on', {entity_id: 'switch.watchtower'}); ]]]
+                      template: name_action
 
                     - type: custom:hui-element
                       card_type: markdown
@@ -103,46 +113,25 @@
                         {% endfor %}
                         {% else %}
                         {% endif %}
-                      style: |
-                        ha-card {
-                          background: none;
-                          box-shadow: none;
-                          cursor: default;
-                        }
 
-                    - type: custom:hui-element
-                      card_type: horizontal-stack
-                      style: |
-                        #root {
-                          margin-left: 1em;
-                          filter: 
-                            {% if is_state('sensor.hacs', '0') %}
-                            opacity(30%); 
-                            {% else %} 
-                            drop-shadow(3px 3px 5px #00000050); 
-                            {% endif %}
-                        }
-                      cards:
-                        - type: custom:button-card
-                          name: >
-                            [[[ return 
-                            '<ha-icon icon="mdi:open-in-new">
-                            </ha-icon> Öppna HACS'; ]]]
-                          tap_action:
-                            action: call-service
-                            service: browser_mod.popup
-                            service_data:
-                              title: popup
-                              hide_header: true
-                              deviceID: this
-                              style: |
-                                :host .content {
-                                  width: 75em;
-                                }
-                              card:
-                                type: custom:hui-element
-                                card_type: iframe
-                                url: !secret hacs_url
-                                aspect_ratio: 60%
-                                style: 'ha-card { border-radius: 1em;}'
-                          template: name_action
+                    - type: custom:button-card
+                      entity: sensor.hacs
+                      show_icon: false
+                      name: '<ha-icon icon="mdi:open-in-new"></ha-icon> Öppna HACS'
+                      styles:
+                        card:
+                          [filter: "[[[ return entity.state === '0' ? 'opacity(30%)' : 'drop-shadow(3px 3px 5px #00000050)'; ]]]"]
+                      tap_action:
+                        action: call-service
+                        service: browser_mod.popup
+                        service_data:
+                          title: Home Assistant Community Store
+                          deviceID: this
+                          style: ':host .content {width: 75em;}'
+                          card:
+                            type: custom:hui-element
+                            card_type: iframe
+                            url: !secret hacs_url
+                            aspect_ratio: 65%
+                            style: 'ha-card { border-radius: 0 0 1em 1em;}'
+                      template: name_action

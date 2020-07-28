@@ -7,9 +7,10 @@
                   type: custom:stack-in-card
                   cards:
                     - type: entities
+                      state_color: true
                       entities:
+
                         - entity: switch.playstation_4
-                          name: Playstation 4
                           secondary_info: last-changed
 
                         - entity: media_player.playstation_4

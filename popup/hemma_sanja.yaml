@@ -11,17 +11,11 @@
                       entities:
                         - entity: person.sanja
                           secondary_info: last-changed
+
                     - type: history-graph
-                      entities:
-                        - entity: person.sanja
+                      entities: [entity: person.sanja]
                       hours_to_show: 24
                       refresh_interval: 0
-                      style: |
-                        ha-card {
-                          padding: 0.3em 1.2em 0 1em;
-                          margin: -1em -0.6em 0 0;
-                          z-index: 1;
-                        }
 
                     - type: glance
                       show_state: false
@@ -35,45 +29,30 @@
                         - entity: sensor.placeholder
                           name: Position
                           icon: mdi:help
-                      style:
-                        .: |
-                          ha-card {
-                            margin: -0.7em -0.5em 0 -1em;
-                          }
-
-                        "ha-card > div > div:nth-child(1)":
-                          $: |
-                            state-badge {
-                            color: {% if is_state('device_tracker.sanja', 'home') %} #3182b7 {% else %} #FFFFFF20 {% endif %};}
-
-                        "ha-card > div > div:nth-child(2)":
-                          $: |
-                            state-badge {
-                            color: {% if is_state('device_tracker.sanja_bluetooth', 'home') %} #3182b7 {% else %} #FFFFFF20 {% endif %};}
-
-                        "ha-card > div > div:nth-child(3)":
-                          $: |
-                            state-badge {
-                            color: #FFFFFF20;}
 
                     - type: entities
-                      title: Skrivare
-                      show_header_toggle: false
-                      style: |
-                        ha-card {
-                          margin-top: -1.4em;
-                          padding: 0 1.2em 0.4em 0.5em;
-                        }
-                        .card-header {
-                          margin-left: 0.45em;
-                          margin-bottom: -0.001em;
-                          font-size: 1.5em;
-                        }
                       entities:
 
                         - entity: sensor.printer_status
 
                         - type: custom:bar-card
+                          width: 55%
+                          height: 2em
+                          decimal: 0
+                          unit_of_measurement: '%'
+                          positions:
+                            icon: outside
+                            indicator: 'off'
+                            name: outside
+                          severity:
+                            - color: '#303435'
+                              from: 11
+                              to: 100
+                            - color: '#6d2525'
+                              from: 0
+                              to: 10
+                          style: 'ha-card { margin-bottom: 1em; }'
+                          entity_row: true
                           entities:
 
                             - entity: sensor.hp_printer_inkcartridge_black
@@ -93,46 +72,3 @@
                                 service: homeassistant.update_entity
                                 service_data:
                                   entity_id: sensor.hp_printer_inkcartridge_cyanmagentayellow
-
-                          positions:
-                            icon: outside
-                            indicator: 'off'
-                            name: outside
-                          severity:
-                            - color: '#303435'
-                              from: 11
-                              to: 100
-                            - color: '#6d2525'
-                              from: 0
-                              to: 10
-                          decimal: 0
-                          entity_row: true
-                          style: |
-                            ha-card {
-                              margin-bottom: 1em;
-                            }
-                            bar-card-iconbar {
-                              padding-left: 0.23em;
-                            }
-                            bar-card-name {
-                              padding-left: 0.25em;
-                            }
-                            bar-card-value {
-                              margin-right: auto;
-                              color: #e0e1e1;
-                              text-shadow: none;
-                              font-size: 1em;
-                              font-weight: 400;
-                              letter-spacing: 0.01em;
-                            }
-                            bar-card-background {
-                              background: radial-gradient(circle, rgba(52, 57, 58, 0.1) 0%, rgba(17,18,18,0.2) 75%);
-                              box-shadow: inset 0 0 25px #00000045;
-                              border-radius: 0.3em;
-                            }
-                            bar-card-backgroundbar {
-                              background: none;
-                            }
-                          unit_of_measurement: '%'
-                          height: 2em
-                          width: 55%

@@ -61,25 +61,30 @@
                                 {% endif %}
                                 --pos: {{ states('sensor.oresundskraft').split(',')[0].split(' ')[2] | int /19 }}em;
                               }
-                              ha-card, bar-card-backgroundbar {
-                                box-shadow: none;
-                                background: none;
+                              bar-card-name, bar-card-iconbar {
+                                padding-left: 0 !important;
                               }
                               bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, 
                               bar-card-indicatorcontainer, bar-card-indicator {
                                 border-radius: .3em;
                               }
                               bar-card-value {
-                                color: var(--kwh_bar);
+                                color: var(--kwh_bar) !important;
                                 filter: brightness(1.5);
                                 font-size: 1em;
                                 text-shadow: none;
-                                font-weight: 500;
+                                font-weight: 500 !important;
                                 margin-bottom: var(--pos);
+                                margin-left: auto;
+                              }
+                              bar-card-background {
+                                background: none !important;
+                                box-shadow: none !important;
                               }
                               bar-card-title {
                                 overflow: visible;
                                 margin-left: auto;
+                                margin-top: -1.5em;
                               }
 
                           - type: custom:bar-card
@@ -101,25 +106,25 @@
                                 {% endif %}
                                 --pos: {{ states('sensor.oresundskraft').split(',')[1].split(' ')[2] | int /19 }}em;
                               }
-                              ha-card, bar-card-backgroundbar {
-                                box-shadow: none;
-                                background: none;
+                              bar-card-name, bar-card-iconbar {
+                                padding-left: 0 !important;
                               }
                               bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, 
                               bar-card-indicatorcontainer, bar-card-indicator {
                                 border-radius: .3em;
                               }
                               bar-card-value {
-                                color: var(--kwh_bar);
+                                color: var(--kwh_bar) !important;
                                 filter: brightness(1.5);
                                 font-size: 1em;
                                 text-shadow: none;
-                                font-weight: 500;
+                                font-weight: 500 !important;
                                 margin-bottom: var(--pos);
+                                margin-left: auto;
                               }
                               bar-card-background {
-                                background: none;
-                                border-radius: .3em;
+                                background: none !important;
+                                box-shadow: none !important;
                               }
                               bar-card-title {
                                 overflow: visible;
@@ -146,25 +151,25 @@
                                 {% endif %}
                                 --pos: {{ states('sensor.oresundskraft').split(',')[2].split(' ')[2] | int /19 }}em;
                               }
-                              ha-card, bar-card-backgroundbar {
-                                box-shadow: none;
-                                background: none;
+                              bar-card-name, bar-card-iconbar {
+                                padding-left: 0 !important;
                               }
                               bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, 
                               bar-card-indicatorcontainer, bar-card-indicator {
                                 border-radius: .3em;
                               }
                               bar-card-value {
-                                color: var(--kwh_bar);
+                                color: var(--kwh_bar) !important;
                                 filter: brightness(1.5);
                                 font-size: 1em;
                                 text-shadow: none;
-                                font-weight: 500;
+                                font-weight: 500 !important;
                                 margin-bottom: var(--pos);
+                                margin-left: auto;
                               }
                               bar-card-background {
-                                background: none;
-                                border-radius: .3em;
+                                background: none !important;
+                                box-shadow: none !important;
                               }
                               bar-card-title {
                                 overflow: visible;
@@ -191,25 +196,25 @@
                                 {% endif %}
                                 --pos: {{ states('sensor.oresundskraft').split(',')[3].split(' ')[2] | int /19 }}em;
                               }
-                              ha-card, bar-card-backgroundbar {
-                                box-shadow: none;
-                                background: none;
+                              bar-card-name, bar-card-iconbar {
+                                padding-left: 0 !important;
                               }
                               bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, 
                               bar-card-indicatorcontainer, bar-card-indicator {
                                 border-radius: .3em;
                               }
                               bar-card-value {
-                                color: var(--kwh_bar);
+                                color: var(--kwh_bar) !important;
                                 filter: brightness(1.5);
                                 font-size: 1em;
                                 text-shadow: none;
-                                font-weight: 500;
+                                font-weight: 500 !important;
                                 margin-bottom: var(--pos);
+                                margin-left: auto;
                               }
                               bar-card-background {
-                                background: none;
-                                border-radius: .3em;
+                                background: none !important;
+                                box-shadow: none !important;
                               }
                               bar-card-title {
                                 overflow: visible;
@@ -236,25 +241,25 @@
                                 {% endif %}
                                 --pos: {{ states('sensor.oresundskraft').split(',')[4].split(' ')[2] | int /19 }}em;
                               }
-                              ha-card, bar-card-backgroundbar {
-                                box-shadow: none;
-                                background: none;
+                              bar-card-name, bar-card-iconbar {
+                                padding-left: 0 !important;
                               }
                               bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, 
                               bar-card-indicatorcontainer, bar-card-indicator {
                                 border-radius: .3em;
                               }
                               bar-card-value {
-                                color: var(--kwh_bar);
+                                color: var(--kwh_bar) !important;
                                 filter: brightness(1.5);
                                 font-size: 1em;
                                 text-shadow: none;
-                                font-weight: 500;
+                                font-weight: 500 !important;
                                 margin-bottom: var(--pos);
+                                margin-left: auto;
                               }
                               bar-card-background {
-                                background: none;
-                                border-radius: .3em;
+                                background: none !important;
+                                box-shadow: none !important;
                               }
                               bar-card-title {
                                 overflow: visible;
@@ -281,25 +286,25 @@
                                 {% endif %}
                                 --pos: {{ states('sensor.oresundskraft').split(',')[5].split(' ')[2] | int /19 }}em;
                               }
-                              ha-card, bar-card-backgroundbar {
-                                box-shadow: none;
-                                background: none;
+                              bar-card-name, bar-card-iconbar {
+                                padding-left: 0 !important;
                               }
                               bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, 
                               bar-card-indicatorcontainer, bar-card-indicator {
                                 border-radius: .3em;
                               }
                               bar-card-value {
-                                color: var(--kwh_bar);
+                                color: var(--kwh_bar) !important;
                                 filter: brightness(1.5);
                                 font-size: 1em;
                                 text-shadow: none;
-                                font-weight: 500;
+                                font-weight: 500 !important;
                                 margin-bottom: var(--pos);
+                                margin-left: auto;
                               }
                               bar-card-background {
-                                background: none;
-                                border-radius: .3em;
+                                background: none !important;
+                                box-shadow: none !important;
                               }
                               bar-card-title {
                                 overflow: visible;
@@ -326,25 +331,25 @@
                                 {% endif %}
                                 --pos: {{ states('sensor.oresundskraft').split(',')[6].split(' ')[2] | int /19 }}em;
                               }
-                              ha-card, bar-card-backgroundbar {
-                                box-shadow: none;
-                                background: none;
+                              bar-card-name, bar-card-iconbar {
+                                padding-left: 0 !important;
                               }
                               bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, 
                               bar-card-indicatorcontainer, bar-card-indicator {
                                 border-radius: .3em;
                               }
                               bar-card-value {
-                                color: var(--kwh_bar);
+                                color: var(--kwh_bar) !important;
                                 filter: brightness(1.5);
                                 font-size: 1em;
                                 text-shadow: none;
-                                font-weight: 500;
+                                font-weight: 500 !important;
                                 margin-bottom: var(--pos);
+                                margin-left: auto;
                               }
                               bar-card-background {
-                                background: none;
-                                border-radius: .3em;
+                                background: none !important;
+                                box-shadow: none !important;
                               }
                               bar-card-title {
                                 overflow: visible;
@@ -371,25 +376,25 @@
                                 {% endif %}
                                 --pos: {{ states('sensor.oresundskraft').split(',')[7].split(' ')[2] | int /19 }}em;
                               }
-                              ha-card, bar-card-backgroundbar {
-                                box-shadow: none;
-                                background: none;
+                              bar-card-name, bar-card-iconbar {
+                                padding-left: 0 !important;
                               }
                               bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, 
                               bar-card-indicatorcontainer, bar-card-indicator {
                                 border-radius: .3em;
                               }
                               bar-card-value {
-                                color: var(--kwh_bar);
+                                color: var(--kwh_bar) !important;
                                 filter: brightness(1.5);
                                 font-size: 1em;
                                 text-shadow: none;
-                                font-weight: 500;
+                                font-weight: 500 !important;
                                 margin-bottom: var(--pos);
+                                margin-left: auto;
                               }
                               bar-card-background {
-                                background: none;
-                                border-radius: .3em;
+                                background: none !important;
+                                box-shadow: none !important;
                               }
                               bar-card-title {
                                 overflow: visible;
@@ -416,25 +421,25 @@
                                 {% endif %}
                                 --pos: {{ states('sensor.oresundskraft').split(',')[8].split(' ')[2] | int /19 }}em;
                               }
-                              ha-card, bar-card-backgroundbar {
-                                box-shadow: none;
-                                background: none;
+                              bar-card-name, bar-card-iconbar {
+                                padding-left: 0 !important;
                               }
                               bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, 
                               bar-card-indicatorcontainer, bar-card-indicator {
                                 border-radius: .3em;
                               }
                               bar-card-value {
-                                color: var(--kwh_bar);
+                                color: var(--kwh_bar) !important;
                                 filter: brightness(1.5);
                                 font-size: 1em;
                                 text-shadow: none;
-                                font-weight: 500;
+                                font-weight: 500 !important;
                                 margin-bottom: var(--pos);
+                                margin-left: auto;
                               }
                               bar-card-background {
-                                background: none;
-                                border-radius: .3em;
+                                background: none !important;
+                                box-shadow: none !important;
                               }
                               bar-card-title {
                                 overflow: visible;
@@ -461,25 +466,25 @@
                                 {% endif %}
                                 --pos: {{ states('sensor.oresundskraft').split(',')[9].split(' ')[2] | int /19 }}em;
                               }
-                              ha-card, bar-card-backgroundbar {
-                                box-shadow: none;
-                                background: none;
+                              bar-card-name, bar-card-iconbar {
+                                padding-left: 0 !important;
                               }
                               bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, 
                               bar-card-indicatorcontainer, bar-card-indicator {
                                 border-radius: .3em;
                               }
                               bar-card-value {
-                                color: var(--kwh_bar);
+                                color: var(--kwh_bar) !important;
                                 filter: brightness(1.5);
                                 font-size: 1em;
                                 text-shadow: none;
-                                font-weight: 500;
+                                font-weight: 500 !important;
                                 margin-bottom: var(--pos);
+                                margin-left: auto;
                               }
                               bar-card-background {
-                                background: none;
-                                border-radius: .3em;
+                                background: none !important;
+                                box-shadow: none !important;
                               }
                               bar-card-title {
                                 overflow: visible;
@@ -506,25 +511,25 @@
                                 {% endif %}
                                 --pos: {{ states('sensor.oresundskraft').split(',')[10].split(' ')[2] | int /19 }}em;
                               }
-                              ha-card, bar-card-backgroundbar {
-                                box-shadow: none;
-                                background: none;
+                              bar-card-name, bar-card-iconbar {
+                                padding-left: 0 !important;
                               }
                               bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, 
                               bar-card-indicatorcontainer, bar-card-indicator {
                                 border-radius: .3em;
                               }
                               bar-card-value {
-                                color: var(--kwh_bar);
+                                color: var(--kwh_bar) !important;
                                 filter: brightness(1.5);
                                 font-size: 1em;
                                 text-shadow: none;
-                                font-weight: 500;
+                                font-weight: 500 !important;
                                 margin-bottom: var(--pos);
+                                margin-left: auto;
                               }
                               bar-card-background {
-                                background: none;
-                                border-radius: .3em;
+                                background: none !important;
+                                box-shadow: none !important;
                               }
                               bar-card-title {
                                 overflow: visible;
@@ -551,25 +556,25 @@
                                 {% endif %}
                                 --pos: {{ states('sensor.oresundskraft').split(',')[11].split(' ')[2] | int /19 }}em;
                               }
-                              ha-card, bar-card-backgroundbar {
-                                box-shadow: none;
-                                background: none;
+                              bar-card-name, bar-card-iconbar {
+                                padding-left: 0 !important;
                               }
                               bar-card-bar, bar-card-chargebar, bar-card-indicatorbar, 
                               bar-card-indicatorcontainer, bar-card-indicator {
                                 border-radius: .3em;
                               }
                               bar-card-value {
-                                color: var(--kwh_bar);
+                                color: var(--kwh_bar) !important;
                                 filter: brightness(1.5);
                                 font-size: 1em;
                                 text-shadow: none;
-                                font-weight: 500;
+                                font-weight: 500 !important;
                                 margin-bottom: var(--pos);
+                                margin-left: auto;
                               }
                               bar-card-background {
-                                background: none;
-                                border-radius: .3em;
+                                background: none !important;
+                                box-shadow: none !important;
                               }
                               bar-card-title {
                                 overflow: visible;
@@ -625,7 +630,6 @@
                             - entity: sensor.oresundskraft_total_year_kwh
                           style: |
                             ha-card {
-                              margin-right: 1.8em;
                               margin-top: -2.5em;
                             }
 

@@ -5,6 +5,7 @@
                 deviceID: this
                 card:
                   type: entities
+                  state_color: true
                   show_header_toggle: false
                   entities:
 
@@ -17,24 +18,16 @@
                       style: |
                         :host {
                         --paper-item-icon-color: 
-                          {% if is_state('sensor.monitors_mute_check', 'true') %}
-                            #FFFFFF20
-                          {% elif states(config.entity) | int == 0 %}
-                            #9da0a2
-                          {% elif states(config.entity) | int < 60 %}
-                            #3182b7
-                          {% else %}
-                            red
-                          {% endif %};
+                          {% if is_state('sensor.monitors_mute_check', 'true') %} #FFFFFF20;
+                          {% elif states(config.entity) | int == 0 %} #9da0a2;
+                          {% elif states(config.entity) | int < 60 %} #3182b7;
+                          {% else %} red;
+                          {% endif %}
                           }
 
                     - entity: automation.turn_off_monitorer
-                      icon: mdi:power
-                      name: Stäng av när dator stängs av
 
                     - entity: automation.eq_calibration
-                      name: Automatisk kalibrationsprofil
-                      icon: custom:eq-calibrate
 
                     - type: custom:hui-element
                       card_type: horizontal-stack
@@ -49,9 +42,7 @@
                         icon: mdi:volume-mute
                         tap_action:
                           action: call-service
-                          service: script.turn_on
-                          service_data:
-                            entity_id: script.monitors_mute
+                          service: script.monitors_mute
                         template: icon_action
 
                       - type: custom:button-card

@@ -5,6 +5,7 @@
                 deviceID: this
                 card:
                   type: entities
+                  state_color: true
                   show_header_toggle: false
                   entities:
 
@@ -13,30 +14,31 @@
                       secondary_info: last-changed
 
                     - entity: automation.tv_on_lights
-                      name: Tänd lampa bakom tv
-                      icon: mdi:lightbulb-on-outline
 
                     - entity: input_select.hdmi
 
                     - type: custom:hui-element
                       card_type: horizontal-stack
                       style: |
-                        #root { justify-content: space-evenly;
-                        margin: 1.4em -0.7em 0.7em 0; }
+                        #root {
+                          justify-content: space-evenly;
+                          margin: 1.4em -0.7em 0.7em 0;
+                        }
                       cards:
 
                       - type: custom:button-card
+                        entity: media_player.sony_bravia
                         icon: mdi:volume-mute
-                        triggers_update:
-                          ['media_player.sony_bravia']
+                        show_name: false
                         tap_action:
                           action: call-service
                           service: media_player.volume_mute
                           service_data:
-                            entity_id: media_player.sony_bravia
+                            entity_id: > 
+                              [[[ return entity.entity_id; ]]]
                             is_volume_muted: >
-                              [[[ if (states['media_player.sony_bravia'].attributes.is_volume_muted === 'false')
-                              return 'true'; else return 'false'; ]]]
+                              [[[ return entity.attributes.is_volume_muted === 'false' ? 'true' : 'false'; ]]]
+
                         template: icon_action
 
                       - type: custom:button-card

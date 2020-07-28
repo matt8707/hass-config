@@ -8,19 +8,14 @@
                   cards:
                     - type: entities
                       entities:
+
                         - entity: person.mattias
                           secondary_info: last-changed
+
                     - type: history-graph
-                      entities:
-                        - entity: person.mattias
+                      entities: [entity: person.mattias]
                       hours_to_show: 24
                       refresh_interval: 0
-                      style: |
-                        ha-card {
-                          padding: 0.3em 1.2em 0 1em;
-                          margin: -1em -0.6em 0 0;
-                          z-index: 1;
-                        }
 
                     - type: glance
                       show_state: false
@@ -34,30 +29,9 @@
                         - entity: device_tracker.iphone
                           name: Position
                           icon: custom:iphone-modern
-                      style:
-                        .: |
-                          ha-card {
-                            margin: -0.7em -0.5em 0 -1em;
-                          }
-
-                        "ha-card > div > div:nth-child(1)":
-                          $: |
-                            state-badge {
-                            color: {% if is_state('device_tracker.mattias', 'home') %} #3182b7 {% else %} #FFFFFF20 {% endif %};}
-
-                        "ha-card > div > div:nth-child(2)":
-                          $: |
-                            state-badge {
-                            color: {% if is_state('device_tracker.mattias_bluetooth', 'home') %} #3182b7 {% else %} #FFFFFF20 {% endif %};}
-
-                        "ha-card > div > div:nth-child(3)":
-                          $: |
-                            state-badge {
-                            color: {% if is_state('device_tracker.iphone', 'home') %} #3182b7 {% else %} #FFFFFF20 {% endif %};}
 
                     - type: map
-                      entities:
-                        - device_tracker.iphone
+                      entities: [device_tracker.iphone]
                       default_zoom: 15
                       style: |
                         ha-card {

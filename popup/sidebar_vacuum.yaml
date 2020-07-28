@@ -19,40 +19,20 @@
                       cards:
                         - type: entities
                           title: Dammsugare
-                          show_header_toggle: false
                           class: add_header
                           entities:
 
                           - entity: sensor.roborock_state
+
                           - entity: sensor.roborock_battery
+
                           - entity: sensor.roborock_last_clean
 
                           - type: custom:bar-card
-                            entities:
-                              - entity: sensor.roborock_filter
-                                tap_action:
-                                  action: call-service
-                                  service: homeassistant.update_entity
-                                  service_data:
-                                    entity_id: sensor.roborock_filter
-                              - entity: sensor.roborock_mainbrush
-                                tap_action:
-                                  action: call-service
-                                  service: homeassistant.update_entity
-                                  service_data:
-                                    entity_id: sensor.roborock_mainbrush
-                              - entity: sensor.roborock_sidebrush
-                                tap_action:
-                                  action: call-service
-                                  service: homeassistant.update_entity
-                                  service_data:
-                                    entity_id: sensor.roborock_sidebrush
-                              - entity: sensor.roborock_sensors
-                                tap_action:
-                                  action: call-service
-                                  service: homeassistant.update_entity
-                                  service_data:
-                                    entity_id: sensor.roborock_sensors
+                            width: 55%
+                            height: 2em
+                            decimal: 0
+                            unit_of_measurement: '%'
                             positions:
                               icon: outside
                               indicator: 'off'
@@ -64,34 +44,36 @@
                               - color: '#6d2525'
                                 from: 0
                                 to: 10
-                            decimal: 0
                             entity_row: true
-                            style: |
-                              bar-card-iconbar {
-                                padding-left: 0.23em;
-                              }
-                              bar-card-name {
-                                padding-left: 0.25em;
-                              }
-                              bar-card-value {
-                                margin-right: auto;
-                                color: #e0e1e1;
-                                text-shadow: none;
-                                font-size: 1em;
-                                font-weight: 400;
-                                letter-spacing: 0.01em;
-                              }
-                              bar-card-background {
-                                background: radial-gradient(circle, rgba(52, 57, 58, 0.1) 0%, rgba(17,18,18,0.2) 75%);
-                                box-shadow: inset 0 0 25px #00000045;
-                                border-radius: 0.3em;
-                              }
-                              bar-card-backgroundbar {
-                                background: none;
-                              }
-                            unit_of_measurement: '%'
-                            height: 2em
-                            width: 55%
+                            entities:
+
+                              - entity: sensor.roborock_filter
+                                tap_action:
+                                  action: call-service
+                                  service: homeassistant.update_entity
+                                  service_data:
+                                    entity_id: sensor.roborock_filter
+
+                              - entity: sensor.roborock_mainbrush
+                                tap_action:
+                                  action: call-service
+                                  service: homeassistant.update_entity
+                                  service_data:
+                                    entity_id: sensor.roborock_mainbrush
+
+                              - entity: sensor.roborock_sidebrush
+                                tap_action:
+                                  action: call-service
+                                  service: homeassistant.update_entity
+                                  service_data:
+                                    entity_id: sensor.roborock_sidebrush
+
+                              - entity: sensor.roborock_sensors
+                                tap_action:
+                                  action: call-service
+                                  service: homeassistant.update_entity
+                                  service_data:
+                                    entity_id: sensor.roborock_sensors
 
                           - entity: input_select.roborock_speed
 
@@ -100,7 +82,7 @@
                             style: |
                               #root {
                                 justify-content: space-evenly;
-                                margin: 3.2em -0.7em 0.7em 0;
+                                margin: 2.9em -0.7em 0.7em 0;
                               }
                             cards:
 
@@ -152,7 +134,7 @@
                       class: add_header
                       style: |
                         .card-header {
-                          margin: -0.2em 0 0 0.75em;
+                          margin: -0.3em 0 0 0.75em;
                         }
                       elements:
 
@@ -178,11 +160,9 @@
                           vacuum_icon: 'custom:roborock-vacuum-map'
                           vacuum_color: '#e0e0e0'
                           style:
-                            top: 35%
-                            left: 52%
-                            width: 100%
-                            --ha-card-background: none
-                            --ha-card-box-shadow: none
+                            top: 38%
+                            left: 47.5%
+                            width: 90%
 
                         - type: image
                           tap_action:
@@ -211,13 +191,13 @@
                           show_icon: false
                           styles: &button-card-styles
                             card:
-                              [background: none, box-shadow: none, padding: 3em]
+                              [padding: 3em]
                             name:
                               [font-size: 0.9em, letter-spacing: 0.003em, color: '#aeb0b0', background: '#191c1d80', 
                               padding: 0.48em 0.78em 0.48em 0.78em, border-radius: 0.6em, overflow: visible]
                           style:
-                            left: 78.5%
-                            top: 9.5%
+                            left: 74%
+                            top: 20%
 
                         - type: custom:button-card
                           name: Studio
@@ -231,8 +211,8 @@
                           show_icon: false
                           styles: *button-card-styles
                           style:
-                            left: 39.5%
-                            top: 20%
+                            left: 40.5%
+                            top: 22.5%
 
                         - type: custom:button-card
                           name: Hall
@@ -246,8 +226,8 @@
                           show_icon: false
                           styles: *button-card-styles
                           style:
-                            left: 59.5%
-                            top: 49.5%
+                            left: 60.5%
+                            top: 50%
 
                         - type: custom:button-card
                           name: Kök
@@ -261,8 +241,8 @@
                           show_icon: false
                           styles: *button-card-styles
                           style:
-                            left: 17.5%
-                            top: 52.5%
+                            left: 18.5%
+                            top: 53%
 
                         - type: custom:button-card
                           name: Sovrum
@@ -276,8 +256,8 @@
                           show_icon: false
                           styles: *button-card-styles
                           style:
-                            left: 22.5%
-                            top: 77%
+                            left: 23.5%
+                            top: 77.5%
 
                         - type: custom:button-card
                           entity: input_select.roborock_zone
@@ -292,7 +272,7 @@
                               entity_id: script.zoned_cleanup
                           styles:
                             card:
-                              [background: '#FFFFFF10', border-radius: 0.6em, box-shadow: none]
+                              [background: '#FFFFFF10', border-radius: 0.6em]
                             name:
                               [font-size: 0.75em, color: '#FFFFFF40', margin-bottom: 0.2em]
                             label:
@@ -301,5 +281,5 @@
                               return '#e0e1e170'; return '#e0e1e1';]]]"]
                           style:
                             left: 80%
-                            top: 88%
+                            top: 87.4%
                             width: 10.2em

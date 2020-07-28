@@ -7,28 +7,18 @@
                   type: custom:stack-in-card
                   cards:
                     - type: entities
+                      state_color: true
                       show_header_toggle: false
                       entities:
 
                         - entity: switch.wemo_fan
                           secondary_info: last-changed
-                          style: |
-                            :host {
-                            --paper-item-icon-color: 
-                              {% if is_state(config.entity, 'on') %}
-                                #3182b7
-                              {% else %}
-                                #9e9e9e
-                              {% endif %};
-                              }
 
                         - type: custom:slider-entity-row
                           entity: input_number.wemo_fan_timer
                           hide_state: false
 
                         - entity: automation.wemo_fan_turn_on_temp
-                          icon: mdi:chart-bell-curve-cumulative
-                          name: Slå på om 26 °C överskrids
 
                     - type: custom:mini-graph-card
                       entities:
@@ -42,13 +32,8 @@
                       align_header: left
                       hours_to_show: 24
                       show:
-                        fill: fade
-                        icon: true
-                        name: true
-                        state: true
-                        name_adaptive_color: false
-                        labels: hover
-                        legend: false
+                        {fill: fade, icon: true, name: true, state: true, 
+                        name_adaptive_color: false, labels: hover, legend: false}
                       style: |
                         ha-card {
                           border-radius: 0.35em;
@@ -56,7 +41,8 @@
                           box-shadow: none;
                           margin-top: -0.4em;
                         }
-                        .name > span, .state > span.state__value.ellipsis, 
+                        .name > span,
+                        .state > span.state__value.ellipsis,
                         .state > span.state__uom.ellipsis {
                           font-size: 14px !important;
                           font-weight: 400 !important;
