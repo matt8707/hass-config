@@ -8,23 +8,25 @@ homeassistant:
     #                                                  #
     ####################################################
 
-    sensor.processor_use:
-      icon: mdi:chip
-
-    binary_sensor.plex_availability:
-      icon: mdi:plex
+    #sensor
 
     binary_sensor.nas_internet_access:
       icon: mdi:web
 
+    binary_sensor.plex_availability:
+      icon: mdi:plex
+
+    binary_sensor.wemo_motion:
+      friendly_name: vardagsrummet
+
+    sensor.hall_temperature:
+      friendly_name: Temperatur
+
+    sensor.processor_use:
+      icon: mdi:chip
+
     sensor.aktuellt_spotpris:
       icon: mdi:home-currency-usd
-
-    sensor.public_ip:
-      icon: mdi:web
-
-    sensor.myip:
-      icon: mdi:web
 
     sensor.fullykiosk:
       icon: mdi:tablet-dashboard
@@ -37,21 +39,8 @@ homeassistant:
       friendly_name: Senast omstart
       icon: mdi:update
 
-    sensor.hass_uptime:
-      friendly_name: Senast omstart
-      icon: mdi:update
-
     sensor.drifttid:
       icon: mdi:calendar-clock
-
-    sensor.plex_recently_added:
-      icon: mdi:plex
-
-    sensor.xiaomi_map:
-      icon: mdi:map
-
-    sensor.imac_ip:
-      icon: mdi:web
 
     sensor.imac_system_ssd:
       friendly_name: System SSD
@@ -79,6 +68,17 @@ homeassistant:
     sensor.monitors_mute_check:
       icon: mdi:volume-mute
 
+    sensor.home_assistant_v2_db:
+      friendly_name: Databas
+      icon: mdi:database
+
+    sensor.home_assistant_log:
+      friendly_name: Loggfil
+      icon: mdi:file-document
+
+
+    #media_player
+
     media_player.sony_bravia:
       friendly_name: Tv
       device_class: tv
@@ -89,11 +89,17 @@ homeassistant:
       device_class: tv
       source_list: ['TV', 'HDMI']
 
+
+    #person
+
     person.mattias:
       entity_picture: '/local/mattias.png'
 
     person.sanja:
       entity_picture: '/local/sanja.png'
+
+
+    #light
 
     light.fonsterlampa:
       friendly_name: Skrivbordslampa
@@ -122,6 +128,15 @@ homeassistant:
     light.sanja:
       icon: mdi:floor-lamp
 
+    light.spot_1:
+      friendly_name: Taklampa 1
+
+    light.spot_2:
+      friendly_name: Taklampa 2
+
+
+    #switch
+
     switch.wemo_monitors:
       friendly_name: Monitorer
       icon: custom:studio-monitor
@@ -130,17 +145,40 @@ homeassistant:
       friendly_name: "Fläkt\u00B2"
       icon: custom:pedestal-fan
 
-    light.spot_1:
-      friendly_name: Taklampa 1
+    switch.watchtower:
+      icon: custom:docker-watchtower
 
-    light.spot_2:
-      friendly_name: Taklampa 2
+    switch.fullykiosk_screen:
+      icon: mdi:tablet
 
-    binary_sensor.wemo_motion:
-      friendly_name: vardagsrummet
 
-    sensor.hall_temperature:
-      friendly_name: Temperatur
+    #automation
+
+    automation.tv_on_lights:
+      friendly_name: Tänd Tv-lampa
+
+    automation.notification_motion_hall:
+      friendly_name: Mottag notiser
+      icon: mdi:bell
+
+    automation.turn_off_monitorer:
+      friendly_name: Stäng av när dator stängs av
+      icon: mdi:power
+
+    automation.eq_calibration:
+      friendly_name: Automatisk kalibrationsprofil
+      icon: custom:eq-calibrate
+
+    automation.fan_anslut_turn_on_temp:
+      friendly_name: Slå på om 24 °C överskrids
+      icon: mdi:chart-bell-curve-cumulative
+
+    automation.wemo_fan_turn_on_temp:
+      friendly_name: Slå på om 24 °C överskrids
+      icon: mdi:chart-bell-curve-cumulative
+
+
+    #device_tracker
 
     device_tracker.iphone:
       entity_picture: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'%3E%3Cpath d='M0 0h50v50H0z' fill='%23f7f7f7'/%3E%3Cg fill='%23070707'%3E%3Cpath d='M30.9 9.4H19.1a2.65 2.65 0 0 0-2.6 2.6v26a2.65 2.65 0 0 0 2.6 2.6H31a2.65 2.65 0 0 0 2.6-2.6V12c-.1-1.4-1.2-2.6-2.7-2.6zM32 38a1.11 1.11 0 0 1-1.1 1.1H19.1A1.11 1.11 0 0 1 18 38V12a1.11 1.11 0 0 1 1.1-1.1H21c.2 0 .4.2.4.4a1.11 1.11 0 0 0 1.1 1.1h5.2a1.11 1.11 0 0 0 1.1-1.1c0-.2.2-.4.4-.4h1.9a1.11 1.11 0 0 1 1.1 1.1v26z'/%3E%3Cpath d='M30.9 40.8H19.1c-1.6 0-2.8-1.3-2.8-2.8V12c0-1.6 1.3-2.8 2.8-2.8H31c1.6 0 2.8 1.3 2.8 2.8v26c0 1.5-1.3 2.8-2.9 2.8zM19.1 9.7c-1.3 0-2.3 1.1-2.3 2.3v26c0 1.3 1.1 2.3 2.3 2.3H31c1.3 0 2.3-1.1 2.3-2.3V12c0-1.3-1.1-2.3-2.3-2.3H19.1zm11.8 29.6H19.1c-.8 0-1.4-.6-1.4-1.4V12c0-.8.6-1.4 1.4-1.4H21a.65.65 0 0 1 .6.6c0 .5.4.9.9.9h5.2c.5 0 .9-.4.9-.9a.65.65 0 0 1 .6-.6h1.9c.8 0 1.4.6 1.4 1.4v26c-.2.7-.8 1.3-1.6 1.3zM19.1 11.2c-.5 0-.9.4-.9.9V38c0 .5.4.9.9.9H31c.5 0 .9-.4.9-.9V12c0-.5-.4-.9-.9-.9h-1.9c-.1 0-.1.1-.1.1 0 .8-.6 1.4-1.4 1.4h-5.2c-.8 0-1.4-.6-1.4-1.4 0-.1-.1-.1-.1-.1h-1.8z'/%3E%3C/g%3E%3C/svg%3E"

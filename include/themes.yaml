@@ -136,7 +136,7 @@ frontend:
         }
 
         .card-header {
-          margin: -0.38em 0 1.4em 0.4em;
+          margin: -0.5em 0 1.1em 0.4em;
           font-family: SF Text;
           letter-spacing: 0.005em;
           font-size: 1.5em;
@@ -157,6 +157,12 @@ frontend:
           background: var(--card-color);
         }
 
+        ha-card.type-history-graph {
+          padding: 0.3em 1.2em 0 1em;
+          margin: -1em -0.6em 0 0;
+          z-index: 1;
+        }
+
         ha-card.type-custom-hui-markdown-card {
           font-family: SF Display;
           line-height: 2.05vw;
@@ -174,8 +180,8 @@ frontend:
         ha-card.add_header {
           background: linear-gradient(180deg,
             var(--card-header) 0%,
-            var(--card-header) 4.8em,
-            var(--card-color) 4.8em,
+            var(--card-header) 4.6em,
+            var(--card-color) 4.6em,
             var(--card-color) 100%);
           border-radius: 1em;
         }
@@ -203,7 +209,49 @@ frontend:
           background: none;
           margin-top: -0.7em;
           z-index: 2;
-          padding: 1.9px;
+          padding: 1.4px;
+          width: 15em;
+        }
+
+        /* * * * * * * * * * * * * * * * * *
+         *                                 *
+         *            BAR CARD             *
+         *                                 *
+         * * * * * * * * * * * * * * * * * */
+
+        .type-custom-bar-card bar-card-name {
+          padding-left: 0.25em;
+        }
+
+        .type-custom-bar-card bar-card-iconbar {
+          padding-left: 0.23em;
+        }
+
+        .type-custom-bar-card bar-card-value {
+          margin-right: auto;
+          color: #e0e1e1;
+          text-shadow: none;
+          font-size: 1em;
+          font-weight: 400;
+          letter-spacing: 0.01em;
+        }
+
+        .type-custom-bar-card bar-card-backgroundbar {
+          background: none;
+        }
+
+        .type-custom-bar-card bar-card-background {
+          background: radial-gradient(circle, rgba(52, 57, 58, 0.1) 0%, rgba(17,18,18,0.2) 75%);
+          box-shadow: inset 0 0 25px #00000045;
+          border-radius: 0.3em;
+        }
+
+      card-mod-glance: |
+        ha-card {
+          margin: -0.7em -0.5em 0 -1em;
+        }
+        :host {
+          --paper-item-icon-color: {{ '#3182b7' if is_state(config.entity, 'home') else '#FFFFFF20' }};
         }
 
       card-mod-more-info-yaml: |

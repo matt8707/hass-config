@@ -16,6 +16,7 @@ automation:
       - service: frontend.set_theme
         data:
           name: tablet
+      - service: browser_mod.lovelace_reload
       - service: shell_command.fullykiosk_restart_app
       - service: mqtt.publish
         data:

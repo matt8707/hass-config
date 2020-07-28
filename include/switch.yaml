@@ -33,7 +33,8 @@ switch:
         value_template: "{{ value == 'on' }}"
 
   - platform: mqtt
-    name: gosund_fan
+    name: Strömbrytare
+    icon: mdi:power-socket-de
     command_topic: cmnd/gosund1/POWER1
     payload_on: 'ON'
     payload_off: 'OFF'
@@ -45,7 +46,8 @@ switch:
     retain: false
 
   - platform: mqtt
-    name: gosund_air_purifier
+    name: Strömbrytare
+    icon: mdi:power-socket-de
     command_topic: cmnd/gosund2/POWER1
     payload_on: 'ON'
     payload_off: 'OFF'
@@ -69,52 +71,36 @@ switch:
         icon_template: custom:imac-alternative
         value_template: "{{ is_state('switch.wol_imac', 'on') }}"
         turn_on:
-          service: script.computer_imac
+          service: script.computer_imac_on
         turn_off:
-          service: script.computer_imac
+          service: script.computer_imac_off
 
       tv_sony:
         friendly_name: Tv
         icon_template: custom:tv
         value_template: "{{ is_state('media_player.sony_bravia', 'on') }}"
         turn_on:
-          service: script.tv_sony
+          service: script.tv_sony_on
         turn_off:
-          service: script.tv_sony
+          service: script.tv_sony_off
 
       tv_samsung:
         friendly_name: "Tv\u00B2"
         icon_template: custom:tv
         value_template: "{{ is_state('media_player.samsung', 'on') }}"
         turn_on:
-          service: script.tv_samsung
+          service: script.tv_samsung_on
         turn_off:
-          service: script.tv_samsung
+          service: script.tv_samsung_off
 
       playstation_4:
         friendly_name: Playstation
         icon_template: mdi:sony-playstation
         value_template: "{{ is_state('sensor.playstation_4', 'on') }}"
         turn_on:
-          service: script.playstation_4
+          service: script.playstation_4_on
         turn_off:
-          service: script.playstation_4
-
-      home_leave:
-        friendly_name: Stäng allt
-        value_template: "{{ is_state('script.home_leave', 'on') }}"
-        turn_on:
-          service: script.home_leave
-        turn_off:
-          service: script.home_leave
-
-      home_arrive:
-        friendly_name: Hemma
-        value_template: "{{ is_state('script.home_arrive', 'on') }}"
-        turn_on:
-          service: script.home_arrive
-        turn_off:
-          service: script.home_arrive
+          service: script.playstation_4_off
 
       fullykiosk_screensaver:
         friendly_name: Skärmsläckare
@@ -127,16 +113,17 @@ switch:
 
       fan_anslut:
         friendly_name: Fläkt
+        icon_template: custom:pedestal-fan
         value_template: "{{ is_state('sensor.gosund_fan', 'on') }}"
         turn_on:
-          service: script.fan_anslut
+          service: script.fan_anslut_on
         turn_off:
-          service: script.fan_anslut
+          service: script.fan_anslut_off
 
       air_purifier:
         friendly_name: Luftrenare
         value_template: "{{ is_state('sensor.gosund_air_purifier', 'on') }}"
         turn_on:
-          service: script.air_purifier
+          service: script.air_purifier_on
         turn_off:
-          service: script.air_purifier
+          service: script.air_purifier_off

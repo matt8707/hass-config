@@ -11,13 +11,20 @@ input_boolean:
   sony_bravia:
   samsung:
   playstation_4:
-  computer_lock:
+
   krisinformation_visibility:
   laundry_timer_visibility:
 
   fan_anslut:
-  fan_anslut_oscillate:
   air_purifier:
+
+  fan_anslut_oscillate:
+    name: Oscillera
+    icon: mdi:arrow-left-right
+
+  computer_lock:
+    name: Avstängningslås
+    icon: custom:lock
 
   motion_hall:
     name: hallen
