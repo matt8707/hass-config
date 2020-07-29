@@ -150,17 +150,17 @@
                           min_height: 0
                           map_scale: 1.95
                           floor_color: '#2e3233'
-                          obstacle_weak_color: '#191e1e50'
-                          obstacle_strong_color: '#191e1e'
+                          wall_color: '#191e1e'
                           no_go_area_color: '#ff000015'
                           virtual_wall_color: '#ff000020'
                           virtual_wall_width: 5
                           path_color: '#1e5071'
                           path_width: 1.5
                           vacuum_icon: 'custom:roborock-vacuum-map'
+                          icon_scale: 1.1
                           vacuum_color: '#e0e0e0'
                           style:
-                            top: 38%
+                            top: 37%
                             left: 47.5%
                             width: 90%
 

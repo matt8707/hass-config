@@ -11,6 +11,9 @@
                   type: entities
                   style:
                     .: |
+                      #states {
+                        margin-top: -0.5em;
+                      }
                       #states > div > button-card {
                         margin: -0.5em 0 1.4em 1.05em;
                       }
@@ -55,24 +58,16 @@
                     - type: custom:hui-element
                       card_type: markdown
                       content: >
+                        <span><ha-icon icon="mdi:home-assistant"></ha-icon> Home Assistant {{ states('sensor.hass_version_installed') }}</span><br>
                         {% if states('sensor.hass_version_installed') == states('sensor.hass_version_latest') %}
-                        <span><ha-icon icon="mdi:home-assistant"></ha-icon> Home Assistant</span><br>
                         <b>Inga uppdateringar - {{ state_attr('sensor.hass_dev_release', 'friendly_name') }} {{ states('sensor.hass_dev_release') | lower }}</b>
                         {% else %}
-                        {% endif %}
-
-
-
-                        {% if states('sensor.hass_version_installed') != states('sensor.hass_version_latest') %}
-                        <span><ha-icon icon="mdi:home-assistant"></ha-icon> Home Assistant</span><br>
                         <b>{{ states('sensor.hass_version_latest') }} tillgänglig</b> {{ '\U0001f389' }}
                     
                         {% if states('sensor.hass_version_latest') == states('sensor.hass_release_notes') %}
                         {{- state_attr('sensor.hass_release_notes', 'body') }}
-
                         {% else %}
                         {% endif %}
-                        {% else %}
                         {% endif %}
 
                     - type: custom:button-card
@@ -91,27 +86,17 @@
                     - type: custom:hui-element
                       card_type: markdown
                       content: >
+                        <span><ha-icon icon="hacs:hacs"></ha-icon> Community Store {{ states('sensor.hacs_version') }}</span><br>
                         {% if is_state('sensor.hacs', '0') %}
-                        <span><ha-icon icon="hacs:hacs"></ha-icon> Community Store</span><br>
                         <b>Inga uppdateringar</b>
                         {% else %}
-                        {% endif %}
-
-
-                        {% if not is_state('sensor.hacs', '0') %}
-                        <span><ha-icon icon="hacs:hacs"></ha-icon> Community Store</span><br>
-                        {% if is_state('sensor.hacs', '1') %}
-                        <b>{{ states('sensor.hacs') }} uppdatering tillgänglig</b>
-                        {% else %}
-                        <b>{{ states('sensor.hacs') }} uppdateringar tillgängliga</b>
-                        {% endif %}
-
+                        <b>{{ states('sensor.hacs') }} {{ 'uppdatering tillgänglig' if is_state('sensor.hacs', '1') 
+                        else 'uppdateringar tillgängliga' }}</b> {{ '\U0001f389' }}
 
                         {% for repo in state_attr('sensor.hacs', 'repositories') %}
                         * {{ repo.display_name }} - Version {{ repo.available_version }} ([{{ repo.installed_version }}](#))
 
                         {% endfor %}
-                        {% else %}
                         {% endif %}
 
                     - type: custom:button-card
@@ -131,7 +116,7 @@
                           card:
                             type: custom:hui-element
                             card_type: iframe
-                            url: !secret hacs_url
+                            url: /hacs
                             aspect_ratio: 65%
                             style: 'ha-card { border-radius: 0 0 1em 1em;}'
                       template: name_action
