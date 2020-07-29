@@ -231,6 +231,11 @@ sensor:
     command: !secret imac_uptime
 
   - platform: command_line
+    name: hacs_version
+    scan_interval: 86400
+    command: grep -oP 'VERSION = "\K[^"]+' custom_components/hacs/const.py
+
+  - platform: command_line
     name: skanetrafiken
     scan_interval: 120
     command: !secret skanetrafiken

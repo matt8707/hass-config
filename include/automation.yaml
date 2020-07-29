@@ -98,6 +98,15 @@ automation:
       - service: light.turn_on
         entity_id: light.tvlampa
 
+  - alias: hacs_version_grep
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: sensor.hacs
+    action:
+      - service: homeassistant.update_entity
+        entity_id: sensor.hacs_version
+
   - alias: krisinformation_visibility
     initial_state: true
     trigger:
