@@ -290,7 +290,8 @@ views:
             #root > hui-icon-element:active {color: rgba(255, 255, 255, 0.35) !important; transition: none;}
 
             #root > hui-icon-element:nth-child(10) {
-              {% if states('sensor.hass_version_installed') != states('sensor.hass_version_latest') or 
+              {% if states('sensor.hass_version_installed') != states('sensor.hass_version_latest') and 
+              not is_state('sensor.hass_version_latest', 'unknown') or 
               not is_state('sensor.hacs', '0') and not is_state('sensor.hacs', 'unknown') %}
                 color: #234e6a !important;
                 {% else %}
