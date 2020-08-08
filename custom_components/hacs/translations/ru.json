@@ -74,6 +74,7 @@
         "exist": "{item} уже существует.",
         "generic": "Вы уверены?",
         "home_assistant_is_restarting": "Подожди, теперь Home Assistant перезагружается.",
+        "home_assistant_version_not_correct": "Вы используете Home Assistant версии '{haversion}', но данный репозиторий требует минимальную установленную версию '{minversion}'.",
         "no": "Нет",
         "no_upgrades": "Нет обновлений",
         "ok": "ОК",
@@ -190,6 +191,7 @@
         }
     },
     "repository_banner": {
+        "config_flow": "Эта интеграция поддерживает config_flow, это означает, что теперь вы можете перейти в раздел интеграций вашего пользовательского интерфейса, чтобы настроить её.",
         "config_flow_title": "Поддерживается настройка из пользовательского интерфейса",
         "integration_not_loaded": "Эта интеграция не загружена в Home Assistant.",
         "no_restart_required": "Перезагрузка не требуется",
@@ -235,6 +237,7 @@
         "note_installed": "После установки, файлы будут расположены в",
         "note_integration": "вам всё ещё нужно добавить код для настройки интеграции в файл 'configuration.yaml'",
         "note_plugin": "вам всё ещё нужно добавить код для настройки плагина в конфигурацию Lovelace ('ui-lovelace.yaml')",
+        "note_plugin_post_107": "вам всё равно нужно добавить его в конфигурацию Lovelace ('configuration.yaml' или редактор ресурсов по пути '\/config\/lovelace\/resources').",
         "open_issue": "Сообщить о проблеме",
         "open_plugin": "Открыть плагин",
         "reinstall": "Переустановить",

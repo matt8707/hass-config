@@ -12,6 +12,7 @@
         "documentation": "Dokumentacja",
         "element": "element",
         "hacs_is_disabled": "HACS jest wyłączony",
+        "ignore": "Ignoruj",
         "install": "Zainstaluj",
         "installed": "zainstalowane",
         "integration": "Integracja",
@@ -122,6 +123,12 @@
         "type": "Typ",
         "url": "URL"
     },
+    "dialog_removed": {
+        "link": "Link zewnętrzny do dodatkowych informacji",
+        "name": "Nazwa repozytorium",
+        "reason": "Powód usunięcia",
+        "type": "Rodzaj usunięcia"
+    },
     "dialog_update": {
         "available_version": "Dostępna wersja",
         "changelog": "Lista zmian",
@@ -141,6 +148,7 @@
                 "content": "Dopóki nie zostaną zakończone, niektóre repozytoria mogą nie być wyświetlane",
                 "title": "Wykonywane są zadania w tle"
             },
+            "removed": "Usunięto repozytorium '{repository}'",
             "resources": {
                 "content": "Elementy Lovelace, które nie zostały poprawnie załadowane: {number}",
                 "title": "Nie załadowano w Lovelace"
@@ -249,6 +257,8 @@
         "upgrade": "Uaktualnij"
     },
     "search": {
+        "installed": "Wyszukaj zainstalowane repozytoria",
+        "installed_new": "Wyszukaj zainstalowane lub nowe repozytoria",
         "placeholder": "Wyszukaj repozytorium"
     },
     "sections": {

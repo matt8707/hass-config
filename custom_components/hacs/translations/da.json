@@ -246,6 +246,8 @@
         "upgrade": "Opdater"
     },
     "search": {
+        "installed": "Søg efter installerede repositories",
+        "installed_new": "Søg efter installerede eller nye repositories",
         "placeholder": "Søg efter repository"
     },
     "sections": {

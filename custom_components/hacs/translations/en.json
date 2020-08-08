@@ -12,6 +12,7 @@
         "documentation": "Documentation",
         "element": "element",
         "hacs_is_disabled": "HACS is disabled",
+        "ignore": "Ignore",
         "install": "Install",
         "installed": "installed",
         "integration": "Integration",
@@ -122,6 +123,12 @@
         "type": "Type",
         "url": "URL"
     },
+    "dialog_removed": {
+        "link": "External link to more information",
+        "name": "Repository name",
+        "reason": "Removal reason",
+        "type": "Removal type"
+    },
     "dialog_update": {
         "available_version": "Available version",
         "changelog": "Changelog",
@@ -141,6 +148,7 @@
                 "content": "Some repositories might not show untill this is completed",
                 "title": "Background tasks pending"
             },
+            "removed": "Removed repository '{repository}'",
             "resources": {
                 "content": "You have {number} Lovelace elements that are not loaded properly in Lovelace.",
                 "title": "Not loaded in Lovelace"
@@ -249,6 +257,8 @@
         "upgrade": "Update"
     },
     "search": {
+        "installed": "Search for installed repositories",
+        "installed_new": "Search for installed or new repositories",
         "placeholder": "Search for repository"
     },
     "sections": {

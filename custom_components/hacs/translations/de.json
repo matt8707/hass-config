@@ -92,8 +92,8 @@
         "useful_links": "Nützliche Links"
     },
     "dialog_add_repo": {
-        "limit": "Es werden nur die ersten 100 Repositorys angezeigt. Verwenden Sie die Suche, um zu filtern, was Sie benötigen",
-        "no_match": "Es wurden keine Repositorys gefunden, die Ihrem Filter entsprechen",
+        "limit": "Es werden nur die ersten 100 Repositories angezeigt. Verwenden Sie die Suche, um zu filtern, was Sie benötigen",
+        "no_match": "Es wurden keine Repositories gefunden, die Ihrem Filter entsprechen",
         "sort_by": "Sortiere nach",
         "title": "Repository hinzufügen"
     },
@@ -108,7 +108,7 @@
         "author": "Autor",
         "downloads": "Downloads",
         "install": "Installieren Sie dieses Repository in HACS",
-        "loading": "Informationen laden ...",
+        "loading": "Informationen laden...",
         "no_info": "Der Entwickler hat keine weiteren Informationen für dieses Repository bereitgestellt",
         "open_issues": "Probleme melden",
         "open_repo": "Repository öffnen",
@@ -146,7 +146,7 @@
                 "title": "Nicht in Lovelace geladen"
             },
             "restart": {
-                "content": "Sie haben {number} -Integrationen, die einen Neustart von Home Assistant erfordern. Dies können Sie im Abschnitt 'Server Controls' im Konfigurationsteil der Home Assistant-Benutzeroberfläche tun.",
+                "content": "Sie haben {number} Integrationen, die einen Neustart von Home Assistant erfordern. Dies können Sie im Abschnitt 'Server Controls' im Konfigurationsteil der Home Assistant-Benutzeroberfläche tun.",
                 "title": "Ausstehender Neustart"
             },
             "startup": {
@@ -303,7 +303,7 @@
         "new_repositories": "Neue Repositories",
         "new_repositories_note": "Hier werden über 10 neue Repositorys angezeigt. Wenn Sie alle als gelesen markieren möchten, klicken Sie auf die 3 Punkte in der oberen rechten Ecke und blenden sie alle aus.",
         "no_repositories": "Keine Repositories",
-        "no_repositories_desc1": "Anscheinend sind in diesem Abschnitt noch keine Repositorys installiert.",
+        "no_repositories_desc1": "Anscheinend sind in diesem Abschnitt noch keine Repositories installiert.",
         "no_repositories_desc2": "Klicken Sie auf das + in der unteren Ecke, um Ihre ersten hinzuzufügen!",
         "no_repositories_found_desc1": "In diesem Abschnitt wurden keine installierten Repositorys gefunden, die mit \"{searchInput}\" übereinstimmen.",
         "no_repositories_found_desc2": "Versuchen Sie, nach etwas anderem zu suchen!",

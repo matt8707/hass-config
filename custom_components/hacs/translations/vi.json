@@ -231,7 +231,7 @@
         "lovelace_no_js_type": "Không thể xác định loại Bổ sung này, kiểm tra lại kho ứng dụng.",
         "newest": "mới nhất",
         "note_appdaemon": "bạn vẫn cần thêm vào tập tin 'apps.yaml'",
-        "note_installed": "Một khi được cài đặt, mục nằm sẽ nằm ở",
+        "note_installed": "Một khi được cài đặt, mục này sẽ nằm ở",
         "note_integration": "bạn vẫn cần thêm vào tập tin 'configuration.yaml'",
         "note_plugin": "bạn vẫn cần thêm vào cấu hình lovelace ('ui-lovelace.yaml' hoặc trình soạn thảo giao diện)",
         "note_plugin_post_107": "bạn vẫn cần phải thêm nó vào cấu hình Lovelace ('configuration.yaml' hoặc trình biên tập tài nguyên '\/config\/Lovelace\/Resources ')",

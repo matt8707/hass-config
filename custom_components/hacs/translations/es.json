@@ -12,6 +12,7 @@
         "documentation": "Documentación",
         "element": "elemento",
         "hacs_is_disabled": "HACS está deshabilitado",
+        "ignore": "Ignorar",
         "install": "Instalar",
         "installed": "instalado",
         "integration": "Integración",
@@ -102,7 +103,7 @@
         "no_category": "Categoría que falta",
         "no_repository": "Falta el repositorio",
         "title": "Repositorios personalizados",
-        "url_placeholder": "Agregar URL del repositorio personalizado"
+        "url_placeholder": "Agrega la URL del repositorio personalizado que deseas añadir"
     },
     "dialog_info": {
         "author": "Autor",
@@ -116,17 +117,23 @@
         "version_installed": "Versión instalada"
     },
     "dialog_install": {
-        "restart": "Recuerde que debe reiniciar Home Assistant antes de aplicar los cambios en las integraciones (custom_components).",
+        "restart": "Recuerde que debe reiniciar Home Assistant para que se apliquen los cambios en las integraciones (custom_components).",
         "select_version": "Seleccione la versión",
         "show_beta": "Mostrar versiones beta",
         "type": "Tipo",
         "url": "URL"
     },
+    "dialog_removed": {
+        "link": "Enlace externo para más información",
+        "name": "Nombre del repositorio",
+        "reason": "Motivo de la eliminación",
+        "type": "Tipo de eliminación"
+    },
     "dialog_update": {
         "available_version": "Versión disponible",
         "changelog": "Registro de cambios",
         "installed_version": "Versión instalada",
-        "releasenotes": "Notas de lanzamiento para {release}",
+        "releasenotes": "Notas de la versión para {release}",
         "title": "Actualización pendiente"
     },
     "entry": {
@@ -141,20 +148,21 @@
                 "content": "Es posible que algunos repositorios no se muestren hasta que esto se complete",
                 "title": "Tareas en segundo plano pendientes"
             },
+            "removed": "Repositorio '{repository}' eliminado",
             "resources": {
-                "content": "Tienes {number} elementos de Lovelace que no se cargan correctamente en Lovelace.",
-                "title": "No está cargada en Lovelace"
+                "content": "Tienes {number} elementos de Lovelace que no están cargados correctamente en Lovelace.",
+                "title": "No está cargado en Lovelace"
             },
             "restart": {
-                "content": "Tienes {número} integraciones que requieren un reinicio de Home Assistant, puedes hacerlo desde la sección 'Controles del Servidor' en la parte de configuración de la UI de Home Assistant.",
-                "title": "Pendiente de reinicio"
+                "content": "Tienes {number} integraciones que requieren un reinicio de Home Assistant, puedes hacerlo desde la sección 'Controles del Servidor' en la parte de configuración de la UI de Home Assistant.",
+                "title": "Reinicio pendiente"
             },
             "startup": {
                 "content": "HACS se está iniciando, durante este tiempo alguna información podría faltar o ser incorrecta",
                 "title": "HACS se está iniciando"
             },
             "wrong_frontend_installed": {
-                "content": "Tiene {running} la interfaz de HACS instalada, pero se esperaba la versión {expected} , si aparece este mensaje, Home Assistant no pudo instalar la nueva versión, intente reiniciar Home Assistant.",
+                "content": "Tienes instalada la versión {running} de la interfaz de HACS, pero se esperaba la versión {expected}, si ves este mensaje, Home Assistant no pudo instalar la nueva versión, intenta reiniciar Home Assistant.",
                 "title": "Versión inesperada de la interfaz"
             },
             "wrong_frontend_loaded": {
@@ -249,6 +257,8 @@
         "upgrade": "Actualizar"
     },
     "search": {
+        "installed": "Buscar repositorios instalados",
+        "installed_new": "Buscar repositorios instalados o nuevos",
         "placeholder": "Buscar repositorio"
     },
     "sections": {
@@ -304,7 +314,7 @@
         "new_repositories_note": "Tienes más de 10 nuevos repositorios mostrados aquí, si quieres borrarlos todos haz clic en los 3 puntos de la esquina superior derecha y deséchalos todos.",
         "no_repositories": "Sin repositorios",
         "no_repositories_desc1": "Parece que todavía no tiene ningún repositorio instalado en esta sección.",
-        "no_repositories_desc2": "Haga clic en el + en la esquina inferior para agregar su primera!",
+        "no_repositories_desc2": "Haga clic en el + de la esquina inferior derecha para agregar su primer repositorio!",
         "no_repositories_found_desc1": "No se ha encontrado ningún repositorio instalado que coincida con el valor de \"{searchInput}\" en esta sección.",
         "no_repositories_found_desc2": "¡Intenta buscar otra cosa!",
         "pending_upgrades": "Actualizaciones pendientes",

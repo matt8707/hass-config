@@ -231,7 +231,7 @@
         "installed": "Installato",
         "lovelace_copy_example": "Copia l'esempio negli appunti",
         "lovelace_instruction": "Quando lo aggiungi nella configurazione di lovelace, usa questo",
-        "lovelace_no_js_type": "Impossibile determinare il tipo di plugin, verificare il repository.",
+        "lovelace_no_js_type": "Impossibile determinare il tipo di questo elemento, controllare il repository.",
         "newest": "Più recente",
         "note_appdaemon": "dovrai aggiungerlo nel file 'apps.yaml'",
         "note_installed": "Una volta installato, si troverà in",
@@ -249,6 +249,8 @@
         "upgrade": "Aggiorna"
     },
     "search": {
+        "installed": "Cerca i repository installati",
+        "installed_new": "Cercare repository installati o nuovi",
         "placeholder": "Cerca repository"
     },
     "sections": {
