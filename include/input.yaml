@@ -8,15 +8,20 @@ input_boolean:
   ####################################################
 
   computer_imac:
+    initial: off
   sony_bravia:
+    initial: off
   samsung:
+    initial: off
   playstation_4:
+    initial: off
+  fan_anslut:
+    initial: off
+  air_purifier:
+    initial: off
 
   krisinformation_visibility:
   laundry_timer_visibility:
-
-  fan_anslut:
-  air_purifier:
 
   fan_anslut_oscillate:
     name: Oscillera

@@ -51,7 +51,7 @@ scene:
         min_mireds: 153
         state: 'on'
         supported_features: 43
-      light.taklampa:
+      light.storlampa:
         brightness: 83
         color_temp: 454
         friendly_name: Kök
@@ -89,7 +89,7 @@ scene:
         brightness: 94
         color_temp: 392
         state: 'on'
-      light.taklampa:
+      light.storlampa:
         brightness: 83
         color_temp: 454
         state: 'on'

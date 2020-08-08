@@ -14,9 +14,61 @@ binary_sensor:
     payload_on: 'on'
     payload_off: 'off'
 
+  - platform: command_line
+    name: monitors_mute_check
+    scan_interval: 86400
+    command: !secret monitors_mute_check
+    payload_on: 'true'
+    payload_off: 'false'
+
   - platform: ping
     host: 8.8.8.8
     name: nas_internet_access
+
+  - platform: mqtt
+    name: gosund_fan
+    state_topic: stat/gosund1/STATUS10
+    force_update: true
+    payload_on: 'on'
+    payload_off: 'off'
+    value_template: >
+      {{ 'on' if value_json.StatusSNS.ENERGY.Power | int > 10 else 'off' }}
+
+  - platform: mqtt
+    name: gosund_air_purifier
+    state_topic: stat/gosund2/STATUS10
+    force_update: true
+    payload_on: 'on'
+    payload_off: 'off'
+    value_template: >
+      {{ 'on' if value_json.StatusSNS.ENERGY.Power | int > 0 else 'off' }}
+
+  - platform: template
+    sensors:
+      playstation_4:
+        entity_id: media_player.playstation_4
+        icon_template: mdi:sony-playstation
+        value_template: >
+          {% set entity_id = 'media_player.playstation_4' %}
+          {{ not (is_state(entity_id, 'off') or is_state(entity_id, 'standby') 
+          or is_state(entity_id, 'unknown')) }}
+
+      krisinformation_time_trigger:
+        entity_id: sensor.time, sensor.krisinformation_sverige
+        icon_template: mdi:alert
+        value_template: >
+          {% set entity_id = 'sensor.krisinformation_sverige' %}
+          {% if not is_state_attr(entity_id, 'messages', []) %}
+            {% set published = state_attr(entity_id, 'messages')[0]['Published'] %}
+            {{ 'false' if ((as_timestamp(published) - as_timestamp(now())) / 86400) <= -0.5 else 'true' }}
+          {% endif %}
+
+      fullykiosk_motion:
+        entity_id: sensor.fullykiosk
+        friendly_name: Kamera
+        icon_template: mdi:camera
+        value_template: >
+          {{ not is_state_attr('sensor.fullykiosk', 'motionDetectorState', 0) }}
 
 sensor:
 
@@ -66,14 +118,14 @@ sensor:
     resource: https://elen.nu/timpriser-pa-el-for-elomrade-se4-malmo
     name: Aktuellt spotpris
     select: .elspot-area-price
-    value_template: "{{ ((value.split(' ')[0]) | replace (',', '.'))}}"
+    value_template: "{{ ((value.split(' ')[0]) | replace (',', '.')) }}"
     unit_of_measurement: öre/kWh
     scan_interval: 1800
 
   - platform: rest
     name: covid_19_folkhalsomyndigheten
     resource: https://www.arcgis.com/sharing/rest/content/items/2dc63e26f509468f896ec69476b0dab3/data
-    value_template: "{% if value_json.embedCode == '' %} Otillgänglig {% else %} Tillgänglig {% endif %}"
+    value_template: "{{ 'Otillgänglig' if value_json.embedCode == '' else 'Tillgänglig' }}"
     json_attributes_path: $.widgets.widget_1.config
     json_attributes: [embedCode]
     scan_interval: 21600
@@ -81,7 +133,7 @@ sensor:
   - platform: rest
     name: hass_release_notes
     resource: https://api.github.com/repos/home-assistant/core/releases/latest
-    value_template: "{{ value_json.name }}"
+    value_template: '{{ value_json.name }}'
     json_attributes: [body]
     scan_interval: 21600
 
@@ -155,22 +207,6 @@ sensor:
     value_template: OK
     scan_interval: 5
 
-  - platform: mqtt
-    state_topic: stat/gosund1/STATUS10
-    name: gosund_fan
-    force_update: true
-    value_template: >
-      {% if value_json.StatusSNS.ENERGY.Power | int > 10 %}
-      on {% else %} off {% endif %}
-
-  - platform: mqtt
-    state_topic: stat/gosund2/STATUS10
-    name: gosund_air_purifier
-    force_update: true
-    value_template: >
-      {% if value_json.StatusSNS.ENERGY.Power | int > 0 %}
-      on {% else %} off {% endif %}
-
   - platform: krisinformation
     country: Sverige
 
@@ -221,11 +257,6 @@ sensor:
     command: !secret monitors_update_volume
 
   - platform: command_line
-    name: monitors_mute_check
-    scan_interval: 86400
-    command: !secret monitors_mute_check
-
-  - platform: command_line
     name: imac_uptime
     scan_interval: 86400
     command: !secret imac_uptime
@@ -250,27 +281,27 @@ sensor:
     sensors:
       sidebar_greeting:
         entity_id: sensor.time
-        value_template: >-
-          {% set t = now().hour %}
-          {% if t <= 1 %} God natt {{'\U0001F611'}}
-          {% elif t <= 3 %} God natt {{'\U0001F62A'}}
-          {% elif t <= 5 %} God natt {{'\U0001F634'}}
-          {% elif t <= 7 %} God morgon {{'\U0001F4A9'}}
-          {% elif t <= 9 %} God morgon {{'\u2615\uFE0F'}}
-          {% elif t <= 10.5 %} God morgon {{'\U0001F642'}}
-          {% elif t <= 13 %} God dag {{'\U0001F60A'}}
-          {% elif t <= 15 %} God dag {{'\U0001F60E'}}
-          {% elif t <= 17 %} God dag {{'\U0001F44B\U0001F3FB'}}
-          {% elif t <= 19 %} God kväll {{'\U0001F44B\U0001F3FB'}}
-          {% elif t <= 22 %} God kväll {{'\U0001F60C'}}
-          {% elif t <= 23 %} God kväll {{'\U0001F974'}}
+        value_template: >
+          {% set time = now().hour %}
+          {% if time <= 1 %} God natt {{'\U0001F611'}}
+          {% elif time <= 3 %} God natt {{'\U0001F62A'}}
+          {% elif time <= 5 %} God natt {{'\U0001F634'}}
+          {% elif time <= 7 %} God morgon {{'\U0001F4A9'}}
+          {% elif time <= 9 %} God morgon {{'\u2615\uFE0F'}}
+          {% elif time <= 10.5 %} God morgon {{'\U0001F642'}}
+          {% elif time <= 13 %} God dag {{'\U0001F60A'}}
+          {% elif time <= 15 %} God dag {{'\U0001F60E'}}
+          {% elif time <= 17 %} God dag {{'\U0001F44B\U0001F3FB'}}
+          {% elif time <= 19 %} God kväll {{'\U0001F44B\U0001F3FB'}}
+          {% elif time <= 22 %} God kväll {{'\U0001F60C'}}
+          {% elif time <= 23 %} God kväll {{'\U0001F974'}}
           {% else %} God kväll {{'\U0001F974'}}
           {% endif %}
 
       sidebar_active:
-        value_template: >-
+        value_template: >
           {% set lights = [states.light.tvlampa, states.light.golvlampa, states.light.fonsterlampa, states.light.datorlampa, 
-          states.light.vask_hoger, states.light.vask_vanster, states.light.taklampa, states.light.kladkammare_2, 
+          states.light.vask_hoger, states.light.vask_vanster, states.light.storlampa, states.light.kladkammare_2, 
           states.light.hallampa_1, states.light.hallampa_2, states.light.hallampa_3, states.light.mattias, states.light.sanja, 
           states.light.spot_1, states.light.spot_2] %}
           {% set lights_on = lights | selectattr('state','eq','on') | list %}
@@ -308,40 +339,37 @@ sensor:
           {% endif %}
 
       sidebar_vacuum:
-        value_template: >-
-          {% if is_state('vacuum.xiaomi_vacuum_cleaner', 'cleaning') %}
-            Morty dammsuger
-          {% elif is_state('vacuum.xiaomi_vacuum_cleaner', 'returning') %}
-            Morty är färdig
+        entity_id: vacuum.xiaomi_vacuum_cleaner
+        value_template: >
+          {% set entity_id = 'vacuum.xiaomi_vacuum_cleaner' %}
+          {% if is_state(entity_id, 'cleaning') %} Morty dammsuger
+          {% elif is_state(entity_id, 'returning') %} Morty är färdig
           {% endif %}
 
       sidebar_weather:
-        value_template: >-
-          {% if states('sensor.dark_sky_temperature') == 'unknown' %}
-          Kan inte läsa in väderinformation...
+        entity_id: sensor.dark_sky_temperature, sensor.dark_sky_apparent_temperature, sensor.dark_sky_precip_probability
+        value_template: >
+          {% set temperature = states('sensor.dark_sky_temperature') %}
+          {% set apparent = states('sensor.dark_sky_apparent_temperature') | round %}
+          {% set precip = states('sensor.dark_sky_precip_probability') | round %}
+
+          {% if not is_state('sensor.dark_sky_temperature', 'unknown') %}
+            {% if temperature | float <= 0.0 %}
+              Känns som {{ apparent }}° med 
+              {{ precip }}% risk för snö {{'\u2744\uFE0F'}}
+            {% elif temperature | float > 0.0 %} 
+              Känns som {{ apparent}}° med 
+              {{ precip }}% risk för regn {{ '\u2614\uFE0F' if precip > 30 }}
+            {% endif %}
           {% else %}
-            {% if states('sensor.dark_sky_temperature') | float <= 0.0 %}
-            Känns som {{ states('sensor.dark_sky_apparent_temperature') | round }}° med 
-            {{ states('sensor.dark_sky_precip_probability') | round }}% risk för snö {{'\u2744\uFE0F'}}
-
-            {% elif states('sensor.dark_sky_temperature') | float > 0.0 %} 
-            Känns som {{ states('sensor.dark_sky_apparent_temperature') | round }}° med 
-            {{ states('sensor.dark_sky_precip_probability') | round }}% risk för regn 
-            {%- if states('sensor.dark_sky_precip_probability') | float > 30.0 %} {{'\u2614\uFE0F' }}
-            {% endif %}
-
-            {% elif states('sensor.dark_sky_temperature') | float > 19.0 and 
-            states('sensor.dark_sky_precip_probability') | float < 5.0 %}
-            Känns som {{ states('sensor.dark_sky_apparent_temperature') | round }}° {{'\U0001F60E' }} med 
-            {{ states('sensor.dark_sky_precip_probability') | round }}% risk för regn
-            {% endif %}
+            Kan inte läsa in väderinformation...
           {% endif %}
 
       sidebar_skanetrafiken:
-        value_template: >-
-          {% if states('sensor.skanetrafiken') != 'från' %}
-            Nästa buss går {{ states('sensor.skanetrafiken') }}
-          {% endif %}
+        entity_id: sensor.skanetrafiken
+        value_template: >
+          {% set entity_id = 'sensor.skanetrafiken' %}
+          {{ 'Nästa buss går ' + states(entity_id) if not is_state(entity_id, 'från') }}
 
       public_ip:
         value_template: !secret public_ip
@@ -350,64 +378,57 @@ sensor:
         value_template: ' '
 
       dockermon_mem:
+        entity_id: sensor.docker_cpu
         friendly_name: Minne
         icon_template: mdi:memory
-        value_template: >-
-          {{ (state_attr('sensor.docker_cpu', 'memory_stats')['usage'] / 
-          state_attr('sensor.docker_cpu', 'memory_stats')['limit'] * 100) | round(1) }}
+        value_template: >
+          {% set entity_id = 'sensor.docker_cpu' %}
+          {{ (state_attr(entity_id, 'memory_stats')['usage'] / 
+          state_attr(entity_id, 'memory_stats')['limit'] * 100) | round(1) | default(0) }}
 
       imac_vpn:
+        entity_id: sensor.imac_ip, sensor.public_ip
         friendly_name: VPN
-        value_template: >-
-          {% if states('sensor.imac_ip') == states('sensor.public_ip') %}
-            Ej Ansluten
-          {% else %}
-            Ansluten
-          {% endif %}
-        icon_template: >-
-          {% if states('sensor.imac_ip') == states('sensor.public_ip') %}
-            mdi:shield-alert
-          {% else %}
-            mdi:shield-check
-          {% endif %}
+        value_template: >
+          {{ 'Ej Ansluten' if states('sensor.imac_ip') == states('sensor.public_ip') else 'Ansluten' }}
+        icon_template: >
+          mdi:shield-{{ 'alert' if states('sensor.imac_ip') == states('sensor.public_ip') else 'check' }}
 
       computer_imac_uptime:
         entity_id: sensor.time
         friendly_name: Drifttid
         icon_template: mdi:calendar-clock
         value_template: >
-          {% set uptime = (as_timestamp(now()) - as_timestamp(states('sensor.imac_uptime') | int | timestamp_local | default(0))) %}
-          {% if uptime | timestamp_custom('%d') | int-1 == 1 %} {{ uptime | timestamp_custom('%d') | int-1}} dag
-          {% elif uptime | timestamp_custom('%d') | int-1 >= 2 %} {{ uptime | timestamp_custom('%d') | int-1}} dagar
-          {% elif uptime | timestamp_custom('%H') | int-1 == 1 %} {{ uptime | timestamp_custom('%H') | int-1}} timme
-          {% elif uptime | timestamp_custom('%H') | int-1 >= 2 %} {{ uptime | timestamp_custom('%H') | int-1}} timmar
-          {% elif uptime | timestamp_custom('%M') | int == 1 %} {{ uptime | timestamp_custom('%M') | int}} minut
-          {% elif uptime | timestamp_custom('%M') | int >= 2 %} {{ uptime | timestamp_custom('%M') | int}} minuter
+          {% set uptime = (as_timestamp(now()) - as_timestamp(states('sensor.imac_uptime') | int | timestamp_local)) | default(0) %}
+          {% if uptime | timestamp_custom('%d') | int -1 == 1 %} {{ uptime | timestamp_custom('%d') | int -1 }} dag
+          {% elif uptime | timestamp_custom('%d') | int -1 >= 2 %} {{ uptime | timestamp_custom('%d') | int -1 }} dagar
+          {% elif uptime | timestamp_custom('%H') | int -1 == 1 %} {{ uptime | timestamp_custom('%H') | int -1 }} timme
+          {% elif uptime | timestamp_custom('%H') | int -1 >= 2 %} {{ uptime | timestamp_custom('%H') | int -1 }} timmar
+          {% elif uptime | timestamp_custom('%M') | int == 1 %} {{ uptime | timestamp_custom('%M') | int }} minut
+          {% elif uptime | timestamp_custom('%M') | int >= 2 %} {{ uptime | timestamp_custom('%M') | int }} minuter
           {% else %} Minde än 1 minut
           {% endif %}
 
       hass_version:
+        entity_id: sensor.hass_version_installed, sensor.hass_version_latest
         icon_template: mdi:home-assistant
-        friendly_name_template: >-
+        friendly_name_template: >
           Installerad {{ states('sensor.hass_version_installed') }}
-        value_template: >-
-          {% if states('sensor.hass_version_installed') == states('sensor.hass_version_latest') %}
-            Senaste
-          {% else %}
-            {{ states('sensor.hass_version_latest') }}
-          {% endif %}
+        value_template: >
+          {{ 'Senaste' if states('sensor.hass_version_installed') == 
+          states('sensor.hass_version_latest') else states('sensor.hass_version_latest') }}
 
       hass_dev_release:
-        entity_id: sensor.time
+        entity_id: sensor.time, calendar.home_assistant_devs
         icon_template: mdi:dev-to
-        friendly_name_template: >-
+        friendly_name_template: >
           {% if ((as_timestamp(state_attr('calendar.home_assistant_devs', 
           'start_time')) - as_timestamp(now())) / 86400) > 20 %}
             Planerad beta
           {% else %}
             {{ state_attr('calendar.home_assistant_devs','message') }}
           {% endif %}
-        value_template: >-
+        value_template: >
           {% set dev = ((as_timestamp(state_attr('calendar.home_assistant_devs', 
           'start_time')) - as_timestamp(now())) / 86400) %}
           {% if dev < -1 %} Släppt
@@ -418,38 +439,20 @@ sensor:
           {% endif %}
 
       printer_status:
+        entity_id: sensor.hp_printer_status
         friendly_name: Skrivare
         icon_template: mdi:printer-wireless
-        value_template: >-
-          {% if is_state('sensor.hp_printer_status', 'On') %}
-            På
-          {% elif is_state('sensor.hp_printer_status', 'Scanning') %}
-            Skannar
-          {% elif is_state('sensor.hp_printer_status', 'Copying') %}
-            Kopierar
-          {% elif is_state('sensor.hp_printer_status', 'Printing') %}
-            Skriver ut
-          {% elif is_state('sensor.hp_printer_status', 'Cancelling Job') %}
-            Avbryter
-          {% elif is_state('sensor.hp_printer_status', 'Idle') %}
-            Viloläge
-          {% elif is_state('sensor.hp_printer_status', 'trayEmptyOrOpen') %}
-            Inga papper
-          {% elif is_state('sensor.hp_printer_status', 'Off') %}
-            Av
-          {% else %}
-            {{ states('sensor.hp_printer_status') }}
-          {% endif %}
-
-      playstation_4:
-        icon_template: mdi:sony-playstation
-        value_template: >-
-          {% if is_state('media_player.playstation_4', 'off') or 
-          is_state('media_player.playstation_4', 'standby') or 
-          is_state('media_player.playstation_4', 'unknown') %}
-            off
-          {% else %}
-            on
+        value_template: >
+          {% set entity_id = 'sensor.hp_printer_status' %}
+          {% if is_state(entity_id, 'On') %} På
+          {% elif is_state(entity_id, 'Scanning') %} Skannar
+          {% elif is_state(entity_id, 'Copying') %} Kopierar
+          {% elif is_state(entity_id, 'Printing') %} Skriver ut
+          {% elif is_state(entity_id, 'Cancelling Job') %} Avbryter
+          {% elif is_state(entity_id, 'Idle') %} Viloläge
+          {% elif is_state(entity_id, 'trayEmptyOrOpen') %} Inga papper
+          {% elif is_state(entity_id, 'Off') %} Av
+          {% else %} {{ states(entity_id) }}
           {% endif %}
 
     ####################################################
@@ -459,92 +462,77 @@ sensor:
     ####################################################
 
       roborock_battery:
+        entity_id: vacuum.xiaomi_vacuum_cleaner
         friendly_name: Batteri
         unit_of_measurement: '%'
-        value_template: "{{ state_attr('vacuum.xiaomi_vacuum_cleaner', 'battery_level') }}"
-        icon_template: "{{ state_attr('vacuum.xiaomi_vacuum_cleaner', 'battery_icon') }}"
+        value_template: >
+          {{ state_attr('vacuum.xiaomi_vacuum_cleaner', 'battery_level') }}
+        icon_template: >
+          {{ state_attr('vacuum.xiaomi_vacuum_cleaner', 'battery_icon') }}
 
       roborock_state:
+        entity_id: vacuum.xiaomi_vacuum_cleaner
         friendly_name: Roborock S5
         icon_template: custom:roborock-vacuum
-        value_template: >-
-          {% if is_state('vacuum.xiaomi_vacuum_cleaner', 'docked') %}
-          Dockad
-          {% elif is_state('vacuum.xiaomi_vacuum_cleaner', 'paused') %}
-          Pausad
-          {% elif is_state('vacuum.xiaomi_vacuum_cleaner', 'cleaning') %}
-          Städar
-          {% elif is_state('vacuum.xiaomi_vacuum_cleaner', 'returning') %}
-          Återvänder
-          {% else %}
-          {{ states('vacuum.xiaomi_vacuum_cleaner') }}
+        value_template: >
+          {% set entity_id = 'vacuum.xiaomi_vacuum_cleaner' %}
+          {% if is_state(entity_id, 'docked') %} Dockad
+          {% elif is_state(entity_id, 'paused') %} Pausad
+          {% elif is_state(entity_id, 'cleaning') %} Städar
+          {% elif is_state(entity_id, 'returning') %} Återvänder
+          {% else %} {{ states(entity_id) }}
           {% endif %}
 
       roborock_speed:
-        value_template: "{{ state_attr('vacuum.xiaomi_vacuum_cleaner', 'fan_speed') }}"
+        entity_id: vacuum.xiaomi_vacuum_cleaner
+        value_template: >
+          {{ state_attr('vacuum.xiaomi_vacuum_cleaner', 'fan_speed') }}
 
       roborock_filter:
+        entity_id: vacuum.xiaomi_vacuum_cleaner
         friendly_name: Filter
         icon_template: custom:roborock-filter
         unit_of_measurement: '%'
         value_template: >
-          {% if states('vacuum.xiaomi_vacuum_cleaner') == 'unknown' %}
-          {{ states('vacuum.xiaomi_vacuum_cleaner') }}
-          {% else %}
-          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'filter_left') / 1.5) | round }}
-          {% endif %}
+          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'filter_left') / 1.5) | round | default(0) }}
 
       roborock_mainbrush:
+        entity_id: vacuum.xiaomi_vacuum_cleaner
         friendly_name: Huvudborste
         icon_template: custom:roborock-mainbrush
         unit_of_measurement: '%'
         value_template: >
-          {% if states('vacuum.xiaomi_vacuum_cleaner') == 'unknown' %}
-          {{ states('vacuum.xiaomi_vacuum_cleaner') }}
-          {% else %}
-          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'main_brush_left') / 3) | round }}
-          {% endif %}
+          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'main_brush_left') / 3) | round | default(0) }}
 
       roborock_sensors:
+        entity_id: vacuum.xiaomi_vacuum_cleaner
         friendly_name: Sensorer
         icon_template: custom:roborock-sensor
         unit_of_measurement: '%'
         value_template: >
-          {% if states('vacuum.xiaomi_vacuum_cleaner') == 'unknown' %}
-          {{ states('vacuum.xiaomi_vacuum_cleaner') }}
-          {% else %}
-          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'sensor_dirty_left') / 0.3) | round }}
-          {% endif %}
+          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'sensor_dirty_left') / 0.3) | round | default(0) }}
 
       roborock_sidebrush:
+        entity_id: vacuum.xiaomi_vacuum_cleaner
         friendly_name: Sidoborste
         icon_template: custom:roborock-sidebrush
         unit_of_measurement: '%'
         value_template: >
-          {% if states('vacuum.xiaomi_vacuum_cleaner') == 'unknown' %}
-          {{ states('vacuum.xiaomi_vacuum_cleaner') }}
-          {% else %}
-          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'side_brush_left') / 2) | round }}
-          {% endif %}
+          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'side_brush_left') / 2) | round | default(0) }}
 
       roborock_last_clean:
-        entity_id: sensor.time
+        entity_id: sensor.time, vacuum.xiaomi_vacuum_cleaner
         friendly_name: Senast städat
         icon_template: mdi:calendar-clock
         value_template: >
-          {% if states('vacuum.xiaomi_vacuum_cleaner') == 'unknown' %}
-          {{ states('vacuum.xiaomi_vacuum_cleaner') }}
-          {% else %}
-            {% set clean_stop = 
-            (as_timestamp(now()) - as_timestamp(state_attr('vacuum.xiaomi_vacuum_cleaner', 'clean_stop') | default(0))) %}
-            {% if clean_stop | timestamp_custom('%d') | int-1 == 1 %} {{ clean_stop | timestamp_custom('%d') | int-1}} dag sedan
-            {% elif clean_stop | timestamp_custom('%d') | int-1 >= 2 %} {{ clean_stop | timestamp_custom('%d') | int-1}} dagar sedan
-            {% elif clean_stop | timestamp_custom('%H') | int-1 == 1 %} {{ clean_stop | timestamp_custom('%H') | int-1}} timme sedan
-            {% elif clean_stop | timestamp_custom('%H') | int-1 >= 2 %} {{ clean_stop | timestamp_custom('%H') | int-1}} timmar sedan
-            {% elif clean_stop | timestamp_custom('%M')|int == 1 %} {{ clean_stop | timestamp_custom('%M') | int}} minut sedan
-            {% elif clean_stop | timestamp_custom('%M')|int >= 2 %} {{ clean_stop | timestamp_custom('%M') | int}} minuter sedan
-            {% else %} Minde än 1 minut sedan
-            {% endif %}
+          {% set last_cleaned = (as_timestamp(now()) - as_timestamp(state_attr('vacuum.xiaomi_vacuum_cleaner', 'clean_stop'))) | default(0) %}
+          {% if last_cleaned | timestamp_custom('%d') | int -1 == 1 %} {{ last_cleaned | timestamp_custom('%d') | int -1 }} dag sedan
+          {% elif last_cleaned | timestamp_custom('%d') | int -1 >= 2 %} {{ last_cleaned | timestamp_custom('%d') | int -1 }} dagar sedan
+          {% elif last_cleaned | timestamp_custom('%H') | int -1 == 1 %} {{ last_cleaned | timestamp_custom('%H') | int -1 }} timme sedan
+          {% elif last_cleaned | timestamp_custom('%H') | int -1 >= 2 %} {{ last_cleaned | timestamp_custom('%H') | int -1 }} timmar sedan
+          {% elif last_cleaned | timestamp_custom('%M') | int == 1 %} {{ last_cleaned | timestamp_custom('%M') | int }} minut sedan
+          {% elif last_cleaned | timestamp_custom('%M') | int >= 2 %} {{ last_cleaned | timestamp_custom('%M') | int }} minuter sedan
+          {% else %} Minde än 1 minut sedan
           {% endif %}
 
     ####################################################
@@ -554,61 +542,48 @@ sensor:
     ####################################################
 
       fullykiosk_plugged:
+        entity_id: sensor.fullykiosk
         friendly_name: Strömsladd ansluten
-        value_template: >-
-          {% if is_state_attr('sensor.fullykiosk', 'plugged', true) %} Ja {% else %} Nej {% endif %}
-        icon_template: >-
-          {% if is_state_attr('sensor.fullykiosk', 'plugged', true) %} mdi:power-plug {% else %} mdi:power-plug-off {% endif %}
+        value_template: >
+          {{ 'Ja' if is_state_attr('sensor.fullykiosk', 'plugged', true) else 'Nej' }}
+        icon_template: >
+          mdi:power-plug{{ '-off' if is_state_attr('sensor.fullykiosk', 'plugged', false) }}
 
       fullykiosk_storage:
+        entity_id: sensor.fullykiosk
         friendly_name: Lagring
         icon_template: mdi:sd
         unit_of_measurement: '%'
         value_template: >
-          {% if is_state('sensor.fullykiosk', 'unavailable') %}
-          {% else %}
-          {{ 100 - ( state_attr('sensor.fullykiosk', 'internalStorageFreeSpace') / 
-          state_attr('sensor.fullykiosk', 'internalStorageTotalSpace') * 100 ) | int }}
+          {% set entity_id = 'sensor.fullykiosk' %}
+          {% set FreeSpace = state_attr(entity_id, 'internalStorageFreeSpace') %}
+          {% set TotalSpace = state_attr(entity_id, 'internalStorageTotalSpace') %}
+          {% if not (FreeSpace == None or TotalSpace == None) %}
+            {{ 100 - (FreeSpace / TotalSpace * 100) | int }}
           {% endif %}
 
       fullykiosk_memory:
+        entity_id: sensor.fullykiosk
         friendly_name: Minne
         icon_template: mdi:memory
         unit_of_measurement: '%'
         value_template: >
-          {% if is_state('sensor.fullykiosk', 'unavailable') %}
-          {% else %}
-          {{ 100 - ( state_attr('sensor.fullykiosk', 'ramFreeMemory') / 
-          state_attr('sensor.fullykiosk', 'ramTotalMemory') * 100 ) | int }}
-          {% endif %}
-
-      fullykiosk_motion:
-        friendly_name: Kamera
-        icon_template: mdi:camera
-        value_template: >-
-          {% if is_state_attr('sensor.fullykiosk', 'motionDetectorState', 0) %}
-          Av
-          {% else %}
-          På
+          {% set entity_id = 'sensor.fullykiosk' %}
+          {% set FreeMemory = state_attr(entity_id, 'ramFreeMemory') %}
+          {% set TotalMemory = state_attr(entity_id, 'ramTotalMemory') %}
+          {% if not (FreeMemory == None or TotalMemory == None) %}
+            {{ 100 - (FreeMemory / TotalMemory * 100) | int }}
           {% endif %}
 
       fullykiosk_battery:
+        entity_id: sensor.fullykiosk
         friendly_name: Batteri
         unit_of_measurement: '%'
-        value_template: "{{ state_attr('sensor.fullykiosk', 'batteryLevel') }}"
-        icon_template: >-
-          {% set battery_level = state_attr('sensor.fullykiosk', 'batteryLevel') | int ('unknown') %}
-          {% set battery_round = (battery_level | int / 10) | int * 10 %}
-          {% if battery_level == 'unknown' %}
-            mdi:battery-unknown
-          {% else %}
-            {% if battery_round >= 100 %}
-              mdi:battery
-            {% elif battery_round > 0 %}
-              mdi:battery-{{ battery_round }}
-            {% else %}
-              mdi:battery-alert
-            {% endif %}
+        value_template: >
+          {{ state_attr('sensor.fullykiosk', 'batteryLevel') }}
+        icon_template: >
+          {% set battery = (state_attr('sensor.fullykiosk', 'batteryLevel') | int / 10) | int * 10 | default(0) %}
+            mdi:battery{% if battery == 100 %}{% elif battery > 0 %}-{{ battery }}{% else %}-alert
           {% endif %}
 
     ####################################################
@@ -625,150 +600,119 @@ sensor:
           {{ days[now().weekday()] }}
 
       sidebar_date:
+        entity_id: sensor.date
         icon_template: mdi:calendar
         value_template: >
           {% set months = ['Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni', 
           'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December'] %}
-          {{ strptime(states('sensor.date'), '%Y-%m-%d').day }}
-          {{ months[now().month-1] }}
+          {{ strptime(states('sensor.date'), '%Y-%m-%d').day }} {{ months[now().month-1] }}
 
       mathem_countdown:
-        entity_id: sensor.time
+        entity_id: sensor.time, calendar.mathem
         friendly_name: Mathem
         icon_template: mdi:calendar
-        value_template: >-
-          {% if state_attr('calendar.mathem', 'start_time') ==  null or 
-          state_attr('calendar.mathem', 'start_time') == None %}
-          {% else %} 
-            {% set mathem = state_attr('calendar.mathem', 'start_time') %}
-            {% set nu_tid = now() %}
-
-            {% set dag = strptime(mathem, '%Y-%m-%d %H:%M:%S').strftime('%A') 
-            | replace('Monday', 'Måndag') | replace('Tuesday', 'Tisdag') 
-            | replace('Wednesday', 'Onsdag') | replace('Thursday', 'Torsdag') 
-            | replace('Friday', 'Fredag') | replace('Saturday', 'Lördag') | replace('Sunday', 'Söndag') %}
-            {% set tid = as_timestamp(mathem) | timestamp_custom('%H:%M') %}
-            {% set tid_end = as_timestamp(state_attr('calendar.mathem', 'end_time')) | timestamp_custom('%H:%M') %}
-
-            {% set sub_timmar = as_timestamp(mathem) | timestamp_custom('%H') | int / 24 %}
-            {% set count = (as_timestamp(mathem) - as_timestamp(nu_tid)) / 86400 - sub_timmar %}
-
+        value_template: >
+          {% set start_time = state_attr('calendar.mathem', 'start_time') %}
+          {% set end_time = state_attr('calendar.mathem', 'end_time') %}
+          {% if start_time != None %}
+            {% set time = as_timestamp(start_time) | timestamp_custom('%H:%M') %}
+            {% set time_end = as_timestamp(end_time) | timestamp_custom('%H:%M') %}
+            {% set hours = as_timestamp(start_time) | timestamp_custom('%H') | int / 24 %}
+            {% set count = (as_timestamp(start_time) - as_timestamp(now())) / 86400 - hours %}
+            {% set day = strptime(start_time, '%Y-%m-%d %H:%M:%S').strftime('%A') 
+            | replace('Monday', 'Måndag')
+            | replace('Tuesday', 'Tisdag')
+            | replace('Wednesday', 'Onsdag')
+            | replace('Thursday', 'Torsdag')
+            | replace('Friday', 'Fredag')
+            | replace('Saturday', 'Lördag')
+            | replace('Sunday', 'Söndag') %}
+          
             {% if count <= 0.0 %}
-              {{'\U0001F6D2'}} Mathem idag mellan {{ tid }}-{{ tid_end }}
+              {{'\U0001F6D2'}} Mathem idag mellan {{ time }}-{{ time_end }}
             {% elif count <= 1.0 %}
-              Mathem imorgon mellan {{ tid }}-{{ tid_end }}
+              Mathem imorgon mellan {{ time }}-{{ time_end }}
             {% elif count <= 2.0 %}
-              Mathem i övermorgon mellan {{ tid }}-{{ tid_end }}
+              Mathem i övermorgon mellan {{ time }}-{{ time_end }}
             {% else %}
-              Mathem om {{ (count + sub_timmar) | round }} dagar på {{ dag }} mellan {{ tid }}-{{ tid_end }}
+              Mathem om {{ (count + hours) | round }} dagar på {{ day }} mellan {{ time }}-{{ time_end }}
             {% endif %}
           {% endif %}
 
       tvatta_countdown:
-        entity_id: sensor.time
+        entity_id: sensor.time, calendar.tvatta
         friendly_name: Tvätta
         icon_template: mdi:calendar
-        value_template: >-
-          {% if state_attr('calendar.tvatta', 'start_time') ==  null or 
-          state_attr('calendar.tvatta', 'start_time') == None %}
-          {% else %} 
-            {% set calendar_tvattid = state_attr('calendar.tvatta', 'start_time') %}
-            {% set nu_tid = now() %}
-
-            {% set dag = strptime(calendar_tvattid, '%Y-%m-%d %H:%M:%S').strftime('%A') 
-            | replace('Monday', 'Måndag') | replace('Tuesday', 'Tisdag') 
-            | replace('Wednesday', 'Onsdag') | replace('Thursday', 'Torsdag') 
-            | replace('Friday', 'Fredag') | replace('Saturday', 'Lördag') | replace('Sunday', 'Söndag') %}
-            {% set tid = as_timestamp(calendar_tvattid) | timestamp_custom('%H:%M') %}
-
-            {% set sub_timmar = as_timestamp(calendar_tvattid) | timestamp_custom('%H') | int / 24 %}
-            {% set count = (as_timestamp(calendar_tvattid) - as_timestamp(nu_tid)) / 86400 - sub_timmar %}
+        value_template: >
+          {% set start_time = state_attr('calendar.tvatta', 'start_time') %}
+          {% if start_time != None %}
+            {% set time = as_timestamp(start_time) | timestamp_custom('%H:%M') %}
+            {% set hours = as_timestamp(start_time) | timestamp_custom('%H') | int / 24 %}
+            {% set count = (as_timestamp(start_time) - as_timestamp(now())) / 86400 - hours %}
+            {% set day = strptime(start_time, '%Y-%m-%d %H:%M:%S').strftime('%A') 
+            | replace('Monday', 'Måndag')
+            | replace('Tuesday', 'Tisdag')
+            | replace('Wednesday', 'Onsdag')
+            | replace('Thursday', 'Torsdag')
+            | replace('Friday', 'Fredag')
+            | replace('Saturday', 'Lördag')
+            | replace('Sunday', 'Söndag') %}
 
             {% if count <= 0.0 %}
-              {{'\U0001F4A6'}} Tvätt idag {{ tid }}
+              {{'\U0001F4A6'}} Tvätt idag {{ time }}
             {% elif count <= 1.0 %}
-              Tvätt imorgon klockan {{ tid }}
+              Tvätt imorgon 
+              klockan {{ time }}
             {% elif count <= 2.0 %}
-              Tvätt i övermorgon klockan {{ tid }}
+              Tvätt i övermorgon 
+              klockan {{ time }}
             {% else %}
-              Tvätt om {{ (count + sub_timmar) | round }} dagar på {{ dag }} kl {{ tid }}
-            {% endif %}
-          {% endif %}
-
-      tvatta_countdown_timer_trigger:
-        entity_id: sensor.time
-        icon_template: mdi:alert
-        value_template: >-
-          {% if state_attr('calendar.tvatta', 'start_time') ==  null or 
-          state_attr('calendar.tvatta', 'start_time') == None %}
-            false
-          {% else %} 
-            {% set calendar_tvattid = state_attr('calendar.tvatta', 'start_time') %}
-            {% if ((as_timestamp(calendar_tvattid) - as_timestamp(now())) / 86400) <= 0.004 %}
-            true {% else %} false {% endif %}
-          {% endif %}
-
-      krisinformation_time_trigger:
-        entity_id: sensor.time
-        icon_template: mdi:alert
-        value_template: >-
-          {% if is_state_attr('sensor.krisinformation_sverige', 'messages', []) %}
-          {% else %}
-            {% set date = state_attr('sensor.krisinformation_sverige', 'messages')[0]['Published'] %}
-            {% if ((as_timestamp(date) - as_timestamp(now())) / 86400) <= -0.5 %}
-            false {% else %} true
+              Tvätt om {{ (count + hours) | round }} dagar på {{ day }} kl {{ time }}
             {% endif %}
           {% endif %}
 
       mattias_last_changed:
-        entity_id: sensor.time
-        value_template: >-
-          {%- set time = (as_timestamp(now()) - 
-          as_timestamp(states.person.mattias.last_changed)) | int %}
-          {%- set minutes = ((time % 3600) // 60) %}
-          {%- set hours = ((time % 86400) // 3600) %}
-          {%- set days = (time // 86400) %}
+        entity_id: sensor.time, person.mattias
+        value_template: >
+          {% set last_changed = states.person.mattias.last_changed %}
+          {% set time = (as_timestamp(now()) - as_timestamp(last_changed)) | int %}
+          {% set minutes = ((time % 3600) // 60) %}
+          {% set hours = ((time % 86400) // 3600) %}
+          {% set days = (time // 86400) %}
           {% if time <= 60 %} 0m
           {% elif time <= 3600 %} {{ minutes }}m
           {% elif time <= 86400 %} {{ hours }}h
-          {% elif time > 86400 %} {{ days }}d 
+          {% elif time > 86400 %} {{ days }}d
           {% endif %}
 
       sanja_last_changed:
-        entity_id: sensor.time
-        value_template: >-
-          {%- set time = (as_timestamp(now()) - 
-          as_timestamp(states.person.sanja.last_changed)) | int %}
-          {%- set minutes = ((time % 3600) // 60) %}
-          {%- set hours = ((time % 86400) // 3600) %}
-          {%- set days = (time // 86400) %}
+        entity_id: sensor.time, person.sanja
+        value_template: >
+          {% set last_changed = states.person.sanja.last_changed %}
+          {% set time = (as_timestamp(now()) - as_timestamp(last_changed)) | int %}
+          {% set minutes = ((time % 3600) // 60) %}
+          {% set hours = ((time % 86400) // 3600) %}
+          {% set days = (time // 86400) %}
           {% if time <= 60 %} 0m
           {% elif time <= 3600 %} {{ minutes }}m
           {% elif time <= 86400 %} {{ hours }}h
-          {% elif time > 86400 %} {{ days }}d 
+          {% elif time > 86400 %} {{ days }}d
           {% endif %}
 
       hass_uptime:
-        entity_id: sensor.time
+        entity_id: sensor.time, sensor.uptime
         friendly_name: Senast omstart
         icon_template: mdi:update
-        value_template: >-
+        value_template: >
           {% set uptime = states('sensor.uptime') | float %}
-          {% if uptime < 1 %}
-          {{ (uptime * 60) | int }} sekunder sedan
-          {% elif uptime | int == 1 %}
-          1 minut sedan
+          {% if uptime < 1 %} {{ (uptime * 60) | int }} sekunder sedan
+          {% elif uptime | int == 1 %} 1 minut sedan
           {% elif uptime | int > 1 %}
-            {% if uptime | int < 60 %}
-            {{ uptime | int }} minuter sedan
-            {% elif uptime | int / 60 == 24 %}
-            {{ (uptime | int / 60 / 24) | int }} dag sedan
-            {% elif uptime | int / 60 >= 24 %}
-            {{ (uptime | int / 60 / 24) | int }} dagar sedan
-            {% elif uptime | int >= 60 and uptime | int < 120 %}
-            {{ (uptime | int / 60) | int }} timme sedan
-            {% elif uptime | int >= 120 %}
-            {{ (uptime | int / 60) | int }} timmar sedan
+            {% if uptime | int < 60 %} {{ uptime | int }} minuter sedan
+            {% elif uptime | int / 60 == 24 %} {{ (uptime | int / 60 / 24) | int }} dag sedan
+            {% elif uptime | int / 60 >= 24 %} {{ (uptime | int / 60 / 24) | int }} dagar sedan
+            {% elif uptime | int >= 60 and uptime | int < 120 %} {{ (uptime | int / 60) | int }} timme sedan
+            {% elif uptime | int >= 120 %} {{ (uptime | int / 60) | int }} timmar sedan
             {% endif %}
           {% endif %}
 
@@ -779,6 +723,7 @@ sensor:
     ####################################################
 
       nas_disk_temp:
+        entity_id: sensor.synology_average_disk_temp_volume_1
         friendly_name: Disktemperatur
         unit_of_measurement: '°C'
         icon_template: mdi:thermometer
@@ -786,71 +731,40 @@ sensor:
           {{ states('sensor.synology_average_disk_temp_volume_1') | round }}
 
       nas_net_down:
+        entity_id: sensor.synology_network_down
         value_template: ' '
         icon_template: mdi:arrow-down-bold
         friendly_name_template: >
           {% set down = states('sensor.synology_network_down') | float %}
-          {% if down < 1000 %}
-          {{ down | round(0) }} kb/s
-          {% elif down >= 1000 %}
-          {{ ((down / 1000) | round(2) | string).rstrip('.0') }} Mb/s
+          {% if down < 1000 %} {{ down | round(0) }} kb/s
+          {% elif down >= 1000 %} {{ ((down / 1000) | round(2) | string).rstrip('.0') }} Mb/s
           {% endif %}
 
       nas_net_up:
+        entity_id: sensor.synology_network_up
         value_template: ' '
         icon_template: mdi:arrow-up-bold
         friendly_name_template: >
           {% set up = states('sensor.synology_network_up') | float %}
-          {% if up < 1000 %}
-          {{ up | round(0) }} kb/s
-          {% elif up >= 1000 %}
-          {{ ((up / 1000) | round(2) | string).rstrip('.0') }} Mb/s
+          {% if up < 1000 %} {{ up | round(0) }} kb/s
+          {% elif up >= 1000 %} {{ ((up / 1000) | round(2) | string).rstrip('.0') }} Mb/s
           {% endif %}
 
       nas_status:
+        entity_id: sensor.synology_status_volume_1
         friendly_name: Systemhälsa
         icon_template: custom:synology-nas
-        value_template: >-
-          {% if is_state('sensor.synology_status_volume_1', 'normal') %}
-            Bra
-          {% else %}
-            {{ states('sensor.synology_status_volume_1') }}
-          {% endif %}
+        value_template: >
+          {% set entity_id = 'sensor.synology_status_volume_1' %}
+          {{ 'Bra' if is_state(entity_id, 'normal') else states(entity_id) }}
 
       nas_vpn:
+        entity_id: sensor.myip, sensor.public_ip
         friendly_name: VPN
-        value_template: >-
-          {% if states('sensor.myip') == states('sensor.public_ip') %}
-            Ej Ansluten
-          {% else %}
-            Ansluten
-          {% endif %}
-        icon_template: >-
-          {% if states('sensor.myip') == states('sensor.public_ip') %}
-            mdi:shield-alert
-          {% else %}
-            mdi:shield-check
-          {% endif %}
-
-    ####################################################
-    #                                                  #
-    #                      MEDIA                       #
-    #                                                  #
-    ####################################################
-
-      plex_title:
-        icon_template: mdi:plex
         value_template: >
-          {% set data = state_attr('sensor.plex_recently_added', 'data') %} 
-          {{ data[1].title }}
-          {% if data[1].number is none %} ({{ data[1].aired.split('-')[0] }})
-          {% else %} {{ data[1].number }} {% endif %}
-
-      plex_poster:
-        icon_template: mdi:plex
-        value_template: >
-          {% set data = state_attr('sensor.plex_recently_added', 'data') %}
-          {{ data[1].fanart }}
+          {{ 'Ej Ansluten' if states('sensor.myip') == states('sensor.public_ip') else 'Ansluten' }}
+        icon_template: >
+          mdi:shield-{{ 'alert' if states('sensor.myip') == states('sensor.public_ip') else 'check' }}
 
     ####################################################
     #                                                  #
@@ -859,112 +773,128 @@ sensor:
     ####################################################
 
       oresundskraft_1:
+        entity_id: sensor.oresundskraft
         friendly_name_template: >
           {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[0].split(' ')[1], 
           '%Y-%m-%d')) | timestamp_custom('%b') }}
         value_template: "{{ states('sensor.oresundskraft').split(',')[0].split(' ')[2] | int }}"
 
       oresundskraft_2:
+        entity_id: sensor.oresundskraft
         friendly_name_template: >
           {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[1].split(' ')[1], 
           '%Y-%m-%d')) | timestamp_custom('%b') }}
         value_template: "{{ states('sensor.oresundskraft').split(',')[1].split(' ')[2] | int }}"
 
       oresundskraft_3:
+        entity_id: sensor.oresundskraft
         friendly_name_template: >
           {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[2].split(' ')[1], 
           '%Y-%m-%d')) | timestamp_custom('%b') }}
         value_template: "{{ states('sensor.oresundskraft').split(',')[2].split(' ')[2] | int }}"
 
       oresundskraft_4:
+        entity_id: sensor.oresundskraft
         friendly_name_template: >
           {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[3].split(' ')[1], 
           '%Y-%m-%d')) | timestamp_custom('%b') }}
         value_template: "{{ states('sensor.oresundskraft').split(',')[3].split(' ')[2] | int }}"
 
       oresundskraft_5:
+        entity_id: sensor.oresundskraft
         friendly_name_template: >
           {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[4].split(' ')[1], 
           '%Y-%m-%d')) | timestamp_custom('%b') | replace('y','j') }}
         value_template: "{{ states('sensor.oresundskraft').split(',')[4].split(' ')[2] | int }}"
 
       oresundskraft_6:
+        entity_id: sensor.oresundskraft
         friendly_name_template: >
           {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[5].split(' ')[1], 
           '%Y-%m-%d')) | timestamp_custom('%b') }}
         value_template: "{{ states('sensor.oresundskraft').split(',')[5].split(' ')[2] | int }}"
 
       oresundskraft_7:
+        entity_id: sensor.oresundskraft
         friendly_name_template: >
           {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[6].split(' ')[1], 
           '%Y-%m-%d')) | timestamp_custom('%b') }}
         value_template: "{{ states('sensor.oresundskraft').split(',')[6].split(' ')[2] | int }}"
 
       oresundskraft_8:
+        entity_id: sensor.oresundskraft
         friendly_name_template: >
           {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[7].split(' ')[1], 
           '%Y-%m-%d')) | timestamp_custom('%b') }}
         value_template: "{{ states('sensor.oresundskraft').split(',')[7].split(' ')[2] | int }}"
 
       oresundskraft_9:
+        entity_id: sensor.oresundskraft
         friendly_name_template: >
           {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[8].split(' ')[1], 
           '%Y-%m-%d')) | timestamp_custom('%b') }}
         value_template: "{{ states('sensor.oresundskraft').split(',')[8].split(' ')[2] | int }}"
 
       oresundskraft_10:
+        entity_id: sensor.oresundskraft
         friendly_name_template: >
           {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[9].split(' ')[1], 
           '%Y-%m-%d')) | timestamp_custom('%b') | replace('c','k') }}
         value_template: "{{ states('sensor.oresundskraft').split(',')[9].split(' ')[2] | int }}"
 
       oresundskraft_11:
+        entity_id: sensor.oresundskraft
         friendly_name_template: >
           {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[10].split(' ')[1], 
           '%Y-%m-%d')) | timestamp_custom('%b') }}
         value_template: "{{ states('sensor.oresundskraft').split(',')[10].split(' ')[2] | int }}"
 
       oresundskraft_12:
+        entity_id: sensor.oresundskraft
         friendly_name_template: >
           {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[11].split(' ')[1], 
           '%Y-%m-%d')) | timestamp_custom('%b') }}
         value_template: "{{ states('sensor.oresundskraft').split(',')[11].split(' ')[2] | int }}"
 
       oresundskraft_last_month_kwh:
+        entity_id: sensor.oresundskraft
         unit_of_measurement: 'kWh'
         value_template: >
+          {% set entity_id = 'sensor.oresundskraft' %}
           {% for month in range(12) %}
-            {% if now().month-1 == (states('sensor.oresundskraft').split(',')
+            {% if now().month-1 == (states(entity_id).split(',')
             [month].split(' ')[0]|join|string).lstrip('0')|int %}
-              {{ states('sensor.oresundskraft').split(',')[month].split(' ')[2] }}
+              {{ states(entity_id).split(',')[month].split(' ')[2] }}
             {% endif %}
           {% endfor %}
 
       oresundskraft_last_month_price:
-        entity_id: sensor.oresundskraft
+        entity_id: sensor.oresundskraft, sensor.date
         icon_template: mdi:calculator
         friendly_name_template: >
+          {% set entity_id = 'sensor.oresundskraft' %}
           {% if now().month-1 == 0 %}
-            Beräknad {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[11].split(' ')[1], '%Y-%m-%d')) | 
+            Beräknad {{ as_timestamp(strptime(states(entity_id).split(',')[11].split(' ')[1], '%Y-%m-%d')) | 
             timestamp_custom('%B') | replace('ay', 'aj') | replace('y', 'i') | replace('ch', 's') 
             | replace('ne', 'ni') | replace('ust', 'usti') | replace('ct', 'kt')  }}
           {% else %}
             {% for month in range(12) %}
-              {% if now().month-1 == (states('sensor.oresundskraft').split(',')[month].split(' ')[0]|join|string).lstrip('0')|int %}
-                Beräknad {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[month].split(' ')[1], '%Y-%m-%d')) | 
+              {% if now().month-1 == (states(entity_id).split(',')[month].split(' ')[0]|join|string).lstrip('0')|int %}
+                Beräknad {{ as_timestamp(strptime(states(entity_id).split(',')[month].split(' ')[1], '%Y-%m-%d')) | 
                 timestamp_custom('%B') | replace('ay', 'aj') | replace('y', 'i') | replace('ch', 's') 
                 | replace('ne', 'ni') | replace('ust', 'usti') | replace('ct', 'kt')  }}
               {% endif %}
             {% endfor %}
           {% endif %}
         value_template: >
+          {% set entity_id = 'sensor.oresundskraft' %}
           {% set dagar %}
             {% if now().month-1 == 0 %}
-              {{ states('sensor.oresundskraft').split(',')[11].split(' ')[1].split('-')[2] | int }}
+              {{ states(entity_id).split(',')[11].split(' ')[1].split('-')[2] | int }}
             {% else %}
               {% for month in range(12) %}
-                {% if now().month-1 == (states('sensor.oresundskraft').split(',')[month].split(' ')[0]|join|string).lstrip('0')|int %}
-                  {{ states('sensor.oresundskraft').split(',')[month].split(' ')[1].split('-')[2] | int }}
+                {% if now().month-1 == (states(entity_id).split(',')[month].split(' ')[0]|join|string).lstrip('0')|int %}
+                  {{ states(entity_id).split(',')[month].split(' ')[1].split('-')[2] | int }}
                 {% endif %}
               {% endfor %}
             {% endif %}
@@ -982,7 +912,7 @@ sensor:
         unit_of_measurement: 'kr'
 
       oresundskraft_total_year_kwh:
-        entity_id: sensor.oresundskraft
+        entity_id: sensor.oresundskraft, sensor.date
         icon_template: mdi:poll-box
         friendly_name_template: > 
           Totalt {{ now().year }}
@@ -990,13 +920,13 @@ sensor:
         unit_of_measurement: 'kWh'
 
       oresundskraft_year:
-        entity_id: sensor.time
+        entity_id: sensor.date
         icon_template: mdi:checkbox-blank
         friendly_name_template: "{{ now().year }}"
         value_template: ' '
 
       oresundskraft_last_year:
-        entity_id: sensor.time
+        entity_id: sensor.date
         icon_template: mdi:checkbox-blank
         friendly_name_template: "{{ now().year-1 }}"
         value_template: ' '

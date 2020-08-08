@@ -71,59 +71,213 @@ switch:
         icon_template: custom:imac-alternative
         value_template: "{{ is_state('switch.wol_imac', 'on') }}"
         turn_on:
-          service: script.computer_imac_on
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.computer_imac
+          - service: shell_command.imac_switchbot_rpi
+          - service: light.turn_on
+            entity_id: light.datorlampa
         turn_off:
-          service: script.computer_imac_off
+          - choose:
+            - conditions:
+                - condition: state
+                  entity_id: input_boolean.computer_lock
+                  state: 'on'
+              sequence:
+                - service: browser_mod.toast
+                  data:
+                    duration: 8000
+                    message: Dator är låst från att stängas av...
+            default:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.computer_imac
+              - service: shell_command.imac_off
 
       tv_sony:
         friendly_name: Tv
         icon_template: custom:tv
         value_template: "{{ is_state('media_player.sony_bravia', 'on') }}"
         turn_on:
-          service: script.tv_sony_on
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.sony_bravia
+          - service: remote.send_command
+            data:
+              entity_id: remote.vardagsrum
+              command: menu
         turn_off:
-          service: script.tv_sony_off
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.sony_bravia
+          - service: media_player.turn_off
+            entity_id: media_player.sony_bravia
 
       tv_samsung:
         friendly_name: "Tv\u00B2"
         icon_template: custom:tv
         value_template: "{{ is_state('media_player.samsung', 'on') }}"
         turn_on:
-          service: script.tv_samsung_on
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.samsung
+          - service: remote.send_command
+            data:
+              entity_id: remote.sovrum
+              command: menu
         turn_off:
-          service: script.tv_samsung_off
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.samsung
+          - service: media_player.turn_off
+            entity_id: media_player.samsung
 
       playstation_4:
         friendly_name: Playstation
         icon_template: mdi:sony-playstation
-        value_template: "{{ is_state('sensor.playstation_4', 'on') }}"
+        value_template: "{{ is_state('binary_sensor.playstation_4', 'on') }}"
         turn_on:
-          service: script.playstation_4_on
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.playstation_4
+          - service: media_player.turn_on
+            entity_id: media_player.playstation_4
         turn_off:
-          service: script.playstation_4_off
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.playstation_4
+          - service: media_player.turn_off
+            entity_id: media_player.playstation_4
 
       fullykiosk_screensaver:
         friendly_name: Skärmsläckare
         icon_template: mdi:power-sleep
         value_template: "{{ is_state_attr('sensor.fullykiosk', 'currentFragment', 'screensaver') }}"
         turn_on:
-          service: shell_command.fullykiosk_screensaver_on
+          - service: shell_command.fullykiosk_screensaver_on
         turn_off:
-          service: shell_command.fullykiosk_screensaver_off
+          - service: shell_command.fullykiosk_screensaver_off
 
       fan_anslut:
         friendly_name: Fläkt
         icon_template: custom:pedestal-fan
-        value_template: "{{ is_state('sensor.gosund_fan', 'on') }}"
+        value_template: "{{ is_state('binary_sensor.gosund_fan', 'on') }}"
         turn_on:
-          service: script.fan_anslut_on
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.fan_anslut
+          - service: remote.send_command
+            data:
+              entity_id: remote.broadlink
+              device: fläkt
+              delay_secs: 0.2
+              command: power_1
+          - choose:
+            # set oscillation
+            - conditions:
+                - condition: state
+                  entity_id: input_boolean.fan_anslut_oscillate
+                  state: 'on'
+              sequence:
+                - service: remote.send_command
+                  data:
+                    entity_id: remote.broadlink
+                    device: fläkt
+                    delay_secs: 0.2
+                    command: swing_1
+          - choose:
+            # set speed
+            - conditions:
+                - condition: state
+                  entity_id: input_select.fan_anslut_speed
+                  state: Max
+              sequence:
+                - service: remote.send_command
+                  data:
+                    entity_id: remote.broadlink
+                    device: fläkt
+                    delay_secs: 0.2
+                    command: speed_1
+                    num_repeats: 2
+            - conditions:
+                - condition: state
+                  entity_id: input_select.fan_anslut_speed
+                  state: Medium
+              sequence:
+                - service: remote.send_command
+                  data:
+                    entity_id: remote.broadlink
+                    device: fläkt
+                    delay_secs: 0.2
+                    command: speed_1
+          - repeat:
+              count: 20
+              # report state
+              sequence:
+                - condition: state
+                  entity_id: binary_sensor.gosund_fan
+                  state: 'off'
+                - delay:
+                    seconds: 1
+                - service: mqtt.publish
+                  data:
+                    topic: cmnd/gosund1/status
+                    payload: 10
         turn_off:
-          service: script.fan_anslut_off
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.fan_anslut
+          - service: remote.send_command
+            data:
+              entity_id: remote.broadlink
+              device: fläkt
+              command: power_1
+          - repeat:
+              count: 20
+              # report state
+              sequence:
+                - condition: state
+                  entity_id: binary_sensor.gosund_fan
+                  state: 'on'
+                - delay:
+                    seconds: 1
+                - service: mqtt.publish
+                  data:
+                    topic: cmnd/gosund1/status
+                    payload: 10
 
       air_purifier:
         friendly_name: Luftrenare
-        value_template: "{{ is_state('sensor.gosund_air_purifier', 'on') }}"
+        value_template: "{{ is_state('binary_sensor.gosund_air_purifier', 'on') }}"
         turn_on:
-          service: script.air_purifier_on
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.air_purifier
+          - service: remote.send_command
+            data:
+              entity_id: remote.broadlink
+              device: air_purifier
+              command: power_1
+          - repeat:
+              count: 20
+              # report state
+              sequence:
+                - condition: state
+                  entity_id: binary_sensor.gosund_air_purifier
+                  state: 'off'
+                - delay:
+                    seconds: 1
+                - service: mqtt.publish
+                  data:
+                    topic: cmnd/gosund2/status
+                    payload: 10
         turn_off:
-          service: script.air_purifier_off
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.air_purifier
+          - service: remote.send_command
+            data:
+              entity_id: remote.broadlink
+              device: air_purifier
+              command: power_1
+          - repeat:
+              count: 20
+              # report state
+              sequence:
+                - condition: state
+                  entity_id: binary_sensor.gosund_air_purifier
+                  state: 'on'
+                - delay:
+                    seconds: 1
+                - service: mqtt.publish
+                  data:
+                    topic: cmnd/gosund2/status
+                    payload: 10
