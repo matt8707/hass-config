@@ -6,17 +6,13 @@ If you like anything here, Be sure to :star2: my repo!
 
 ![screenshot](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/screenshot.png)
 
-### New April 2020
-
-This config is now fully configurable with code and easier to maintain. I've transitioned from using images to [button-card](https://github.com/custom-cards/button-card). :tada:
-
 ## Features
 
-* A different take on designing a [Lovelace UI](https://www.home-assistant.io/lovelace/) using a [Picture Elements Card](https://www.home-assistant.io/lovelace/picture-elements/) in [panel mode](https://www.home-assistant.io/lovelace/views/#panel-mode).
-* Achieving a less cluttered interface by displaying [more information](https://github.com/thomasloven/hass-browser_mod#popup) on a [long press](https://www.home-assistant.io/lovelace/picture-elements/#hold_action).
+* A different take on designing a [Lovelace UI](https://www.home-assistant.io/lovelace/) using a [Picture Elements Card](https://www.home-assistant.io/lovelace/picture-elements/) in [panel mode](https://www.home-assistant.io/lovelace/dashboards-and-views#panel)
+* Achieving a less cluttered interface by displaying [more information](https://github.com/thomasloven/hass-browser_mod#popup) on a [long press](https://www.home-assistant.io/lovelace/picture-elements/#hold_action)
 * Loading wheel for slow responding entities such as booting a computer.
-* [Applying sound](https://github.com/thomasloven/hass-browser_mod#media_player) to UI using automations listening for events.
-* [CSS Animations](https://www.w3schools.com/css/css3_animations.asp) based on state:
+* [Adding sounds](https://github.com/thomasloven/hass-browser_mod#media_player) to the UI using automations listening for events
+* [CSS Animations](https://www.w3schools.com/css/css3_animations.asp) based on state
 
 ![animations](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/animations.gif)
 
@@ -24,10 +20,10 @@ This config is now fully configurable with code and easier to maintain. I've tra
 
 [Markdown Card](https://www.home-assistant.io/lovelace/markdown/) inside a [Picture Elements Card](https://www.home-assistant.io/lovelace/picture-elements/) to create dynamic [templates](https://www.home-assistant.io/docs/configuration/templating/).
 
-* Time and date with greeting based on time of day.
-* Lights and switches that are on, using natural language.
-* Temperature with emoji based on weather conditions.
-* Important calendar information.
+* Time and date with greeting based on time of day
+* Lights and switches that are on, using natural language
+* Temperature with emoji based on weather conditions
+* Important calendar information
 * Other conditional alerts
 
 ### Sidebar footer
@@ -36,7 +32,7 @@ The three icons at the bottom in order
 
 * Card to control [robot vacuum](https://www.mi-store.se/en/smart-homes/robot-vacuum-cleaners/xiaomi-robot-vacuum-2-roborock).
 * Monitor [Home Assistant](https://home-assistant.io/), [tablet](https://www.samsung.com/us/mobile/tablets/galaxy-tab-a/galaxy-tab-a-10-1-2019-32gb-black-wi-fi-sm-t510nzkaxar/) and [Network Attached Storage](https://www.synology.com/products/DS918+).
-* A list of [scenes](https://www.home-assistant.io/integrations/scene/) with a legend.
+* Lists available HACS updates and release notes for Home Assistant.
 
 ![info](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/info.png)
 
@@ -50,9 +46,9 @@ Conditionally displaying media player controls based on last active device such 
 
 All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.meethue.com/en-gb/p/hue-motion-sensor/8718696743171) in hallway, bathroom and walk-in closet.
 
-* Now using [light-popup-card](https://github.com/DBuit/light-popup-card).
-* Injecting current lamp color to only parts of an icon.
-* Brightness percentage in a ~~circle sensor~~ custom field (SVG+JS).
+* Injecting current lamp color to only parts of an icon
+* Vertical dimmer for touch
+* Brightness in a dynamic circle
 
 ![light](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/light.gif)
 
@@ -60,9 +56,10 @@ All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.m
 
 ### Switches
 
-* [SwitchBot](https://www.switch-bot.com/bot) to cold boot computer with, for now, a raspberry as a [hub](https://github.com/OpenWonderLabs/python-host). Numerous shell commands to monitor and control macOS.
-* [Belkin WeMo Switch](https://www.belkin.com/) to control studio monitors (speakers) with automations to apply [EQ calibration](https://www.sonarworks.com/reference) and volume control through AppleScript.
-* Control a pedestal fan, using [Belkin WeMo Switch](https://www.belkin.com/) and hue motion sensor temperature data to automate on summer nights.
+* [SwitchBot](https://www.switch-bot.com/bot) to cold boot computer with a raspberry as a [hub](https://github.com/OpenWonderLabs/python-host). Numerous shell commands to monitor and control macOS
+* [Belkin WeMo Switch](https://www.belkin.com/) to control studio monitors (speakers) with automations to apply [EQ calibration](https://www.sonarworks.com/reference) and volume control through AppleScript
+* Control a pedestal fan, using [Belkin WeMo Switch](https://www.belkin.com/) and hue motion sensor temperature data to automate on summer nights
+* [Broadlink](https://www.ibroadlink.com/products/ir+rf) to control fan and air purifier with IR and [Gosund Smart Wi-Fi Plug](https://www.gosund.com/download/smart_plug/127.html) for power/state
 
 ![info_light](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/info_light.png)
 
