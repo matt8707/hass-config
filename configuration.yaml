@@ -16,11 +16,6 @@ system_health:
 
 lovelace:
   mode: yaml
-  dashboards:
-    ui-experimental:
-      title: Experimental
-      filename: ui-experimental.yaml
-      mode: yaml
   resources:
     [ {url: /hacsfiles/bar-card/bar-card.js,                                     type: module},
       {url: /hacsfiles/button-card/button-card.js,                               type: module},
@@ -45,12 +40,14 @@ lovelace:
 logger:
   default: warning
   logs:
-    homeassistant.components.homekit.type_media_players: fatal
-    homeassistant.components.command_line.sensor: fatal
-    homeassistant.components.rest.sensor: fatal
-    bravia_tv.braviarc: fatal
+    homeassistant.components.homekit.type_media_players: error
+    homeassistant.components.command_line.sensor: error
+    homeassistant.components.rest.sensor: error
+    bravia_tv.braviarc: error
     homeassistant.components.websocket_api: fatal
-    homeassistant.helpers.service: fatal
+    homeassistant.helpers.service: error
+    homeassistant.components.media_player: error
+    homeassistant.helpers.entity: error
 
 recorder:
   purge_keep_days: 2
@@ -139,13 +136,6 @@ timer:
     icon: mdi:washing-machine
 
 shell_command:
-  # Setup on macos
-  # System Preferences > Sharing > Remote Login
-  # ssh root@hassio.local
-  # ssh-keygen
-  # /config/.ssh/id_rsa
-  # ssh-copy-id -i /config/.ssh/id_rsa USER@XXX.XXX.X.X
-
   imac_switchbot_rpi: !secret imac_switchbot_rpi
   imac_off: !secret imac_off
   imac_sleep: !secret imac_sleep
@@ -178,6 +168,10 @@ light:
     entities: ['light.tvlampa', 'light.golvlampa']
 
   - platform: group
+    name: Skrivbord
+    entities: ['light.fonsterlampa', 'light.storlampa']
+
+  - platform: group
     name: Hall
     entities: ['light.hallampa_1', 'light.hallampa_2', 'light.hallampa_3']
 
@@ -194,11 +188,10 @@ light:
     entities: ['light.mattias', 'light.sanja']
 
   - platform: group
-    name: alla_lampor_utom_hall
+    name: all_lights_exclude_hall
     entities:
-      ['light.fonsterlampa', 'light.tvlampa', 'light.golvlampa', 'light.datorlampa', 
-      'light.vask_hoger', 'light.vask_vanster', 'light.kladkammare_2', 'light.taklampa', 
-      'light.mattias', 'light.sanja', 'light.spot_1', 'light.spot_2']
+      ['light.belysning', 'light.datorlampa', 'light.taklampor', 'light.skrivbord', 
+      'light.badrum', 'light.kladkammare_2', 'light.sanglampor']
 
 homekit:
   ip_address: !secret homekit_ip_address
