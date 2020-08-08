@@ -112,7 +112,7 @@
 
                         - entity: sensor.fullykiosk_plugged
 
-                        - entity: sensor.fullykiosk_motion
+                        - entity: binary_sensor.fullykiosk_motion
 
                         - type: custom:bar-card
                           width: 55%

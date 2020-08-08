@@ -18,14 +18,14 @@
                       style: |
                         :host {
                         --paper-item-icon-color: 
-                          {% if is_state('sensor.monitors_mute_check', 'true') %} #FFFFFF20;
+                          {% if is_state('binary_sensor.monitors_mute_check', 'on') %} #FFFFFF20;
                           {% elif states(config.entity) | int == 0 %} #9da0a2;
                           {% elif states(config.entity) | int < 60 %} #3182b7;
                           {% else %} red;
                           {% endif %}
                           }
 
-                    - entity: automation.turn_off_monitorer
+                    - entity: automation.turn_off_monitors
 
                     - entity: automation.eq_calibration
 

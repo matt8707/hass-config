@@ -15,8 +15,7 @@
                             - entity: sensor.oresundskraft_year
                           style: |
                             :host {
-                            --paper-item-icon-color: 
-                               #405914;
+                            --paper-item-icon-color: #405914;
                              }
                             ha-card {
                             margin-left: 50%;
@@ -27,8 +26,7 @@
                             - entity: sensor.oresundskraft_last_year
                           style: |
                             :host {
-                            --paper-item-icon-color: 
-                               #323637;
+                            --paper-item-icon-color: #323637;
                              }
 
                     - type: custom:mod-card

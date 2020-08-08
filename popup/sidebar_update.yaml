@@ -66,7 +66,6 @@
                     
                         {% if states('sensor.hass_version_latest') == states('sensor.hass_release_notes') %}
                         {{- state_attr('sensor.hass_release_notes', 'body') }}
-                        {% else %}
                         {% endif %}
                         {% endif %}
 
@@ -87,7 +86,7 @@
                       card_type: markdown
                       content: >
                         <span><ha-icon icon="hacs:hacs"></ha-icon> Community Store {{ states('sensor.hacs_version') }}</span><br>
-                        {% if is_state('sensor.hacs', '0') %}
+                        {% if is_state('sensor.hacs', '0') or is_state('sensor.hacs', 'unknown') %}
                         <b>Inga uppdateringar</b>
                         {% else %}
                         <b>{{ states('sensor.hacs') }} {{ 'uppdatering tillgänglig' if is_state('sensor.hacs', '1') 

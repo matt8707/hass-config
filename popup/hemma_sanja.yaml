@@ -6,32 +6,36 @@
                 card:
                   type: custom:stack-in-card
                   cards:
-
                     - type: entities
+                      state_color: true
+                      show_header_toggle: false
                       entities:
+
                         - entity: person.sanja
                           secondary_info: last-changed
 
-                    - type: history-graph
-                      entities: [entity: person.sanja]
-                      hours_to_show: 24
-                      refresh_interval: 0
+                        - type: custom:hui-element
+                          card_type: history-graph
+                          entities: [entity: person.sanja]
+                          hours_to_show: 24
+                          refresh_interval: 0
 
-                    - type: glance
-                      show_state: false
-                      entities:
-                        - entity: device_tracker.sanja
-                          name: Router
-                          icon: mdi:wifi
-                        - entity: device_tracker.sanja_bluetooth
-                          name: Bluetooth
-                          icon: mdi:bluetooth
-                        - entity: sensor.placeholder
-                          name: Position
-                          icon: mdi:help
+                        - type: custom:hui-element
+                          card_type: glance
+                          show_state: false
+                          entities:
 
-                    - type: entities
-                      entities:
+                            - entity: device_tracker.sanja
+                              name: Router
+                              icon: mdi:wifi
+
+                            - entity: device_tracker.sanja_bluetooth
+                              name: Bluetooth
+                              icon: mdi:bluetooth
+
+                            - entity: sensor.placeholder
+                              name: Position
+                              icon: mdi:help
 
                         - entity: sensor.printer_status
 
