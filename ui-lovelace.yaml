@@ -1288,7 +1288,7 @@ views:
           - type: custom:button-card
             entity: person.mattias
             triggers_update:
-              ['person.mattias', 'sensor.mattias_last_changed']
+              ['person.mattias', 'sensor.time']
             state_display: &button_home_state_display >
               [[[ return entity.state === 'home' ? 'Ja' : 'Nej'; ]]]
             show_entity_picture: true
@@ -1308,7 +1308,7 @@ views:
               entity_picture:
                   [clip-path: circle(50% at center), top: 7.5%, left: 11.2%, width: 3vw, position: absolute]
               custom_fields:
-                sensor: *circle_pos
+                last_changed: *circle_pos
             style:
               top: 64.5%
               left: 80.05%
@@ -1316,8 +1316,13 @@ views:
             tap_action: !include popup/hemma_mattias.yaml
             hold_action: !include popup/hemma_mattias.yaml
             custom_fields:
-              sensor: >
-                [[[ const last_changed = states['sensor.mattias_last_changed'].state; 
+              last_changed: &last_changed >
+                [[[ function time(d) {
+                var s = (d / 1000); var m = (d / (1000 * 60)); var h = (d / (1000 * 60 * 60)); var d = (d / (1000 * 60 * 60 * 24));
+                  if (s < 60) { return s.toFixed() + 's'; } else if (m < 60) { return m.toFixed() + 'm'; }
+                  else if (h < 24) { return h.toFixed() + 'h'; } else { return d.toFixed() + 'd'; }
+                }
+                const last_changed = time(Date.now() - Date.parse(states[entity.entity_id].last_changed));
                 const stroke_color = entity.state === 'home' ? '#b2b2b2' : '#313638'; 
                 const fill_color = entity.state === 'home' ? 'none' : '#FFFFFF08';
                 return `<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="20.5" stroke="${stroke_color}" stroke-width="1.5" fill="${fill_color}" />
@@ -1333,7 +1338,7 @@ views:
           - type: custom:button-card
             entity: person.sanja
             triggers_update:
-              ['person.sanja', 'sensor.sanja_last_changed']
+              ['person.sanja', 'sensor.time']
             state_display: *button_home_state_display
             show_entity_picture: true
             state: *button_home_state
@@ -1345,12 +1350,7 @@ views:
             tap_action: !include popup/hemma_sanja.yaml
             hold_action: !include popup/hemma_sanja.yaml
             custom_fields:
-              sensor: >
-                [[[ const last_changed = states['sensor.sanja_last_changed'].state; 
-                const stroke_color = entity.state === 'home' ? '#b2b2b2' : '#313638'; 
-                const fill_color = entity.state === 'home' ? 'none' : '#FFFFFF08';
-                return `<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="20.5" stroke="${stroke_color}" stroke-width="1.5" fill="${fill_color}" />
-                <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">${last_changed}</text></svg>`; ]]]
+              last_changed: *last_changed
             template: switch
 
           #################################################

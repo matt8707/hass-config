@@ -129,17 +129,6 @@ automation:
         data:
           entity_id: light.badrum
 
-  - alias: update_person_last_changed
-    initial_state: true
-    trigger:
-      - platform: state
-        entity_id:
-          ['person.mattias', 'person.sanja']
-    action:
-      - service: homeassistant.update_entity
-        entity_id:
-          ['sensor.mattias_last_changed', 'sensor.sanja_last_changed']
-
   - alias: krisinformation_visibility
     initial_state: true
     trigger:

@@ -671,34 +671,6 @@ sensor:
             {% endif %}
           {% endif %}
 
-      mattias_last_changed:
-        entity_id: sensor.time, person.mattias
-        value_template: >
-          {% set last_changed = states.person.mattias.last_changed %}
-          {% set time = (as_timestamp(now()) - as_timestamp(last_changed)) | int %}
-          {% set minutes = ((time % 3600) // 60) %}
-          {% set hours = ((time % 86400) // 3600) %}
-          {% set days = (time // 86400) %}
-          {% if time <= 60 %} 0m
-          {% elif time <= 3600 %} {{ minutes }}m
-          {% elif time <= 86400 %} {{ hours }}h
-          {% elif time > 86400 %} {{ days }}d
-          {% endif %}
-
-      sanja_last_changed:
-        entity_id: sensor.time, person.sanja
-        value_template: >
-          {% set last_changed = states.person.sanja.last_changed %}
-          {% set time = (as_timestamp(now()) - as_timestamp(last_changed)) | int %}
-          {% set minutes = ((time % 3600) // 60) %}
-          {% set hours = ((time % 86400) // 3600) %}
-          {% set days = (time // 86400) %}
-          {% if time <= 60 %} 0m
-          {% elif time <= 3600 %} {{ minutes }}m
-          {% elif time <= 86400 %} {{ hours }}h
-          {% elif time > 86400 %} {{ days }}d
-          {% endif %}
-
       hass_uptime:
         entity_id: sensor.time, sensor.uptime
         friendly_name: Senast omstart
