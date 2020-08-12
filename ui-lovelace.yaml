@@ -34,10 +34,12 @@ anchors:
     cursor: default
 
 button_card_templates:
-  light:
+  base:
     aspect_ratio: 1/1
     show_state: true
     show_icon: false
+
+  light:
     state: &button_state
       - value: 'on'
         styles:
@@ -146,18 +148,11 @@ button_card_templates:
                           consolidate_entities: true
 
   switch:
-    aspect_ratio: 1/1
-    show_state: true
-    show_icon: false
     state: *button_state
     styles:
       name: *button_styles_name
       state: *button_styles_state
       card: *button_styles_card
-      custom_fields:
-        loading:
-          [filter: "[[[ return entity.state === 'off' ? 'invert(1)' : 'none'; ]]]", 
-           top: 3%, left: 60%, width: 3.7vw, position: absolute, opacity: 0.6]
     tap_action:
       ui_sound: *ui_sound
       haptic: light
@@ -180,9 +175,6 @@ button_card_templates:
     style: '#name > ha-icon {width: 1.4em; margin-right: 0.3em; }'
 
   media:
-    aspect_ratio: 1/1
-    show_state: true
-    show_icon: false
     state_display: >
       [[[ if (entity.attributes.media_title === 'Nothing playing' || entity.attributes.media_title === 'No title' && entity.state === 'paused' ) { return 'Inget spelas'; }
       if (entity.attributes.media_title === 'No title' && entity.state === 'playing') { return 'Ingen titel'; }
@@ -271,6 +263,51 @@ button_card_templates:
         if ((entity.state != 'off' && entity.state != 'idle' && entity.state != 'standby') && (entity.attributes.entity_picture == null)) {
         return 'linear-gradient(0deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.8) 100%)'; }
         else { return 'linear-gradient(0deg, rgba(0,0,0,.8) 0%, rgba(0,0,0,0) 100%), url(' + entity.attributes.entity_picture + ')'; } ]]]"]
+
+  person:
+    state_display: >
+      [[[ return entity.state === 'home' ? 'Ja' : 'Nej'; ]]]
+    show_entity_picture: true
+    state:
+      - value: 'home'
+        styles:
+          card:
+            - background-color: rgba(255, 255, 255, 0.8)
+          name:
+            - color: rgba(0, 0, 0, 0.6)
+          state:
+            - color: rgba(0, 0, 0, 0.6)
+          custom_fields:
+            info:
+              - color: '#959698'
+    styles:
+      entity_picture:
+          [clip-path: circle(50% at center), top: 7.5%, left: 11.2%, width: 3vw, position: absolute]
+      custom_fields:
+        last_changed: *circle_pos
+    custom_fields:
+      last_changed: >
+        [[[ function time(c) {
+        var s = (c / 1000); var m = (c / (1000 * 60)); var h = (c / (1000 * 60 * 60)); var d = (c / (1000 * 60 * 60 * 24));
+        if (s < 60) { return s.toFixed() + 's'; } else if (m < 60) { return m.toFixed() + 'm'; }
+        else if (h < 24) { return h.toFixed() + 'h'; } else { return d.toFixed() + 'd'; }
+        }
+        const last_changed = time(Date.now() - Date.parse(states[entity.entity_id].last_changed));
+        const stroke_color = entity.state === 'home' ? '#b2b2b2' : '#313638'; 
+        const fill_color = entity.state === 'home' ? 'none' : '#FFFFFF08';
+        return `<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="20.5" stroke="${stroke_color}" stroke-width="1.5" fill="${fill_color}" />
+        <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">${last_changed}</text></svg>`; ]]]
+
+  loader:
+    custom_fields:
+      loading: &loading >
+        [[[ if (states[entity.entity_id.replace(entity.entity_id.split('.')[0], 'input_boolean')].state === 'on') { 
+        return '<img src="/local/loader.svg" width="100%">'; } ]]]
+    styles:
+      custom_fields:
+        loading:
+          [filter: "[[[ return entity.state === 'off' ? 'invert(1)' : 'none'; ]]]", 
+           top: 3%, left: 60%, width: 3.7vw, position: absolute, opacity: 0.6]
 
 
 
@@ -588,7 +625,7 @@ views:
               custom_fields:
                 icon_hue:
                   [top: 11%, left: 4.5%, width: 3.05vw, position: absolute]
-            template: light
+            template: ['base', 'light']
 
           #################################################
           #                                               #
@@ -613,7 +650,7 @@ views:
               custom_fields:
                 icon_shade:
                   [top: 11%, left: 4.6%, width: 3.05vw, position: absolute]
-            template: light
+            template: ['base', 'light']
 
           #################################################
           #                                               #
@@ -632,16 +669,16 @@ views:
             tap_action: &tv_tap_action
               services: |
                 [[[ if (entity.state === 'off') {
-                hass.callService('input_boolean', 'turn_on', {entity_id: entity.entity_id.replace('media_player', 'input_boolean')});
+                hass.callService('input_boolean', 'turn_on', {entity_id: entity.entity_id.replace(entity.entity_id.split('.')[0], 'input_boolean')});
                 hass.callService('media_player', 'turn_on', {entity_id: entity.entity_id}); }
                 if (entity.state === 'on') {
-                hass.callService('input_boolean', 'turn_on', {entity_id: entity.entity_id.replace('media_player', 'input_boolean')});
+                hass.callService('input_boolean', 'turn_on', {entity_id: entity.entity_id.replace(entity.entity_id.split('.')[0], 'input_boolean')});
                 hass.callService('media_player', 'turn_off', {entity_id: entity.entity_id});
                 hass.callService('media_player', 'turn_off', {entity_id: entity.entity_id.replace('sony_bravia', 'vardagsrum').replace('samsung', 'sovrum')}); } ]]]
             hold_action: !include popup/vardagsrum_tv.yaml
             custom_fields:
               icon_tv: &icon_tv >
-                [[[ const boolean = states[entity.entity_id.replace('media_player', 'input_boolean')].state;
+                [[[ const boolean = states[entity.entity_id.replace(entity.entity_id.split('.')[0], 'input_boolean')].state;
                 const style = '<style>@keyframes animate_on{from{transform: scaleY(0);}to{transform: scaleY(1);}}.animate_on{animation: animate_on 1s; transform-origin: -100% 46%; animation-fill-mode: forwards;}@keyframes animate_off{from{transform: scaleY(1);}to{transform: scaleY(0);}}.animate_off{animation: animate_off 1s; transform-origin: -100% 46%; animation-fill-mode: forwards;}</style>';
                 const path = '<path d="M46 9.2v27.5H4.1V9.2H46m2.4-2.4H1.6v32.3h46.7c.1 0 .1-32.3.1-32.3zM11.9 43.2h26.3c.6 0 1.1-.4 1.1-1v-.3c0-.6-.4-1.1-1-1.1H11.9c-.6 0-1.1.4-1.1 1v.3a1.11 1.11 0 0 0 1.1 1.1z"/>';
                 const gradient = '<linearGradient id="A" gradientUnits="userSpaceOnUse" x1="5.401" y1="34.714" x2="43.817" y2="11.74"><stop offset="0" stop-color="#64acb7"/><stop offset="1" stop-color="#7fdbe9"/></linearGradient>';
@@ -649,15 +686,12 @@ views:
                 if (entity.state === 'on' && boolean === 'off') { return `<svg viewBox="0 0 50 50"> ${style} ${gradient} <path d="M2.9,8h44.3v29.9H2.9V8z" fill="#20262890"/><path class="animate_on" d="M2.9,8h44.3v29.9H2.9V8z" fill="url(#A)"/> ${path} </svg>`; }
                 if (entity.state === 'on' && boolean === 'on') { return `<svg viewBox="0 0 50 50"> ${gradient} <path d="M2.9,8h44.3v29.9H2.9V8z" fill="url(#A)"/> ${path} </svg>`; }
                 else if (entity.state==='off' && boolean==='on') { return `<svg viewBox="0 0 50 50"> ${path} </svg>`; } ]]]
-              loading: &loading >
-                [[[ if (states[entity.entity_id.replace(/media_player|switch/g, 'input_boolean')].state === 'on') { 
-                return '<img src="/local/loader.svg" width="100%">'; } ]]]
             styles: &icon_tv_styles
               custom_fields:
                 icon_tv:
                   [fill: "[[[ return entity.state === 'on' ? '#616161' : '#9da0a2'; ]]]", 
                   top: 7%, left: 10.7%, width: 3.5vw, position: absolute]
-            template: switch
+            template: ['base', 'switch', 'loader']
 
           #################################################
           #                                               #
@@ -682,12 +716,11 @@ views:
                 <g style="clip-path: url(#mask);"><g class="animate"><path fill="#00aa9e" d="M49.2 38.9l-75.6-25.1v7.4l75.6 25.2z"/><path fill="#f3c202" d="M49.2 46.4l-75.6-25.2v7.5l75.6 25.1z"/><path fill="#326db3" d="M49.2 53.8l-75.6-25.1V51l75.6 25.1zm0-22.3L-26.4 6.4v7.4l75.6 25.1z"/></g></g>
                 <defs><clipPath id="mask"><path d="M47.5 33.2c-.5-2.2-3.9-3.5-9.1-3.9-3.8-.3-7.5.6-11.1 1.9l-.6.2v-5.7l-5.7.8-4.6 1.6L6 31.9h-.1c-1.9.7-3.8 2.2-3.7 4.2.1 2.1 4.7 2.6 8.2 3.2 3.3.6 6.2.2 8.9-.7l7.3 4.8L33 41l10.7-4h.1c2.8-1 4-2.5 3.7-3.8zm-31.3 2l-3.6 1.3c-2.2.8-4.1-1.1-2.1-1.9l1.7-.6 7.2-2.7v2.8l-3.2 1.1zm22.5-1.1l-1.9.7-10.2 3.7V36l6.5-2.4 3.8-1.3c4-.9 5.6.5 1.8 1.8z"/></clipPath></defs><path fill="#de0029" d="M26.7 14.6v28.7l-7.3-2.5V7.1l9.3 2.6c6 1.7 9.6 5 9.6 10.7-.1 6.7-3 9.4-8.7 7.6V14.9c-.1-1.6-2.9-1.7-2.9-.3h0z"/></svg>'; }
                 else { return '<svg viewBox="0 0 50 50"><path fill="#9da0a2" d="M43.8 37h-.1l-10.6 4-4.2 1.6v-4.9l8-2.9 1.9-.7c3.8-1.3 2.2-2.7-1.8-1.9l-3.8 1.3-4.3 1.6v-4.5c3.1-1 6.3-1.6 9.5-1.4 5.3.4 8.7 1.6 9.1 3.9.3 1.4-.9 2.9-3.7 3.9zm-26.7-2.1l-.9.3-3.6 1.3c-2.2.8-4.1-1.1-2.1-1.9l1.7-.6 5-1.9v-4.2l-.6.2L6 31.9h-.1c-1.9.7-3.8 2.2-3.7 4.2.1 2.1 4.7 2.6 8.2 3.2 2.4.4 4.6.3 6.7-.1v-4.3zm12.4-20V28c5.7 1.7 8.7-.9 8.7-7.6.1-5.7-3.6-9-9.6-10.7l-9.3-2.6v33.8l7.2 2.5.1.1V14.6c.1-1.4 2.9-1.3 2.9.3z"/></svg>'; } ]]]
-              loading: *loading
             styles:
               custom_fields:
                 icon_ps4:
                   [top: 7%, left: 10%, width: 3.5vw, position: absolute]
-            template: switch
+            template: ['base', 'switch', 'loader']
 
           ##########################################################################
           #                                                                        #
@@ -717,7 +750,7 @@ views:
             custom_fields:
               icon_hue: *icon_hue
             styles: *icon_hue_styles
-            template: light
+            template: ['base', 'light']
 
           #################################################
           #                                               #
@@ -740,7 +773,7 @@ views:
               custom_fields:
                 icon_spot:
                   [top: 11.5%, left: 8%, width: 2.7vw, position: absolute]
-            template: light
+            template: ['base', 'light']
 
           #################################################
           #                                               #
@@ -769,7 +802,6 @@ views:
                 [[[ const state = entity.state === 'on' ? 'animate' : null; 
                 return `<svg viewBox="0 0 50 50"><style>@keyframes animate{from{opacity: 0.5; transform: scale(0.6);}100%{opacity: 1;}}.animate{animation: animate 0.8s cubic-bezier(0.25, 1, 0.5, 1); transform-origin: center;}</style>
                 <path class="${state}" d="M31.9 44.5c-1-.3-1.9.4-1.9-3.7h-9.9c0 4.2-.9 3.4-1.9 3.7s-.2.7-.2.7h14.1s.8-.3-.2-.7zM47.6 4.8H2.5c-1.1 0-2 .9-2 2v30.1c0 1.1.9 2 2 2h45c1.1 0 2-.9 2-2v-30a1.95 1.95 0 0 0-1.9-2.1zm-.7 26.4H3.2V7.6H47v23.6z"/></svg>`; ]]]
-              loading: *loading
               icon_lock: >
                 [[[ const state = states['script.home_leave'].state === 'on' ? 'locked' : null;
                 if (states['input_boolean.computer_lock'].state === 'on' && states['input_boolean.computer_imac'].state === 'off') {
@@ -782,7 +814,7 @@ views:
                   top: 8.5%, left: 11%, width: 3.3vw, position: absolute]
                 icon_lock:
                   [top: 11%, left: 73%, width: 1.7vw, position: absolute, fill: '#b0b3b6']
-            template: switch
+            template: ['base', 'switch', 'loader']
 
           #################################################
           #                                               #
@@ -819,7 +851,7 @@ views:
                 icon_monitors:
                   [top: 11%, left: 7%, width: 2.8vw, position: absolute]
                 volume: *circle_pos
-            template: switch
+            template: ['base', 'switch']
 
           ##########################################################################
           #                                                                        #
@@ -856,7 +888,7 @@ views:
               custom_fields:
                 icon_lamp:
                   [top: 11%, left: 4.5%, width: 3.05vw, position: absolute]
-            template: light
+            template: ['base', 'light']
 
           #################################################
           #                                               #
@@ -878,13 +910,12 @@ views:
             custom_fields:
               icon_air_purifier: >
                 <svg viewBox="0 0 50 50"><path d="M36.8 1.2v1.7a5.34 5.34 0 0 1-5.3 5.3H18.4a5.34 5.34 0 0 1-5.3-5.3V1.2c-2.6.4-4.7 2.8-4.7 5.6v36.5c0 3.1 2.6 5.7 5.7 5.7h21.8c3.1 0 5.7-2.6 5.7-5.7V6.8c0-2.8-2.1-5.2-4.8-5.6zm-1.7 35.6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1 .3-1.8.7-2.1.9l-.6.3a9.75 9.75 0 0 1-1.4.6c-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1 .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5 2.1.5h.1v2.7zm0-6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1 .3-1.8.7-2.1.9l-.6.3a9.75 9.75 0 0 1-1.4.6c-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1 .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5 2.1.5h.1v2.7zm0-6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1 .3-1.8.7-2.1.9l-.6.3c-.4.2-.8.4-1.4.6-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1 .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5 2.1.5h.1v2.7zM15.7 1.9v-.8h18.6V3c0 1.5-1.2 2.8-2.8 2.8H18.4c-1.5 0-2.8-1.2-2.8-2.8V1.9z"/></svg>
-              loading: *loading
             styles:
               custom_fields:
                 icon_air_purifier:
                   [top: 11%, left: 6.3%, width: 3.05vw, position: absolute,
                   fill: "[[[ return entity.state === 'on' ? '#5daeea' : '#9da0a2'; ]]]"]
-            template: switch
+            template: ['base', 'switch', 'loader']
 
           #################################################
           #                                               #
@@ -893,9 +924,9 @@ views:
           #################################################
 
           - type: custom:button-card
-            entity: switch.fan_anslut
+            entity: fan.sovrum_anslut
             triggers_update:
-              ['switch.fan_anslut', 'input_boolean.fan_anslut']
+              ['fan.sovrum_anslut', 'input_boolean.sovrum_anslut']
             style:
               top: 37.9%
               left: 80.05%
@@ -905,19 +936,18 @@ views:
             hold_action: !include popup/sovrum_flakt.yaml
             custom_fields:
               icon_fan: >
-                [[[ const boolean = states[entity.entity_id.replace('switch', 'input_boolean')].state;
+                [[[ const boolean = states[entity.entity_id.replace(entity.entity_id.split('.')[0], 'input_boolean')].state;
                 const style = '<svg viewBox="0 0 50 50"> <style>@keyframes rotate{0%{visibility:visible;transform:rotate(0deg)}100%{transform:rotate(1080deg)}}.start{animation:rotate 2.8s ease-in;transform-origin:center;fill:#5daeea;visibility:hidden}.on_delay{animation:rotate 1.8s linear infinite;transform-origin:center;fill:#5daeea;animation-delay:2.8s;visibility:hidden}.on{animation:rotate 1.8s linear infinite;transform-origin:center;fill:#5daeea;visibility:hidden}.end{animation:rotate 2.8s;transform-origin:center;fill:#9ca2a5;animation-timing-function:cubic-bezier(.61,1,.88,1)}</style>';
                 const path = '<circle cx="25" cy="25" r="6.6"/> <path d="M31.9 30.4c-.5.6-1.1 1.1-1.7 1.5-1.4 1.1-3.2 1.7-5.2 1.7-2.3 0-4.5-.9-6-2.4-.9 1.1-1.6 2.3-2.3 3.2l-4.9 5.4c-1.8 2.7.3 5.6 2.5 7 3.9 2.4 9.8 3.1 14.1 1.9 4.6-1.3 7.9-4.7 7.4-9.7-.2-3.4-1.9-6-3.9-8.6zM17 28.3c-.4-1-.6-2.1-.6-3.3a8.7 8.7 0 0 1 6.4-8.4l-1.6-3.5L19 6.2c-1.5-2.8-5-2.5-7.3-1.2-4 2.2-7.5 6.9-8.7 11.3-1.2 4.6.2 9.2 4.7 11.3 3.1 1.3 6.1 1.2 9.3.7zm26.9-17.6c-3.3-3.4-8-4.6-12.1-1.8-2.8 1.8-4.2 4.6-5.5 7.5 4.2.6 7.4 4.2 7.4 8.6 0 .9-.1 1.7-.4 2.5 1.3.2 2.8.3 3.8.4 2.3.4 4.7 1.3 7.1 1.7 3.2.3 4.7-3 4.8-5.6.3-4.6-1.9-10.1-5.1-13.3z"/>';
                 if (entity.state === 'off' && boolean === 'off') { return `${style}<g class="end">${path}</g></svg>`; }
                 if (entity.state === 'on' && boolean === 'off') { return `${style}<g class="start">${path}</g><g class="on_delay">${path}</g></svg>`; }
                 if (entity.state === 'on' && boolean === 'on') { return `${style}<g class="on">${path}</g></svg>`; }
                 else if (entity.state==='off' && boolean==='on') { return `${style}<g fill="#9ca2a5">${path}</g></svg>`; } ]]]
-              loading: *loading
             styles:
               custom_fields:
                 icon_fan:
                   [top: 9%, left: 10%, width: 3vw, position: absolute]
-            template: switch
+            template: ['base', 'switch', 'loader']
 
           #################################################
           #                                               #
@@ -937,9 +967,8 @@ views:
             hold_action: !include popup/sovrum_tv2.yaml
             custom_fields:
               icon_tv: *icon_tv
-              loading: *loading
             styles: *icon_tv_styles
-            template: switch
+            template: ['base', 'switch', 'loader']
 
           ##########################################################################
           #                                                                        #
@@ -1006,8 +1035,7 @@ views:
                           custom_fields:
                             media_image: &plex_poster
                               [background-position: center center, background-image: 
-                              "[[[ const plex_poster = states[entity.entity_id].attributes.data[1].fanart;
-                              return `url(${plex_poster})`; ]]]"]
+                              "[[[ return 'url(' + states[entity.entity_id].attributes.data[1].fanart + ')'; ]]]"]
                             blur: *plex_poster
                             overlay: [background: 'rgba(0, 0, 0, 0.4)']
                           card:
@@ -1018,7 +1046,7 @@ views:
                           top: 50%
                           left: 50%
                           width: 100%
-                        template: media
+                        template: ['base', 'media']
 
                   #################################################
                   #                                               #
@@ -1040,7 +1068,7 @@ views:
                           top: 50%
                           left: 50%
                           width: 100%
-                        template: media
+                        template: ['base', 'media']
 
                   #################################################
                   #                                               #
@@ -1061,7 +1089,7 @@ views:
                           top: 50%
                           left: 50%
                           width: 100%
-                        template: media
+                        template: ['base', 'media']
 
                   #################################################
                   #                                               #
@@ -1083,7 +1111,7 @@ views:
                           top: 50%
                           left: 50%
                           width: 100%
-                        template: media
+                        template: ['base', 'media']
 
                   #################################################
                   #                                               #
@@ -1105,7 +1133,7 @@ views:
                           top: 50%
                           left: 50%
                           width: 100%
-                        template: media
+                        template: ['base', 'media']
 
                   #################################################
                   #                                               #
@@ -1197,7 +1225,7 @@ views:
               custom_fields:
                 icon_bathroom:
                   [top: 11%, left: 6.5%, width: 3vw, position: absolute]
-            template: light
+            template: ['base', 'light']
 
           #################################################
           #                                               #
@@ -1206,7 +1234,7 @@ views:
           #################################################
 
           - type: custom:button-card
-            entity: switch.wemo_fan
+            entity: fan.studio_wemo
             style:
               top: 64.5%
               left: 66.14%
@@ -1224,7 +1252,7 @@ views:
               custom_fields:
                 icon_fan:
                   [top: 9%, left: 10%, width: 3vw, position: absolute]
-            template: switch
+            template: ['base', 'switch']
 
           #################################################
           #                                               #
@@ -1247,7 +1275,7 @@ views:
               custom_fields:
                 icon_closet:
                   [top: 11%, left: 4.1%, width: 3.2vw, position: absolute]
-            template: light
+            template: ['base', 'light']
 
           #################################################
           #                                               #
@@ -1264,7 +1292,7 @@ views:
             custom_fields:
               icon_spot: *icon_spot
             styles: *icon_spot_styles
-            template: light
+            template: ['base', 'light']
 
           ##########################################################################
           #                                                                        #
@@ -1289,45 +1317,13 @@ views:
             entity: person.mattias
             triggers_update:
               ['person.mattias', 'sensor.time']
-            state_display: &button_home_state_display >
-              [[[ return entity.state === 'home' ? 'Ja' : 'Nej'; ]]]
-            show_entity_picture: true
-            state: &button_home_state
-              - value: 'home'
-                styles:
-                  card:
-                    - background-color: rgba(255, 255, 255, 0.8)
-                  name:
-                    - color: rgba(0, 0, 0, 0.6)
-                  state:
-                    - color: rgba(0, 0, 0, 0.6)
-                  custom_fields:
-                    info:
-                      - color: '#959698'
-            styles: &button_home_styles
-              entity_picture:
-                  [clip-path: circle(50% at center), top: 7.5%, left: 11.2%, width: 3vw, position: absolute]
-              custom_fields:
-                last_changed: *circle_pos
             style:
               top: 64.5%
               left: 80.05%
               width: 10%
             tap_action: !include popup/hemma_mattias.yaml
             hold_action: !include popup/hemma_mattias.yaml
-            custom_fields:
-              last_changed: &last_changed >
-                [[[ function time(d) {
-                var s = (d / 1000); var m = (d / (1000 * 60)); var h = (d / (1000 * 60 * 60)); var d = (d / (1000 * 60 * 60 * 24));
-                  if (s < 60) { return s.toFixed() + 's'; } else if (m < 60) { return m.toFixed() + 'm'; }
-                  else if (h < 24) { return h.toFixed() + 'h'; } else { return d.toFixed() + 'd'; }
-                }
-                const last_changed = time(Date.now() - Date.parse(states[entity.entity_id].last_changed));
-                const stroke_color = entity.state === 'home' ? '#b2b2b2' : '#313638'; 
-                const fill_color = entity.state === 'home' ? 'none' : '#FFFFFF08';
-                return `<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="20.5" stroke="${stroke_color}" stroke-width="1.5" fill="${fill_color}" />
-                <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">${last_changed}</text></svg>`; ]]]
-            template: switch
+            template: ['base', 'switch', 'person']
 
           #################################################
           #                                               #
@@ -1339,19 +1335,13 @@ views:
             entity: person.sanja
             triggers_update:
               ['person.sanja', 'sensor.time']
-            state_display: *button_home_state_display
-            show_entity_picture: true
-            state: *button_home_state
-            styles: *button_home_styles
             style:
               top: 64.5%
               left: 91.05%
               width: 10%
             tap_action: !include popup/hemma_sanja.yaml
             hold_action: !include popup/hemma_sanja.yaml
-            custom_fields:
-              last_changed: *last_changed
-            template: switch
+            template: ['base', 'switch', 'person']
 
           #################################################
           #                                               #
@@ -1381,7 +1371,7 @@ views:
                 icon_away:
                   [top: 10%, left: 10.1%, width: 3.1vw, position: absolute,
                   fill: "[[[ return entity.state === 'on' ? '#516d82' : '#9da0a2'; ]]]"]
-            template: switch
+            template: ['base', 'switch']
 
           #################################################
           #                                               #
@@ -1410,4 +1400,4 @@ views:
                 icon_home:
                   [top: 10.5%, left: 10.1%, width: 2.9vw, position: absolute,
                   fill: "[[[ return entity.state === 'on' ? '#c7983e' : '#9da0a2'; ]]]"]
-            template: switch
+            template: ['base', 'switch']
