@@ -66,7 +66,7 @@ person:
   - name: Sanja
     id: sanja4543958678435345345345345
     device_trackers:
-      ['device_tracker.sanja', 'device_tracker.sanja_bluetooth']
+      ['device_tracker.sanja', 'device_tracker.sanja_iphone', 'device_tracker.sanja_bluetooth']
 
 device_tracker:
   - platform: iphonedetect
@@ -197,15 +197,18 @@ homekit:
   ip_address: !secret homekit_ip_address
   auto_start: false
   filter:
-    include_entities:
-      ['switch.wemo_fan', 'switch.wemo_monitors', 'switch.computer_imac', 'media_player.sony_bravia', 
-      'media_player.samsung', 'switch.playstation_4', 'input_boolean.motion_hall', 'switch.fan_anslut', 'script.samsung_tv_energy_saving', 
-      'input_boolean.motion_garderob', 'input_boolean.motion_badrum', 'script.home_arrive', 'script.home_leave']
+    include_entities: &include_entities
+      ['fan.studio_wemo', 'switch.wemo_monitors', 'switch.computer_imac', 'media_player.sony_bravia', 'switch.air_purifier', 'lock.dator', 
+      'media_player.samsung', 'switch.playstation_4', 'input_boolean.motion_hall', 'fan.sovrum_anslut', 'script.samsung_tv_energy_saving', 
+      'input_boolean.motion_garderob', 'input_boolean.motion_badrum', 'script.home_arrive', 'script.home_leave', 'vacuum.xiaomi_vacuum_cleaner', 
+      'person.mattias', 'person.sanja']
   entity_config:
-    switch.wemo_fan:
-      name: Fläkt
-    switch.fan_anslut:
+    fan.studio_wemo:
       name: Fläkt 2
+    fan.sovrum_anslut:
+      name: Fläkt
+    switch.air_purifier:
+      name: Luftrenare
     script.samsung_tv_energy_saving:
       name: Eko
     switch.wemo_monitors:
@@ -227,22 +230,24 @@ homekit:
       name: Hemma
     script.home_leave:
       name: Stäng allt
+    vacuum.xiaomi_vacuum_cleaner:
+      name: Morty
 
 cloud:
   google_actions:
     filter:
-      include_entities:
-        ['switch.wemo_fan', 'switch.wemo_monitors', 'switch.computer_imac', 'media_player.sony_bravia', 
-        'media_player.samsung', 'switch.playstation_4', 'media_player.playstation_4', 'switch.fan_anslut', 'script.samsung_tv_energy_saving', 
-        'switch.fullykiosk_screen', 'switch.fullykiosk_screensaver', 'script.home_arrive', 'script.home_leave']
+      include_entities: *include_entities
     entity_config:
-      switch.wemo_fan:
-        name: Fläkt
+      fan.studio_wemo:
+        name: Fläkt 2
         aliases: ['Fläkt', 'Fläkten']
         room: Studio
-      switch.fan_anslut:
+      fan.sovrum_anslut:
         name: Fläkt
         aliases: ['Fläkt', 'Fläkten']
+        room: Sovrum
+      switch.air_purifier:
+        name: Luftrenare
         room: Sovrum
       script.samsung_tv_energy_saving:
         name: Eko
@@ -277,3 +282,6 @@ cloud:
         name: Stäng allt
         aliases: ['Stäng allt', 'Auto Stäng allt']
         room: Hall
+      vacuum.xiaomi_vacuum_cleaner:
+        name: Morty
+        room: Vardagsrum
