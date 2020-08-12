@@ -15,7 +15,7 @@ input_boolean:
     initial: off
   playstation_4:
     initial: off
-  fan_anslut:
+  sovrum_anslut:
     initial: off
   air_purifier:
     initial: off
@@ -23,7 +23,7 @@ input_boolean:
   krisinformation_visibility:
   laundry_timer_visibility:
 
-  fan_anslut_oscillate:
+  sovrum_anslut_oscillate:
     name: Oscillera
     icon: mdi:arrow-left-right
 
@@ -70,16 +70,16 @@ input_number:
   wemo_fan_timer:
     name: Stäng efter
     icon: mdi:timer-outline
-    initial: 6
+    initial: 12
     min: 1
     max: 12
     step: 1
     unit_of_measurement: 'h'
 
-  fan_anslut_timer:
+  sovrum_anslut_timer:
     name: Stäng efter
     icon: mdi:timer-outline
-    initial: 6
+    initial: 12
     min: 1
     max: 12
     step: 1
@@ -113,7 +113,7 @@ input_select:
       ['Tyst', 'Standard', 'Medium', 'Turbo']
     icon: mdi:format-list-bulleted
 
-  fan_anslut_speed:
+  sovrum_anslut_speed:
     name: Fläkthastighet
     options:
       ['Tyst', 'Medium', 'Max']
@@ -127,3 +127,21 @@ input_select:
     initial: Senast nedladdat
     options:
       ['Senast nedladdat', 'Vardagsrum', 'Sovrum', 'PlayStation 4', 'Google Nest Mini']
+
+lock:
+
+  ####################################################
+  #                                                  #
+  #                       LOCK                       #
+  #                                                  #
+  ####################################################
+
+  - platform: template
+    name: Dator
+    value_template: "{{ states('input_boolean.computer_lock') }}"
+    lock:
+      service: input_boolean.turn_on
+      entity_id: input_boolean.computer_lock
+    unlock:
+      service: input_boolean.turn_off
+      entity_id: input_boolean.computer_lock

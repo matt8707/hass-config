@@ -13,10 +13,9 @@ automation:
       - platform: homeassistant
         event: start
     action:
-      - service: frontend.set_theme
-        data:
-          name: tablet
-      - service: shell_command.fullykiosk_restart_app
+      # - service: frontend.set_theme
+      #   data:
+      #     name: tablet
       - service: mqtt.publish
         data:
           topic: cmnd/tasmotas/status
@@ -33,6 +32,9 @@ automation:
           sequence:
             - service: switch.turn_on
               entity_id: switch.fullykiosk_screensaver
+      - delay:
+          seconds: 4
+      - service: shell_command.fullykiosk_restart_app
       - delay:
           seconds: 30
       - service: homekit.start
@@ -351,20 +353,20 @@ automation:
     #                                                  #
     ####################################################
 
-  - alias: fan_anslut_turn_off
+  - alias: sovrum_anslut_turn_off
     initial_state: true
     trigger:
       - platform: state
-        entity_id: switch.fan_anslut
+        entity_id: fan.sovrum_anslut
         from: 'off'
         to: 'on'
         for:
-          hours: "{{ states('input_number.fan_anslut_timer') | int }}"
+          hours: "{{ states('input_number.sovrum_anslut_timer') | int }}"
     action:
       - service: switch.turn_off
-        entity_id: switch.fan_anslut
+        entity_id: fan.sovrum_anslut
 
-  - alias: fan_anslut_turn_on_temp
+  - alias: sovrum_anslut_turn_on_temp
     initial_state: true
     trigger:
       - platform: numeric_state
@@ -381,14 +383,17 @@ automation:
             ['person.mattias', 'person.sanja']
           state: home
     action:
-      - service: switch.turn_on
-        entity_id: switch.fan_anslut
+      - condition: state
+        entity_id: fan.sovrum_anslut
+        state: 'off'
+      - service: fan.turn_on
+        entity_id: fan.sovrum_anslut
 
-  - alias: fan_anslut_oscillate
+  - alias: sovrum_anslut_oscillate
     initial_state: true
     trigger:
       - platform: state
-        entity_id: input_boolean.fan_anslut_oscillate
+        entity_id: input_boolean.sovrum_anslut_oscillate
     action:
       - service: remote.send_command
         data:
@@ -397,11 +402,12 @@ automation:
           delay_secs: 0.2
           command: swing_1
 
-  - alias: fan_anslut_speed
+  - alias: sovrum_anslut_speed
+    mode: queued
     initial_state: true
     trigger:
       - platform: state
-        entity_id: input_select.fan_anslut_speed
+        entity_id: input_select.sovrum_anslut_speed
     action:
       - choose:
         - conditions:
@@ -503,13 +509,12 @@ automation:
       - platform: state
         entity_id:
           ['media_player.sony_bravia', 'media_player.samsung', 'switch.computer_imac', 
-          'switch.playstation_4', 'switch.fan_anslut', 'switch.air_purifier']
+          'switch.playstation_4', 'fan.sovrum_anslut', 'switch.air_purifier']
     action:
       - service: input_boolean.turn_off
         data_template:
           entity_id: >
-            {{ trigger.entity_id | replace('media_player', 'input_boolean') | 
-            replace('switch', 'input_boolean') }}
+            {{ trigger.entity_id | replace(trigger.entity_id.split('.')[0], 'input_boolean') }}
 
   - alias: turn_off_loading_wheel_failsafe
     initial_state: true
@@ -517,7 +522,7 @@ automation:
       - platform: state
         entity_id:
           ['input_boolean.sony_bravia', 'input_boolean.samsung', 'input_boolean.computer_imac', 
-          'input_boolean.playstation_4', 'input_boolean.fan_anslut', 'input_boolean.air_purifier']
+          'input_boolean.playstation_4', 'input_boolean.sovrum_anslut', 'input_boolean.air_purifier']
         to: 'on'
         for:
           minutes: 1

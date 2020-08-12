@@ -58,7 +58,7 @@ binary_sensor:
         icon_template: mdi:alert
         value_template: >
           {% set entity_id = 'sensor.krisinformation_sverige' %}
-          {% if not is_state_attr(entity_id, 'messages', []) %}
+          {% if not is_state_attr(entity_id, 'messages', []) and state_attr(entity_id, 'messages') != None %}
             {% set published = state_attr(entity_id, 'messages')[0]['Published'] %}
             {{ 'false' if ((as_timestamp(published) - as_timestamp(now())) / 86400) <= -0.5 else 'true' }}
           {% endif %}
@@ -308,18 +308,18 @@ sensor:
           {% set lights_name = lights | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
 
           {% set switches = [states.switch.computer_imac, states.switch.tv_sony, states.switch.tv_samsung, 
-          states.switch.playstation_4, states.switch.wemo_monitors, states.switch.wemo_fan, 
-          states.switch.fan_anslut, states.switch.air_purifier] %}
+          states.switch.playstation_4, states.switch.wemo_monitors, states.fan.studio_wemo, 
+          states.fan.sovrum_anslut, states.switch.air_purifier] %}
           {% set switches_on = switches | selectattr('state','eq','on') | list %} 
           {% set switches_name = switches | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
 
-          {% if (lights_on | length ==0 ) and (switches_on | length > 0) %} 
+          {% if (lights_on | length == 0 ) and (switches_on | length > 0) %} 
           {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på
 
-          {% elif (lights_on | length ==1) and (switches_on | length == 1) %}
+          {% elif (lights_on | length == 1) and (switches_on | length == 1) %}
           {{ lights_name }} och {{switches_name }} är på
 
-          {% elif (lights_on | length ==1) and (switches_on | length > 1) %}
+          {% elif (lights_on | length == 1) and (switches_on | length > 1) %}
           {{ lights_name }}, {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på
 
           {% elif (lights_on | length > 1) and (switches_on | length == 1) %}
@@ -328,10 +328,10 @@ sensor:
           {% elif (lights_on | length > 1 ) and (switches_on | length > 1) %}
           {{ lights_on | length }} lampor, {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på
 
-          {% elif (lights_on | length ==1) and (switches_on | length ==0) %}
+          {% elif (lights_on | length == 1) and (switches_on | length == 0) %}
           {{ lights_name }} är på
 
-          {% elif (lights_on | length >1 ) and (switches_on | length ==0) %}
+          {% elif (lights_on | length >1 ) and (switches_on | length == 0) %}
           {{ lights_on | length}} lampor är på
 
           {% else %} 
@@ -728,7 +728,10 @@ sensor:
         icon_template: custom:synology-nas
         value_template: >
           {% set entity_id = 'sensor.synology_status_volume_1' %}
-          {{ 'Bra' if is_state(entity_id, 'normal') else states(entity_id) }}
+          {% if is_state(entity_id, 'normal') %} Bra
+          {% elif is_state(entity_id, 'background') %} Verifierar
+          {% else %} {{ states(entity_id) }}
+          {% endif %}
 
       nas_vpn:
         entity_id: sensor.myip, sensor.public_ip

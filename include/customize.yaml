@@ -141,15 +141,20 @@ homeassistant:
       friendly_name: Monitorer
       icon: custom:studio-monitor
 
-    switch.wemo_fan:
-      friendly_name: "Fläkt\u00B2"
-      icon: custom:pedestal-fan
-
     switch.watchtower:
       icon: custom:docker-watchtower
 
     switch.fullykiosk_screen:
       icon: mdi:tablet
+
+
+    #fan
+
+    fan.studio_wemo:
+      icon: custom:pedestal-fan
+
+    fan.sovrum_anslut:
+      icon: custom:pedestal-fan
 
 
     #automation
@@ -169,11 +174,7 @@ homeassistant:
       friendly_name: Automatisk kalibrationsprofil
       icon: custom:eq-calibrate
 
-    automation.fan_anslut_turn_on_temp:
-      friendly_name: Slå på om 24 °C överskrids
-      icon: mdi:chart-bell-curve-cumulative
-
-    automation.wemo_fan_turn_on_temp:
+    automation.sovrum_anslut_turn_on_temp:
       friendly_name: Slå på om 24 °C överskrids
       icon: mdi:chart-bell-curve-cumulative
 

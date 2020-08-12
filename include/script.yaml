@@ -169,8 +169,8 @@ script:
               entity_id: binary_sensor.gosund_fan
               state: 'on'
           sequence:
-            - service: switch.turn_off
-              entity_id: switch.fan_anslut
+            - service: fan.turn_off
+              entity_id: fan.sovrum_anslut
       - choose:
         - conditions:
             - condition: state

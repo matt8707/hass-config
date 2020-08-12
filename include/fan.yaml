@@ -1,0 +1,137 @@
+fan:
+
+    ####################################################
+    #                                                  #
+    #                       FANS                       #
+    #                                                  #
+    ####################################################
+
+  - platform: template
+    fans:
+      studio_wemo:
+        friendly_name: "Fläkt\u00B2"
+        value_template: >
+          {{ 'off' if is_state('switch.wemo_fan', 'unavailable') 
+          else states('switch.wemo_fan') }}
+        turn_on:
+          - service: switch.turn_on
+            entity_id: switch.wemo_fan
+        turn_off:
+          - service: switch.turn_off
+            entity_id: switch.wemo_fan
+
+      sovrum_anslut:
+        friendly_name: Fläkt
+        value_template: >
+          {{ states('binary_sensor.gosund_fan') }}
+        speed_template: >
+          {{ states('input_select.sovrum_anslut_speed') }}
+        speeds: 
+          ['Tyst', 'Medium', 'Max']
+        set_speed:
+          # homekit set_speed from off
+          - choose:
+            - conditions:
+                - condition: state
+                  entity_id: binary_sensor.gosund_fan
+                  state: 'off'
+              sequence:
+                - service: fan.turn_on
+                  entity_id: fan.sovrum_anslut
+            default:
+              - service: input_select.select_option
+                data_template:
+                  entity_id: input_select.sovrum_anslut_speed
+                  option: "{{ speed }}"
+        oscillating_template: >
+          {{ is_state('input_boolean.sovrum_anslut_oscillate', 'on') }}
+        set_oscillating:
+          - service: input_boolean.toggle
+            entity_id: input_boolean.sovrum_anslut_oscillate
+        turn_on:
+          - condition: state
+            entity_id: binary_sensor.gosund_fan
+            state: 'off'
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.sovrum_anslut
+          - service: remote.send_command
+            data:
+              entity_id: remote.broadlink
+              device: fläkt
+              delay_secs: 0.2
+              command: power_1
+          - choose:
+            # initial oscillation
+            - conditions:
+                - condition: state
+                  entity_id: input_boolean.sovrum_anslut_oscillate
+                  state: 'on'
+              sequence:
+                - service: remote.send_command
+                  data:
+                    entity_id: remote.broadlink
+                    device: fläkt
+                    delay_secs: 0.2
+                    command: swing_1
+          - choose:
+            # initial speed
+            - conditions:
+                - condition: state
+                  entity_id: input_select.sovrum_anslut_speed
+                  state: Max
+              sequence:
+                - service: remote.send_command
+                  data:
+                    entity_id: remote.broadlink
+                    device: fläkt
+                    delay_secs: 0.2
+                    command: speed_1
+                    num_repeats: 2
+            - conditions:
+                - condition: state
+                  entity_id: input_select.sovrum_anslut_speed
+                  state: Medium
+              sequence:
+                - service: remote.send_command
+                  data:
+                    entity_id: remote.broadlink
+                    device: fläkt
+                    delay_secs: 0.2
+                    command: speed_1
+          - repeat:
+            # report state
+              count: 20
+              sequence:
+                - condition: state
+                  entity_id: binary_sensor.gosund_fan
+                  state: 'off'
+                - delay:
+                    seconds: 1
+                - service: mqtt.publish
+                  data:
+                    topic: cmnd/gosund1/status
+                    payload: 10
+        turn_off:
+          - condition: state
+            entity_id: binary_sensor.gosund_fan
+            state: 'on'
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.sovrum_anslut
+          - service: remote.send_command
+            data:
+              entity_id: remote.broadlink
+              device: fläkt
+              command: power_1
+          - repeat:
+            # report state
+              count: 20
+              sequence:
+                - condition: state
+                  entity_id: binary_sensor.gosund_fan
+                  state: 'on'
+                - delay:
+                    seconds: 1
+                - service: mqtt.publish
+                  data:
+                    topic: cmnd/gosund1/status
+                    payload: 10
