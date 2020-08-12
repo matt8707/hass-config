@@ -33,9 +33,35 @@
                               name: Bluetooth
                               icon: mdi:bluetooth
 
-                            - entity: sensor.placeholder
+                            - entity: device_tracker.sanja_iphone
                               name: Position
-                              icon: mdi:help
+                              icon: custom:iphone-modern
+
+                        - type: custom:hui-element
+                          card_type: horizontal-stack
+                          style: |
+                            #root {
+                              justify-content: space-evenly;
+                              margin: -0.5em 0 2em 0;
+                            }
+                          cards:
+
+                          - type: custom:button-card
+                            name: >
+                              <ha-icon icon="mdi:volume-high"></ha-icon> Spela upp ljud på iPhone XR
+                            tap_action:
+                              action: call-service
+                              service: notify.mobile_app_sanja_iphone
+                              service_data:
+                                title: Hitta min iPhone
+                                message: Här är jag
+                                data:
+                                  push:
+                                    sound:
+                                      name: Ringtone_UK_Haptic.caf
+                                      critical: 1
+                                      volume: 1.0
+                            template: name_action
 
                         - entity: sensor.printer_status
 

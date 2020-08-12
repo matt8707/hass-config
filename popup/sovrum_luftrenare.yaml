@@ -13,7 +13,7 @@
                       icon: mdi:air-purifier
                       secondary_info: last-changed
 
-                    - entity: input_select.fan_anslut_speed
+                    - entity: input_select.sovrum_anslut_speed
                       name: TODO
 
                     - type: divider

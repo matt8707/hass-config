@@ -11,14 +11,12 @@
                       show_header_toggle: false
                       entities:
 
-                        - entity: switch.wemo_fan
+                        - entity: fan.studio_wemo
                           secondary_info: last-changed
 
                         - type: custom:slider-entity-row
                           entity: input_number.wemo_fan_timer
                           hide_state: false
-
-                        - entity: automation.wemo_fan_turn_on_temp
 
                     - type: custom:mini-graph-card
                       entities:

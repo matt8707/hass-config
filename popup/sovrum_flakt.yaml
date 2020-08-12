@@ -11,23 +11,23 @@
                       show_header_toggle: false
                       entities:
 
-                        - entity: switch.fan_anslut
+                        - entity: fan.sovrum_anslut
                           secondary_info: last-changed
 
-                        - entity: input_boolean.fan_anslut_oscillate
+                        - entity: input_boolean.sovrum_anslut_oscillate
 
-                        - entity: input_select.fan_anslut_speed
+                        - entity: input_select.sovrum_anslut_speed
 
                         - type: divider
                           style: {height: 15px, opacity: 0}
 
                         - type: custom:slider-entity-row
-                          entity: input_number.fan_anslut_timer
+                          entity: input_number.sovrum_anslut_timer
                           hide_state: false
 
                         - entity: switch.strombrytare
 
-                        - entity: automation.fan_anslut_turn_on_temp
+                        - entity: automation.sovrum_anslut_turn_on_temp
 
                     - type: custom:mini-graph-card
                       entities:

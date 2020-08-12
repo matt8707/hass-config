@@ -42,7 +42,7 @@
                           style: |
                             #root {
                               justify-content: space-evenly;
-                              margin: -0.5em 0 0.5em 0;
+                              margin: -1em 0 0 0;
                             }
                           cards:
 
@@ -62,6 +62,9 @@
                                       critical: 1
                                       volume: 1.0
                             template: name_action
+                            styles:
+                              card:
+                                [background: none, border-radius: none]
 
                     - type: custom:hui-element
                       card_type: map
