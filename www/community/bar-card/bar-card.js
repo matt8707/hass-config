@@ -4022,6 +4022,27 @@ let BarCardEditor = class BarCardEditor extends LitElement {
                         >Limit Value</ha-switch
                       >
                     `}
+                ${config.complementary
+                ? html `
+                      <ha-switch
+                        checked
+                        .configAttribute=${'complementary'}
+                        .configObject=${config}
+                        .value=${!config.complementary}
+                        @change=${this._valueChanged}
+                        >Complementary</ha-switch
+                      >
+                    `
+                : html `
+                      <ha-switch
+                        unchecked
+                        .configObject=${config}
+                        .configAttribute=${'complementary'}
+                        .value=${!config.complementary}
+                        @change=${this._valueChanged}
+                        >Complementary</ha-switch
+                      >
+                    `}
                 <paper-input
                   class="value-number"
                   label="Decimal"
@@ -5076,7 +5097,7 @@ let BarCard = class BarCard extends LitElement {
                     case 'outside':
                         valueOutside = html `
               <bar-card-value class="${config.direction == 'up' ? 'value-direction-up' : 'value-direction-right'}"
-                >${entityState} ${unitOfMeasurement}</bar-card-value
+                >${config.complementary ? config.max - entityState : entityState} ${unitOfMeasurement}</bar-card-value
               >
             `;
                         break;
@@ -5088,7 +5109,7 @@ let BarCard = class BarCard extends LitElement {
                             : config.direction == 'up'
                                 ? 'value-direction-up'
                                 : 'value-direction-right'}"
-                >${entityState} ${unitOfMeasurement}</bar-card-value
+                >${config.complementary ? config.max - entityState : entityState} ${unitOfMeasurement}</bar-card-value
               >
             `;
                         break;

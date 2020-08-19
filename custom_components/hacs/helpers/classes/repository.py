@@ -8,28 +8,29 @@ import zipfile
 from aiogithubapi import AIOGitHubAPIException
 from queueman import QueueManager
 
-from custom_components.hacs.helpers.classes.exceptions import HacsException
 from custom_components.hacs.helpers import RepositoryHelpers
+from custom_components.hacs.helpers.classes.exceptions import HacsException
+from custom_components.hacs.helpers.classes.manifest import HacsManifest
+from custom_components.hacs.helpers.classes.repositorydata import RepositoryData
 from custom_components.hacs.helpers.classes.validate import Validate
+from custom_components.hacs.helpers.functions.is_safe_to_remove import is_safe_to_remove
+
+from custom_components.hacs.helpers.functions.download import async_download_file
 from custom_components.hacs.helpers.functions.information import (
     get_info_md_content,
     get_repository,
 )
+from custom_components.hacs.helpers.functions.misc import get_repository_name
+from custom_components.hacs.helpers.functions.save import async_save_file
 from custom_components.hacs.helpers.functions.store import async_remove_store
 from custom_components.hacs.helpers.functions.validate_repository import (
     common_update_data,
     common_validate,
 )
-from custom_components.hacs.helpers.classes.repositorydata import RepositoryData
-from custom_components.hacs.share import get_hacs
-
-from custom_components.hacs.helpers.functions.download import async_download_file
-from custom_components.hacs.helpers.functions.save import async_save_file
-from custom_components.hacs.helpers.functions.misc import get_repository_name
 from custom_components.hacs.helpers.functions.version_to_install import (
     version_to_install,
 )
-from custom_components.hacs.helpers.classes.manifest import HacsManifest
+from custom_components.hacs.share import get_hacs
 
 
 class RepositoryVersions:
@@ -271,7 +272,7 @@ class HacsRepository(RepositoryHelpers):
 
             await download_queue.execute()
         except (Exception, BaseException):
-            validate.errors.append(f"Download was not complete")
+            validate.errors.append(f"Download was not completed")
 
         return validate
 
@@ -293,15 +294,15 @@ class HacsRepository(RepositoryHelpers):
                 zip_file.extractall(self.content.path.local)
 
             if result:
-                self.logger.info(f"download of {content.name} complete")
+                self.logger.info(f"Download of {content.name} completed")
                 return
             validate.errors.append(f"[{content.name}] was not downloaded")
         except (Exception, BaseException):
-            validate.errors.append(f"Download was not complete")
+            validate.errors.append(f"Download was not completed")
 
         return validate
 
-    async def download_content(self, validate, directory_path, local_directory, ref):
+    async def download_content(self, validate, _directory_path, _local_directory, _ref):
         """Download the content of a directory."""
         from custom_components.hacs.helpers.functions.download import download_content
 
@@ -400,6 +401,8 @@ class HacsRepository(RepositoryHelpers):
                 local_path = self.content.path.local
 
             if os.path.exists(local_path):
+                if not is_safe_to_remove(local_path):
+                    return False
                 self.logger.debug(f"Removing {local_path}")
 
                 if self.data.category in ["python_script"]:
