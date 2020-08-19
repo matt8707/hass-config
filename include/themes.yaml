@@ -149,12 +149,12 @@ frontend:
          * * * * * * * * * * * * * * * * * */
 
         ha-card.type-entities {
-          background: var(--card-color);
+          background: none;
           padding: 0.3em 1.25em 0.4em 0.5em;
         }
 
         ha-card.type-custom-stack-in-card {
-          background: var(--card-color);
+          background: none;
         }
 
         ha-card.type-history-graph {
@@ -281,7 +281,7 @@ frontend:
             backdrop-filter: blur(20px) brightness(70%);
           }
           .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
-            background: none;
+            background: var(--card-color);
             box-shadow: none;
             border-radius: 1em;
           }
