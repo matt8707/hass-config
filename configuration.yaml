@@ -85,7 +85,7 @@ remote:
     mac: !secret broadlink_mac
     type: rm4_pro
 
-wemo_custom:
+wemo:
   discovery: false
   static: !secret wemo_static
 
@@ -192,6 +192,15 @@ light:
     entities:
       ['light.belysning', 'light.datorlampa', 'light.taklampor', 'light.skrivbord', 
       'light.badrum', 'light.kladkammare_2', 'light.sanglampor']
+
+ios:
+  push:
+    categories:
+      - name: Home Assistant
+        identifier: ios_hass
+        actions:
+          - identifier: start_watchtower
+            title: Uppdatera
 
 homekit:
   ip_address: !secret homekit_ip_address
