@@ -289,8 +289,8 @@ button_card_templates:
       last_changed: >
         [[[ function time(c) {
         var s = (c / 1000); var m = (c / (1000 * 60)); var h = (c / (1000 * 60 * 60)); var d = (c / (1000 * 60 * 60 * 24));
-        if (s < 60) { return s.toFixed() + 's'; } else if (m < 60) { return m.toFixed() + 'm'; }
-        else if (h < 24) { return h.toFixed() + 'h'; } else { return d.toFixed() + 'd'; }
+        if (s < 60) { return parseInt(s) + 's'; } else if (m < 60) { return parseInt(m) + 'm'; }
+        else if (h < 24) { return parseInt(h) + 'h'; } else { return parseInt(d) + 'd'; }
         }
         const last_changed = time(Date.now() - Date.parse(states[entity.entity_id].last_changed));
         const stroke_color = entity.state === 'home' ? '#b2b2b2' : '#313638'; 
@@ -300,12 +300,12 @@ button_card_templates:
 
   loader:
     custom_fields:
-      loading: &loading >
+      loader: >
         [[[ if (states[entity.entity_id.replace(entity.entity_id.split('.')[0], 'input_boolean')].state === 'on') { 
         return '<img src="/local/loader.svg" width="100%">'; } ]]]
     styles:
       custom_fields:
-        loading:
+        loader:
           [filter: "[[[ return entity.state === 'off' ? 'invert(1)' : 'none'; ]]]", 
            top: 3%, left: 60%, width: 3.7vw, position: absolute, opacity: 0.6]
 
@@ -438,7 +438,7 @@ views:
               {{ states('sensor.sidebar_weather') }}
 
 
-              {{ states('sensor.sidebar_skanetrafiken') }}
+              [comment]: <> ({{ states('sensor.sidebar_skanetrafiken') }})
 
 
               {{ states('sensor.tvatta_countdown') }}
