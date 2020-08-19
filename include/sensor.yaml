@@ -205,7 +205,7 @@ sensor:
     json_attributes_topic: valetudo/rockrobo/map_data
     name: xiaomi_map
     value_template: OK
-    scan_interval: 5
+    scan_interval: 15
 
   - platform: krisinformation
     country: Sverige

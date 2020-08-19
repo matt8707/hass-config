@@ -13,9 +13,6 @@ automation:
       - platform: homeassistant
         event: start
     action:
-      # - service: frontend.set_theme
-      #   data:
-      #     name: tablet
       - service: mqtt.publish
         data:
           topic: cmnd/tasmotas/status
@@ -35,6 +32,18 @@ automation:
       - delay:
           seconds: 4
       - service: shell_command.fullykiosk_restart_app
+      - choose:
+        - conditions:
+            - condition: state
+              entity_id: 
+                ['media_player.sony_bravia', 'media_player.samsung', 
+                'media_player.google_nest_mini']
+              state: 'off'
+          sequence:
+            - service: input_select.select_option
+              data:
+                entity_id: input_select.conditional_media
+                option: Senast nedladdat
       - delay:
           seconds: 30
       - service: homekit.start
@@ -175,7 +184,7 @@ automation:
           entity_id: >
             {{ trigger.entity_id }}
 
-  - alias: notification_motion_hall
+  - alias: macos_notification_motion_hall
     initial_state: false
     trigger:
       - platform: state
@@ -189,7 +198,7 @@ automation:
     action:
       - service: shell_command.imac_notify_motion_hallway
 
-  - alias: notify_hass_rc
+  - alias: ios_notify_hass_rc
     initial_state: true
     trigger:
       - platform: state
@@ -202,8 +211,45 @@ automation:
     action:
       - service: notify.mobile_app_iphone
         data_template:
-          message: >
-            {{ states(trigger.entity_id) }} släppt
+          title: >
+            RC {{ states(trigger.entity_id) }} tillgänglig
+          message: Tryck för att läsa versionsinformation
+          data:
+            url: https://rc.home-assistant.io/latest-release-notes/
+
+  - alias: ios_notify_hass_update
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: sensor.hass_version
+    condition:
+      condition: not
+      conditions:
+        - condition: state
+          entity_id: sensor.hass_version
+          state: Senaste
+    action:
+      - service: notify.mobile_app_iphone
+        data_template:
+          title: >
+            {{ states(trigger.entity_id) }} tillgänglig {{ '\U0001F389' }}
+          message: Håll in för att uppdatera
+          data:
+            data:
+              url: https://www.home-assistant.io/latest-release-notes/
+            push:
+              category: ios_hass
+
+  - alias: ios_notify_hass_update_action
+    initial_state: true
+    trigger:
+      - platform: event
+        event_type: ios.notification_action_fired
+        event_data:
+          actionName: START_WATCHTOWER
+    action:
+      - service: switch.turn_on
+        entity_id: switch.watchtower
 
     ####################################################
     #                                                  #
@@ -762,6 +808,10 @@ automation:
           {{ is_state('media_player.vardagsrum', 'idle') and
           is_state('media_player.sovrum', 'idle') and
           is_state('media_player.playstation_4', 'standby') and
+          is_state('media_player.google_nest_mini', 'off') 
+          or
+          is_state('media_player.sony_bravia', 'off') and
+          is_state('media_player.samsung', 'off') and
           is_state('media_player.google_nest_mini', 'off') }}
     action:
       - service: input_select.select_option

@@ -162,7 +162,7 @@ homeassistant:
     automation.tv_on_lights:
       friendly_name: Tänd Tv-lampa
 
-    automation.notification_motion_hall:
+    automation.macos_notification_motion_hall:
       friendly_name: Mottag notiser
       icon: mdi:bell
 
