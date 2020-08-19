@@ -46,7 +46,7 @@
                             service_data:
                               entity_id: sensor.imac_mem
 
-                    - entity: automation.notification_motion_hall
+                    - entity: automation.macos_notification_motion_hall
 
                     - entity: sensor.computer_imac_uptime
 

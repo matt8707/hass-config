@@ -4,10 +4,15 @@
                 title: Dammsugare
                 hide_header: true
                 deviceID: this
-                style: |
-                  :host .content {
-                    width: calc(400px + 555px);
-                  }
+                style:
+                  .: |
+                    :host .content {
+                      width: calc(400px + 555px);
+                    }
+                  $: |
+                    .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
+                      background: none !important;
+                    }
                 card:
                   type: custom:layout-card
                   column_num: 2

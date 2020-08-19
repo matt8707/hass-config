@@ -93,7 +93,7 @@
                         else 'uppdateringar tillgängliga' }}</b> {{ '\U0001f389' }}
 
                         {% for repo in state_attr('sensor.hacs', 'repositories') %}
-                        * {{ repo.display_name }} - Version {{ repo.available_version }} ([{{ repo.installed_version }}](#))
+                        * {{ repo.display_name }} - Version {{ repo.available_version }} ([{{ repo.installed_version }}](https://github.com/{{ repo.name }}/releases))
 
                         {% endfor %}
                         {% endif %}

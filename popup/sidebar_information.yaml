@@ -4,11 +4,16 @@
                 title: Information
                 hide_header: true
                 deviceID: this
-                style: |
-                  :host .content {
-                    width: calc(385px + 385px + 385px);
-                    max-width: 90vw;
-                  }
+                style:
+                  .: |
+                    :host .content {
+                      width: calc(385px + 385px + 385px);
+                      max-width: 90vw;
+                    }
+                  $: |
+                    .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
+                      background: none !important;
+                    }
                 card:
                   type: custom:layout-card
                   column_num: 3
