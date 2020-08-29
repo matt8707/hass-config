@@ -85,20 +85,20 @@
                           entity_row: true
                           entities:
 
-                            - entity: sensor.hp_printer_inkcartridge_black
+                            - entity: sensor.hp_deskjet_2600_series_black_ink
                               name: Svart
                               icon: mdi:water-outline
                               tap_action:
                                 action: call-service
                                 service: homeassistant.update_entity
                                 service_data:
-                                  entity_id: sensor.hp_printer_inkcartridge_black
+                                  entity_id: sensor.hp_deskjet_2600_series_black_ink
 
-                            - entity: sensor.hp_printer_inkcartridge_cyanmagentayellow
+                            - entity: sensor.hp_deskjet_2600_series_tri_color_ink
                               name: Färg
                               icon: mdi:water
                               tap_action:
                                 action: call-service
                                 service: homeassistant.update_entity
                                 service_data:
-                                  entity_id: sensor.hp_printer_inkcartridge_cyanmagentayellow
+                                  entity_id: sensor.hp_deskjet_2600_series_tri_color_ink
