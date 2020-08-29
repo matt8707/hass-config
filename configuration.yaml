@@ -28,12 +28,12 @@ lovelace:
       {url: /hacsfiles/lovelace-hui-element/hui-element.js,                      type: module},
       {url: /hacsfiles/lovelace-layout-card/layout-card.js,                      type: module},
       {url: /hacsfiles/lovelace-slider-entity-row/slider-entity-row.js,          type: module},
-      {url: /hacsfiles/lovelace-valetudo-map-card/valetudo-map-card.js,          type: js},
       {url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js,                type: module},
       {url: /hacsfiles/mini-media-player/mini-media-player-bundle.js,            type: module},
       {url: /hacsfiles/stack-in-card/stack-in-card.js,                           type: module},
       {url: /hacsfiles/swipe-card/swipe-card.js,                                 type: module},
 
+      {url: '/local/valetudo-map-card.js?v=42dbceb',                             type: js},
       {url: '/local/custom_icons.js?v=25052001',                                 type: module},
       {url: /local/font.css,                                                     type: css} ]
 
@@ -66,7 +66,7 @@ person:
   - name: Sanja
     id: sanja4543958678435345345345345
     device_trackers:
-      ['device_tracker.sanja', 'device_tracker.sanja_iphone', 'device_tracker.sanja_bluetooth']
+      ['device_tracker.sanja', 'device_tracker.sanja_bluetooth']
 
 device_tracker:
   - platform: iphonedetect
