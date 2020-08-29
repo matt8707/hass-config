@@ -180,9 +180,6 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         elif service_type == "_touch-able._tcp.local.":
             identifier = discovery_info["name"].split(".")[0]
             name = properties["CtlN"]
-        elif service_type == "_appletv-v2._tcp.local.":
-            identifier = discovery_info["name"].split(".")[0]
-            name = properties["Name"] + " (Home Sharing)"
         else:
             return self.async_abort(reason="unrecoverable_error")
 

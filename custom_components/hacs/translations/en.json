@@ -266,6 +266,10 @@
             "description": "Show information about HACS",
             "title": "About"
         },
+        "addon": {
+            "description": "There are no addons in HACS, but you can click here to get to the supervisor",
+            "title": "Add-ons"
+        },
         "automation": {
             "description": "This is where you find python_scripts, AppDaemon apps and NetDaemon apps",
             "title": "Automation"
