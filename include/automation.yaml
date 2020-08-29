@@ -660,10 +660,9 @@ automation:
     mode: restart
     initial_state: true
     trigger:
-      - platform: template
-        value_template: >
-          {% set start_time = state_attr('calendar.tvatta', 'start_time') %}
-          {{ as_timestamp(start_time) - as_timestamp(now()) < 10 * 60 if start_time != None }}
+      - platform: state
+        entity_id: binary_sensor.laundry_time_trigger
+        to: 'on'
     action:
       - service: input_boolean.turn_on
         entity_id: input_boolean.laundry_timer_visibility

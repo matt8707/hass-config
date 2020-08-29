@@ -63,6 +63,12 @@ binary_sensor:
             {{ 'false' if ((as_timestamp(published) - as_timestamp(now())) / 86400) <= -0.5 else 'true' }}
           {% endif %}
 
+      laundry_time_trigger:
+        entity_id: sensor.time, calendar.tvatta
+        value_template: >
+          {% set start_time = state_attr('calendar.tvatta', 'start_time') %}
+          {{ as_timestamp(start_time) - as_timestamp(now()) < 10 * 60 if start_time != None }}
+
       fullykiosk_motion:
         entity_id: sensor.fullykiosk
         friendly_name: Kamera
@@ -205,7 +211,7 @@ sensor:
     json_attributes_topic: valetudo/rockrobo/map_data
     name: xiaomi_map
     value_template: OK
-    scan_interval: 15
+    scan_interval: 10
 
   - platform: krisinformation
     country: Sverige
@@ -439,17 +445,17 @@ sensor:
           {% endif %}
 
       printer_status:
-        entity_id: sensor.hp_printer_status
+        entity_id: sensor.hp_deskjet_2600_series
         friendly_name: Skrivare
         icon_template: mdi:printer-wireless
         value_template: >
-          {% set entity_id = 'sensor.hp_printer_status' %}
+          {% set entity_id = 'sensor.hp_deskjet_2600_series' %}
           {% if is_state(entity_id, 'On') %} På
           {% elif is_state(entity_id, 'Scanning') %} Skannar
           {% elif is_state(entity_id, 'Copying') %} Kopierar
           {% elif is_state(entity_id, 'Printing') %} Skriver ut
           {% elif is_state(entity_id, 'Cancelling Job') %} Avbryter
-          {% elif is_state(entity_id, 'Idle') %} Viloläge
+          {% elif is_state(entity_id, 'idle') %} Viloläge
           {% elif is_state(entity_id, 'trayEmptyOrOpen') %} Inga papper
           {% elif is_state(entity_id, 'Off') %} Av
           {% else %} {{ states(entity_id) }}
