@@ -48,6 +48,7 @@ logger:
     homeassistant.helpers.service: error
     homeassistant.components.media_player: error
     homeassistant.helpers.entity: error
+    homeassistant.helpers.event: fatal
 
 recorder:
   purge_keep_days: 2
@@ -78,12 +79,6 @@ device_tracker:
       Sanja: !secret iphonedetect_sanja
 
   - platform: bluetooth_tracker
-
-remote:
-  - platform: broadlink
-    host: !secret broadlink_host
-    mac: !secret broadlink_mac
-    type: rm4_pro
 
 wemo:
   discovery: false
