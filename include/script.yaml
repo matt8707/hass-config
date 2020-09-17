@@ -39,7 +39,7 @@ script:
             entity_id: input_select.roborock_zone
             state: Ingen vald
       - service: vacuum.send_command
-        data_template:
+        data:
           entity_id: vacuum.rockrobo
           command: zoned_cleanup
           params:
@@ -81,7 +81,7 @@ script:
               state: 'off'
           sequence:
             - service: media_player.play_media
-              data_template:
+              data:
                 entity_id: media_player.tablet
                 media_content_id: >
                   {{ ['/local/sound/tts_custom/hej.mp3', 
@@ -118,7 +118,7 @@ script:
               state: 'off'
           sequence:
             - service: media_player.play_media
-              data_template:
+              data:
                 entity_id: media_player.tablet
                 media_content_id: >
                   {{ ['/local/sound/tts_custom/ha_det_bra.mp3',

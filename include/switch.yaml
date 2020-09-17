@@ -12,11 +12,6 @@ switch:
     host: !secret wake_on_lan_host
     mac: !secret wake_on_lan_mac
 
-  - platform: broadlink
-    host: !secret broadlink_host
-    mac: !secret broadlink_mac
-    type: rm4_pro
-
   - platform: rest
     name: Watchtower
     resource: !secret ha_dockermon_watchtower
@@ -157,10 +152,10 @@ switch:
         turn_on:
           - service: input_boolean.turn_on
             entity_id: input_boolean.air_purifier
-          - service: broadlink.send
+          - service: remote.send_command
             data:
-              host: !secret broadlink_host
-              packet: !secret ir_purifier_power
+              entity_id: remote.broadlink
+              command: !secret ir_purifier_power
           - repeat:
               count: 20
               # report state
@@ -177,10 +172,10 @@ switch:
         turn_off:
           - service: input_boolean.turn_on
             entity_id: input_boolean.air_purifier
-          - service: broadlink.send
+          - service: remote.send_command
             data:
-              host: !secret broadlink_host
-              packet: !secret ir_purifier_power
+              entity_id: remote.broadlink
+              command: !secret ir_purifier_power
           - repeat:
               count: 30
               # report state

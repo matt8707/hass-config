@@ -175,12 +175,12 @@ automation:
         to: 'on'
     action:
       - service: browser_mod.toast
-        data_template:
+        data:
           duration: 8000
           message: >
             Rörelse detekterat i {{ trigger.to_state.name }}
       - service: input_boolean.turn_off
-        data_template:
+        data:
           entity_id: >
             {{ trigger.entity_id }}
 
@@ -210,7 +210,7 @@ automation:
           ['Idag', 'Släppt']
     action:
       - service: notify.mobile_app_iphone
-        data_template:
+        data:
           title: >
             RC {{ states(trigger.entity_id) }} tillgänglig
           message: Tryck för att läsa versionsinformation
@@ -230,7 +230,7 @@ automation:
           state: Senaste
     action:
       - service: notify.mobile_app_iphone
-        data_template:
+        data:
           title: >
             {{ states(trigger.entity_id) }} tillgänglig {{ '\U0001F389' }}
           message: Håll in för att uppdatera
@@ -319,7 +319,7 @@ automation:
       - service: homeassistant.update_entity
         entity_id: binary_sensor.monitors_mute_check
       - service: input_number.set_value
-        data_template:
+        data:
           entity_id: input_number.monitors_volume
           value: >
             {% set max_volume = 75 %} {% set min_volume = 7 %}
@@ -522,13 +522,13 @@ automation:
     action:
       - service: switch.turn_off
         entity_id: switch.fullykiosk_screensaver
-      - service_template: input_number.set_value
-        data_template:
+      - service: input_number.set_value
+        data:
           entity_id: input_number.fullykiosk_brightness_slider
           value: >
             {{ 90 if is_state('sun.sun', 'above_horizon') else 60 }}
       - service: input_boolean.turn_off
-        data_template:
+        data:
           entity_id: >
             {{ trigger.entity_id }}
 
@@ -558,7 +558,7 @@ automation:
           'switch.playstation_4', 'fan.sovrum_anslut', 'switch.air_purifier']
     action:
       - service: input_boolean.turn_off
-        data_template:
+        data:
           entity_id: >
             {{ trigger.entity_id | replace(trigger.entity_id.split('.')[0], 'input_boolean') }}
 
@@ -574,7 +574,7 @@ automation:
           minutes: 1
     action:
       - service: input_boolean.turn_off
-        data_template:
+        data:
           entity_id: >
             {{ trigger.entity_id }}
 
@@ -591,7 +591,7 @@ automation:
         entity_id: input_select.hdmi
     action:
       - service: media_player.select_source
-        data_template:
+        data:
           entity_id: media_player.sony_bravia
           source: >
             {{ states(trigger.entity_id) }}
@@ -603,7 +603,7 @@ automation:
         entity_id: input_select.hdmi2
     action:
       - service: media_player.select_source
-        data_template:
+        data:
           entity_id: media_player.samsung
           source: >
             {{ states(trigger.entity_id) }}
@@ -687,7 +687,7 @@ automation:
       - delay:
           seconds: 2
       - service: media_player.play_media
-        data_template:
+        data:
           entity_id: media_player.tablet
           media_content_id: >
             {{ ['/local/sound/tts_custom/timer_tvatten_ar_fardig.mp3',
@@ -695,7 +695,7 @@ automation:
                 '/local/sound/tts_custom/timer_dags_att_ga_ner.mp3'] | random }}
           media_content_type: music
       - service: notify.mobile_app_iphone
-        data_template:
+        data:
           message: >
             {{'\U0001F9FA'}} {{ ['Tvätten är färdig', 'Tvätten är klar', 'Dags att gå ner'] | random }}
       - service: shell_command.imac_notify_laundry
@@ -715,7 +715,7 @@ automation:
         entity_id: input_select.roborock_speed
     action:
       - service: vacuum.set_fan_speed
-        data_template:
+        data:
           entity_id: vacuum.xiaomi_vacuum_cleaner
           fan_speed: >
             {% if is_state(trigger.entity_id, 'Tyst') %} Silent
@@ -732,7 +732,7 @@ automation:
         entity_id: sensor.roborock_speed
     action:
       - service: input_select.select_option
-        data_template:
+        data:
           entity_id: input_select.roborock_speed
           option: >
             {% if is_state(trigger.entity_id, 'Silent') %} Tyst
@@ -759,7 +759,7 @@ automation:
         to: playing
     action:
       - service: input_select.select_option
-        data_template:
+        data:
           entity_id: input_select.conditional_media
           option: >
             {{ trigger.to_state.name }}
@@ -783,7 +783,7 @@ automation:
           minutes: 10
     action:
       - service: input_select.select_option
-        data_template:
+        data:
           entity_id: input_select.conditional_media
           option: >
             {% set media_players = 
@@ -814,7 +814,7 @@ automation:
           is_state('media_player.google_nest_mini', 'off') }}
     action:
       - service: input_select.select_option
-        data_template:
+        data:
           entity_id: input_select.conditional_media
           option: Senast nedladdat
 
@@ -829,7 +829,7 @@ automation:
           seconds: 5
     action:
       - service: input_select.select_option
-        data_template:
+        data:
           entity_id: input_select.conditional_media
           option: >
             {% set media_players = 
@@ -862,7 +862,7 @@ automation:
           seconds: 5
     action:
       - service: input_select.select_option
-        data_template:
+        data:
           entity_id: input_select.conditional_media
           option: >
             {% set media_players = 

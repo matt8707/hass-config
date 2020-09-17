@@ -40,7 +40,7 @@ fan:
                   entity_id: fan.sovrum_anslut
             default:
               - service: input_select.select_option
-                data_template:
+                data:
                   entity_id: input_select.sovrum_anslut_speed
                   option: "{{ speed }}"
         oscillating_template: >
@@ -54,10 +54,10 @@ fan:
             state: 'off'
           - service: input_boolean.turn_on
             entity_id: input_boolean.sovrum_anslut
-          - service: broadlink.send
+          - service: remote.send_command
             data:
-              host: !secret broadlink_host
-              packet: !secret ir_fan_power
+              entity_id: remote.broadlink
+              command: !secret ir_fan_power
           - choose:
             # initial oscillation
             - conditions:
@@ -65,10 +65,10 @@ fan:
                   entity_id: input_boolean.sovrum_anslut_oscillate
                   state: 'on'
               sequence:
-                - service: broadlink.send
+                - service: remote.send_command
                   data:
-                    host: !secret broadlink_host
-                    packet: !secret ir_fan_swing
+                    entity_id: remote.broadlink
+                    command: !secret ir_fan_swing
           - choose:
             # initial speed
             - conditions:
@@ -76,23 +76,23 @@ fan:
                   entity_id: input_select.sovrum_anslut_speed
                   state: Max
               sequence:
-                - service: broadlink.send
+                - service: remote.send_command
                   data:
-                    host: !secret broadlink_host
-                    packet: !secret ir_fan_speed
-                - service: broadlink.send
+                    entity_id: remote.broadlink
+                    command: !secret ir_fan_speed
+                - service: remote.send_command
                   data:
-                    host: !secret broadlink_host
-                    packet: !secret ir_fan_speed
+                    entity_id: remote.broadlink
+                    command: !secret ir_fan_speed
             - conditions:
                 - condition: state
                   entity_id: input_select.sovrum_anslut_speed
                   state: Medium
               sequence:
-                - service: broadlink.send
+                - service: remote.send_command
                   data:
-                    host: !secret broadlink_host
-                    packet: !secret ir_fan_speed
+                    entity_id: remote.broadlink
+                    command: !secret ir_fan_speed
           - repeat:
             # report state
               count: 20
@@ -112,10 +112,10 @@ fan:
             state: 'on'
           - service: input_boolean.turn_on
             entity_id: input_boolean.sovrum_anslut
-          - service: broadlink.send
+          - service: remote.send_command
             data:
-              host: !secret broadlink_host
-              packet: !secret ir_fan_power
+              entity_id: remote.broadlink
+              command: !secret ir_fan_power
           - repeat:
             # report state
               count: 20
