@@ -308,7 +308,9 @@ views:
             #root > hui-icon-element:active {opacity: 0.35 !important; transition: none;}
 
             #root > hui-icon-element:nth-child(10) {
-              {% if states('sensor.hass_version_installed') != states('sensor.hass_version_latest') and 
+              {% if not states('sensor.hass_version_installed').split('.')[1] | int > 
+              states('sensor.hass_version_latest').split('.')[1] | int and 
+              states('sensor.hass_version_installed') != states('sensor.hass_version_latest') and 
               not is_state('sensor.hass_version_latest', 'unknown') or 
               not is_state('sensor.hacs', '0') and not is_state('sensor.hacs', 'unknown') %}
                 color: rgb(35,78,106) !important; opacity: 1 !important;
@@ -422,8 +424,9 @@ views:
               {{ states('sensor.mathem_countdown') }}
 
 
-              {% if states('sensor.imac_ip') == states('sensor.public_ip') 
-                 or states('sensor.myip') == states('sensor.public_ip') %}
+              {% if is_state('switch.computer_imac', 'on') and 
+              states('sensor.imac_ip') == states('sensor.public_ip') 
+              or states('sensor.myip') == states('sensor.public_ip') %}
               {{'\u26A0\uFE0F'}} Kontrollera VPN-anslutning. {% endif %}
               
 
