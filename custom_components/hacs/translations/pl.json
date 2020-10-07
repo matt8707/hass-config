@@ -266,6 +266,10 @@
             "description": "Informacje o HACS",
             "title": "O HACS"
         },
+        "addon": {
+            "description": "W HACS nie ma dodatków, ale możesz kliknąć tutaj, aby przejść do Supervisora",
+            "title": "Dodatki"
+        },
         "automation": {
             "description": "Skrypty Pythona, aplikacje AppDaemon i NetDaemon",
             "title": "Automatyzacje"

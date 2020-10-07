@@ -6,6 +6,7 @@
         "appdaemon_apps": "AppDaemon Apps",
         "appdaemon_plural": "AppDaemon Apps",
         "background_task": "Background task running, this page will reload when it's done.",
+        "cancel": "Cancel",
         "check_log_file": "Check your log file for more details.",
         "continue": "Continue",
         "disabled": "Disabled",
@@ -31,6 +32,7 @@
         "python_script": "Python Script",
         "python_script_plural": "Python Scripts",
         "python_scripts": "Python Scripts",
+        "reload": "Reload",
         "repositories": "Repositories",
         "repository": "Repository",
         "settings": "settings",
@@ -136,6 +138,12 @@
         "releasenotes": "Releasenotes for {release}",
         "title": "Update pending"
     },
+    "dialog": {
+        "reload": {
+            "confirm": "Do you want to do that now?",
+            "description": "You need to clear your browser cache when changing Lovelace resources."
+        }
+    },
     "entry": {
         "information": "Information",
         "intro": "Updates and important messages will show here if there are any",
@@ -157,9 +165,17 @@
                 "content": "You have {number} integrations that requires a restart of Home Assistant, you can do that from the 'Server Controls' section under the configuration part of Home Assistant UI.",
                 "title": "Pending restart"
             },
+            "setup": {
+                "content": "HACS is setting up, during this time some information might be missing or incorrect",
+                "title": "HACS is setting up"
+            },
             "startup": {
                 "content": "HACS is starting up, during this time some information might be missing or incorrect",
                 "title": "HACS is starting up"
+            },
+            "waiting": {
+                "content": "HACS is waiting for Home Assistant to finish startup before starting startup tasks",
+                "title": "HACS is waiting"
             },
             "wrong_frontend_installed": {
                 "content": "You have {running} of the HACS frontend installed, but version {expected} was expected, if this you see this message Home Assistant was not able to install the new version, try restarting Home Assistant.",

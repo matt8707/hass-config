@@ -519,8 +519,8 @@
       A = n(9),
       j = n(37),
       N = P.f,
-      T = A.f,
-      C = E.f,
+      C = A.f,
+      T = E.f,
       F = r.Symbol,
       M = r.JSON,
       I = M && M.stringify,
@@ -540,9 +540,9 @@
           return (
             7 !=
             k(
-              T({}, "a", {
+              C({}, "a", {
                 get: function () {
-                  return T(this, "a", { value: 7 }).a;
+                  return C(this, "a", { value: 7 }).a;
                 },
               })
             ).a
@@ -550,9 +550,9 @@
         })
           ? function (t, e, n) {
               var r = N(D, e);
-              r && delete D[e], T(t, e, n), r && t !== D && T(D, e, r);
+              r && delete D[e], C(t, e, n), r && t !== D && C(D, e, r);
             }
-          : T,
+          : C,
       H = function (t) {
         var e = (U[t] = k(F.prototype));
         return (e._k = t), e;
@@ -575,9 +575,9 @@
             ? (n.enumerable
                 ? (i(t, R) && t[R][e] && (t[R][e] = !1),
                   (n = k(n, { enumerable: x(0, !1) })))
-                : (i(t, R) || T(t, R, x(1, {})), (t[R][e] = !0)),
+                : (i(t, R) || C(t, R, x(1, {})), (t[R][e] = !0)),
               q(t, e, n))
-            : T(t, e, n)
+            : C(t, e, n)
         );
       },
       K = function (t, e) {
@@ -602,13 +602,13 @@
         }
       },
       Q = function (t) {
-        for (var e, n = C(w(t)), r = [], o = 0; n.length > o; )
+        for (var e, n = T(w(t)), r = [], o = 0; n.length > o; )
           i(U, (e = n[o++])) || e == R || e == u || r.push(e);
         return r;
       },
       tt = function (t) {
         for (
-          var e, n = t === D, r = C(n ? W : w(t)), o = [], a = 0;
+          var e, n = t === D, r = T(n ? W : w(t)), o = [], a = 0;
           r.length > a;
 
         )
@@ -768,8 +768,8 @@
         A = n(35),
         j = n(5),
         N = n(25),
-        T = n(58),
-        C = n(55),
+        C = n(58),
+        T = n(55),
         F = n(16),
         M = n(47),
         I = n(63),
@@ -792,8 +792,8 @@
         Z = N(4),
         Q = N(5),
         tt = N(6),
-        et = T(!0),
-        nt = T(!1),
+        et = C(!0),
+        nt = C(!1),
         rt = F.values,
         it = F.keys,
         ot = F.entries,
@@ -813,7 +813,7 @@
         _t = c.TYPED,
         bt = c.VIEW,
         wt = N(1, function (t, e) {
-          return Pt(C(t, t[yt]), e);
+          return Pt(T(t, t[yt]), e);
         }),
         St = o(function () {
           return 1 === new z(new Uint16Array([1]).buffer)[0];
@@ -839,7 +839,7 @@
           return new t(e);
         },
         Ot = function (t, e) {
-          return At(C(t, t[yt]), e);
+          return At(T(t, t[yt]), e);
         },
         At = function (t, e) {
           for (var n = 0, r = e.length, i = Pt(t, r); r > n; ) i[n] = e[n++];
@@ -880,18 +880,18 @@
             i[e] = l ? f(c[e], e) : c[e];
           return i;
         },
-        Tt = function () {
+        Ct = function () {
           for (var t = 0, e = arguments.length, n = Pt(this, e); e > t; )
             n[t] = arguments[t++];
           return n;
         },
-        Ct =
+        Tt =
           !!z &&
           o(function () {
             pt.call(new z(1));
           }),
         Ft = function () {
-          return pt.apply(Ct ? lt.call(Et(this)) : Et(this), arguments);
+          return pt.apply(Tt ? lt.call(Et(this)) : Et(this), arguments);
         },
         Mt = {
           copyWithin: function (t, e) {
@@ -979,7 +979,7 @@
             var n = Et(this),
               r = n.length,
               i = y(t, r);
-            return new (C(n, n[yt]))(
+            return new (T(n, n[yt]))(
               n.buffer,
               n.byteOffset + i * n.BYTES_PER_ELEMENT,
               v((void 0 === e ? r : y(e, r)) - i)
@@ -1185,7 +1185,7 @@
                     y.of.call(d, 1);
                   }),
               s,
-              { from: Nt, of: Tt }
+              { from: Nt, of: Ct }
             ),
             "BYTES_PER_ELEMENT" in x || h(x, "BYTES_PER_ELEMENT", e),
             a(a.P, s, Mt),
@@ -2452,7 +2452,7 @@
       A = "process" == f(k),
       j = function () {},
       N = (i = _.f),
-      T = !!(function () {
+      C = !!(function () {
         try {
           var t = O.resolve(1),
             e = ((t.constructor = {})[n(5)("species")] = function (t) {
@@ -2466,7 +2466,7 @@
           );
         } catch (t) {}
       })(),
-      C = function (t) {
+      T = function (t) {
         var e;
         return !(!h(t) || "function" != typeof (e = t.then)) && e;
       },
@@ -2497,7 +2497,7 @@
                             f && (f.exit(), (a = !0))),
                         n === e.promise
                           ? s(x("Promise-chain cycle"))
-                          : (o = C(n))
+                          : (o = T(n))
                           ? o.call(n, u, s)
                           : u(n))
                       : s(r);
@@ -2565,7 +2565,7 @@
           (n._d = !0), (n = n._w || n);
           try {
             if (n === t) throw x("Promise can't be resolved itself");
-            (e = C(t))
+            (e = T(t))
               ? m(function () {
                   var r = { _w: n, _d: !1 };
                   try {
@@ -2580,7 +2580,7 @@
           }
         }
       };
-    T ||
+    C ||
       ((O = function (t) {
         d(this, O, "Promise", "_h"), p(t), r.call(this);
         try {
@@ -2623,17 +2623,17 @@
       (_.f = N = function (t) {
         return t === O || t === a ? new o(t) : i(t);
       })),
-      l(l.G + l.W + l.F * !T, { Promise: O }),
+      l(l.G + l.W + l.F * !C, { Promise: O }),
       n(44)(O, "Promise"),
       n(48)("Promise"),
       (a = n(7).Promise),
-      l(l.S + l.F * !T, "Promise", {
+      l(l.S + l.F * !C, "Promise", {
         reject: function (t) {
           var e = N(this);
           return (0, e.reject)(t), e.promise;
         },
       }),
-      l(l.S + l.F * (c || !T), "Promise", {
+      l(l.S + l.F * (c || !C), "Promise", {
         resolve: function (t) {
           return S(c && this === a ? O : this, t);
         },
@@ -2642,7 +2642,7 @@
         l.S +
           l.F *
             !(
-              T &&
+              C &&
               n(63)(function (t) {
                 O.all(t).catch(j);
               })
@@ -2805,8 +2805,8 @@
       A = S.floor,
       j = S.log,
       N = S.LN2,
-      T = i ? "_b" : "buffer",
-      C = i ? "_l" : "byteLength",
+      C = i ? "_b" : "buffer",
+      T = i ? "_l" : "byteLength",
       F = i ? "_o" : "byteOffset";
     function M(t, e, n) {
       var r,
@@ -2886,16 +2886,16 @@
     }
     function B(t, e, n, r) {
       var i = p(+n);
-      if (i + e > t[C]) throw x(_);
-      var o = t[T]._b,
+      if (i + e > t[T]) throw x(_);
+      var o = t[C]._b,
         a = i + t[F],
         c = o.slice(a, a + e);
       return r ? c : c.reverse();
     }
     function G(t, e, n, r, i, o) {
       var a = p(+n);
-      if (a + e > t[C]) throw x(_);
-      for (var c = t[T]._b, u = a + t[F], s = r(+i), f = 0; f < e; f++)
+      if (a + e > t[T]) throw x(_);
+      for (var c = t[C]._b, u = a + t[F], s = r(+i), f = 0; f < e; f++)
         c[u + f] = s[o ? f : e - f - 1];
     }
     if (a.ABV) {
@@ -2944,16 +2944,16 @@
       (b = function (t) {
         f(this, b, "ArrayBuffer");
         var e = p(t);
-        (this._b = g.call(new Array(e), 0)), (this[C] = e);
+        (this._b = g.call(new Array(e), 0)), (this[T] = e);
       }),
         (w = function (t, e, n) {
           f(this, w, "DataView"), f(t, b, "DataView");
-          var r = t[C],
+          var r = t[T],
             i = l(e);
           if (i < 0 || i > r) throw x("Wrong offset!");
           if (i + (n = void 0 === n ? r - i : h(n)) > r)
             throw x("Wrong length!");
-          (this[T] = t), (this[F] = i), (this[C] = n);
+          (this[C] = t), (this[F] = i), (this[T] = n);
         }),
         i &&
           (D(b, "byteLength", "_l"),
@@ -6687,21 +6687,21 @@
                   N < j;
                   N++
                 ) {
-                  var T = void 0,
-                    C = A[N];
-                  if ("" === C) T = v();
+                  var C = void 0,
+                    T = A[N];
+                  if ("" === T) C = v();
                   else {
-                    var F = g.exec(C);
+                    var F = g.exec(T);
                     null !== F &&
                       p(F[2], "$lit$") &&
-                      (C =
-                        C.slice(0, F.index) +
+                      (T =
+                        T.slice(0, F.index) +
                         F[1] +
                         F[2].slice(0, -"$lit$".length) +
                         F[3]),
-                      (T = document.createTextNode(C));
+                      (C = document.createTextNode(T));
                   }
-                  O.insertBefore(T, d),
+                  O.insertBefore(C, d),
                     this.parts.push({ type: "node", index: ++c });
                 }
                 "" === A[j]
@@ -6968,7 +6968,7 @@
       );
     })();
     function k(t, e) {
-      return !e || ("object" !== C(e) && "function" != typeof e)
+      return !e || ("object" !== T(e) && "function" != typeof e)
         ? (function (t) {
             if (void 0 === t)
               throw new ReferenceError(
@@ -7035,11 +7035,11 @@
           Object.defineProperty(t, r.key, r);
       }
     }
-    function T(t, e, n) {
+    function C(t, e, n) {
       return e && N(t.prototype, e), n && N(t, n), t;
     }
-    function C(t) {
-      return (C =
+    function T(t) {
+      return (T =
         "function" == typeof Symbol && "symbol" == typeof Symbol.iterator
           ? function (t) {
               return typeof t;
@@ -7066,7 +7066,7 @@
      * subject to an additional IP rights grant found at
      * http://polymer.github.io/PATENTS.txt
      */ var F = function (t) {
-        return null === t || !("object" === C(t) || "function" == typeof t);
+        return null === t || !("object" === T(t) || "function" == typeof t);
       },
       M = function (t) {
         return Array.isArray(t) || !(!t || !t[Symbol.iterator]);
@@ -7083,7 +7083,7 @@
             this.parts[i] = this._createPart();
         }
         return (
-          T(t, [
+          C(t, [
             {
               key: "_createPart",
               value: function () {
@@ -7149,7 +7149,7 @@
           j(this, t), (this.value = void 0), (this.committer = e);
         }
         return (
-          T(t, [
+          C(t, [
             {
               key: "setValue",
               value: function (t) {
@@ -7180,7 +7180,7 @@
             (this.options = e);
         }
         return (
-          T(t, [
+          C(t, [
             {
               key: "appendInto",
               value: function (t) {
@@ -7342,7 +7342,7 @@
           (this.element = e), (this.name = n), (this.strings = r);
         }
         return (
-          T(t, [
+          C(t, [
             {
               key: "setValue",
               value: function (t) {
@@ -7383,7 +7383,7 @@
         }
         return (
           O(e, I),
-          T(e, [
+          C(e, [
             {
               key: "_createPart",
               value: function () {
@@ -7440,7 +7440,7 @@
             });
         }
         return (
-          T(t, [
+          C(t, [
             {
               key: "setValue",
               value: function (t) {
@@ -8585,8 +8585,8 @@ found at http://polymer.github.io/PATENTS.txt
           })(t)
         : e;
     }
-    function Tt(t, e, n) {
-      return (Tt =
+    function Ct(t, e, n) {
+      return (Ct =
         "undefined" != typeof Reflect && Reflect.get
           ? Reflect.get
           : function (t, e, n) {
@@ -8594,7 +8594,7 @@ found at http://polymer.github.io/PATENTS.txt
                 for (
                   ;
                   !Object.prototype.hasOwnProperty.call(t, e) &&
-                  null !== (t = Ct(t));
+                  null !== (t = Tt(t));
 
                 );
                 return t;
@@ -8605,8 +8605,8 @@ found at http://polymer.github.io/PATENTS.txt
               }
             })(t, e, n || t);
     }
-    function Ct(t) {
-      return (Ct = Object.setPrototypeOf
+    function Tt(t) {
+      return (Tt = Object.setPrototypeOf
         ? Object.getPrototypeOf
         : function (t) {
             return t.__proto__ || Object.getPrototypeOf(t);
@@ -8675,7 +8675,7 @@ found at http://polymer.github.io/PATENTS.txt
               if (!(t instanceof e))
                 throw new TypeError("Cannot call a class as a function");
             })(this, e),
-            Nt(this, Ct(e).apply(this, arguments))
+            Nt(this, Tt(e).apply(this, arguments))
           );
         }
         var n, r, i;
@@ -8695,7 +8695,7 @@ found at http://polymer.github.io/PATENTS.txt
             {
               key: "finalize",
               value: function () {
-                Tt(Ct(e), "finalize", this).call(this),
+                Ct(Tt(e), "finalize", this).call(this),
                   (this._styles = this.hasOwnProperty(
                     JSCompiler_renameProperty("styles", this)
                   )
@@ -8725,7 +8725,7 @@ found at http://polymer.github.io/PATENTS.txt
             {
               key: "initialize",
               value: function () {
-                Tt(Ct(e.prototype), "initialize", this).call(this),
+                Ct(Tt(e.prototype), "initialize", this).call(this),
                   (this.renderRoot = this.createRenderRoot()),
                   window.ShadowRoot &&
                     this.renderRoot instanceof window.ShadowRoot &&
@@ -8762,7 +8762,7 @@ found at http://polymer.github.io/PATENTS.txt
             {
               key: "connectedCallback",
               value: function () {
-                Tt(Ct(e.prototype), "connectedCallback", this).call(this),
+                Ct(Tt(e.prototype), "connectedCallback", this).call(this),
                   this.hasUpdated &&
                     void 0 !== window.ShadyCSS &&
                     window.ShadyCSS.styleElement(this);
@@ -8772,7 +8772,7 @@ found at http://polymer.github.io/PATENTS.txt
               key: "update",
               value: function (t) {
                 var n = this;
-                Tt(Ct(e.prototype), "update", this).call(this, t);
+                Ct(Tt(e.prototype), "update", this).call(this, t);
                 var r = this.render();
                 r instanceof x &&
                   this.constructor.render(r, this.renderRoot, {
@@ -8992,11 +8992,14 @@ found at http://polymer.github.io/PATENTS.txt
         }
         render() {
           if (!this.hass) return K``;
-          let t = this._config.header;
+          let { header: t } = this._config;
           if (!t && this._config.entity) {
             let e = this._config.entity.split(".")[1] || "";
             e && (t = e = e.charAt(0).toUpperCase() + e.slice(1));
           }
+          const e = this.entityOptions.map(
+            (t) => K`<paper-item>${t}</paper-item>`
+          );
           return K`
       <div class="card-config">
 
@@ -9005,28 +9008,28 @@ found at http://polymer.github.io/PATENTS.txt
             label="Header"
             .value="${t}"
             .configValue="${"header"}"
-            @value-changed="${this._valueChanged}"
+            @value-changed="${this.configChanged}"
           ></paper-input>
         </div>
 
         <div class='entities'>
           <paper-dropdown-menu 
             label="Entity"
-            @value-changed="${this._valueChanged}" 
+            @value-changed="${this.configChanged}" 
             .configValue="${"entity"}"
           >
             <paper-listbox 
               slot="dropdown-content" 
               .selected="${this.entityOptions.indexOf(this._config.entity)}"
             >
-              ${this.entityOptions.map((t) => K`<paper-item>${t}</paper-item>`)}
+              ${e}
             </paper-listbox>
           </paper-dropdown-menu>
           <paper-input
             label="Brightness Icon"
             .value="${this._config.brightness_icon}"
             .configValue="${"brightness_icon"}"
-            @value-changed="${this._valueChanged}"
+            @value-changed="${this.configChanged}"
           ></paper-input>
         </div>
 
@@ -9035,25 +9038,25 @@ found at http://polymer.github.io/PATENTS.txt
             label="White Icon"
             .value="${this._config.white_icon}"
             .configValue="${"white_icon"}"
-            @value-changed="${this._valueChanged}"
+            @value-changed="${this.configChanged}"
           ></paper-input>
           <paper-input
             label="Temperature Icon"
             .value="${this._config.temperature_icon}"
             .configValue="${"temperature_icon"}"
-            @value-changed="${this._valueChanged}"
+            @value-changed="${this.configChanged}"
           ></paper-input>
         </div>
 
         <div class='overall-config'>
           <div class='checkbox-options'>
               <paper-checkbox
-                @checked-changed="${this._valueChanged}" 
+                @checked-changed="${this.configChanged}" 
                 .checked=${this._config.color_wheel}
                 .configValue="${"color_wheel"}"
               >Show Color Wheel</paper-checkbox>
               <paper-checkbox
-                @checked-changed="${this._valueChanged}" 
+                @checked-changed="${this.configChanged}" 
                 .checked=${this._config.shorten_cards}
                 .configValue="${"shorten_cards"}"
               >Shorten Cards</paper-checkbox>
@@ -9061,12 +9064,12 @@ found at http://polymer.github.io/PATENTS.txt
 
             <div class='checkbox-options'>
               <paper-checkbox
-                @checked-changed="${this._valueChanged}" 
+                @checked-changed="${this.configChanged}" 
                 .checked=${this._config.persist_features}
                 .configValue="${"persist_features"}"
               >Persist Features</paper-checkbox>
               <paper-checkbox
-                @checked-changed="${this._valueChanged}" 
+                @checked-changed="${this.configChanged}" 
                 .checked=${this._config.brightness}
                 .configValue="${"brightness"}"
               >Show Brightness</paper-checkbox>
@@ -9074,12 +9077,12 @@ found at http://polymer.github.io/PATENTS.txt
 
             <div class='checkbox-options'>
               <paper-checkbox
-                @checked-changed="${this._valueChanged}" 
+                @checked-changed="${this.configChanged}" 
                 .checked=${this._config.color_temp}
                 .configValue="${"color_temp"}"
               >Show Color Temp</paper-checkbox>
              <paper-checkbox
-                @checked-changed="${this._valueChanged}" 
+                @checked-changed="${this.configChanged}" 
                 .checked=${this._config.white_value}
                 .configValue="${"white_value"}"
               >Show White Value</paper-checkbox>
@@ -9087,12 +9090,12 @@ found at http://polymer.github.io/PATENTS.txt
 
             <div class='checkbox-options'>
               <paper-checkbox
-                @checked-changed="${this._valueChanged}" 
+                @checked-changed="${this.configChanged}" 
                 .checked=${this._config.color_picker}
                 .configValue="${"color_picker"}"
               >Show Color Picker</paper-checkbox>
               <paper-checkbox
-                @checked-changed="${this._valueChanged}" 
+                @checked-changed="${this.configChanged}" 
                 .checked=${this._config.effects_list}
                 .configValue="${"effects_list"}"
               >Show Effects List</paper-checkbox>
@@ -9100,12 +9103,12 @@ found at http://polymer.github.io/PATENTS.txt
 
             <div class='checkbox-options'>
               <paper-checkbox
-                @checked-changed="${this._valueChanged}" 
+                @checked-changed="${this.configChanged}" 
                 .checked=${this._config.full_width_sliders}
                 .configValue="${"full_width_sliders"}"
               >Full Width Sliders</paper-checkbox>
               <paper-checkbox
-                @checked-changed="${this._valueChanged}" 
+                @checked-changed="${this.configChanged}" 
                 .checked=${this._config.show_slider_percent}
                 .configValue="${"show_slider_percent"}"
               >Show Slider Percent</paper-checkbox>
@@ -9113,12 +9116,12 @@ found at http://polymer.github.io/PATENTS.txt
 
             <div class='checkbox-options'>
               <paper-checkbox
-                @checked-changed="${this._valueChanged}" 
+                @checked-changed="${this.configChanged}" 
                 .checked=${this._config.smooth_color_wheel}
                 .configValue="${"smooth_color_wheel"}"
               >Smooth Color Wheel</paper-checkbox>
               <paper-checkbox
-                @checked-changed="${this._valueChanged}" 
+                @checked-changed="${this.configChanged}" 
                 .checked=${this._config.consolidate_entities}
                 .configValue="${"consolidate_entities"}"
               >Consolidate Entities</paper-checkbox>
@@ -9126,12 +9129,12 @@ found at http://polymer.github.io/PATENTS.txt
 
             <div class='checkbox-options'>
               <paper-checkbox
-                @checked-changed="${this._valueChanged}" 
+                @checked-changed="${this.configChanged}" 
                 .checked=${this._config.hide_header}
                 .configValue="${"hide_header"}"
               >Hide Header</paper-checkbox>
               <paper-checkbox
-                @checked-changed="${this._valueChanged}" 
+                @checked-changed="${this.configChanged}" 
                 .checked=${this._config.child_card}
                 .configValue="${"child_card"}"
               >Child Card</paper-checkbox>
@@ -9140,7 +9143,7 @@ found at http://polymer.github.io/PATENTS.txt
       </div>
     `;
         }
-        _valueChanged(t) {
+        configChanged(t) {
           if (!this._config || !this.hass || !this._firstRendered) return;
           const {
             target: { configValue: e, value: n },
@@ -9160,6 +9163,11 @@ found at http://polymer.github.io/PATENTS.txt
         "color: white; font-weight: bold; background: dimgray"
       );
     class Dt extends It {
+      async firstUpdated() {
+        if (window.loadCardHelpers) {
+          (await window.loadCardHelpers()).importMoreInfoControl("light");
+        }
+      }
       static get properties() {
         return { hass: Object, config: Object };
       }
@@ -9256,7 +9264,10 @@ found at http://polymer.github.io/PATENTS.txt
       <style>
         ${this.styles}
       </style>
-      <ha-card class="${n}"> ${e} </ha-card>
+      <ha-card class="${n}">
+        <more-info-light .hass=${this.hass}></more-info-light>
+        ${e}
+      </ha-card>
     `;
       }
       getEntitiesToShow(t) {
@@ -9271,8 +9282,7 @@ found at http://polymer.github.io/PATENTS.txt
         return K`
       ${this.createHeader(t)}
       <div class="light-entity-card-sliders ${e}">
-        ${this.createBrightnessSlider(t)}
-        ${this.createColorTemperature(t)}
+        ${this.createBrightnessSlider(t)} ${this.createColorTemperature(t)}
         ${this.createWhiteValue(t)}
       </div>
       ${this.createColorPicker(t)} ${this.createEffectList(t)}
@@ -9289,10 +9299,8 @@ found at http://polymer.github.io/PATENTS.txt
       <div class="light-entity-card__header">
         <div class="light-entity-card__title">${e}</div>
         <div class="light-entity-card-toggle">
-          <ha-switch
-            .checked=${this.isEntityOn(t)}
-            @change=${(e) => this.setToggle(e, t)}
-          ></ha-switch>
+          <ha-switch .checked=${this.isEntityOn(t)} @change=${(e) =>
+            this.setToggle(e, t)}></ha-switch>
         </div>
       </div>
     `
@@ -9324,11 +9332,14 @@ found at http://polymer.github.io/PATENTS.txt
         );
       }
       createColorTemperature(t) {
-        return !1 === this.config.color_temp
-          ? K``
-          : this.dontShowFeature("colorTemp", t)
-          ? K``
-          : K`
+        if (!1 === this.config.color_temp) return K``;
+        if (this.dontShowFeature("colorTemp", t)) return K``;
+        const e = this.showPercent(
+          t.attributes.color_temp,
+          t.attributes.min_mireds - 1,
+          t.attributes.max_mireds - 1
+        );
+        return K`
       <div class="control light-entity-card-center">
         <ha-icon icon="hass:${this.config.temperature_icon}"></ha-icon>
         <ha-slider
@@ -9339,11 +9350,7 @@ found at http://polymer.github.io/PATENTS.txt
           @value-changed="${(e) => this.setColorTemp(e, t)}"
         >
         </ha-slider>
-        ${this.showPercent(
-          t.attributes.color_temp,
-          t.attributes.min_mireds - 1,
-          t.attributes.max_mireds - 1
-        )}
+        ${e}
       </div>
     `;
       }
@@ -9382,18 +9389,10 @@ found at http://polymer.github.io/PATENTS.txt
           r = e.indexOf(t.attributes.effect),
           i = this.language["ui.card.light.effect"];
         return K`
-      <div
-        class="control light-entity-card-center light-entity-card-effectlist"
-      >
-        <paper-dropdown-menu
-          @value-changed=${(e) => this.setEffect(e, t)}
-          label="${i}"
-        >
-          <paper-listbox
-            selected="${r}"
-            slot="dropdown-content"
-            placeholder="${i}"
-          >
+      <div class="control light-entity-card-center light-entity-card-effectlist">
+        <paper-dropdown-menu @value-changed=${(e) =>
+          this.setEffect(e, t)} label="${i}">
+          <paper-listbox selected="${r}" slot="dropdown-content" placeholder="${i}">
             ${n}
           </paper-listbox>
         </paper-dropdown-menu>
@@ -9470,6 +9469,12 @@ found at http://polymer.github.io/PATENTS.txt
           });
       }
     }
-    customElements.define("light-entity-card", Dt);
+    customElements.define("light-entity-card", Dt),
+      (window.customCards = window.customCards || []),
+      window.customCards.push({
+        type: "light-entity-card",
+        name: "Light Entity Card",
+        description: "Control lights and swtichs",
+      });
   },
 ]);
