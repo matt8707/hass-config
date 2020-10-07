@@ -14,12 +14,14 @@ mobile_app:
 sun:
 system_health:
 
+#config flow
+#hue, pyatv, broadlink, mqtt, ps4, braviatv, IPP
+
 lovelace:
   mode: yaml
   resources:
     [ {url: /hacsfiles/bar-card/bar-card.js,                                     type: module},
       {url: /hacsfiles/button-card/button-card.js,                               type: module},
-      {url: /hacsfiles/calendar-card/calendar-card.js,                           type: module},
       {url: /hacsfiles/custom-header/custom-header.js,                           type: module},
       {url: /hacsfiles/light-entity-card/light-entity-card.js,                   type: js},
       {url: /hacsfiles/light-popup-card/light-popup-card.js,                     type: module},
@@ -33,6 +35,7 @@ lovelace:
       {url: /hacsfiles/stack-in-card/stack-in-card.js,                           type: module},
       {url: /hacsfiles/swipe-card/swipe-card.js,                                 type: module},
 
+      {url: '/local/calendar-card.js?v=31091',                                   type: module},
       {url: '/local/valetudo-map-card.js?v=42dbceb',                             type: js},
       {url: '/local/custom_icons.js?v=25052001',                                 type: module},
       {url: /local/font.css,                                                     type: css} ]
