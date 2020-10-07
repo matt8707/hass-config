@@ -51,16 +51,7 @@
                               <ha-icon icon="mdi:volume-high"></ha-icon> Spela upp ljud på iPhone XR
                             tap_action:
                               action: call-service
-                              service: notify.mobile_app_sanja_iphone
-                              service_data:
-                                title: Hitta min iPhone
-                                message: Här är jag
-                                data:
-                                  push:
-                                    sound:
-                                      name: Ringtone_UK_Haptic.caf
-                                      critical: 1
-                                      volume: 1.0
+                              service: script.sanja_find_my_iphone
                             template: name_action
 
                         - entity: sensor.printer_status

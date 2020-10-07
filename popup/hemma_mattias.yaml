@@ -51,16 +51,7 @@
                               <ha-icon icon="mdi:volume-high"></ha-icon> Spela upp ljud på iPhone X
                             tap_action:
                               action: call-service
-                              service: notify.mobile_app_iphone
-                              service_data:
-                                title: Hitta min iPhone
-                                message: Här är jag
-                                data:
-                                  push:
-                                    sound:
-                                      name: Ringtone_UK_Haptic.caf
-                                      critical: 1
-                                      volume: 1.0
+                              service: script.mattias_find_my_iphone
                             template: name_action
                             styles:
                               card:
@@ -68,11 +59,7 @@
 
                     - type: custom:hui-element
                       card_type: map
+                      class: map
                       entities: [device_tracker.iphone]
                       default_zoom: 15
-                      style: |
-                        ha-card {
-                          height: 24.9em;
-                          border-top: 1px solid #FFFFFF !important;
-                          filter: invert(1) contrast(80%) hue-rotate(250deg);
-                        }
+

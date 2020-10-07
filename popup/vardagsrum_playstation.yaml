@@ -35,9 +35,4 @@
                       dateTopFormat: ' '
                       dateBottomFormat: DD MMM Y
                       entities: [calendar.spel]
-                      style: |
-                        ha-card { margin: -1.5em 1.3em 0.55em 1.2em; height: 20em; }
-                        ha-card > div { margin-bottom: 0.4em; }
-                        ha-card > table > tbody > tr > td > div { opacity: 0.5; }
-                        ha-card > table > tbody > tr > td { cursor: default !important; }
-                        ha-card > table > tbody > tr > td.overview.no-pointer > div { opacity: 1; }
+

@@ -182,7 +182,7 @@
 
                         - entity: sensor.nas_status
 
-                        - entity: sensor.nas_disk_temp
+                        - entity: sensor.synology_maximum_disk_temp_volume_1
 
                         - entity: sensor.drifttid
 

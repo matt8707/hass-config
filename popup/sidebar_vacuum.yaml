@@ -143,32 +143,6 @@
                         }
                       elements:
 
-                        # - type: custom:valetudo-map-card
-                        #   entity: sensor.xiaomi_map
-                        #   title: null
-                        #   rotate: 0
-                        #   crop:
-                        #     top: 0
-                        #     bottom: 80
-                        #     left: 165
-                        #     right: 100
-                        #   min_height: 0
-                        #   map_scale: 1.95
-                        #   floor_color: '#2e3233'
-                        #   wall_color: '#191e1e'
-                        #   no_go_area_color: '#ff000015'
-                        #   virtual_wall_color: '#ff000020'
-                        #   virtual_wall_width: 5
-                        #   path_color: '#1e5071'
-                        #   path_width: 1.5
-                        #   vacuum_icon: 'custom:roborock-vacuum-map'
-                        #   icon_scale: 1.1
-                        #   vacuum_color: '#e0e0e0'
-                        #   style:
-                        #     top: 37%
-                        #     left: 47.5%
-                        #     width: 90%
-
                         # revert to 42dbceb
                         - type: custom:valetudo-map-card
                           entity: sensor.xiaomi_map
