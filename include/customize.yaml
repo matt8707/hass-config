@@ -22,6 +22,9 @@ homeassistant:
     binary_sensor.monitors_mute_check:
       icon: mdi:volume-mute
 
+    sensor.synology_maximum_disk_temp_volume_1:
+      friendly_name: Disktemperatur
+
     sensor.hall_temperature:
       friendly_name: Temperatur
 

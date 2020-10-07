@@ -21,16 +21,8 @@ automation:
       - delay:
           seconds: 1
       - service: browser_mod.lovelace_reload
-      - choose:
-        - conditions:
-            - condition: state
-              entity_id: light.hall
-              state: 'off'
-          sequence:
-            - service: switch.turn_on
-              entity_id: switch.fullykiosk_screensaver
       - delay:
-          seconds: 4
+          seconds: 10
       - service: shell_command.fullykiosk_restart_app
       - choose:
         - conditions:
@@ -45,7 +37,16 @@ automation:
                 entity_id: input_select.conditional_media
                 option: Senast nedladdat
       - delay:
-          seconds: 30
+          seconds: 10
+      - service: shell_command.fullykiosk_load_start_url
+      - choose:
+        - conditions:
+            - condition: state
+              entity_id: light.hall
+              state: 'off'
+          sequence:
+            - service: switch.turn_on
+              entity_id: switch.fullykiosk_screensaver
       - service: homekit.start
 
   - alias: lovelace_updated_ignore
@@ -116,16 +117,11 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: sensor.hass_version
-    condition:
-      condition: not
-      conditions:
-        - condition: state
-          entity_id: sensor.hass_version
-          state: Senaste
+        entity_id: ['sensor.hass_version_latest', 'sensor.hass_version_latest_beta']
     action:
       - service: homeassistant.update_entity
-        entity_id: sensor.hass_release_notes
+        entity_id:
+          ['sensor.hass_release_notes', 'sensor.hass_release_notes_rc']
 
   - alias: no_motion_bathroom
     initial_state: true

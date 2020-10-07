@@ -140,7 +140,7 @@ switch:
       fullykiosk_screensaver:
         friendly_name: Skärmsläckare
         icon_template: mdi:power-sleep
-        value_template: "{{ is_state_attr('sensor.fullykiosk', 'currentFragment', 'screensaver') }}"
+        value_template: "{{ is_state_attr('sensor.fullykiosk', 'isInScreensaver', true) }}"
         turn_on:
           - service: shell_command.fullykiosk_screensaver_on
         turn_off:

@@ -128,133 +128,235 @@ frontend:
           background-size: cover !important;
         }
 
-      card-mod-card: |
-        ha-card {
-          background: none;
-          box-shadow: none;
-          border-radius: 0;
-        }
+      card-mod-card-yaml: |
+        "#root > hui-image":
+          $: |
+            #image {
+              pointer-events: none;
+            }
 
-        .card-header {
-          margin: -0.5em 0 1.1em 0.4em;
-          font-family: SF Text;
-          letter-spacing: 0.005em;
-          font-size: 1.5em;
-        }
+        "#root > hui-markdown-card, #key1":
+          $: |
+            ha-card > ha-markdown {
+              padding: 0 !important;
+            }
 
-        /* * * * * * * * * * * * * * * * * *
-         *                                 *
-         *              TYPES              *
-         *                                 *
-         * * * * * * * * * * * * * * * * * */
+        "#root > hui-markdown-card, #key2":
+          $:
+            "ha-card > ha-markdown":
+              $: |
+                ha-markdown-element > font > ha-icon {
+                  vertical-align: 3%;
+                  opacity: 0.6;
+                }
 
-        ha-card.type-entities {
-          background: none;
-          padding: 0.3em 1.25em 0.4em 0.5em;
-        }
+                ha-markdown-element > p > span {
+                  font-family: SF Text;
+                  font-size: 5vw;
+                  font-weight: 200;
+                  margin-left: -0.3vw;
+                  letter-spacing: -0.05vw;
+                }
 
-        ha-card.type-custom-stack-in-card {
-          background: none;
-        }
+        "#root > hui-state-label-element":
+          $: |
+            div {
+              padding: 0 !important;
+            }
 
-        ha-card.type-history-graph {
-          margin: 0.8em -1.9em -1.5em -0.8em;
-        }
+        .: |
+          #root > hui-icon-element {
+            opacity: 0.1 !important;
+            transition: 0.4s;
+          }
 
-        ha-card.type-custom-hui-markdown-card {
-          font-family: SF Display;
-          line-height: 2.05vw;
-          letter-spacing: 0.06vw;
-          color: rgba(255, 255, 255, 0.9);
-          pointer-events: none;
-        }
+          #root > hui-icon-element:hover {
+            opacity: 0.25 !important;
+            transition: none;
+          }
 
-        /* * * * * * * * * * * * * * * * * *
-         *                                 *
-         *             CLASSES             *
-         *                                 *
-         * * * * * * * * * * * * * * * * * */
+          #root > hui-icon-element:active {
+            opacity: 0.35 !important;
+            transition: none;
+          }
 
-        ha-card.add_header {
-          background: linear-gradient(180deg,
-            var(--card-header) 0%,
-            var(--card-header) 4.6em,
-            var(--card-color) 4.6em,
-            var(--card-color) 100%);
-          border-radius: 1em;
-        }
+          #root > hui-icon-element:nth-child(10) {
+            {% if states('sensor.hass_version_installed') | regex_search('b') %}
+              {% if states('sensor.hass_version_installed') != states('sensor.hass_version_latest_beta') and 
+              not is_state('sensor.hass_version_latest', 'unknown') or 
+              not is_state('sensor.hacs', '0') and 
+              not is_state('sensor.hacs', 'unknown') %}
+                color: rgb(35,78,106) !important; opacity: 1 !important;
+              {% endif %}
+            {% else %}
+              {% if states('sensor.hass_version_installed') != states('sensor.hass_version_latest') and 
+              not is_state('sensor.hass_version_latest', 'unknown') or 
+              not is_state('sensor.hacs', '0') and 
+              not is_state('sensor.hacs', 'unknown') %}
+                color: rgb(35,78,106) !important; opacity: 1 !important;
+              {% endif %}
+            {% endif %}
+            }
 
-        .sidebar {
-          font-size: 1.5vw;
-          font-weight: 300;
-          opacity: 0.75;
-          width: 15.5vw;
-          height: 1px;
-        }
+          ha-card {
+            background: none;
+            box-shadow: none;
+            border-radius: 0;
+          }
 
-        .krisinformation {
-          background: #5a1f1f !important;
-          font-family: SF Display;
-          font-size: 1.3vw;
-          font-weight: 300;
-          letter-spacing: 0.06vw;
-          line-height: 1.7vw;
-          hyphens: auto;
-          border-radius: 0.7vw !important;
-          filter: drop-shadow(0 0 1vw #1e1e1e);
-        }
+          .card-header {
+            margin: -0.5em 0 1.1em 0.4em;
+            font-family: SF Text;
+            letter-spacing: 0.005em;
+            font-size: 1.5em;
+          }
 
-        .coronavirus {
-          font-size: 1.26vw;
-          color: #6a7377;
-          font-weight: 400;
-          opacity: 0.5;
-          width: 90vw;
-          height: 1px;
-          letter-spacing: 0.065vw;
-          --mdc-icon-size: 1.2vw;
-        }
+          /* * * * * * * * * * * * * * * * * *
+           *                                 *
+           *              TYPES              *
+           *                                 *
+           * * * * * * * * * * * * * * * * * */
 
-        ha-card.information_network {
-          background: none;
-          margin-top: -0.7em;
-          z-index: 2;
-          padding: 1.4px;
-          width: 15em;
-        }
+          ha-card.type-entities {
+            background: none;
+            padding: 0.3em 1.25em 0.4em 0.5em;
+          }
 
-        /* * * * * * * * * * * * * * * * * *
-         *                                 *
-         *            BAR CARD             *
-         *                                 *
-         * * * * * * * * * * * * * * * * * */
+          ha-card.type-custom-stack-in-card {
+            background: none;
+          }
 
-        .type-custom-bar-card bar-card-name {
-          padding-left: 0.25em;
-        }
+          ha-card.type-history-graph {
+            margin: 0.8em -1.9em -1.5em -0.8em;
+          }
 
-        .type-custom-bar-card bar-card-iconbar {
-          padding-left: 0.23em;
-        }
+          ha-card.type-custom-hui-markdown-card {
+            font-family: SF Display;
+            line-height: 2.05vw;
+            letter-spacing: 0.06vw;
+            color: rgba(255, 255, 255, 0.9);
+            pointer-events: none;
+          }
 
-        .type-custom-bar-card bar-card-value {
-          margin-right: auto;
-          color: #e0e1e1;
-          text-shadow: none;
-          font-size: 1em;
-          font-weight: 400;
-          letter-spacing: 0.01em;
-        }
+          /* * * * * * * * * * * * * * * * * *
+           *                                 *
+           *             CLASSES             *
+           *                                 *
+           * * * * * * * * * * * * * * * * * */
 
-        .type-custom-bar-card bar-card-backgroundbar {
-          background: none;
-        }
+          ha-card.add_header {
+            background: linear-gradient(180deg,
+              var(--card-header) 0%,
+              var(--card-header) 4.6em,
+              var(--card-color) 4.6em,
+              var(--card-color) 100%);
+            border-radius: 1em;
+          }
 
-        .type-custom-bar-card bar-card-background {
-          background: radial-gradient(circle, rgba(52, 57, 58, 0.1) 0%, rgba(17,18,18,0.2) 75%);
-          box-shadow: inset 0 0 25px #00000045;
-          border-radius: 0.3em;
-        }
+          .map {
+            height: 24.9em;
+            border-top: 1px solid #FFFFFF !important;
+            filter: invert(1) contrast(80%) hue-rotate(250deg);
+          }
+
+          .sidebar {
+            font-size: 1.5vw;
+            font-weight: 300;
+            opacity: 0.75;
+            width: 15.5vw;
+            height: 1px;
+          }
+
+          .krisinformation {
+            background: #5a1f1f !important;
+            font-family: SF Display;
+            font-size: 1.3vw;
+            font-weight: 300;
+            letter-spacing: 0.06vw;
+            line-height: 1.7vw;
+            hyphens: auto;
+            border-radius: 0.7vw !important;
+            filter: drop-shadow(0 0 1vw #1e1e1e);
+          }
+
+          .coronavirus {
+            font-size: 1.26vw;
+            color: #6a7377;
+            font-weight: 400;
+            opacity: 0.5;
+            width: 90vw;
+            height: 1px;
+            letter-spacing: 0.065vw;
+            --mdc-icon-size: 1.2vw;
+          }
+
+          ha-card.information_network {
+            background: none;
+            margin-top: -0.7em;
+            z-index: 2;
+            padding: 1.4px;
+            width: 15em;
+          }
+
+          /* * * * * * * * * * * * * * * * * *
+           *                                 *
+           *            BAR CARD             *
+           *                                 *
+           * * * * * * * * * * * * * * * * * */
+
+          .type-custom-bar-card bar-card-name {
+            padding-left: 0.25em;
+          }
+
+          .type-custom-bar-card bar-card-iconbar {
+            padding-left: 0.23em;
+          }
+
+          .type-custom-bar-card bar-card-value {
+            margin-right: auto;
+            color: #e0e1e1;
+            text-shadow: none;
+            font-size: 1em;
+            font-weight: 400;
+            letter-spacing: 0.01em;
+          }
+
+          .type-custom-bar-card bar-card-backgroundbar {
+            background: none;
+          }
+
+          .type-custom-bar-card bar-card-background {
+            background: radial-gradient(circle, rgba(52, 57, 58, 0.1) 0%, rgba(17,18,18,0.2) 75%);
+            box-shadow: inset 0 0 25px #00000045;
+            border-radius: 0.3em;
+          }
+
+          /* * * * * * * * * * * * * * * * * *
+           *                                 *
+           *          CALENDAR CARD          *
+           *                                 *
+           * * * * * * * * * * * * * * * * * */
+
+          .type-custom-calendar-card {
+            margin: -1.5em 1.3em 0.55em 1.2em;
+            height: 20em;
+          }
+
+          .type-custom-calendar-card > div {
+            margin-bottom: 0.4em;
+          }
+
+          .type-custom-calendar-card > table > tbody > tr > td > div {
+            opacity: 0.5;
+          }
+
+          .type-custom-calendar-card > table > tbody > tr > td {
+            cursor: default !important;
+          }
+
+          .type-custom-calendar-card > table > tbody > tr > td.overview.no-pointer > div {
+            opacity: 1;
+          }
 
       card-mod-glance: |
         :host {

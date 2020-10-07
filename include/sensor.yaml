@@ -22,8 +22,12 @@ binary_sensor:
     payload_off: 'false'
 
   - platform: ping
-    host: 8.8.8.8
     name: nas_internet_access
+    host: 8.8.8.8
+
+  - platform: ping
+    name: broadlink_keepalive
+    host: !secret broadlink_host
 
   - platform: mqtt
     name: gosund_fan
@@ -70,7 +74,7 @@ binary_sensor:
         friendly_name: Kamera
         icon_template: mdi:camera
         value_template: >
-          {{ not is_state_attr('sensor.fullykiosk', 'motionDetectorState', 0) }}
+          {{ not is_state_attr('sensor.fullykiosk', 'motionDetectorStatus', 0) }}
 
 sensor:
 
@@ -139,6 +143,13 @@ sensor:
     json_attributes: [body]
     scan_interval: 21600
 
+  - platform: rest
+    name: hass_release_notes_rc
+    resource: https://api.github.com/repos/home-assistant/core/releases?per_page=1
+    value_template: '{{ value_json[0].name }}'
+    json_attributes: [body]
+    scan_interval: 21600
+
   - platform: dnsip
 
   - platform: darksky
@@ -150,9 +161,9 @@ sensor:
   - platform: rest
     name: fullykiosk
     json_attributes:
-      ['batteryLevel', 'screenBrightness', 'plugged', 'motionDetectorState', 
+      ['batteryLevel', 'screenBrightness', 'plugged', 'motionDetectorStatus', 
       'lastAppStart', 'internalStorageFreeSpace', 'internalStorageTotalSpace', 
-      'ramFreeMemory', 'ramTotalMemory', 'currentFragment']
+      'ramFreeMemory', 'ramTotalMemory', 'isInScreensaver']
     resource: !secret fullykiosk_rest_resource
     value_template: '{{ value_json.isScreenOn }}'
     scan_interval: 10
@@ -675,13 +686,6 @@ sensor:
     #                       NAS                        #
     #                                                  #
     ####################################################
-
-      nas_disk_temp:
-        friendly_name: Disktemperatur
-        unit_of_measurement: '°C'
-        icon_template: mdi:thermometer
-        value_template: >
-          {{ states('sensor.synology_average_disk_temp_volume_1') | round }}
 
       nas_net_down:
         value_template: ' '

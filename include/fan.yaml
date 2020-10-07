@@ -57,6 +57,10 @@ fan:
           - service: remote.send_command
             data:
               entity_id: remote.broadlink
+              command: !secret ir_fan_speed #wake
+          - service: remote.send_command
+            data:
+              entity_id: remote.broadlink
               command: !secret ir_fan_power
           - choose:
             # initial oscillation
@@ -112,6 +116,10 @@ fan:
             state: 'on'
           - service: input_boolean.turn_on
             entity_id: input_boolean.sovrum_anslut
+          - service: remote.send_command
+            data:
+              entity_id: remote.broadlink
+              command: !secret ir_fan_speed #wake
           - service: remote.send_command
             data:
               entity_id: remote.broadlink
