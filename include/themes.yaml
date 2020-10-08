@@ -129,28 +129,28 @@ frontend:
         }
 
       card-mod-card-yaml: |
-        "#root > hui-image":
+        "#root>hui-image":
           $: |
             #image {
               pointer-events: none;
             }
 
-        "#root > hui-markdown-card, #key1":
+        "#root>hui-markdown-card,#key1":
           $: |
-            ha-card > ha-markdown {
+            ha-card>ha-markdown {
               padding: 0 !important;
             }
 
-        "#root > hui-markdown-card, #key2":
+        "#root>hui-markdown-card,#key2":
           $:
-            "ha-card > ha-markdown":
+            "ha-card>ha-markdown":
               $: |
-                ha-markdown-element > font > ha-icon {
+                ha-markdown-element>font>ha-icon {
                   vertical-align: 3%;
                   opacity: 0.6;
                 }
 
-                ha-markdown-element > p > span {
+                ha-markdown-element>p>span {
                   font-family: SF Text;
                   font-size: 5vw;
                   font-weight: 200;
@@ -158,29 +158,29 @@ frontend:
                   letter-spacing: -0.05vw;
                 }
 
-        "#root > hui-state-label-element":
+        "#root>hui-state-label-element":
           $: |
             div {
               padding: 0 !important;
             }
 
         .: |
-          #root > hui-icon-element {
+          #root>hui-icon-element {
             opacity: 0.1 !important;
             transition: 0.4s;
           }
 
-          #root > hui-icon-element:hover {
+          #root>hui-icon-element:hover {
             opacity: 0.25 !important;
             transition: none;
           }
 
-          #root > hui-icon-element:active {
+          #root>hui-icon-element:active {
             opacity: 0.35 !important;
             transition: none;
           }
 
-          #root > hui-icon-element:nth-child(10) {
+          #root>hui-icon-element:nth-child(10) {
             {% if states('sensor.hass_version_installed') | regex_search('b') %}
               {% if states('sensor.hass_version_installed') != states('sensor.hass_version_latest_beta') and 
               not is_state('sensor.hass_version_latest', 'unknown') or 
@@ -342,26 +342,26 @@ frontend:
             height: 20em;
           }
 
-          .type-custom-calendar-card > div {
+          .type-custom-calendar-card>div {
             margin-bottom: 0.4em;
           }
 
-          .type-custom-calendar-card > table > tbody > tr > td > div {
+          .type-custom-calendar-card>table>tbody>tr>td>div {
             opacity: 0.5;
           }
 
-          .type-custom-calendar-card > table > tbody > tr > td {
+          .type-custom-calendar-card>table>tbody>tr>td {
             cursor: default !important;
           }
 
-          .type-custom-calendar-card > table > tbody > tr > td.overview.no-pointer > div {
+          .type-custom-calendar-card>table>tbody>tr>td.overview.no-pointer>div {
             opacity: 1;
           }
 
-      card-mod-glance: |
-        :host {
-          --paper-item-icon-color: {{ '#3182b7' if is_state(config.entity, 'home') else '#FFFFFF20' }};
-        }
+      # card-mod-glance: |
+      #   :host {
+      #     --paper-item-icon-color: {{ '#3182b7' if is_state(config.entity, 'home') else '#FFFFFF20' }};
+      #   }
 
       card-mod-more-info-yaml: |
         .: |

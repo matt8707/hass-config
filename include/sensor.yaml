@@ -165,7 +165,7 @@ sensor:
       'lastAppStart', 'internalStorageFreeSpace', 'internalStorageTotalSpace', 
       'ramFreeMemory', 'ramTotalMemory', 'isInScreensaver']
     resource: !secret fullykiosk_rest_resource
-    value_template: '{{ value_json.isScreenOn }}'
+    value_template: '{{ value_json.screenOn }}'
     scan_interval: 10
 
   - platform: rest
