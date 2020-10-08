@@ -598,13 +598,13 @@
                             legend: false
                           entities: ['sensor.aktuellt_spotpris']
                           style: |
-                            .name > span {
+                            .name>span {
                               font-size: 14px !important;
                               font-weight: 400 !important;
                               opacity: 1 !important;
                               margin-left: -9.3em !important;
                             }
-                            .state > span {
+                            .state>span {
                               transform: scale(.8, .8);
                               margin-left: -.7em;
                             }

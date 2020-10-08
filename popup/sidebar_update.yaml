@@ -14,43 +14,43 @@
                       #states {
                         margin-top: -0.5em;
                       }
-                      #states > div > button-card {
+                      #states>div>button-card {
                         margin: -0.5em 0 1.4em 1.05em;
                       }
 
-                    "#states > div > hui-element > hui-markdown-card":
+                    "#states>div>hui-element>hui-markdown-card":
                       $:
-                        "ha-card > ha-markdown":
+                        "ha-card>ha-markdown":
                           $: |
                             ha-markdown-element {
                               cursor: default;
                             }
-                            ha-markdown-element > p > span {
+                            ha-markdown-element>p>span {
                               font-family: SF Text;
                               font-size: 1.5em;
                               font-weight: 500;
                               vertical-align: 30%;
                             }
-                            ha-markdown-element > p > span > ha-icon {
+                            ha-markdown-element>p>span>ha-icon {
                               vertical-align: 10%;
                               opacity: 0.5;
                             }
-                            ha-markdown-element > p > b {
+                            ha-markdown-element>p>b {
                               font-family: SF Text;
                               font-size: 1.2em;
                               font-weight: 500;
                               line-height: 1.9em;
                               opacity: 0.5;
                             }
-                            ha-markdown-element > ul {
+                            ha-markdown-element>ul {
                               font-family: SF Display;
                               font-size: 1.1em;
                               padding-left: 2.5em;
                             }
-                            ha-markdown-element > ul > li {
+                            ha-markdown-element>ul>li {
                               margin-bottom: 0.4em;
                             }
-                            ha-markdown-element > ul > li:last-child {
+                            ha-markdown-element>ul>li:last-child {
                               margin-bottom: 0px;
                             }
                   entities:
