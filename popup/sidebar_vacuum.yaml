@@ -135,11 +135,11 @@
 
                     - type: picture-elements
                       title: Kartläggning
-                      image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50' /%3E"
+                      image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 49.57' /%3E"
                       class: add_header
                       style: |
                         .card-header {
-                          margin: -0.3em 0 0 0.75em;
+                          margin: -0.05em 0 0 0.75em;
                         }
                       elements:
 
@@ -166,7 +166,7 @@
                           vacuum_icon: 'custom:roborock-vacuum-map'
                           vacuum_color: '#e0e0e0'
                           style:
-                            top: 37%
+                            top: 35%
                             left: 47.5%
                             width: 90%
 
@@ -202,8 +202,9 @@
                               [font-size: 0.9em, letter-spacing: 0.003em, color: '#aeb0b0', background: '#191c1d80', 
                               padding: 0.48em 0.78em 0.48em 0.78em, border-radius: 0.6em, overflow: visible]
                           style:
+                            top: 18%
                             left: 74%
-                            top: 20%
+
 
                         - type: custom:button-card
                           name: Studio
@@ -217,8 +218,8 @@
                           show_icon: false
                           styles: *button-card-styles
                           style:
+                            top: 20.5%
                             left: 40.5%
-                            top: 22.5%
 
                         - type: custom:button-card
                           name: Hall
@@ -232,8 +233,8 @@
                           show_icon: false
                           styles: *button-card-styles
                           style:
+                            top: 48%
                             left: 60.5%
-                            top: 50%
 
                         - type: custom:button-card
                           name: Kök
@@ -247,8 +248,8 @@
                           show_icon: false
                           styles: *button-card-styles
                           style:
+                            top: 51%
                             left: 18.5%
-                            top: 53%
 
                         - type: custom:button-card
                           name: Sovrum
@@ -262,8 +263,8 @@
                           show_icon: false
                           styles: *button-card-styles
                           style:
+                            top: 75.5%
                             left: 23.5%
-                            top: 77.5%
 
                         - type: custom:button-card
                           entity: input_select.roborock_zone
