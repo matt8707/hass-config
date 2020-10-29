@@ -205,7 +205,7 @@ frontend:
           }
 
           .card-header {
-            margin: -0.5em 0 1.1em 0.4em;
+            margin: -0.27em 0 0.88em 0.4em;
             font-family: SF Text;
             letter-spacing: 0.005em;
             font-size: 1.5em;

@@ -62,13 +62,13 @@ binary_sensor:
           {% set entity_id = 'sensor.krisinformation_sverige' %}
           {% if not is_state_attr(entity_id, 'messages', []) and state_attr(entity_id, 'messages') != None %}
             {% set published = state_attr(entity_id, 'messages')[0]['Published'] %}
-            {{ 'false' if ((as_timestamp(published) - as_timestamp(states.sensor.time.last_changed | as_local)) / 86400) <= -0.5 else 'true' }}
+            {{ 'false' if ((as_timestamp(published) - as_timestamp(now())) / 86400) <= -0.5 else 'true' }}
           {% endif %}
 
       laundry_time_trigger:
         value_template: >
           {% set start_time = state_attr('calendar.tvatta', 'start_time') %}
-          {{ as_timestamp(start_time) - as_timestamp(states.sensor.time.last_changed | as_local) < 10 * 60 if start_time != None }}
+          {{ as_timestamp(start_time) - as_timestamp(now()) < 10 * 60 if start_time != None }}
 
       fullykiosk_motion:
         friendly_name: Kamera
@@ -294,7 +294,7 @@ sensor:
     sensors:
       sidebar_greeting:
         value_template: >
-          {% set time = as_timestamp(states.sensor.time.last_changed | as_local) | timestamp_custom('%H') | int %}
+          {% set time = now().hour %}
           {% if time <= 1 %} God natt {{'\U0001F611'}}
           {% elif time <= 3 %} God natt {{'\U0001F62A'}}
           {% elif time <= 5 %} God natt {{'\U0001F634'}}
@@ -407,8 +407,7 @@ sensor:
         friendly_name: Drifttid
         icon_template: mdi:calendar-clock
         value_template: >
-          {% set uptime = (as_timestamp(states.sensor.time.last_changed | as_local) - 
-          as_timestamp(states('sensor.imac_uptime') | int | timestamp_local)) | default(0) %}
+          {% set uptime = (as_timestamp(now()) - as_timestamp(states('sensor.imac_uptime') | int | timestamp_local)) | default(0) %}
           {% if uptime | timestamp_custom('%d') | int -1 == 1 %} {{ uptime | timestamp_custom('%d') | int -1 }} dag
           {% elif uptime | timestamp_custom('%d') | int -1 >= 2 %} {{ uptime | timestamp_custom('%d') | int -1 }} dagar
           {% elif uptime | timestamp_custom('%H') | int -1 == 1 %} {{ uptime | timestamp_custom('%H') | int -1 }} timme
@@ -430,14 +429,14 @@ sensor:
         icon_template: mdi:dev-to
         friendly_name_template: >
           {% if ((as_timestamp(state_attr('calendar.home_assistant_devs', 
-          'start_time')) - as_timestamp(states.sensor.time.last_changed | as_local)) / 86400) > 20 %}
+          'start_time')) - as_timestamp(now())) / 86400) > 20 %}
             Planerad beta
           {% else %}
             {{ state_attr('calendar.home_assistant_devs','message') }}
           {% endif %}
         value_template: >
           {% set dev = ((as_timestamp(state_attr('calendar.home_assistant_devs', 
-          'start_time')) - as_timestamp(states.sensor.time.last_changed | as_local)) / 86400) %}
+          'start_time')) - as_timestamp(now())) / 86400) %}
           {% if dev < -1 %} Släppt
           {% elif dev < 0 %} Idag
           {% elif dev < 1 %} Imorgon
@@ -523,8 +522,7 @@ sensor:
         friendly_name: Senast städat
         icon_template: mdi:calendar-clock
         value_template: >
-          {% set last_cleaned = (as_timestamp(states.sensor.time.last_changed | as_local) - 
-          as_timestamp(state_attr('vacuum.xiaomi_vacuum_cleaner', 'clean_stop'))) | default(0) %}
+          {% set last_cleaned = (as_timestamp(now()) - as_timestamp(state_attr('vacuum.xiaomi_vacuum_cleaner', 'clean_stop'))) | default(0) %}
           {% if last_cleaned | timestamp_custom('%d') | int -1 == 1 %} {{ last_cleaned | timestamp_custom('%d') | int -1 }} dag sedan
           {% elif last_cleaned | timestamp_custom('%d') | int -1 >= 2 %} {{ last_cleaned | timestamp_custom('%d') | int -1 }} dagar sedan
           {% elif last_cleaned | timestamp_custom('%H') | int -1 == 1 %} {{ last_cleaned | timestamp_custom('%H') | int -1 }} timme sedan
@@ -590,18 +588,15 @@ sensor:
       sidebar_day:
         icon_template: mdi:calendar
         value_template: >
-          {% set weekday = as_local(states.sensor.date.last_changed).strftime('%w') | int %}
           {% set days = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'] %}
-          {{ days[weekday - 1] }}
+          {{ days[now().weekday()] }}
 
       sidebar_date:
         icon_template: mdi:calendar
         value_template: >
-          {% set month = as_local(states.sensor.date.last_changed).strftime('%m') | int %}
-          {% set day = as_local(states.sensor.date.last_changed).strftime('%d') | int %}
           {% set months = ['Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni', 
           'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December'] %}
-          {{ day }} {{ months[month - 1] }}
+          {{ strptime(states('sensor.date'), '%Y-%m-%d').day }} {{ months[now().month-1] }}
 
       mathem_countdown:
         friendly_name: Mathem
@@ -613,7 +608,7 @@ sensor:
             {% set time = as_timestamp(start_time) | timestamp_custom('%H:%M') %}
             {% set time_end = as_timestamp(end_time) | timestamp_custom('%H:%M') %}
             {% set hours = as_timestamp(start_time) | timestamp_custom('%H') | int / 24 %}
-            {% set count = (as_timestamp(start_time) - as_timestamp(states.sensor.time.last_changed | as_local)) / 86400 - hours %}
+            {% set count = (as_timestamp(start_time) - as_timestamp(now())) / 86400 - hours %}
             {% set day = strptime(start_time, '%Y-%m-%d %H:%M:%S').strftime('%A') 
             | replace('Monday', 'Måndag')
             | replace('Tuesday', 'Tisdag')
@@ -642,7 +637,7 @@ sensor:
           {% if start_time != None %}
             {% set time = as_timestamp(start_time) | timestamp_custom('%H:%M') %}
             {% set hours = as_timestamp(start_time) | timestamp_custom('%H') | int / 24 %}
-            {% set count = (as_timestamp(start_time) - as_timestamp(states.sensor.time.last_changed | as_local)) / 86400 - hours %}
+            {% set count = (as_timestamp(start_time) - as_timestamp(now())) / 86400 - hours %}
             {% set day = strptime(start_time, '%Y-%m-%d %H:%M:%S').strftime('%A') 
             | replace('Monday', 'Måndag')
             | replace('Tuesday', 'Tisdag')
@@ -805,8 +800,8 @@ sensor:
         value_template: >
           {% set entity_id = 'sensor.oresundskraft' %}
           {% for month in range(12) %}
-            {% if as_local(states.sensor.date.last_changed).strftime('%m') | int - 1 == 
-            (states(entity_id).split(',')[month].split(' ')[0]|join|string).lstrip('0')|int %}
+            {% if now().month-1 == (states(entity_id).split(',')
+            [month].split(' ')[0]|join|string).lstrip('0')|int %}
               {{ states(entity_id).split(',')[month].split(' ')[2] }}
             {% endif %}
           {% endfor %}
@@ -815,14 +810,13 @@ sensor:
         icon_template: mdi:calculator
         friendly_name_template: >
           {% set entity_id = 'sensor.oresundskraft' %}
-          {% if as_local(states.sensor.date.last_changed).strftime('%m') | int - 1 == 0 %}
+          {% if now().month-1 == 0 %}
             Beräknad {{ as_timestamp(strptime(states(entity_id).split(',')[11].split(' ')[1], '%Y-%m-%d')) | 
             timestamp_custom('%B') | replace('ay', 'aj') | replace('y', 'i') | replace('ch', 's') 
             | replace('ne', 'ni') | replace('ust', 'usti') | replace('ct', 'kt')  }}
           {% else %}
             {% for month in range(12) %}
-              {% if as_local(states.sensor.date.last_changed).strftime('%m') | int - 1 == 
-              (states(entity_id).split(',')[month].split(' ')[0]|join|string).lstrip('0')|int %}
+              {% if now().month-1 == (states(entity_id).split(',')[month].split(' ')[0]|join|string).lstrip('0')|int %}
                 Beräknad {{ as_timestamp(strptime(states(entity_id).split(',')[month].split(' ')[1], '%Y-%m-%d')) | 
                 timestamp_custom('%B') | replace('ay', 'aj') | replace('y', 'i') | replace('ch', 's') 
                 | replace('ne', 'ni') | replace('ust', 'usti') | replace('ct', 'kt')  }}
@@ -832,12 +826,11 @@ sensor:
         value_template: >
           {% set entity_id = 'sensor.oresundskraft' %}
           {% set dagar %}
-            {% if as_local(states.sensor.date.last_changed).strftime('%m') | int - 1 == 0 %}
+            {% if now().month-1 == 0 %}
               {{ states(entity_id).split(',')[11].split(' ')[1].split('-')[2] | int }}
             {% else %}
               {% for month in range(12) %}
-                {% if as_local(states.sensor.date.last_changed).strftime('%m') | int - 1 == 
-                (states(entity_id).split(',')[month].split(' ')[0]|join|string).lstrip('0')|int %}
+                {% if now().month-1 == (states(entity_id).split(',')[month].split(' ')[0]|join|string).lstrip('0')|int %}
                   {{ states(entity_id).split(',')[month].split(' ')[1].split('-')[2] | int }}
                 {% endif %}
               {% endfor %}
@@ -858,18 +851,16 @@ sensor:
       oresundskraft_total_year_kwh:
         icon_template: mdi:poll-box
         friendly_name_template: > 
-          Totalt {{ as_local(states.sensor.date.last_changed).strftime('%Y') | int }}
+          Totalt {{ now().year }}
         value_template: "{{ states('sensor.oresundskraft').split('total=')[1]}}"
         unit_of_measurement: 'kWh'
 
       oresundskraft_year:
         icon_template: mdi:checkbox-blank
-        friendly_name_template: >
-          {{ as_local(states.sensor.date.last_changed).strftime('%Y') | int }}
+        friendly_name_template: "{{ now().year }}"
         value_template: ' '
 
       oresundskraft_last_year:
         icon_template: mdi:checkbox-blank
-        friendly_name_template: >
-          {{ as_local(states.sensor.date.last_changed).strftime('%Y') | int - 1 }}
+        friendly_name_template: "{{ now().year-1 }}"
         value_template: ' '
