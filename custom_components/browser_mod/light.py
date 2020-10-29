@@ -48,6 +48,10 @@ class BrowserModLight(LightEntity, BrowserModEntity):
             return SUPPORT_BRIGHTNESS
         return 0
 
+    @property
+    def brightness(self):
+        return self.data.get('brightness', None)
+
     def turn_on(self, **kwargs):
         self.connection.send("no-blackout", **kwargs)
 

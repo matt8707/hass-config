@@ -1,80 +1,6 @@
 {
-    "common": {
-        "add": "Lisää",
-        "appdaemon_plural": "AppDaemon-sovellukset",
-        "element": "elementti",
-        "hacs_is_disabled": "HACS on poistettu käytöstä",
-        "install": "Asenna",
-        "integration_plural": "Integraatiot",
-        "lovelace": "Lovelace",
-        "lovelace_element": "Lovelace-elementti",
-        "lovelace_elements": "Lovelace-elementit",
-        "manage": "hallinnoi",
-        "netdaemon": "NetDaemon",
-        "netdaemon_apps": "NetDaemon-sovellukset",
-        "netdaemon_plural": "NetDaemon-sovellukset",
-        "plugin_plural": "Lovelace-elementit",
-        "python_script_plural": "Python-skriptit",
-        "theme_plural": "Teemat",
-        "uninstall": "Poista",
-        "update": "Päivitä"
-    },
-    "config": {
-        "step": {
-            "user": {
-                "data": {
-                    "netdaemon": "Ota NetDaemon-sovellusten etsintä ja seuranta käyttöön"
-                }
-            }
-        }
-    },
-    "dialog_about": {
-        "useful_links": "Hyödyllisiä linkkejä"
-    },
-    "dialog_add_repo": {
-        "sort_by": "Järjestä",
-        "title": "Lisää repo"
-    },
-    "dialog_custom_repositories": {
-        "category": "Kategoria"
-    },
-    "dialog_info": {
-        "downloads": "Lataukset",
-        "open_issues": "Avoimet ongelmat",
-        "stars": "Tähdet",
-        "version_installed": "Asennettu versio"
-    },
-    "dialog_install": {
-        "select_version": "Valitse versio",
-        "show_beta": "Näytä beetaversiot",
-        "type": "Tyyppi",
-        "url": "URL"
-    },
-    "dialog_update": {
-        "available_version": "Saatavilla oleva versio",
-        "changelog": "Muutosloki",
-        "installed_version": "Asennettu versio"
-    },
-    "entry": {
-        "messages": {
-            "disabled": {
-                "content": "Tarkista lokitiedostosi saadaksesi lisätietoja",
-                "title": "HACS on poistettu käytöstä"
-            },
-            "startup": {
-                "title": "HACS käynnistyy"
-            }
-        },
-        "pending_updates": "Päivityksiä saatavilla"
-    },
-    "menu": {
-        "about": "Tietoja HACS:stä",
-        "clear": "Tyhjennä kaikki uudet",
-        "custom_repositories": "Mukautetut repot",
-        "dismiss": "Hylkää kaikki uudet repot",
-        "documentation": "Dokumentointi",
-        "open_issue": "Avoin ongelma",
-        "reload": "Lataa ikkuna uudelleen"
+    "confirm": {
+        "generic": "Oletko varma?"
     },
     "options": {
         "step": {
@@ -82,56 +8,15 @@
                 "data": {
                     "netdaemon": "Ota NetDaemon-sovellusten etsintä ja seuranta käyttöön",
                     "not_in_use": "Ei käytössä YAML:n kanssa",
-                    "sidepanel_icon": "Sivupaneelin kuvake"
+                    "sidepanel_icon": "Sivupaneelin kuvake",
+                    "sidepanel_title": "Sivupaneelin otsikko"
                 }
             }
         }
     },
-    "repository_banner": {
-        "config_flow_title": "Käyttöliittymän määrityksiä tuetaan"
-    },
-    "repository_card": {
-        "dismiss": "Hylkää",
-        "hide": "Piilota",
-        "information": "Tiedot",
-        "open_issue": "Avoin ongelma",
-        "open_source": "Avoin lähdekoodi",
-        "reinstall": "Asenna uudelleen",
-        "update_information": "Päivitä tiedot"
-    },
-    "repository": {
-        "github_stars": "GitHub-tähdet"
-    },
-    "search": {
-        "placeholder": "Etsi repoa"
-    },
-    "sections": {
-        "about": {
-            "title": "Tietoja"
-        },
-        "automation": {
-            "title": "Automaatio"
-        },
-        "frontend": {
-            "title": "Frontend"
-        },
-        "integrations": {
-            "description": "Täältä löydät mukautetut integraatiot (custom_components)",
-            "title": "integraatiot"
-        }
-    },
-    "time": {
-        "one_day_ago": "yksi päivä sitten",
-        "one_hour_ago": "tunti sitten",
-        "one_minute_ago": "minuutti sitten",
-        "one_month_ago": "kuukausi sitten",
-        "one_second_ago": "sekunti sitten",
-        "one_year_ago": "vuosi sitten",
-        "x_days_ago": "{x} päivää sitten",
-        "x_hours_ago": "{x} tuntia sitten",
-        "x_minutes_ago": "{x} minuuttia sitten",
-        "x_months_ago": "{x} kuukautta sitten",
-        "x_seconds_ago": "{x} sekuntia sitten",
-        "x_years_ago": "{x} vuotta sitten"
+    "store": {
+        "name": "Nimi",
+        "sort": "järjestä",
+        "status": "Tila"
     }
 }

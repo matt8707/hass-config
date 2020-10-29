@@ -8,6 +8,7 @@ DATA_DEVICES = "devices"
 DATA_ALIASES = "aliases"
 DATA_ADDERS = "adders"
 DATA_CONFIG = "config"
+DATA_SETUP_COMPLETE = "setup_complete"
 
 CONFIG_DEVICES = "devices"
 CONFIG_PREFIX = "prefix"
@@ -27,6 +28,7 @@ USER_COMMANDS = [
         "more-info",
         "set-theme",
         "lovelace-reload",
+        "window-reload",
         "blackout",
         "no-blackout",
         "toast",

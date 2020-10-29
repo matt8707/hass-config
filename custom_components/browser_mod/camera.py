@@ -21,7 +21,8 @@ class BrowserModCamera(Camera, BrowserModEntity):
         self.last_seen = None
 
     def updated(self):
-        self.last_seen = datetime.now()
+        if self.last_seen is None or (datetime.now() - self.last_seen).seconds > 15:
+            self.last_seen = datetime.now()
         self.schedule_update_ha_state()
 
     def camera_image(self):
