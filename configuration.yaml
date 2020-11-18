@@ -26,16 +26,15 @@ lovelace:
       {url: /hacsfiles/light-entity-card/light-entity-card.js,                   type: js},
       {url: /hacsfiles/light-popup-card/light-popup-card.js,                     type: module},
       {url: /hacsfiles/lovelace-card-mod/card-mod.js,                            type: module},
-      {url: /hacsfiles/lovelace-card-preloader/lovelace-card-preloader.js,       type: module},
       {url: /hacsfiles/lovelace-hui-element/hui-element.js,                      type: module},
       {url: /hacsfiles/lovelace-layout-card/layout-card.js,                      type: module},
       {url: /hacsfiles/lovelace-slider-entity-row/slider-entity-row.js,          type: module},
       {url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js,                type: module},
       {url: /hacsfiles/mini-media-player/mini-media-player-bundle.js,            type: module},
-      {url: /hacsfiles/stack-in-card/stack-in-card.js,                           type: module},
       {url: /hacsfiles/swipe-card/swipe-card.js,                                 type: module},
 
       {url: '/local/calendar-card.js?v=31091',                                   type: module},
+      {url: '/local/stack-in-card.js?v=101',                                     type: module},
       {url: '/local/valetudo-map-card.js?v=42dbceb',                             type: js},
       {url: '/local/custom_icons.js?v=25052001',                                 type: module},
       {url: /local/font.css,                                                     type: css} ]
@@ -52,6 +51,7 @@ logger:
     homeassistant.components.media_player: error
     homeassistant.helpers.entity: error
     homeassistant.helpers.event: fatal
+    homeassistant.components.ipp: fatal
 
 recorder:
   purge_keep_days: 2
@@ -89,8 +89,10 @@ wemo:
 
 cast:
 
-samsungtv:
-  - host: !secret samsungtv_host
+media_player:
+  - platform: samsungtv_tizen
+    host: !secret samsungtv_host
+    mac: !secret samsungtv_mac
 
 hacs:
   token: !secret hacs_token
@@ -123,7 +125,7 @@ mqtt:
 
 browser_mod:
   devices:
-    918296e3-e2a54976:
+    94414206-952e1e9a:
       name: imac_chrome
     c2080cea-6627150a:
       name: tablet
@@ -206,7 +208,7 @@ homekit:
   filter:
     include_entities: &include_entities
       ['fan.studio_wemo', 'switch.wemo_monitors', 'switch.computer_imac', 'media_player.sony_bravia', 'switch.air_purifier', 'lock.dator', 
-      'media_player.samsung', 'switch.playstation_4', 'input_boolean.motion_hall', 'fan.sovrum_anslut', 'script.samsung_tv_energy_saving', 
+      'media_player.samsung_tv_remote', 'switch.playstation_4', 'input_boolean.motion_hall', 'fan.sovrum_anslut', 'script.samsung_tv_energy_saving', 
       'input_boolean.motion_garderob', 'input_boolean.motion_badrum', 'script.home_arrive', 'script.home_leave', 'vacuum.xiaomi_vacuum_cleaner', 
       'person.mattias', 'person.sanja']
   entity_config:
@@ -227,7 +229,7 @@ homekit:
       name: Tv
       feature_list:
         - feature: on_off
-    media_player.samsung:
+    media_player.samsung_tv_remote:
       name: Samsung Tv
       feature_list:
         - feature: on_off
@@ -273,7 +275,7 @@ cloud:
           ['Tv', 'Sony Tv', 'Sony Bravia Tv', 'Bravia Tv', 
           'Vardagsrums Tv', 'Vardagsrums Teven', 'Tv Vardagsrum']
         room: Vardagsrum
-      media_player.samsung:
+      media_player.samsung_tv_remote:
         name: Samsung Tv
         aliases: ['Samsung Tv', 'Sovrums Tv', 'Sovrums Teven', 'Tv Sovrum']
         room: Sovrum

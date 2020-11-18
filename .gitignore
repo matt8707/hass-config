@@ -26,3 +26,4 @@ home-assistant.log
 ui-experimental.yaml
 __pycache__
 *.pyc
+token*

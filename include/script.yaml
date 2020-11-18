@@ -194,7 +194,7 @@ script:
       - choose:
         - conditions:
             - condition: state
-              entity_id: media_player.samsung
+              entity_id: media_player.samsung_tv_remote
               state: 'on'
           sequence:
             - service: switch.turn_off

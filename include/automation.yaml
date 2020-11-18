@@ -28,7 +28,7 @@ automation:
         - conditions:
             - condition: state
               entity_id: 
-                ['media_player.sony_bravia', 'media_player.samsung', 
+                ['media_player.sony_bravia', 'media_player.samsung_tv_remote', 
                 'media_player.google_nest_mini']
               state: 'off'
           sequence:
@@ -550,7 +550,7 @@ automation:
     trigger:
       - platform: state
         entity_id:
-          ['media_player.sony_bravia', 'media_player.samsung', 'switch.computer_imac', 
+          ['media_player.sony_bravia', 'media_player.samsung_tv_remote', 'switch.computer_imac', 
           'switch.playstation_4', 'fan.sovrum_anslut', 'switch.air_purifier']
     action:
       - service: input_boolean.turn_off
@@ -563,7 +563,7 @@ automation:
     trigger:
       - platform: state
         entity_id:
-          ['input_boolean.sony_bravia', 'input_boolean.samsung', 'input_boolean.computer_imac', 
+          ['input_boolean.sony_bravia', 'input_boolean.samsung_tv_remote', 'input_boolean.computer_imac', 
           'input_boolean.playstation_4', 'input_boolean.sovrum_anslut', 'input_boolean.air_purifier']
         to: 'on'
         for:
@@ -600,7 +600,7 @@ automation:
     action:
       - service: media_player.select_source
         data:
-          entity_id: media_player.samsung
+          entity_id: media_player.samsung_tv_remote
           source: >
             {{ states(trigger.entity_id) }}
 
@@ -634,7 +634,7 @@ automation:
           domain: media_player
           service: turn_on
           service_data:
-            entity_id: media_player.samsung
+            entity_id: media_player.samsung_tv_remote
     action:
       - service: media_player.turn_on
         data:
@@ -806,7 +806,7 @@ automation:
           is_state('media_player.google_nest_mini', 'off') 
           or
           is_state('media_player.sony_bravia', 'off') and
-          is_state('media_player.samsung', 'off') and
+          is_state('media_player.samsung_tv_remote', 'off') and
           is_state('media_player.google_nest_mini', 'off') }}
     action:
       - service: input_select.select_option

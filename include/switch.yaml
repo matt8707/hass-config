@@ -108,19 +108,19 @@ switch:
       tv_samsung:
         friendly_name: "Tv\u00B2"
         icon_template: custom:tv
-        value_template: "{{ is_state('media_player.samsung', 'on') }}"
+        value_template: "{{ is_state('media_player.samsung_tv_remote', 'on') }}"
         turn_on:
           - service: input_boolean.turn_on
-            entity_id: input_boolean.samsung
+            entity_id: input_boolean.samsung_tv_remote
           - service: remote.send_command
             data:
               entity_id: remote.sovrum
               command: menu
         turn_off:
           - service: input_boolean.turn_on
-            entity_id: input_boolean.samsung
+            entity_id: input_boolean.samsung_tv_remote
           - service: media_player.turn_off
-            entity_id: media_player.samsung
+            entity_id: media_player.samsung_tv_remote
 
       playstation_4:
         friendly_name: Playstation

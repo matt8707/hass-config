@@ -27,7 +27,7 @@
                       cards:
 
                       - type: custom:button-card
-                        entity: media_player.samsung
+                        entity: media_player.samsung_tv_remote
                         icon: mdi:volume-mute
                         show_name: false
                         tap_action:
@@ -47,7 +47,7 @@
                           action: call-service
                           service: media_player.volume_down
                           service_data:
-                            entity_id: media_player.samsung
+                            entity_id: media_player.samsung_tv_remote
                         template: icon_action
 
                       - type: custom:button-card
@@ -56,6 +56,6 @@
                           action: call-service
                           service: media_player.volume_up
                           service_data:
-                            entity_id: media_player.samsung
+                            entity_id: media_player.samsung_tv_remote
                         template: icon_action
 

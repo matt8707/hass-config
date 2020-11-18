@@ -11,7 +11,7 @@ input_boolean:
     initial: off
   sony_bravia:
     initial: off
-  samsung:
+  samsung_tv_remote:
     initial: off
   playstation_4:
     initial: off
