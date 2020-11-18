@@ -270,8 +270,6 @@ class PlexRecentlyAddedSensor(Entity):
             try:
                 self.api_json += sub_sec['MediaContainer']['Metadata']
             except:
-                _LOGGER.warning('No Metadata field for "{}"'.format(
-                    sub_sec['MediaContainer']['librarySectionTitle']))
                 pass
         self.api_json = sorted(self.api_json, key=lambda i: i['addedAt'],
                                reverse=True)[:self.max_items]
