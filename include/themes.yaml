@@ -377,9 +377,9 @@ frontend:
             font-family: SF Text;
             letter-spacing: 0.005em;
           }
-        
+
         $: |
-          .mdc-dialog {
+          .mdc-dialog__scrim {
             backdrop-filter: blur(20px) brightness(70%);
           }
           .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
@@ -387,3 +387,59 @@ frontend:
             box-shadow: none;
             border-radius: 1em;
           }
+
+          /* * * * * * * * * * * * * * * * * *
+           *                                 *
+           *        LIGHT POPUP CARD         *
+           *                                 *
+           * * * * * * * * * * * * * * * * * */
+
+        "div>hui-entities-card":
+          $:
+            "#states>div>light-popup-card":
+              $: |
+                #popup {
+                  margin: -2.4em 0 1.4em 0;
+                  isolation: isolate;
+                }
+
+                #popup>div.range-holder>input[type=range] {
+                  cursor: grab;
+                }
+
+                #brightnessValue {
+                  color: rgba(255, 255, 255, 0.8);
+                  margin: -1.9em 0 0 0;
+                  font-size: 2em;
+                  font-weight: 400;
+                  position: absolute;
+                  z-index: 100;
+                  font-family: SF Display;
+                  letter-spacing: 0.02em;
+                  pointer-events: none;
+                  mix-blend-mode: difference;
+                  text-align: center;
+                  width: 3.4em;
+                  height: 3.4em;
+                }
+
+                #popup>div.range-holder>input[type=range]::-webkit-slider-thumb {
+                  border: 0;
+                  eight: 0;
+                  width: 0;
+                  cursor: grabbing;
+                }
+
+                #popup>div.action-holder>div>div {
+                  margin: 0.8em 0.5em -0.8em 0.5em;
+                }
+
+                #popup>div.action-holder>div:last-child>div:last-child>.color {
+                  background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 80%), 
+                    conic-gradient(rgb(120, 39, 230), rgb(230, 34, 231), rgb(228, 5, 136), rgb(228, 25, 25), 
+                    rgb(229, 105, 30), rgb(232, 226, 46), rgb(125, 230, 41), rgb(52, 232, 40), rgb(51, 231, 92), 
+                    rgb(52, 232, 224), rgb(32, 125, 229), rgb(18, 39, 229), rgb(120, 39, 230));
+                  border-width: 2px;
+                  border-color: #e6e6e6;
+                  --size: 4.4em !important;
+                }

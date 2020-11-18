@@ -96,24 +96,6 @@
               sliderTrackColor: rgba(25, 25, 25, 0.9)
               actionSize: 4.5em
               actionsInARow: 2
-              style: |
-                #popup {
-                  margin: -2.4em 0 1.4em 0; }
-                #popup > div.range-holder > input[type=range] {
-                  cursor: grab; }
-                #brightnessValue {
-                  color: rgba(255, 255, 255, 0.8); margin: -1.9em 0 0 0; font-size: 2em; font-weight: 400; 
-                  position: absolute; z-index: 100; font-family: SF Display; letter-spacing: 0.02em; pointer-events: none; 
-                  mix-blend-mode: difference; text-align:center; width: 3.4em; height: 3.4em; }
-                #popup > div.range-holder > input[type=range]::-webkit-slider-thumb {
-                  border: 0; eight: 0; width: 0; cursor: grabbing; }
-                #popup > div.action-holder > div > div {
-                  margin: 0.8em 0.5em -0.8em 0.5em; }
-                #popup > div.action-holder > div:last-child > div:last-child > .color {
-                  background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 80%), 
-                  conic-gradient(rgb(120,39,230), rgb(230,34,231), rgb(228,5,136), rgb(228,25,25), rgb(229,105,30), rgb(232,226,46), 
-                  rgb(125,230,41), rgb(52,232,40), rgb(51,231,92), rgb(52,232,224),rgb(32,125,229), rgb(18,39,229), rgb(120,39,230));
-                  border-width: 2px; border-color: #e6e6e6; --size: 4.4em !important; }
               actions:
                 - service: light.turn_on
                   service_data:
@@ -167,7 +149,8 @@
         entity_id: '[[[ return entity.entity_id ]]]'
     styles:
       card:
-        [color: "[[[ if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby' || entity.state === 'unavailable') { return 'rgba(255, 255, 255, 0.3)'; }
+        [color: "[[[ if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby' || 
+        entity.state === 'unknown' || entity.state === 'unavailable') { return 'rgba(255, 255, 255, 0.3)'; }
         if ((entity.state != 'off' && entity.state != 'idle' && entity.state != 'standby') && (entity.attributes.entity_picture == null)) {
         return 'rgba(0, 0, 0, 0.6)'; } else { return '#efefef'; } ]]]", 
         text-shadow: "[[[ if (entity.attributes.entity_picture == null) return 'none'; 
@@ -183,7 +166,8 @@
       card:
         [background-color: none, background-size: cover,
         background-image: 
-        "[[[ if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby' || entity.state === 'unavailable') {
+        "[[[ if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby' || 
+        entity.state === 'unknown' || entity.state === 'unavailable') {
         return 'linear-gradient(0deg, rgba(115, 115, 115, 0.2) 0%, rgba(115, 115, 115, 0.2) 100%)'; }
         if ((entity.state != 'off' && entity.state != 'idle' && entity.state != 'standby') && (entity.attributes.entity_picture == null)) {
         return 'linear-gradient(0deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.8) 100%)'; }
@@ -230,7 +214,8 @@
           fill: '#dedede', top: 0, right: 0, bottom: 0, left: 0, margin: auto, width: 21%, height: 21%, position: absolute]
         icon:
           [fill:
-          "[[[ if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby' || entity.state === 'unavailable') return '#9da0a2'; 
+          "[[[ if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby' || 
+          entity.state === 'unknown' || entity.state === 'unavailable') return '#9da0a2'; 
           else return 'rgba(255, 255, 255, 0.8)'; ]]]", 
           top: 5.35%, left: 5.35%, width: 2.95vw, position: absolute]
       name:
