@@ -1,7 +1,7 @@
 """Constants for HACS"""
 NAME_LONG = "HACS (Home Assistant Community Store)"
 NAME_SHORT = "HACS"
-VERSION = "1.6.2"
+VERSION = "1.8.0"
 DOMAIN = "hacs"
 PROJECT_URL = "https://github.com/hacs/integration/"
 CUSTOM_UPDATER_LOCATIONS = [
@@ -13,6 +13,8 @@ ISSUE_URL = f"{PROJECT_URL}issues"
 DOMAIN_DATA = f"{NAME_SHORT.lower()}_data"
 
 ELEMENT_TYPES = ["integration", "plugin"]
+
+PACKAGE_NAME = "custom_components.hacs"
 
 IFRAME = {
     "title": "HACS",

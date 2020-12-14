@@ -18,12 +18,11 @@ class HacsTheme(HacsRepository):
         self.content.path.remote = "themes"
         self.content.path.local = self.localpath
         self.content.single = False
-        self.logger = getLogger(f"repository.{self.data.category}.{full_name}")
 
     @property
     def localpath(self):
         """Return localpath."""
-        return f"{self.hacs.system.config_path}/themes/{self.data.file_name.replace('.yaml', '')}"
+        return f"{self.hacs.core.config_path}/themes/{self.data.file_name.replace('.yaml', '')}"
 
     async def async_post_installation(self):
         """Run post installation steps."""
@@ -55,7 +54,7 @@ class HacsTheme(HacsRepository):
         if self.validate.errors:
             for error in self.validate.errors:
                 if not self.hacs.status.startup:
-                    self.logger.error(error)
+                    self.logger.error("%s %s", self, error)
         return self.validate.success
 
     async def async_post_registration(self):

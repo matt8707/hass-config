@@ -1,18 +1,19 @@
 """Custom logger for HACS."""
+# pylint: disable=invalid-name
 import logging
 import os
 
+from ...const import PACKAGE_NAME
 
-def getLogger(name=None):
-    if name is not None:
-        name = name.replace("/", ".")
+_HACSLogger: logging.Logger = logging.getLogger(PACKAGE_NAME)
 
-    if "GITHUB_ACTION" in os.environ:
-        logging.basicConfig(
-            format="::%(levelname)s:: %(message)s",
-            level="DEBUG",
-        )
-
-    return logging.getLogger(
-        f"custom_components.hacs{'.' + name if name is not None else ''}"
+if "GITHUB_ACTION" in os.environ:
+    logging.basicConfig(
+        format="::%(levelname)s:: %(message)s",
+        level="DEBUG",
     )
+
+
+def getLogger(_name: str = None) -> logging.Logger:
+    """Return a Logger instance."""
+    return _HACSLogger

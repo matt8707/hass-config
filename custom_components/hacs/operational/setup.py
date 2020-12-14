@@ -1,21 +1,20 @@
 """Setup HACS."""
 from custom_components.hacs.enums import HacsStage
 from aiogithubapi import AIOGitHubAPIException, GitHub
-from homeassistant import config_entries
 from homeassistant.const import EVENT_HOMEASSISTANT_STARTED
 from homeassistant.const import __version__ as HAVERSION
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.event import async_call_later
 
-from custom_components.hacs.const import DOMAIN, ELEMENT_TYPES, STARTUP, VERSION
+from custom_components.hacs.const import DOMAIN, STARTUP, VERSION
 from custom_components.hacs.hacsbase.configuration import Configuration
 from custom_components.hacs.hacsbase.data import HacsData
 from custom_components.hacs.helpers.functions.constrains import check_constrains
 from custom_components.hacs.helpers.functions.remaining_github_calls import (
     get_fetch_updates_for,
 )
-from custom_components.hacs.operational.relaod import async_reload_entry
+from custom_components.hacs.operational.reload import async_reload_entry
 from custom_components.hacs.operational.remove import async_remove_entry
 from custom_components.hacs.operational.setup_actions.clear_storage import (
     async_clear_storage,
@@ -48,6 +47,8 @@ async def _async_common_setup(hass):
 
 async def async_setup_entry(hass, config_entry):
     """Set up this integration using UI."""
+    from homeassistant import config_entries
+
     hacs = get_hacs()
     if hass.data.get(DOMAIN) is not None:
         return False
@@ -125,11 +126,15 @@ async def async_hacs_startup():
     """HACS startup tasks."""
     hacs = get_hacs()
 
-    lovelace_info = await system_health_info(hacs.hass)
+    try:
+        lovelace_info = await system_health_info(hacs.hass)
+    except TypeError:
+        # If this happens, the users YAML is not valid, we assume YAML mode
+        lovelace_info = {"mode": "yaml"}
     hacs.log.debug(f"Configuration type: {hacs.configuration.config_type}")
     hacs.version = VERSION
     hacs.log.info(STARTUP)
-    hacs.system.config_path = hacs.hass.config.path()
+    hacs.core.config_path = hacs.hass.config.path()
     hacs.system.ha_version = HAVERSION
 
     # Setup websocket API

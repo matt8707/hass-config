@@ -18,7 +18,7 @@ async def common_validate(repository, ignore_issues=False):
     repository.validate.errors = []
 
     # Make sure the repository exist.
-    repository.logger.debug("Checking repository.")
+    repository.logger.debug("%s Checking repository.", repository)
     await common_update_data(repository, ignore_issues)
 
     # Step 6: Get the content of hacs.json
@@ -37,9 +37,10 @@ async def common_update_data(repository, ignore_issues=False):
         repository.data.update_data(repository_object.attributes)
     except (AIOGitHubAPIException, HacsException) as exception:
         if not hacs.status.startup:
-            repository.logger.error(exception)
-        repository.validate.errors.append("Repository does not exist.")
-        raise HacsException(exception) from None
+            repository.logger.error("%s %s", repository, exception)
+        if not ignore_issues:
+            repository.validate.errors.append("Repository does not exist.")
+            raise HacsException(exception) from None
 
     # Make sure the repository is not archived.
     if repository.data.archived and not ignore_issues:
@@ -60,11 +61,11 @@ async def common_update_data(repository, ignore_issues=False):
         )
         if releases:
             repository.data.releases = True
-            repository.releases.objects = releases
+            repository.releases.objects = [x for x in releases if not x.draft]
             repository.data.published_tags = [
-                x.tag_name for x in releases if not x.draft
+                x.tag_name for x in repository.releases.objects
             ]
-            repository.data.last_version = next(iter(releases)).tag_name
+            repository.data.last_version = next(iter(repository.data.published_tags))
 
     except (AIOGitHubAPIException, HacsException):
         repository.data.releases = False
@@ -72,7 +73,7 @@ async def common_update_data(repository, ignore_issues=False):
     if not repository.force_branch:
         repository.ref = version_to_install(repository)
     if repository.data.releases:
-        for release in releases or []:
+        for release in repository.releases.objects or []:
             if release.tag_name == repository.ref:
                 assets = release.assets
                 if assets:
@@ -80,7 +81,7 @@ async def common_update_data(repository, ignore_issues=False):
                     repository.data.downloads = downloads
 
     repository.logger.debug(
-        f"Running checks against {repository.ref.replace('tags/', '')}"
+        "%s Running checks against %s", repository, repository.ref.replace("tags/", "")
     )
 
     try:
@@ -92,5 +93,6 @@ async def common_update_data(repository, ignore_issues=False):
             repository.treefiles.append(treefile.full_path)
     except (AIOGitHubAPIException, HacsException) as exception:
         if not hacs.status.startup:
-            repository.logger.error(exception)
-        raise HacsException(exception) from None
+            repository.logger.error("%s %s", repository, exception)
+        if not ignore_issues:
+            raise HacsException(exception) from None

@@ -1,0 +1,358 @@
+{
+    "common": {
+        "about": "Üldteave",
+        "add": "lisa",
+        "appdaemon_apps": "AppDaemoni rakendused",
+        "appdaemon_plural": "AppDaemoni rakendused",
+        "background_task": "Taustatoiming on töös. See leht taaslaetakse kui toiming on lõpetatud.",
+        "cancel": "Loobu",
+        "check_log_file": "Lisateavet leiad oma logifailist",
+        "continue": "Jätka",
+        "disabled": "Keelatud",
+        "documentation": "Dokumentatsioon",
+        "element": "element",
+        "hacs_is_disabled": "HACS on keelatud",
+        "ignore": "Eira",
+        "install": "Paigalda",
+        "installed": "paigaldatud",
+        "integration": "Sidumine",
+        "integration_plural": "Sidumised",
+        "integrations": "Sidumised",
+        "lovelace": "Lovelace",
+        "lovelace_element": "Kasutajaliidese element",
+        "lovelace_elements": "Kasutajaliidese elemendid",
+        "manage": "halda",
+        "netdaemon": "NetDaemon",
+        "netdaemon_apps": "NetDaemoni rakendused",
+        "netdaemon_plural": "NetDaemoni rakendused",
+        "plugin": "Kasutajaliides",
+        "plugin_plural": "Kasutajaliidese elemendid",
+        "plugins": "Kasutajaliidese elemendid",
+        "python_script": "Pythoni skript",
+        "python_script_plural": "Pythoni skriptid",
+        "python_scripts": "Pythoni skriptid",
+        "reload": "Taaslae",
+        "repositories": "Teegid",
+        "repository": "Hoidla",
+        "settings": "seaded",
+        "theme": "Kuva teema",
+        "theme_plural": "Kuvateemad",
+        "themes": "Kuvateemad",
+        "uninstall": "Desinstalli",
+        "update": "Uuendus",
+        "version": "Versioon"
+    },
+    "config": {
+        "abort": {
+            "single_instance_allowed": "Lubatud on ainult üks HACS-i paigaldus."
+        },
+        "error": {
+            "acc": "Enne jätkamist pead nõustuma kõiki tingimustega",
+            "auth": "Isiklik juurdepääsutõend pole õige"
+        }
+    },
+    "confirm": {
+        "add_to_lovelace": "Kas oled kindel, et soovid lisada selle oma Lovelace'i ressurssidele?",
+        "bg_task": "Taustaülesannete töötamise ajal on toiming keelatud.",
+        "cancel": "Loobu",
+        "continue": "Kas soovite kindlasti jätkata?",
+        "delete": "Kas soovid kindlasti üksuse '{item}' kustutada?",
+        "delete_installed": "'{item}' on ipaigaldatud, peate selle enne kustutamist eemaldama.",
+        "exist": "{item} on juba olemas",
+        "generic": "Oled sa kindel?",
+        "home_assistant_is_restarting": "Oota, Home Assistant taaskäivitub.",
+        "home_assistant_version_not_correct": "Kasutad Home Assistanti versiooni '{haversion}' kuid see hoidla nõuab vähemalt versiooni '{minversion}' installimist.",
+        "no": "Ei",
+        "no_upgrades": "Värskendused puuduvad",
+        "ok": "Sobib",
+        "overwrite": "See toiming kirjutab selle üle.",
+        "reload_data": "See taaslaeb kõigi HACS-i teada olevate hoidlate andme. Selle lõpuleviimine võtab palju aega.",
+        "restart_home_assistant": "Kas soovid kindlasti Home Assistanti taaskäivitada?",
+        "uninstall": "Kas soovid kindlasti üksuse '{item}' desinstallida?",
+        "upgrade_all": "See uuendab kõiki valitud hoidlaid. Veenduge, et olete enne jätkamist lugenud kõigi nende väljalaskemärkmeid.",
+        "yes": "Jah"
+    },
+    "dialog_about": {
+        "frontend_version": "Kasutajaliidese versioon",
+        "installed_repositories": "Paigaldatud hoidlad",
+        "integration_version": "Sidumise versioon",
+        "useful_links": "Kasulikud veebiviited"
+    },
+    "dialog_add_repo": {
+        "limit": "Kuvatakse ainult esimesed 100 hoidlat. Vajaliku filtreerimiseks kasutage otsingut",
+        "no_match": "Filtrile vastavaid hoidlaid ei leitud",
+        "sort_by": "Sortimisalus",
+        "title": "Lisa hoidla"
+    },
+    "dialog_custom_repositories": {
+        "category": "Kategooria",
+        "no_category": "Puuduv kategooria",
+        "no_repository": "Puuduv hoidla",
+        "title": "Kohandatud hoidlad",
+        "url_placeholder": "Lisa kohandatud hoidla URL"
+    },
+    "dialog_info": {
+        "author": "Autor",
+        "downloads": "Allalaadimised",
+        "install": "Paigalda see hoidla HACS-i",
+        "loading": "Teabe laadimine ...",
+        "no_info": "Arendaja ei ole selle hoidla kohta rohkem teavet avaldanud",
+        "open_issues": "Teadaolevad tõrketeatised",
+        "open_repo": "Ava hoidla",
+        "stars": "Hinnang",
+        "version_installed": "Paigaldatud versioon"
+    },
+    "dialog_install": {
+        "restart": "Pea meeles, et sidumiste (custom_components) muudatuste rakendamiseks pead Home Assistanti taaskäivitama.",
+        "select_version": "Vali versioon",
+        "show_beta": "Kuva beetaversioonid",
+        "type": "Liik",
+        "url": "URL"
+    },
+    "dialog_removed": {
+        "link": "Väline link lisateabe saamiseks",
+        "name": "Hoidla nimi",
+        "reason": "Eemaldamise põhjus",
+        "type": "Eemaldamise tüüp"
+    },
+    "dialog_update": {
+        "available_version": "Saadaolev versioon",
+        "changelog": "Muudatused",
+        "installed_version": "Paigaldatud versioon",
+        "releasenotes": "Väljalaske märkused väljaandele {release}",
+        "title": "Uuendus on ootel"
+    },
+    "dialog": {
+        "reload": {
+            "confirm": "Kas teen seda kohe?",
+            "description": "Lovelace ressursside muutmisel pead brauseri vahemälu tühjendama."
+        }
+    },
+    "entry": {
+        "information": "Teave",
+        "intro": "Siin kuvatakse saadaval värskendused ja olulised sõnumid kui neid juhtub olema",
+        "messages": {
+            "disabled": {
+                "content": "Lisateavet leiad oma logifailist",
+                "title": "HACS on keelatud"
+            },
+            "has_pending_tasks": {
+                "content": "Mõnda hoidlat ei kuvata enne kui tegevus on lõpule viidud",
+                "title": "Taustal on ootel toiminguid"
+            },
+            "removed": "Eemaldasin hoidla '{repository}'",
+            "resources": {
+                "content": "Teil on {number} Lovelace'i elementi mis pole Lovelace'is õigesti laaditud.",
+                "title": "Ei laaditud Lovelace'i"
+            },
+            "restart": {
+                "content": "Teil on {number} sidumist mis nõuavad Home Assistanti taaskäivitamist. Saate seda teha Home Assistanti kasutajaliidese seadete alamjaotisest \"Serveri juhtimine\".",
+                "title": "Taaskäivitamise ootel"
+            },
+            "setup": {
+                "content": "HACS on seadistub. Selle aja jooksul võib osa teavet puududa või olla vale",
+                "title": "HACS seadistub"
+            },
+            "startup": {
+                "content": "HACS käivitub. Selle aja jooksul võib osa teavet puududa või olla vale",
+                "title": "HACS käivitub"
+            },
+            "waiting": {
+                "content": "HACS ootab Home Assistanti käivitumist",
+                "title": "HACS on ootel"
+            },
+            "wrong_frontend_installed": {
+                "content": "Teil on installitud HACS'i kasutajaliides {running} kuid eeldatakse versiooni {expected}. Kui näete seda teadet ei suutnud Home Assistant uut versiooni installida. Proovige Home Assistant taaskäivitada.",
+                "title": "Ootamatu kasutajaliidese versioon"
+            },
+            "wrong_frontend_loaded": {
+                "content": "Paigaldatud on HACS'i kasutajaliides {running} kuid eeldatakse versiooni {expected}. Tühjenda oma veebilehitseja vahemälu.",
+                "title": "Ootamatu kasutajaliidese versioon"
+            }
+        },
+        "pending_updates": "Ootel värskendused"
+    },
+    "menu": {
+        "about": "HACS-i info",
+        "clear": "Tühjenda kõik uued",
+        "custom_repositories": "Kohandatud hoidlad",
+        "dismiss": "Peida kõik uued hoidlad",
+        "documentation": "Dokumentatsioon",
+        "open_issue": "Esita tõrketeade",
+        "reload": "Lae aken uuesti"
+    },
+    "options": {
+        "step": {
+            "user": {
+                "data": {
+                    "appdaemon": "Luba AppDaemoni rakenduste otsimine ja jälgimine",
+                    "country": "Filtreeri riigi koodi abil.",
+                    "debug": "Luba silumine.",
+                    "experimental": "Luba katselised funktsioonid",
+                    "netdaemon": "Luba NetDaemoni rakenduste otsimine ja jälgimine",
+                    "not_in_use": "YAML režiimi ei toetata",
+                    "release_limit": "Mitu väljalaset kuvada.",
+                    "sidepanel_icon": "Külgpaneeli ikoon",
+                    "sidepanel_title": "Külgpaneeli pealkiri"
+                }
+            }
+        }
+    },
+    "repository_banner": {
+        "config_flow": "See sidumine toetab config_flow'd. See tähendab, et selle seadistamiseks pead minema oma kasutajaliidese sidumiste sektsiooni.",
+        "config_flow_title": "Seadistamine kasutajaliidese abil",
+        "integration_not_loaded": "Seda sidumist ei laeta Home Assistanti.",
+        "no_restart_required": "Taaskäivitamine pole vajalik",
+        "not_loaded": "Pole laaditud",
+        "plugin_not_loaded": "Seda elementi ei lisata teie Lovelace'i ressurssidesse",
+        "restart": "Pead Home Assistanti taaskäivitama.",
+        "restart_pending": "Taaskäivitamine on ootel"
+    },
+    "repository_card": {
+        "dismiss": "Peida",
+        "hide": "Peida",
+        "information": "Teave",
+        "new_repository": "Uus hoidla",
+        "not_loaded": "Pole laaditud",
+        "open_issue": "Esita tõrketeade",
+        "open_source": "Avatud lähtekoodiga",
+        "pending_restart": "Taaskäivitamise ootel",
+        "pending_update": "Värskendamise ootel",
+        "reinstall": "Paigalda uuesti",
+        "report": "Teavita eemaldamiseks",
+        "update_information": "Värskenda teavet"
+    },
+    "repository": {
+        "add_to_lovelace": "Lisa kasutajaliidesesse",
+        "authors": "Autorid",
+        "available": "Saadaval",
+        "back_to": "Tagasi",
+        "changelog": "Muudatuste teave",
+        "downloads": "Allalaadimised",
+        "flag_this": "Märgi see ära",
+        "frontend_version": "Kasutajaliidese versioon",
+        "github_stars": "GitHubi hinnangud",
+        "goto_integrations": "Mine sidumiste juurde",
+        "hide": "Peida",
+        "hide_beta": "Peida eelversioon",
+        "install": "Paigalda",
+        "installed": "Paigaldatud",
+        "lovelace_copy_example": "Kopeeri näide lõikelauale",
+        "lovelace_instruction": "Kui lisad selle oma kasutajaliidese seadetesse kasuta",
+        "lovelace_no_js_type": "Selle elemendi tüüpi ei õnnestunud määratleda, kontrolli hoidlat.",
+        "newest": "uusim",
+        "note_appdaemon": "pead selle ikkagi lisama oma faili 'apps.yaml'",
+        "note_installed": "Kui see on paigaldatus siis asub see",
+        "note_integration": "pead selle ikkagi lisama oma faili 'configuration.yaml'",
+        "note_plugin": "lisaks pead selle lisama oma kasutajaliidese seadetesse ('ui-lovelace.yaml' või raw UI seadete redaktoris')",
+        "note_plugin_post_107": "pead selle lisama oma kasutajaliidese seadetesse ('configuration.yaml' või ressursiredaktoris '\/ config \/ lovelace \/ resources')",
+        "open_issue": "Esita tõrketeade",
+        "open_plugin": "Ava element",
+        "reinstall": "Paigalda uuesti",
+        "repository": "Hoidla",
+        "restart_home_assistant": "Taaskäivita Home Assistant",
+        "show_beta": "Kuva eelversioon",
+        "uninstall": "Desinstalli",
+        "update_information": "Värskenduse teave",
+        "upgrade": "Uuenda"
+    },
+    "search": {
+        "installed": "Otsi paigaldatud hoidlaid",
+        "installed_new": "Otsi paigaldatud või uusi hoidlaid",
+        "placeholder": "Otsi hoidlat"
+    },
+    "sections": {
+        "about": {
+            "description": "Kuva HACS-i teave",
+            "title": "Üldteave"
+        },
+        "addon": {
+            "description": "HACS-is pole lisandmooduleid. Supervisorisse pääsemiseks klõpsa siin",
+            "title": "Lisandmoodulid"
+        },
+        "automation": {
+            "description": "Siit leiad python_scripts, AppDaemoni ja NetDaemoni rakendused",
+            "title": "Automatiseeringud"
+        },
+        "frontend": {
+            "description": "Siit leiad kasutajaliidese teemad, kohandatud kaardid ja muud elemendid",
+            "title": "Kasutajaliides"
+        },
+        "integrations": {
+            "description": "Siit leiad kohandatud sidumised (custom_components)",
+            "title": "Sidumised"
+        },
+        "pending_repository_upgrade": "Kasutad versiooni {installed}, saadaval on versioon {available}"
+    },
+    "settings": {
+        "add_custom_repository": "LISA KOHANDATUD HOIDLA",
+        "adding_new_repo": "Lisan uue hoidla '{repo}'",
+        "adding_new_repo_category": "Kategoorias '{category}'.",
+        "bg_task_custom": "Kohandatud hoidlad on taustatoimingute töötamise ajal peidetud.",
+        "category": "Kategooria",
+        "compact_mode": "Kompaktne režiim",
+        "custom_repositories": "KOHANDATUD HOIDLAD",
+        "delete": "Kustuta",
+        "display": "Kuva",
+        "grid": "Võrgustik",
+        "hacs_repo": "HACSi teek",
+        "hidden_repositories": "peidetud hoidlad",
+        "missing_category": "Pead valima kategooria",
+        "open_repository": "Ava hoidla",
+        "reload_data": "Taaslae andmed",
+        "reload_window": "Lae aken uuesti",
+        "repository_configuration": "Hoidla seaded",
+        "save": "Salvesta",
+        "table": "Tabel",
+        "table_view": "Tabeli vaade",
+        "unhide": "too peidust välja",
+        "upgrade_all": "Uuenda kõik"
+    },
+    "store": {
+        "ascending": "kasvav",
+        "clear_new": "Peida kõik uued hoidlad",
+        "descending": "kahanev",
+        "last_updated": "Viimati uuendatud",
+        "name": "Nimi",
+        "new_repositories": "Uued hoidlad",
+        "new_repositories_note": "Siin on kuvatud üle 10 uue hoidla. Kui soovid need kõik peita klõpsa paremas ülanurgas 3 punkti ja jätaneed kõik kõrvale.",
+        "no_repositories": "Hoidlaid pole",
+        "no_repositories_desc1": "Tundub, et sul pole veel ühtegi hoidlat mis on siia jaotisse paigaldatud.",
+        "no_repositories_desc2": "Esimese hoidla lisamiseks klõpsake alumises nurgas + märki!",
+        "no_repositories_found_desc1": "Selles jaotises ei leitud ühtegi paigaldatud hoidlat mis vastaks otsingule \" {searchInput} \".",
+        "no_repositories_found_desc2": "Proovi otsida midagi muud!",
+        "pending_upgrades": "Ootel värskendused",
+        "placeholder_search": "Palun sisesta otsingutermin...",
+        "sort": "sorteeri",
+        "stars": "Hinnang",
+        "status": "Olek"
+    },
+    "time": {
+        "ago": "eest",
+        "day": "päev",
+        "days": "päeva",
+        "hour": "tund",
+        "hours": "tundi",
+        "minute": "minut",
+        "minutes": "minutit",
+        "month": "kuu",
+        "months": "kuud",
+        "one": "Üks",
+        "one_day_ago": "ühe aasta eest",
+        "one_hour_ago": "ühe tunni eest",
+        "one_minute_ago": "ühe minuti eest",
+        "one_month_ago": "ühe kuu esst",
+        "one_second_ago": "ühe sekundi eest",
+        "one_year_ago": "ühe aasta eest",
+        "second": "sekund",
+        "seconds": "sekundit",
+        "x_days_ago": "{x} päeva eest",
+        "x_hours_ago": "{x} tunni eest",
+        "x_minutes_ago": "{x} minuti eest",
+        "x_months_ago": "{x} kuu eest",
+        "x_seconds_ago": "{x} sekundi eest",
+        "x_years_ago": "{x} aasta eest",
+        "year": "aasta",
+        "years": "aastat"
+    }
+}
