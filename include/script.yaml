@@ -116,15 +116,12 @@ script:
               entity_id: switch.fullykiosk_screensaver
               state: 'off'
           sequence:
-            - service: media_player.play_media
+            - service: tts.cloud_say
               data:
                 entity_id: media_player.tablet
-                media_content_id: >
-                  {{ ['/local/sound/tts_custom/hej.mp3', 
-                  '/local/sound/tts_custom/startar.mp3', 
-                  '/local/sound/tts_custom/varmer_upp.mp3', 
-                  '/local/sound/tts_custom/valkommen_hem.mp3'] | random }}
-                media_content_type: music
+                message: >
+                  {{ ['Hej', 'Startar', 'Värmer upp', 'Välkommen hem'] | random }}
+                language: sv-SE
       - choose:
         - conditions:
             - condition: state
@@ -153,15 +150,12 @@ script:
               entity_id: switch.fullykiosk_screensaver
               state: 'off'
           sequence:
-            - service: media_player.play_media
+            - service: tts.cloud_say
               data:
                 entity_id: media_player.tablet
-                media_content_id: >
-                  {{ ['/local/sound/tts_custom/ha_det_bra.mp3',
-                      '/local/sound/tts_custom/saknar_dig_redan.mp3',
-                      '/local/sound/tts_custom/hej_da.mp3',
-                      '/local/sound/tts_custom/stanger_ner_allt.mp3'] | random }}
-                media_content_type: music
+                message: >
+                  {{ ['Ha det bra', 'Saknar dig redan', 'Hej då', 'Stänger ner allt'] | random }}
+                language: sv-SE
       - service: light.turn_off
         entity_id: light.all_lights_exclude_hall
       - service: switch.turn_off
