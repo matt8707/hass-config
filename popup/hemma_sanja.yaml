@@ -23,6 +23,33 @@
                         - type: custom:hui-element
                           card_type: glance
                           show_state: false
+                          style:
+                            .: |
+                              ha-card {
+                                background: none;
+                                box-shadow: none;
+                              }
+                            "ha-card>div>div:nth-child(1)":
+                              $:
+                                "state-badge":
+                                  $: |
+                                    ha-icon {
+                                      color: {{ '#3182b7' if is_state('device_tracker.sanja', 'home') else '#FFFFFF20' }};
+                                    }
+                            "ha-card>div>div:nth-child(2)":
+                              $:
+                                "state-badge":
+                                  $: |
+                                    ha-icon {
+                                      color: {{ '#3182b7' if is_state('device_tracker.sanja_bluetooth', 'home') else '#FFFFFF20' }};
+                                    }
+                            "ha-card>div>div:nth-child(3)":
+                              $:
+                                "state-badge":
+                                  $: |
+                                    ha-icon {
+                                      color: {{ '#3182b7' if is_state('device_tracker.sanja_iphone', 'home') else '#FFFFFF20' }};
+                                    }
                           entities:
 
                             - entity: device_tracker.sanja
