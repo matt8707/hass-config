@@ -114,7 +114,6 @@ sensor:
       - type: last_boot
 
   - platform: uptime
-    unit_of_measurement: minutes
 
   - platform: time_date
     display_options:
@@ -218,7 +217,7 @@ sensor:
     json_attributes_topic: valetudo/rockrobo/map_data
     name: xiaomi_map
     value_template: OK
-    scan_interval: 10
+    scan_interval: 15
 
   - platform: krisinformation
     country: Sverige
@@ -378,7 +377,9 @@ sensor:
       sidebar_skanetrafiken:
         value_template: >
           {% set entity_id = 'sensor.skanetrafiken' %}
+          {% if not states(entity_id) | regex_search('<') %}
           {{ 'Nästa buss går ' + states(entity_id) if not is_state(entity_id, 'från') }}
+          {% endif %}
 
       public_ip:
         value_template: !secret public_ip
@@ -664,7 +665,7 @@ sensor:
         friendly_name: Senast omstart
         icon_template: mdi:update
         value_template: >
-          {% set uptime = states('sensor.uptime') | float %}
+          {% set uptime = (as_timestamp(now()) - as_timestamp(states('sensor.uptime'))) | float / 60 %}
           {% if uptime < 1 %} {{ (uptime * 60) | int }} sekunder sedan
           {% elif uptime | int == 1 %} 1 minut sedan
           {% elif uptime | int > 1 %}

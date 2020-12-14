@@ -105,10 +105,6 @@ frontend:
       mini-media-player-artwork-opacity: '1'
       mini-media-player-progress-height: '5px'
       mini-media-player-scale: '1.14'
-      # popup-backdrop-filter
-      iron-overlay-backdrop-filter: 'blur(15px)'
-      iron-overlay-backdrop-background-color: 'rgba(0,0,0,.6)'
-      iron-overlay-backdrop-opacity: '1'
       # barcard
       bar-card-border-radius: '0.3em'
 
@@ -123,7 +119,7 @@ frontend:
       card-header: rgba(48,52,52,0.8)
 
       card-mod-root: |
-        ha-app-layout {
+        hui-panel-view {
           background: url('/local/background.png') !important;
           background-size: cover !important;
         }
@@ -425,7 +421,7 @@ frontend:
 
                 #popup>div.range-holder>input[type=range]::-webkit-slider-thumb {
                   border: 0;
-                  eight: 0;
+                  height: 0;
                   width: 0;
                   cursor: grabbing;
                 }
