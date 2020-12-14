@@ -22,7 +22,6 @@ lovelace:
   resources:
     [ {url: /hacsfiles/bar-card/bar-card.js,                                     type: module},
       {url: /hacsfiles/button-card/button-card.js,                               type: module},
-      {url: /hacsfiles/kiosk-mode/kiosk-mode.js,                                 type: module},
       {url: /hacsfiles/light-entity-card/light-entity-card.js,                   type: js},
       {url: /hacsfiles/light-popup-card/light-popup-card.js,                     type: module},
       {url: /hacsfiles/lovelace-card-mod/card-mod.js,                            type: module},
@@ -32,7 +31,9 @@ lovelace:
       {url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js,                type: module},
       {url: /hacsfiles/mini-media-player/mini-media-player-bundle.js,            type: module},
       {url: /hacsfiles/swipe-card/swipe-card.js,                                 type: module},
+      {url: /hacsfiles/transmission-card/transmission-card.js,                   type: js},
 
+      {url: '/local/kiosk-mode.js?v=145',                                        type: module},
       {url: '/local/calendar-card.js?v=31091',                                   type: module},
       {url: '/local/stack-in-card.js?v=101',                                     type: module},
       {url: '/local/valetudo-map-card.js?v=42dbceb',                             type: js},
