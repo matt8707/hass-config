@@ -122,20 +122,36 @@ switch:
           - service: media_player.turn_off
             entity_id: media_player.samsung_tv_remote
 
-      playstation_4:
+      playstation_5:
         friendly_name: Playstation
         icon_template: mdi:sony-playstation
-        value_template: "{{ is_state('binary_sensor.playstation_4', 'on') }}"
+        value_template: "{{ states('sensor.playstation') }}"
         turn_on:
           - service: input_boolean.turn_on
-            entity_id: input_boolean.playstation_4
+            entity_id: input_boolean.playstation_5
+          - service: shell_command.wake_ps5
           - service: media_player.turn_on
-            entity_id: media_player.playstation_4
+            entity_id: media_player.sony_bravia
+          - repeat:
+              count: 10
+              # report state
+              sequence:
+                - condition: not
+                  conditions:
+                    - condition: state
+                      entity_id: sensor.playstation
+                      state: 'on'
+                - delay:
+                    seconds: 2
+                - service: homeassistant.update_entity
+                  entity_id: sensor.playstation
         turn_off:
           - service: input_boolean.turn_on
-            entity_id: input_boolean.playstation_4
+            entity_id: input_boolean.playstation_5
           - service: media_player.turn_off
-            entity_id: media_player.playstation_4
+            entity_id: media_player.sony_bravia
+          - service: homeassistant.update_entity
+            entity_id: sensor.playstation
 
       fullykiosk_screensaver:
         friendly_name: Skärmsläckare

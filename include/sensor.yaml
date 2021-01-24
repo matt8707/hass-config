@@ -49,13 +49,6 @@ binary_sensor:
 
   - platform: template
     sensors:
-      playstation_4:
-        icon_template: mdi:sony-playstation
-        value_template: >
-          {% set entity_id = 'media_player.playstation_4' %}
-          {{ not (is_state(entity_id, 'off') or is_state(entity_id, 'standby') 
-          or is_state(entity_id, 'unknown')) }}
-
       krisinformation_time_trigger:
         icon_template: mdi:alert
         value_template: >
@@ -276,12 +269,29 @@ sensor:
   - platform: command_line
     name: hacs_version
     scan_interval: 86400
-    command: grep -oP 'VERSION = "\K[^"]+' custom_components/hacs/const.py
+    command: grep -oP 'INTEGRATION_VERSION = "\K[^"]+' custom_components/hacs/const.py
 
   - platform: command_line
     name: skanetrafiken
     scan_interval: 120
     command: !secret skanetrafiken
+
+  - platform: command_line
+    name: Playstation
+    command: !secret check_ps5
+    json_attributes:
+      ['code', 'host_id', 'host_name', 'host_type', 
+      'running_app_name', 'running_app_titleid', 'version', 
+      'host_request_port', 'timestamp', 'fingerprint']
+    value_template: >
+      {% if value_json.code == '200' | int %}
+        on
+      {% elif value_json.code == '620' | int %}
+        Viloläge
+      {% else %}
+        off
+      {% endif %}
+    scan_interval: 300
 
     ####################################################
     #                                                  #
@@ -319,7 +329,7 @@ sensor:
           {% set lights_name = lights | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
 
           {% set switches = [states.switch.computer_imac, states.switch.tv_sony, states.switch.tv_samsung, 
-          states.switch.playstation_4, states.switch.wemo_monitors, states.fan.studio_wemo, 
+          states.switch.playstation_5, states.switch.wemo_monitors, states.fan.studio_wemo, 
           states.fan.sovrum_anslut, states.switch.air_purifier] %}
           {% set switches_on = switches | selectattr('state','eq','on') | list %} 
           {% set switches_name = switches | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
@@ -377,7 +387,7 @@ sensor:
       sidebar_skanetrafiken:
         value_template: >
           {% set entity_id = 'sensor.skanetrafiken' %}
-          {% if not states(entity_id) | regex_search('<') %}
+          {% if not states(entity_id) | regex_search('<') and not is_state(entity_id, 'unknown') %}
           {{ 'Nästa buss går ' + states(entity_id) if not is_state(entity_id, 'från') }}
           {% endif %}
 
@@ -428,20 +438,14 @@ sensor:
 
       hass_dev_release:
         icon_template: mdi:dev-to
-        friendly_name_template: >
-          {% if ((as_timestamp(state_attr('calendar.home_assistant_devs', 
-          'start_time')) - as_timestamp(now())) / 86400) > 20 %}
-            Planerad beta
-          {% else %}
-            {{ state_attr('calendar.home_assistant_devs','message') }}
-          {% endif %}
+        friendly_name: Kommande release
         value_template: >
           {% set dev = ((as_timestamp(state_attr('calendar.home_assistant_devs', 
           'start_time')) - as_timestamp(now())) / 86400) %}
           {% if dev < -1 %} Släppt
           {% elif dev < 0 %} Idag
           {% elif dev < 1 %} Imorgon
-          {% elif dev > 20 %} Ingen
+          {% elif dev > 35 %} Ingen
           {% else %} {{ dev | int + 1 }} dagar
           {% endif %}
 

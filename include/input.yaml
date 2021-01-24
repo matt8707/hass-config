@@ -13,7 +13,7 @@ input_boolean:
     initial: off
   samsung_tv_remote:
     initial: off
-  playstation_4:
+  playstation_5:
     initial: off
   sovrum_anslut:
     initial: off
@@ -114,6 +114,11 @@ input_select:
     icon: mdi:format-list-bulleted
 
   sovrum_anslut_speed:
+    name: Fläkthastighet
+    options:
+      ['Tyst', 'Medium', 'Max']
+
+  air_purifier_speed:
     name: Fläkthastighet
     options:
       ['Tyst', 'Medium', 'Max']

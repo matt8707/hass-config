@@ -137,3 +137,122 @@ fan:
                   data:
                     topic: cmnd/gosund1/status
                     payload: 10
+
+      ###todo
+      air_purifier:
+        friendly_name: Luftrenare
+        value_template: >
+          {{ states('binary_sensor.gosund_air_purifier') }}
+        speed_template: >
+          {{ states('input_select.air_purifier_speed') }}
+        speeds: 
+          ['Tyst', 'Medium', 'Max']
+        set_speed:
+          # homekit set_speed from off
+          - choose:
+            - conditions:
+                - condition: state
+                  entity_id: binary_sensor.gosund_air_purifier
+                  state: 'off'
+              sequence:
+                - service: fan.turn_on
+                  entity_id: fan.air_purifier
+            default:
+              - service: input_select.select_option
+                data:
+                  entity_id: input_select.air_purifier_speed
+                  option: "{{ speed }}"
+        # oscillating_template: >
+        #   {{ is_state('input_boolean.sovrum_anslut_oscillate', 'on') }}
+        # set_oscillating:
+        #   - service: input_boolean.toggle
+        #     entity_id: input_boolean.sovrum_anslut_oscillate
+        turn_on:
+          - condition: state
+            entity_id: binary_sensor.gosund_air_purifier
+            state: 'off'
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.air_purifier
+          - service: remote.send_command
+            data:
+              entity_id: remote.broadlink
+              command: !secret ir_purifier_auto #wake
+          - service: remote.send_command
+            data:
+              entity_id: remote.broadlink
+              command: !secret ir_purifier_power
+          # - choose:
+          #   # initial oscillation
+          #   - conditions:
+          #       - condition: state
+          #         entity_id: input_boolean.sovrum_anslut_oscillate
+          #         state: 'on'
+          #     sequence:
+          #       - service: remote.send_command
+          #         data:
+          #           entity_id: remote.broadlink
+          #           command: !secret ir_fan_swing
+          - choose:
+            # initial speed
+            - conditions:
+                - condition: state
+                  entity_id: input_select.air_purifier_speed
+                  state: Max
+              sequence:
+                - service: remote.send_command
+                  data:
+                    entity_id: remote.broadlink
+                    command: !secret ir_purifier_speed_up
+                - service: remote.send_command
+                  data:
+                    entity_id: remote.broadlink
+                    command: !secret ir_purifier_speed_up
+            - conditions:
+                - condition: state
+                  entity_id: input_select.air_purifier_speed
+                  state: Medium
+              sequence:
+                - service: remote.send_command
+                  data:
+                    entity_id: remote.broadlink
+                    command: !secret ir_purifier_speed_up
+          - repeat:
+            # report state
+              count: 20
+              sequence:
+                - condition: state
+                  entity_id: binary_sensor.gosund_air_purifier
+                  state: 'off'
+                - delay:
+                    seconds: 1
+                - service: mqtt.publish
+                  data:
+                    topic: cmnd/gosund2/status
+                    payload: 10
+        turn_off:
+          - condition: state
+            entity_id: binary_sensor.gosund_air_purifier
+            state: 'on'
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.air_purifier
+          - service: remote.send_command
+            data:
+              entity_id: remote.broadlink
+              command: !secret ir_purifier_auto #wake
+          - service: remote.send_command
+            data:
+              entity_id: remote.broadlink
+              command: !secret ir_purifier_power
+          - repeat:
+            # report state
+              count: 20
+              sequence:
+                - condition: state
+                  entity_id: binary_sensor.gosund_air_purifier
+                  state: 'on'
+                - delay:
+                    seconds: 1
+                - service: mqtt.publish
+                  data:
+                    topic: cmnd/gosund2/status
+                    payload: 10

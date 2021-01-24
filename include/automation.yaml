@@ -223,7 +223,8 @@ automation:
       conditions:
         - condition: state
           entity_id: sensor.hass_version
-          state: Senaste
+          state:
+            ['Senaste', 'unknown']
     action:
       - service: notify.mobile_app_iphone
         data:
@@ -551,7 +552,7 @@ automation:
       - platform: state
         entity_id:
           ['media_player.sony_bravia', 'media_player.samsung_tv_remote', 'switch.computer_imac', 
-          'switch.playstation_4', 'fan.sovrum_anslut', 'switch.air_purifier']
+          'switch.playstation_5', 'fan.sovrum_anslut', 'switch.air_purifier']
     action:
       - service: input_boolean.turn_off
         data:
@@ -564,7 +565,7 @@ automation:
       - platform: state
         entity_id:
           ['input_boolean.sony_bravia', 'input_boolean.samsung_tv_remote', 'input_boolean.computer_imac', 
-          'input_boolean.playstation_4', 'input_boolean.sovrum_anslut', 'input_boolean.air_purifier']
+          'input_boolean.playstation_5', 'input_boolean.sovrum_anslut', 'input_boolean.air_purifier']
         to: 'on'
         for:
           minutes: 1

@@ -172,14 +172,6 @@ script:
       - choose:
         - conditions:
             - condition: state
-              entity_id: binary_sensor.playstation_4
-              state: 'on'
-          sequence:
-            - service: switch.turn_off
-              entity_id: switch.playstation_4
-      - choose:
-        - conditions:
-            - condition: state
               entity_id: media_player.sony_bravia
               state: 'on'
           sequence:

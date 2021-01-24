@@ -154,6 +154,11 @@ frontend:
                   letter-spacing: -0.05vw;
                 }
 
+                ha-markdown-element>p>span>span {
+                  position: relative;
+                  top: -.09em;
+                }
+
         "#root>hui-state-label-element":
           $: |
             div {
