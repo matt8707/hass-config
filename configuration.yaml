@@ -20,25 +20,25 @@ system_health:
 lovelace:
   mode: yaml
   resources:
-    [ {url: /hacsfiles/bar-card/bar-card.js,                                     type: module},
-      {url: /hacsfiles/button-card/button-card.js,                               type: module},
-      {url: /hacsfiles/light-entity-card/light-entity-card.js,                   type: js},
-      {url: /hacsfiles/light-popup-card/light-popup-card.js,                     type: module},
-      {url: /hacsfiles/lovelace-card-mod/card-mod.js,                            type: module},
-      {url: /hacsfiles/lovelace-hui-element/hui-element.js,                      type: module},
-      {url: /hacsfiles/lovelace-layout-card/layout-card.js,                      type: module},
-      {url: /hacsfiles/lovelace-slider-entity-row/slider-entity-row.js,          type: module},
-      {url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js,                type: module},
-      {url: /hacsfiles/mini-media-player/mini-media-player-bundle.js,            type: module},
-      {url: /hacsfiles/swipe-card/swipe-card.js,                                 type: module},
-      {url: /hacsfiles/transmission-card/transmission-card.js,                   type: js},
+    [ {url: /hacsfiles/bar-card/bar-card.js,                                  type: module},
+      {url: /hacsfiles/button-card/button-card.js,                            type: module},
+      {url: /hacsfiles/kiosk-mode/kiosk-mode.js,                              type: module},
+      {url: /hacsfiles/light-entity-card/light-entity-card.js,                type: module},
+      {url: /hacsfiles/light-popup-card/light-popup-card.js,                  type: module},
+      {url: /hacsfiles/lovelace-card-mod/card-mod.js,                         type: module},
+      {url: /hacsfiles/lovelace-hui-element/hui-element.js,                   type: module},
+      {url: /hacsfiles/lovelace-layout-card/layout-card.js,                   type: module},
+      {url: /hacsfiles/lovelace-slider-entity-row/slider-entity-row.js,       type: module},
+      {url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js,             type: module},
+      {url: /hacsfiles/mini-media-player/mini-media-player-bundle.js,         type: module},
+      {url: /hacsfiles/swipe-card/swipe-card.js,                              type: module},
+      {url: /hacsfiles/transmission-card/transmission-card.js,                type: module},
 
-      {url: '/local/kiosk-mode.js?v=145',                                        type: module},
-      {url: '/local/calendar-card.js?v=31091',                                   type: module},
-      {url: '/local/stack-in-card.js?v=101',                                     type: module},
-      {url: '/local/valetudo-map-card.js?v=42dbceb',                             type: js},
-      {url: '/local/custom_icons.js?v=25052001',                                 type: module},
-      {url: /local/font.css,                                                     type: css} ]
+      {url: '/local/calendar-card.js?v=31091',                                type: module},
+      {url: '/local/stack-in-card.js?v=101',                                  type: module},
+      {url: '/local/valetudo-map-card.js?v=42dbceb',                          type: module},
+      {url: '/local/custom_icons.js?v=25052001',                              type: module},
+      {url: /local/font.css,                                                  type: css} ]
 
 logger:
   default: warning
@@ -162,6 +162,7 @@ shell_command:
   ha_dockermon_restart_container: !secret ha_dockermon_restart_container
   clear_logs: truncate -s 0 /config/home-assistant.log
   kwh_data_update: !secret kwh_data_update
+  wake_ps5: !secret wake_ps5
 
 light:
   - platform: group
@@ -209,7 +210,7 @@ homekit:
   filter:
     include_entities: &include_entities
       ['fan.studio_wemo', 'switch.wemo_monitors', 'switch.computer_imac', 'media_player.sony_bravia', 'switch.air_purifier', 'lock.dator', 
-      'media_player.samsung_tv_remote', 'switch.playstation_4', 'input_boolean.motion_hall', 'fan.sovrum_anslut', 'script.samsung_tv_energy_saving', 
+      'media_player.samsung_tv_remote', 'switch.playstation_5', 'input_boolean.motion_hall', 'fan.sovrum_anslut', 'script.samsung_tv_energy_saving', 
       'input_boolean.motion_garderob', 'input_boolean.motion_badrum', 'script.home_arrive', 'script.home_leave', 'vacuum.xiaomi_vacuum_cleaner', 
       'person.mattias', 'person.sanja']
   entity_config:
@@ -234,7 +235,7 @@ homekit:
       name: Samsung Tv
       feature_list:
         - feature: on_off
-    switch.playstation_4:
+    switch.playstation_5:
       name: Playstation
     script.home_arrive:
       name: Hemma
@@ -280,9 +281,9 @@ cloud:
         name: Samsung Tv
         aliases: ['Samsung Tv', 'Sovrums Tv', 'Sovrums Teven', 'Tv Sovrum']
         room: Sovrum
-      switch.playstation_4:
+      switch.playstation_5:
         name: Playstation
-        aliases: ['Playstation', 'PS4', 'Playstation 4']
+        aliases: ['Playstation', 'PS5', 'Playstation 5']
         room: Vardagsrum
       script.home_arrive:
         name: Hemma
