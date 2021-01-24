@@ -10,7 +10,7 @@
                       state_color: true
                       entities:
 
-                        - entity: switch.playstation_4
+                        - entity: switch.playstation_5
                           secondary_info: last-changed
 
                         - entity: media_player.playstation_4
