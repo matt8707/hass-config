@@ -1,0 +1,12 @@
+call_method:
+  description: Call a custom command.
+  fields:
+    entity_id:
+      description: Name(s) of the yTube music player entity where to run the custom command.
+      example: "media_player.ytube_music_player_cf"
+    command:
+      description: Command to pass to LyTube music player.
+      example: "rate_track"
+    parameters:
+      description: Array of additional parameters, optional and depends on command.
+      example: "thumb_up"

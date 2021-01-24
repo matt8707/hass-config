@@ -1,7 +1,6 @@
 """Support for interface with an Samsung TV."""
 import asyncio
 from datetime import timedelta, datetime
-from dateutil.parser import parse as parsedate
 import logging
 import socket
 import json
@@ -624,7 +623,7 @@ class SamsungTVDevice(MediaPlayerEntity):
             if file_date < (datetime.now().astimezone()-timedelta(days=MEDIA_FILE_DAYS_BEFORE_UPDATE)):
                 try:
                     response = requests.head(MEDIA_IMAGE_BASE_URL + "logo_paths.json")
-                    url_date = parsedate(response.headers.get("Last-Modified")).astimezone()
+                    url_date = datetime.strptime(response.headers.get("Last-Modified"),'%a, %d %b %Y %X %Z').astimezone()
                     if url_date > file_date:
                         self._download_latest_path_file()
                 except:

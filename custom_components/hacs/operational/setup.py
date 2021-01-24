@@ -1,5 +1,4 @@
 """Setup HACS."""
-from custom_components.hacs.enums import HacsStage
 from aiogithubapi import AIOGitHubAPIException, GitHub
 from homeassistant.const import EVENT_HOMEASSISTANT_STARTED
 from homeassistant.const import __version__ as HAVERSION
@@ -7,7 +6,8 @@ from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.event import async_call_later
 
-from custom_components.hacs.const import DOMAIN, STARTUP, VERSION
+from custom_components.hacs.const import DOMAIN, INTEGRATION_VERSION, STARTUP
+from custom_components.hacs.enums import HacsStage
 from custom_components.hacs.hacsbase.configuration import Configuration
 from custom_components.hacs.hacsbase.data import HacsData
 from custom_components.hacs.helpers.functions.constrains import check_constrains
@@ -77,7 +77,6 @@ async def async_setup(hass, config):
 
     await _async_common_setup(hass)
 
-    hass.data[DOMAIN] = config[DOMAIN]
     hacs.configuration = Configuration.from_dict(config[DOMAIN])
     hacs.configuration.config_type = "yaml"
     await async_startup_wrapper_for_yaml()
@@ -99,7 +98,7 @@ async def async_startup_wrapper_for_config_entry():
     return startup_result
 
 
-async def async_startup_wrapper_for_yaml():
+async def async_startup_wrapper_for_yaml(_=None):
     """Startup wrapper for yaml config."""
     hacs = get_hacs()
     try:
@@ -108,16 +107,8 @@ async def async_startup_wrapper_for_yaml():
         startup_result = False
     if not startup_result:
         hacs.system.disabled = True
-        hacs.hass.components.frontend.async_remove_panel(
-            hacs.configuration.sidepanel_title.lower()
-            .replace(" ", "_")
-            .replace("-", "_")
-        )
         hacs.log.info("Could not setup HACS, trying again in 15 min")
-        if int(hacs.system.ha_version.split(".")[1]) >= 117:
-            async_call_later(hacs.hass, 900, async_startup_wrapper_for_yaml)
-        else:
-            async_call_later(hacs.hass, 900, async_startup_wrapper_for_yaml())
+        async_call_later(hacs.hass, 900, async_startup_wrapper_for_yaml)
         return
     hacs.system.disabled = False
 
@@ -125,6 +116,7 @@ async def async_startup_wrapper_for_yaml():
 async def async_hacs_startup():
     """HACS startup tasks."""
     hacs = get_hacs()
+    hacs.hass.data[DOMAIN] = hacs
 
     try:
         lovelace_info = await system_health_info(hacs.hass)
@@ -132,7 +124,7 @@ async def async_hacs_startup():
         # If this happens, the users YAML is not valid, we assume YAML mode
         lovelace_info = {"mode": "yaml"}
     hacs.log.debug(f"Configuration type: {hacs.configuration.config_type}")
-    hacs.version = VERSION
+    hacs.version = INTEGRATION_VERSION
     hacs.log.info(STARTUP)
     hacs.core.config_path = hacs.hass.config.path()
     hacs.system.ha_version = HAVERSION
@@ -190,11 +182,8 @@ async def async_hacs_startup():
         return False
 
     # Setup startup tasks
-    if hacs.status.new:
-        if int(hacs.system.ha_version.split(".")[1]) >= 117:
-            async_call_later(hacs.hass, 5, hacs.startup_tasks)
-        else:
-            async_call_later(hacs.hass, 5, hacs.startup_tasks())
+    if hacs.status.new or hacs.configuration.config_type == "flow":
+        async_call_later(hacs.hass, 5, hacs.startup_tasks)
     else:
         hacs.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STARTED, hacs.startup_tasks)
 

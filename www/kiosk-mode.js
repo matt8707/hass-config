@@ -1,41 +1,226 @@
-"use strict";function e(e,r){return o(e)||n(e,r)||d(e,r)||t()}function t(){throw new TypeError(
-"Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}
-function n(e,r){if("undefined"!=typeof Symbol&&Symbol.iterator in Object(e)){var t=[],n=!0,o=!1,a=void 0;try{for(var i,l=e[Symbol.iterator]();!(n=(
-i=l.next()).done)&&(t.push(i.value),!r||t.length!==r);n=!0);}catch(e){o=!0,a=e}finally{try{n||null==l.return||l.return()}finally{if(o)throw a}}
-return t}}function o(e){if(Array.isArray(e))return e}function r(e){return l(e)||i(e)||d(e)||a()}function a(){throw new TypeError(
-"Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}function i(e){
-if("undefined"!=typeof Symbol&&Symbol.iterator in Object(e))return Array.from(e)}function l(e){if(Array.isArray(e))return c(e)}function f(e,r){var t
-;if("undefined"==typeof Symbol||null==e[Symbol.iterator]){if(Array.isArray(e)||(t=d(e))||r&&e&&"number"==typeof e.length){t&&(e=t);var n=0,r=function(
-){};return{s:r,n:function(){return n>=e.length?{done:!0}:{done:!1,value:e[n++]}},e:function(e){throw e},f:r}}throw new TypeError(
-"Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}var o,a=!0,
-i=!1;return{s:function(){t=e[Symbol.iterator]()},n:function(){var e=t.next();return a=e.done,e},e:function(e){i=!0,o=e},f:function(){try{
-a||null==t.return||t.return()}finally{if(i)throw o}}}}function d(e,r){if(e){if("string"==typeof e)return c(e,r);var t=Object.prototype.toString.call(e
-).slice(8,-1);return"Object"===t&&e.constructor&&(t=e.constructor.name),"Map"===t||"Set"===t?Array.from(e
-):"Arguments"===t||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t)?c(e,r):void 0}}function c(e,r){(null==r||r>e.length)&&(r=e.length);for(var t=0,
-n=new Array(r);t<r;t++)n[t]=e[t];return n}var h=document.querySelector("home-assistant"),y=h.shadowRoot.querySelector("home-assistant-main"
-).shadowRoot,s=y.querySelector("partial-panel-resolver"),v=y.querySelector("app-drawer-layout");function m(){var e=y.querySelector("ha-panel-lovelace"
-);return e&&e.lovelace.config.kiosk_mode?e.lovelace.config.kiosk_mode:{}}function p(e){var r=window.location.search;return e.some(function(e){
-return r.includes(e)})}function b(e){return e&&!e.querySelector("#kiosk_mode")}function w(e,r){var t=document.createElement("style");t.setAttribute(
-"id","kiosk_mode"),t.innerHTML=e,r.appendChild(t),window.dispatchEvent(new Event("resize"))}function k(e,r){window.localStorage.setItem(e,r)}
-function S(e){return"true"==window.localStorage.getItem(e)}function u(){var e=window.location.search,r=h.hass;if(!e.includes("disable_km")){var t=S(
-"kmHeader")||p(["kiosk","hide_header"]),n=S("kmSidebar")||p(["kiosk","hide_sidebar"]),o=m(),a=o.admin_settings,i=o.non_admin_settings,
-l=o.user_settings,d=n||t,t=d?t:o.kiosk||o.hide_header,n=d?n:o.kiosk||o.hide_sidebar;if(a&&r.user.is_admin&&(t=a.kiosk||a.hide_header,
-n=a.kiosk||a.hide_sidebar),i&&!r.user.is_admin&&(t=i.kiosk||i.hide_header,n=i.kiosk||i.hide_sidebar),l){Array.isArray(l)||(l=[l]);var c=f(l);try{for(
-c.s();!(u=c.n()).done;){var s=u.value,u=s.users;Array.isArray(s.users)||(u=[u]),u.some(function(e){return e.toLowerCase()==r.user.name.toLowerCase()}
-)&&(t=s.kiosk||s.hide_header,n=s.kiosk||s.hide_sidebar)}}catch(e){c.e(e)}finally{c.f()}}(n||t)&&(i=(l=(i=y.querySelector("ha-panel-lovelace")
-)?i.shadowRoot.querySelector("hui-root").shadowRoot:null)?l.querySelector("app-toolbar"):null,t&&b(l)&&(w(
-"#view { min-height: 100vh !important } app-header { display: none }",l),e.includes("cache")&&k("kmHeader","true")),n&&b(v)&&(w(
-":host { --app-drawer-width: 0 !important } #drawer { display: none }",v),b(i)&&w("ha-menu-button { display:none !important } ",i),e.includes("cache"
-)&&k("kmSidebar","true")))}}function g(e){var r,t=f(e);try{for(t.s();!(r=t.n()).done;){var n=f(r.value.addedNodes);try{for(n.s();!(o=n.n()).done;){
-var o=o.value;if("ha-panel-lovelace"==o.localName)return void new MutationObserver(_).observe(o.shadowRoot,{childList:!0})}}catch(e){n.e(e)}finally{
-n.f()}}}catch(e){t.e(e)}finally{t.f()}}function _(e){var r,t=f(e);try{for(t.s();!(r=t.n()).done;){var n=f(r.value.addedNodes);try{for(n.s();!(o=n.n()
-).done;){var o=o.value;if("hui-root"==o.localName)return void new MutationObserver(x).observe(o.shadowRoot,{childList:!0})}}catch(e){n.e(e)}finally{
-n.f()}}}catch(e){t.e(e)}finally{t.f()}}function x(e){var r,t=f(e);try{for(t.s();!(r=t.n()).done;){var n,o=f(r.value.addedNodes);try{for(o.s();!(n=o.n(
-)).done;)if("ha-app-layout"==n.value.localName)return void u()}catch(e){o.e(e)}finally{o.f()}}}catch(e){t.e(e)}finally{t.f()}}
-window.location.search.includes("clear_km_cache")&&["kmHeader","kmSidebar"].forEach(function(e){return k(e,"false")}),u(),new MutationObserver(g
-).observe(s,{childList:!0});for(var A={header:"%c≡ kiosk-mode".padEnd(27),ver:"%cversion 1.4.5 "},j="%c\n",q=Math.max.apply(Math,r(Object.values(A
-).map(function(e){return e.length}))),E=0,I=Object.entries(A);E<I.length;E++){var O=e(I[E],1),M=O[0];A[M].length<=q&&(A[M]=A[M].padEnd(q)),
-"header"==M&&(A[M]="".concat(A[M].slice(0,-1),"⋮ "))}
-var L="display:inline-block;border-width:1px 1px 0 1px;border-style:solid;border-color:#424242;color:white;background:#03a9f4;font-size:12px;padding:4px 4.5px 5px 6px;"
-,N="border-width:0px 1px 1px 1px;padding:7px;background:white;color:#424242;line-height:0.7;";console.info(A.header+j+A.ver,L,"","".concat(L," "
-).concat(N));
+const ha = document.querySelector('home-assistant');
+const main = ha.shadowRoot.querySelector('home-assistant-main').shadowRoot;
+const panel = main.querySelector('partial-panel-resolver');
+const drawerLayout = main.querySelector('app-drawer-layout');
+let llAttempts = 1;
+let interv;
+
+function getConfigObj() {
+  const ll = main.querySelector('ha-panel-lovelace');
+
+  if (!ll || !ll.lovelace || !ll.lovelace.config) {
+    return;
+  } else {
+    return ll && ll.lovelace.config.kiosk_mode
+      ? ll.lovelace.config.kiosk_mode
+      : {};
+  }
+}
+
+function getConfig() {
+  return new Promise((resolve, reject) => {
+    interv = setInterval(() => {
+      console.log('Attempt #%s', llAttempts);
+      if (getConfigObj()) {
+        interv = clearInterval(interv);
+        resolve(getConfigObj());
+      } else {
+        llAttempts++;
+        if (llAttempts == 10) {
+          interv = clearInterval(interv);
+          resolve(null);
+        }
+      }
+    }, 100);
+  });
+}
+
+// Return true if any keyword is found in location.
+function locIncludes(keywords) {
+  const url = window.location.search;
+  return keywords.some((x) => url.includes(x));
+}
+
+// Check if element exists and if style element already exists.
+function styleCheck(elem) {
+  return elem && !elem.querySelector('#kiosk_mode');
+}
+
+// Insert style element.
+function addStyles(css, elem) {
+  const style = document.createElement('style');
+  style.setAttribute('id', 'kiosk_mode');
+  style.innerHTML = css;
+  elem.appendChild(style);
+  window.dispatchEvent(new Event('resize'));
+}
+
+// Set localStorage item.
+function setCache(k, v) {
+  window.localStorage.setItem(k, v);
+}
+
+// Retrieve localStorage item as bool.
+function cacheAsBool(k) {
+  return window.localStorage.getItem(k) == 'true';
+}
+
+// Clear cache if requested.
+if (window.location.search.includes('clear_km_cache')) {
+  ['kmHeader', 'kmSidebar'].forEach((k) => setCache(k, 'false'));
+}
+
+function kiosk_mode() {
+  const url = window.location.search;
+  const hass = ha.hass;
+
+  // Disable styling if "disable_km" in URL.
+  if (url.includes('disable_km')) return;
+
+  // Retrieve localStorage values & query string options.
+  let hide_header =
+    cacheAsBool('kmHeader') || locIncludes(['kiosk', 'hide_header']);
+  let hide_sidebar =
+    cacheAsBool('kmSidebar') || locIncludes(['kiosk', 'hide_sidebar']);
+
+  getConfig().then((config) => {
+    if (!config) {
+      return;
+    }
+
+    const adminConf = config.admin_settings;
+    const nonAdminConf = config.non_admin_settings;
+    let userConf = config.user_settings;
+    const queryStringsSet = hide_sidebar || hide_header;
+
+    // Use config values only if config strings and cache aren't used.
+    hide_header = queryStringsSet
+      ? hide_header
+      : config.kiosk || config.hide_header;
+    hide_sidebar = queryStringsSet
+      ? hide_sidebar
+      : config.kiosk || config.hide_sidebar;
+
+    if (adminConf && hass.user.is_admin) {
+      hide_header = adminConf.kiosk || adminConf.hide_header;
+      hide_sidebar = adminConf.kiosk || adminConf.hide_sidebar;
+    }
+
+    if (nonAdminConf && !hass.user.is_admin) {
+      hide_header = nonAdminConf.kiosk || nonAdminConf.hide_header;
+      hide_sidebar = nonAdminConf.kiosk || nonAdminConf.hide_sidebar;
+    }
+
+    if (userConf) {
+      if (!Array.isArray(userConf)) userConf = [userConf];
+      for (let conf of userConf) {
+        let users = conf.users;
+        if (!Array.isArray(conf.users)) users = [users];
+        if (
+          users.some((x) => x.toLowerCase() == hass.user.name.toLowerCase())
+        ) {
+          hide_header = conf.kiosk || conf.hide_header;
+          hide_sidebar = conf.kiosk || conf.hide_sidebar;
+        }
+      }
+    }
+
+    // Only run if needed.
+    if (hide_sidebar || hide_header) {
+      const lovelace = main.querySelector('ha-panel-lovelace');
+      const huiRoot = lovelace
+        ? lovelace.shadowRoot.querySelector('hui-root').shadowRoot
+        : null;
+      const toolbar = huiRoot ? huiRoot.querySelector('app-toolbar') : null;
+
+      // Insert style element for kiosk or hide_header options.
+      if (hide_header && styleCheck(huiRoot)) {
+        const css =
+          '#view { min-height: 100vh !important } app-header { display: none }';
+        addStyles(css, huiRoot);
+
+        // Set localStorage cache for hiding header.
+        if (url.includes('cache')) setCache('kmHeader', 'true');
+      }
+
+      // Insert style element for kiosk or hide_sidebar options.
+      if (hide_sidebar && styleCheck(drawerLayout)) {
+        const css =
+          ':host { --app-drawer-width: 0 !important } #drawer { display: none }';
+        addStyles(css, drawerLayout);
+
+        // Hide menu button.
+        if (styleCheck(toolbar))
+          addStyles('ha-menu-button { display:none !important } ', toolbar);
+
+        // Set localStorage cache for hiding sidebar.
+        if (url.includes('cache')) setCache('kmSidebar', 'true');
+      }
+    }
+  });
+}
+
+// Initial run.
+kiosk_mode();
+
+// Watch for changes in partial-panel-resolver's children.
+new MutationObserver(lovelaceWatch).observe(panel, {childList: true});
+
+// If new lovelace panel was added watch for hui-root to appear.
+function lovelaceWatch(mutations) {
+  for (let mutation of mutations) {
+    for (let node of mutation.addedNodes) {
+      if (node.localName == 'ha-panel-lovelace') {
+        new MutationObserver(rootWatch).observe(node.shadowRoot, {
+          childList: true,
+        });
+        return;
+      }
+    }
+  }
+}
+
+// When hui-root appears watch it's children.
+function rootWatch(mutations) {
+  for (let mutation of mutations) {
+    for (let node of mutation.addedNodes) {
+      if (node.localName == 'hui-root') {
+        new MutationObserver(appLayoutWatch).observe(node.shadowRoot, {
+          childList: true,
+        });
+        return;
+      }
+    }
+  }
+}
+
+// When ha-app-layout appears we can run.
+function appLayoutWatch(mutations) {
+  for (let mutation of mutations) {
+    for (let node of mutation.addedNodes) {
+      if (node.localName == 'ha-app-layout') {
+        kiosk_mode();
+        return;
+      }
+    }
+  }
+}
+
+// Overly complicated console tag.
+const conInfo = {header: '%c≡ kiosk-mode'.padEnd(27), ver: '%cversion *DEV '};
+const br = '%c\n';
+const maxLen = Math.max(...Object.values(conInfo).map((el) => el.length));
+for (const [key] of Object.entries(conInfo)) {
+  if (conInfo[key].length <= maxLen) conInfo[key] = conInfo[key].padEnd(maxLen);
+  if (key == 'header') conInfo[key] = `${conInfo[key].slice(0, -1)}⋮ `;
+}
+const header =
+  'display:inline-block;border-width:1px 1px 0 1px;border-style:solid;border-color:#424242;color:white;background:#03a9f4;font-size:12px;padding:4px 4.5px 5px 6px;';
+const info =
+  'border-width:0px 1px 1px 1px;padding:7px;background:white;color:#424242;line-height:0.7;';
+console.info(
+  conInfo.header + br + conInfo.ver,
+  header,
+  '',
+  `${header} ${info}`
+);

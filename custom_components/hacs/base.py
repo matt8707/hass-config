@@ -1,8 +1,9 @@
 """Base HACS class."""
 import logging
 from typing import List, Optional
-import attr
+import pathlib
 
+import attr
 from aiogithubapi.github import AIOGitHubAPI
 from aiogithubapi.objects.repository import AIOGitHubAPIRepository
 from homeassistant.core import HomeAssistant
@@ -106,3 +107,8 @@ class HacsBase(HacsBaseAttributes):
     def hass(self, value: HomeAssistant) -> None:
         """Set the value for the default property."""
         self._hass = value
+
+    @property
+    def integration_dir(self) -> pathlib.Path:
+        """Return the HACS integration dir."""
+        return pathlib.Path(__file__).parent

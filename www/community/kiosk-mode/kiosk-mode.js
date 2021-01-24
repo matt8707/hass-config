@@ -1,42 +1,50 @@
-"use strict";function e(e,r){return o(e)||n(e,r)||d(e,r)||t()}function t(){throw new TypeError(
+"use strict";function e(e,t){return o(e)||r(e,t)||u(e,t)||n()}function n(){throw new TypeError(
 "Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}
-function n(e,r){if("undefined"!=typeof Symbol&&Symbol.iterator in Object(e)){var t=[],n=!0,o=!1,a=void 0;try{for(var i,l=e[Symbol.iterator]();!(n=(
-i=l.next()).done)&&(t.push(i.value),!r||t.length!==r);n=!0);}catch(e){o=!0,a=e}finally{try{n||null==l.return||l.return()}finally{if(o)throw a}}
-return t}}function o(e){if(Array.isArray(e))return e}function r(e){return l(e)||i(e)||d(e)||a()}function a(){throw new TypeError(
-"Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}function i(e){
-if("undefined"!=typeof Symbol&&Symbol.iterator in Object(e))return Array.from(e)}function l(e){if(Array.isArray(e))return c(e)}function f(e,r){var t
-;if("undefined"==typeof Symbol||null==e[Symbol.iterator]){if(Array.isArray(e)||(t=d(e))||r&&e&&"number"==typeof e.length){t&&(e=t);var n=0,r=function(
-){};return{s:r,n:function(){return n>=e.length?{done:!0}:{done:!1,value:e[n++]}},e:function(e){throw e},f:r}}throw new TypeError(
-"Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}var o,a=!0,
-i=!1;return{s:function(){t=e[Symbol.iterator]()},n:function(){var e=t.next();return a=e.done,e},e:function(e){i=!0,o=e},f:function(){try{
-a||null==t.return||t.return()}finally{if(i)throw o}}}}function d(e,r){if(e){if("string"==typeof e)return c(e,r);var t=Object.prototype.toString.call(e
-).slice(8,-1);return"Object"===t&&e.constructor&&(t=e.constructor.name),"Map"===t||"Set"===t?Array.from(e
-):"Arguments"===t||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t)?c(e,r):void 0}}function c(e,r){(null==r||r>e.length)&&(r=e.length);for(var t=0,
-n=new Array(r);t<r;t++)n[t]=e[t];return n}var h=document.querySelector("home-assistant"),y=h.shadowRoot.querySelector("home-assistant-main"
-).shadowRoot,s=y.querySelector("partial-panel-resolver"),v=y.querySelector("app-drawer-layout"),m=0;function p(){var e=y.querySelector(
-"ha-panel-lovelace");return e&&(!e.lovelace||!e.lovelace.config)&&m<10&&(m++,setTimeout(function(){return p()},50)),
-e&&e.lovelace.config.kiosk_mode?e.lovelace.config.kiosk_mode:{}}function b(e){var r=window.location.search;return e.some(function(e){
-return r.includes(e)})}function w(e){return e&&!e.querySelector("#kiosk_mode")}function k(e,r){var t=document.createElement("style");t.setAttribute(
-"id","kiosk_mode"),t.innerHTML=e,r.appendChild(t),window.dispatchEvent(new Event("resize"))}function S(e,r){window.localStorage.setItem(e,r)}
-function g(e){return"true"==window.localStorage.getItem(e)}function u(){var e=window.location.search,r=h.hass;if(!e.includes("disable_km")){var t=g(
-"kmHeader")||b(["kiosk","hide_header"]),n=g("kmSidebar")||b(["kiosk","hide_sidebar"]),o=p();m=0;var a=o.admin_settings,i=o.non_admin_settings,
-l=o.user_settings,d=n||t,t=d?t:o.kiosk||o.hide_header,n=d?n:o.kiosk||o.hide_sidebar;if(a&&r.user.is_admin&&(t=a.kiosk||a.hide_header,
-n=a.kiosk||a.hide_sidebar),i&&!r.user.is_admin&&(t=i.kiosk||i.hide_header,n=i.kiosk||i.hide_sidebar),l){Array.isArray(l)||(l=[l]);var c=f(l);try{for(
-c.s();!(u=c.n()).done;){var s=u.value,u=s.users;Array.isArray(s.users)||(u=[u]),u.some(function(e){return e.toLowerCase()==r.user.name.toLowerCase()}
-)&&(t=s.kiosk||s.hide_header,n=s.kiosk||s.hide_sidebar)}}catch(e){c.e(e)}finally{c.f()}}(n||t)&&(i=(l=(i=y.querySelector("ha-panel-lovelace")
-)?i.shadowRoot.querySelector("hui-root").shadowRoot:null)?l.querySelector("app-toolbar"):null,t&&w(l)&&(k(
-"#view { min-height: 100vh !important } app-header { display: none }",l),e.includes("cache")&&S("kmHeader","true")),n&&w(v)&&(k(
-":host { --app-drawer-width: 0 !important } #drawer { display: none }",v),w(i)&&k("ha-menu-button { display:none !important } ",i),e.includes("cache"
-)&&S("kmSidebar","true")))}}function _(e){var r,t=f(e);try{for(t.s();!(r=t.n()).done;){var n=f(r.value.addedNodes);try{for(n.s();!(o=n.n()).done;){
-var o=o.value;if("ha-panel-lovelace"==o.localName)return void new MutationObserver(x).observe(o.shadowRoot,{childList:!0})}}catch(e){n.e(e)}finally{
-n.f()}}}catch(e){t.e(e)}finally{t.f()}}function x(e){var r,t=f(e);try{for(t.s();!(r=t.n()).done;){var n=f(r.value.addedNodes);try{for(n.s();!(o=n.n()
-).done;){var o=o.value;if("hui-root"==o.localName)return void new MutationObserver(A).observe(o.shadowRoot,{childList:!0})}}catch(e){n.e(e)}finally{
-n.f()}}}catch(e){t.e(e)}finally{t.f()}}function A(e){var r,t=f(e);try{for(t.s();!(r=t.n()).done;){var n,o=f(r.value.addedNodes);try{for(o.s();!(n=o.n(
-)).done;)if("ha-app-layout"==n.value.localName)return void u()}catch(e){o.e(e)}finally{o.f()}}}catch(e){t.e(e)}finally{t.f()}}
-window.location.search.includes("clear_km_cache")&&["kmHeader","kmSidebar"].forEach(function(e){return S(e,"false")}),u(),new MutationObserver(_
-).observe(s,{childList:!0});for(var j={header:"%c≡ kiosk-mode".padEnd(27),ver:"%cversion 1.4.7 "},q="%c\n",E=Math.max.apply(Math,r(Object.values(j
-).map(function(e){return e.length}))),I=0,O=Object.entries(j);I<O.length;I++){var M=e(O[I],1),L=M[0];j[L].length<=E&&(j[L]=j[L].padEnd(E)),
-"header"==L&&(j[L]="".concat(j[L].slice(0,-1),"⋮ "))}
-var N="display:inline-block;border-width:1px 1px 0 1px;border-style:solid;border-color:#424242;color:white;background:#03a9f4;font-size:12px;padding:4px 4.5px 5px 6px;"
-,R="border-width:0px 1px 1px 1px;padding:7px;background:white;color:#424242;line-height:0.7;";console.info(j.header+q+j.ver,N,"","".concat(N," "
-).concat(R));
+function r(e,t){if("undefined"!=typeof Symbol&&Symbol.iterator in Object(e)){var n=[],r=!0,o=!1,i=void 0;try{for(var a,s=e[Symbol.iterator]();!(r=(
+a=s.next()).done)&&(n.push(a.value),!t||n.length!==t);r=!0);}catch(e){o=!0,i=e}finally{try{r||null==s.return||s.return()}finally{if(o)throw i}}
+return n}}function o(e){if(Array.isArray(e))return e}function t(e){return s(e)||a(e)||u(e)||i()}function i(){throw new TypeError(
+"Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}function a(e){
+if("undefined"!=typeof Symbol&&Symbol.iterator in Object(e))return Array.from(e)}function s(e){if(Array.isArray(e))return l(e)}function c(e,t,n,r,o,i,
+a){try{var s=e[i](a),c=s.value}catch(e){return void n(e)}s.done?t(c):Promise.resolve(c).then(r,o)}function d(s){return function(){var e=this,
+a=arguments;return new Promise(function(t,n){var r=s.apply(e,a);function o(e){c(r,t,n,o,i,"next",e)}function i(e){c(r,t,n,o,i,"throw",e)}o(void 0)})}}
+function _(e,t){var n;if("undefined"==typeof Symbol||null==e[Symbol.iterator]){if(Array.isArray(e)||(n=u(e))||t&&e&&"number"==typeof e.length){n&&(e=n
+);var r=0,t=function(){};return{s:t,n:function(){return r>=e.length?{done:!0}:{done:!1,value:e[r++]}},e:function(e){throw e},f:t}}throw new TypeError(
+"Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}var o,i=!0,
+a=!1;return{s:function(){n=e[Symbol.iterator]()},n:function(){var e=n.next();return i=e.done,e},e:function(e){a=!0,o=e},f:function(){try{
+i||null==n.return||n.return()}finally{if(a)throw o}}}}function u(e,t){if(e){if("string"==typeof e)return l(e,t);var n=Object.prototype.toString.call(e
+).slice(8,-1);return"Object"===n&&e.constructor&&(n=e.constructor.name),"Map"===n||"Set"===n?Array.from(e
+):"Arguments"===n||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)?l(e,t):void 0}}function l(e,t){(null==t||t>e.length)&&(t=e.length);for(var n=0,
+r=new Array(t);n<t;n++)r[n]=e[n];return r}var g,h,f,S,x,E=0;function m(){var e,
+t=0<arguments.length&&void 0!==arguments[0]?arguments[0]:h.querySelector("ha-panel-lovelace");!M("disable_km")&&t&&(e=g.hass.panelUrl,
+window.kioskModeEntities[e]||(window.kioskModeEntities[e]=[]),y(t,e))}function y(t,n){E++;try{var e=t.lovelace.config.kiosk_mode||{};b(t,e,n)}catch(e
+){E<40?setTimeout(function(){return y(t)},50):(console.log("Lovelace config not found, continuing with default configuration."),b(t,{},n))}}
+function A(e){return Array.isArray(e)?e:[e]}function M(e){return A(e).some(function(e){return window.location.search.includes(e)})}function j(e,t){A(e
+).forEach(function(e){return window.localStorage.setItem(e,t)})}function q(e){return"true"==window.localStorage.getItem(e)}function p(e){
+return e.querySelector("#kiosk_mode_".concat(e.localName))}function I(e,t){var n;p(t)||((n=document.createElement("style")).setAttribute("id",
+"kiosk_mode_".concat(t.localName)),n.innerHTML=e,t.appendChild(n))}function O(e){A(e).forEach(function(e){p(e)&&e.querySelector("#kiosk_mode_".concat(
+e.localName)).remove()})}function b(e,t,n){E=0;var r=e.shadowRoot.querySelector("hui-root").shadowRoot,o=r.querySelector("app-toolbar"),
+i=g.hass.states,a=t.admin_settings,s=t.non_admin_settings,c=t.entity_settings,d=t.user_settings,u=t.mobile_settings,l=!1,h=!1,f=q("kmHeader")||M([
+"kiosk","hide_header"]),e=(m=q("kmSidebar")||M(["kiosk","hide_sidebar"]))||f,f=e?f:t.kiosk||t.hide_header,m=e?m:t.kiosk||t.hide_sidebar;if(
+a&&x.is_admin&&(f=a.kiosk||a.hide_header,m=a.kiosk||a.hide_sidebar,l=a.ignore_entity_settings,h=a.ignore_mobile_settings),s&&!x.is_admin&&(
+f=s.kiosk||s.hide_header,m=s.kiosk||s.hide_sidebar,l=s.ignore_entity_settings,h=s.ignore_mobile_settings),d){var y=_(A(d));try{for(y.s();!(p=y.n()
+).done;){var p=p.value;A(p.users).some(function(e){return e.toLowerCase()==x.name.toLowerCase()})&&(f=p.kiosk||p.hide_header,m=p.kiosk||p.hide_sidebar
+,l=p.ignore_entity_settings,h=p.ignore_mobile_settings)}}catch(e){y.e(e)}finally{y.f()}}if(u&&!h&&(d=u.custom_width||812,window.innerWidth<=d&&(
+f=u.kiosk||u.hide_header,m=u.kiosk||u.hide_sidebar,l=u.ignore_entity_settings)),c&&!l){var b=_(c);try{for(b.s();!(w=b.n()).done;){var k=w.value,
+v=Object.keys(k.entity)[0],w=k.entity[v];window.kioskModeEntities[n].includes(v)||window.kioskModeEntities[n].push(v),i[v].state==w&&(
+"hide_header"in k&&(f=k.hide_header),"hide_sidebar"in k&&(m=k.hide_sidebar),"kiosk"in k&&(f=m=k.kiosk))}}catch(e){b.e(e)}finally{b.f()}}f?(I(
+"#view{min-height:100vh !important;--header-height:0;}app-header{display:none;}",r),M("cache")&&j("kmHeader","true")):O(r),m?(I(
+":host{--app-drawer-width:0 !important;}#drawer{display:none;}",S),I("ha-menu-button{display:none !important;}",o),M("cache")&&j("kmSidebar","true")
+):O([o,S]),window.dispatchEvent(new Event("resize"))}function k(){return v.apply(this,arguments)}function v(){return(v=d(regeneratorRuntime.mark(
+function e(){return regeneratorRuntime.wrap(function(e){for(;;)switch(e.prev=e.next){case 0:return e.next=2,window.hassConnection;case 2:
+e.sent.conn.subscribeMessage(function(e){var t=window.kioskModeEntities[g.hass.panelUrl]||[];!t.length||"state_changed"!=e.event_type||!t.includes(
+e.data.entity_id)||e.data.old_state&&e.data.new_state.state==e.data.old_state.state||m()},{type:"subscribe_events",event_type:"state_changed"})
+;case 3:case"end":return e.stop()}},e)}))).apply(this,arguments)}function w(){new MutationObserver(function(e){e.forEach(function(e){
+e.addedNodes.forEach(function(e){"ha-panel-lovelace"==e.localName&&m(e)})})}).observe(f,{childList:!0})}window.kioskModeEntities={},Promise.resolve(
+customElements.whenDefined("hui-view")).then(function(){g=document.querySelector("home-assistant"),h=g.shadowRoot.querySelector("home-assistant-main"
+).shadowRoot,f=h.querySelector("partial-panel-resolver"),S=h.querySelector("app-drawer-layout"),x=g.hass.user,m(),w(),k()}),M("clear_km_cache")&&j([
+"kmHeader","kmSidebar"],"false");for(var R={header:"%c≡ kiosk-mode".padEnd(27),ver:"%cversion 1.6.5 "},C="%c\n",L=Math.max.apply(Math,t(Object.values(
+R).map(function(e){return e.length}))),N=0,T=Object.entries(R);N<T.length;N++){var H=e(T[N],1),P=H[0];R[P].length<=L&&(R[P]=R[P].padEnd(L)),
+"header"==P&&(R[P]="".concat(R[P].slice(0,-1),"⋮ "))}
+var U="display:inline-block;border-width:1px 1px 0 1px;border-style:solid;border-color:#424242;color:white;background:#03a9f4;font-size:12px;padding:4px 4.5px 5px 6px;"
+,z="border-width:0px 1px 1px 1px;padding:7px;background:white;color:#424242;line-height:0.7;";console.info(R.header+C+R.ver,U,"","".concat(U," "
+).concat(z));
