@@ -1,0 +1,91 @@
+# Describes the format for available fullykiosk services
+
+load_start_url:
+  description: Load Fully Kiosk Browser start URL.
+  fields:
+    entity_id:
+      description: Name(s) of entities to load the start URL on.
+      example: "media_player.amazon_fire_media_player"
+
+load_url:
+  description: Load URL on Fully Kiosk Browser.
+  fields:
+    entity_id:
+      description: Name(s) of entities to load the start URL on.
+      example: "media_player.amazon_fire_media_player"
+    url:
+      description: URL to be loaded.
+      example: "https://www.fully-kiosk.com"
+
+play_audio:
+  description: Play audio on a Fully Kiosk Browser.
+  fields:
+    entity_id:
+      description: Name(s) of entities to play media on
+      example: "media_player.amazon_fire_media_player"
+    url:
+      description: The URL of the audio to play.
+      example: "https://home-assistant.io/audio/test.mp3"
+    stream:
+      description: Stream on which to play the audio
+      example: 3
+
+reboot_device:
+  description: Reboot the device running the Fully Kiosk Browser app.
+  fields:
+    entity_id:
+      description: Name(s) of entities to reboot.
+      example: "media_player.amazon_fire_media_player"
+
+restart:
+  description: Restart the Fully Kiosk Browser app.
+  fields:
+    entity_id:
+      description: Name(s) of entities to restart the app on.
+      example: "media_player.amazon_fire_media_player"
+
+set_config:
+  description: Modify a setting in Fully Kiosk Browser.
+  fields:
+    entity_id:
+      description: Name(s) of entities to modify the setting on.
+      example: "media_player.amazon_fire_media_player"
+    config_type:
+      description: Type of setting (either 'string' or 'bool')
+      example: "string"
+    key:
+      description: Key of the setting to change
+      example: "startURL"
+    value:
+      description: New value of the setting
+      example: "https://www.fully-kiosk.com"
+
+start_application:
+  description: Start an application on the device.
+  fields:
+    entity_id:
+      description: Name(s) of entities to start the app on.
+      example: "media_player.amazon_fire_media_player"
+    application:
+      description: Package name of the application to start.
+      example: "de.ozerov.fully"
+
+to_foreground:
+  description: Bring the Fully Kiosk Browser app to the foreground.
+  fields:
+    entity_id:
+      description: Name(s) of entities on which to bring the app to the foreground.
+      example: "media_player.amazon_fire_media_player"
+
+volume_set:
+  description: Set a Fully Kiosk Browser volume level.
+  fields:
+    entity_id:
+      description: Name(s) of entities to set volume level on.
+      example: "media_player.amazon_fire_media_player"
+    volume_level:
+      description: Volume level to set as float.
+      example: 0.6
+    stream:
+      description: Stream for which to set the volume level (1-10)
+      example: 3

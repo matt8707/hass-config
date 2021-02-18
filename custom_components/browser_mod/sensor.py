@@ -10,6 +10,11 @@ PLATFORM = 'sensor'
 async def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
     return setup_platform(hass, config, async_add_devices, PLATFORM, BrowserModSensor)
 
+
+async def async_setup_entry(hass, config_entry, async_add_entities):
+    await async_setup_platform(hass, {}, async_add_entities)
+
+
 class BrowserModSensor(BrowserModEntity):
     domain = PLATFORM
 

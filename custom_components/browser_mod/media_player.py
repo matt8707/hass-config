@@ -23,6 +23,10 @@ async def async_setup_platform(hass, config, async_add_devices, discovery_info=N
     return setup_platform(hass, config, async_add_devices, PLATFORM, BrowserModPlayer)
 
 
+async def async_setup_entry(hass, config_entry, async_add_entities):
+    await async_setup_platform(hass, {}, async_add_entities)
+
+
 class BrowserModPlayer(MediaPlayerEntity, BrowserModEntity):
     domain = PLATFORM
 

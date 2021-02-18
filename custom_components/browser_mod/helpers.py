@@ -50,6 +50,9 @@ def create_entity(hass, platform, deviceID, connection):
 
 
 def setup_platform(hass, config, async_add_devices, platform, cls):
+    if platform in hass.data[DOMAIN][DATA_ADDERS]:
+        return True
+
     def adder(hass, deviceID, connection, alias=None):
         entity = cls(hass, connection, deviceID, alias)
         async_add_devices([entity])
@@ -69,6 +72,7 @@ class BrowserModEntity(Entity):
         self.connection = connection
         self.deviceID = deviceID
         self._data = {}
+        self._alias = alias
         prefix = hass.data[DOMAIN][DATA_CONFIG].get(CONFIG_PREFIX, '')
         self.entity_id = async_generate_entity_id(
             self.domain+".{}",
@@ -78,6 +82,19 @@ class BrowserModEntity(Entity):
 
     def updated(self):
         pass
+
+    @property
+    def device_info(self):
+        return {
+            "identifiers": {
+                (DOMAIN, self.deviceID)
+            },
+            "name": self._alias or self.deviceID
+        }
+
+    @property
+    def unique_id(self):
+        return f"{self.domain}-{self.deviceID}"
 
     @property
     def data(self):

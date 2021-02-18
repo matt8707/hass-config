@@ -1,0 +1,18 @@
+{
+	"domain": "fullykiosk",
+	"name": "Fully Kiosk Browser",
+	"config_flow": true,
+	"documentation": "https://github.com/cgarwood/homeassistant-fullykiosk",
+	"issue_tracker": "https://github.com/cgarwood/homeassistant-fullykiosk/issues",
+	"requirements": [
+		"python-fullykiosk==0.0.8"
+	],
+	"ssdp": [],
+	"zeroconf": [],
+	"homekit": {},
+	"dependencies": [],
+	"codeowners": [
+		"@cgarwood"
+	],
+	"version": "0.1.3"
+}

@@ -1,8 +1,9 @@
 {
   "domain": "browser_mod",
   "name": "Browser mod",
-  "documentation": "",
+  "documentation": "https://github.com/thomasloven/hass-browser_mod/blob/master/README.md",
   "dependencies": ["websocket_api", "http"],
   "codeowners": [],
-  "requirements": []
+  "requirements": [],
+  "version": "1.3.0"
 }
