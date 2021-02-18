@@ -20,6 +20,8 @@ function hasConfigOrEntityChanged(element, changedProps) {
   return true;
 }
 
+const torrent_types = ['total','active','completed','paused','started'];
+
 class TransmissionCard extends LitElement {
 
   static get properties() {
@@ -72,12 +74,8 @@ class TransmissionCard extends LitElement {
     this.hass.callService('switch', 'toggle', { entity_id: `switch.${this.config.sensor_name}_turtle_mode` });
   }
 
-  _toggleType() {
-    const torrent_types = ['total','active','completed','paused','started']
-
-    const currentIndex = torrent_types.indexOf(this.selectedType);
-    const nextIndex = (currentIndex + 1) % torrent_types.length;
-    this.selectedType = torrent_types[nextIndex];
+  _toggleType(ev) {
+    this.selectedType = ev.detail.item.innerText;
   }
 
   _startStop() {
@@ -141,14 +139,20 @@ class TransmissionCard extends LitElement {
     return html
     `
       <div id="title1">
-        <div class="status titleitem c-${gattributes.status.replace('/','')}"><p class="txtitem">${gattributes.status}</p></div>
-        <div class="titleitem"><ha-icon icon="mdi:download" class="down down-color"></div>
-        <div class="titleitem"><p class="txtitem">${gattributes.down_speed} ${gattributes.down_unit}</p></div>
-        <div class="titleitem"><ha-icon icon="mdi:upload" class="up up-color"></div>
-        <div class="titleitem"><p class="txtitem">${gattributes.up_speed} ${gattributes.up_unit}</p></div>
+        <div class="status titleitem c-${gattributes.status.replace('/','')}">
+          <p>${gattributes.status}<p>
+        </div>
+        <div class="titleitem">
+          <ha-icon icon="mdi:download" class="down down-color"></ha-icon>
+          <span>${gattributes.down_speed} ${gattributes.down_unit}</span>
+        </div>
+        <div class="titleitem">
+          <ha-icon icon="mdi:upload" class="up up-color"></ha-icon>
+          <span>${gattributes.up_speed} ${gattributes.up_unit}</span>
+        </div>
         ${this.renderTurtleButton()}
         ${this.renderStartStopButton()}
-        ${this.renderSwitchTypeButton()}
+        ${this.renderTypeSelect()}
       </div>
     `;
   }
@@ -225,18 +229,27 @@ class TransmissionCard extends LitElement {
     `;
   }
 
-  renderSwitchTypeButton() {
+  renderTypeSelect() {
     if (this.config.hide_type) {
       return html``;
     }
 
     return html`
-      <div>
-        <p
-          id="ttype"
-          @click="${this._toggleType}">
-          ${this.selectedType}
-        </p>
+      <div class="titleitem">
+        <paper-dropdown-menu-light
+          class="type-dropdown"
+          no-label-float
+        >
+          <paper-listbox
+            slot="dropdown-content"
+            .selected=${torrent_types.indexOf(this.selectedType)}
+            @iron-select=${this._toggleType}
+          >
+            ${torrent_types.map((type) => {
+              return html` <paper-item>${type}</paper-item> `;
+            })}
+          </paper-listbox>
+        </paper-dropdown-menu-light>
       </div>
     `;
   }
@@ -307,13 +320,10 @@ class TransmissionCard extends LitElement {
       padding-top: 12px;
     }
     .up-color {
-      width: 2em;
       color: var(--light-primary-color);
     }
     .down-color {
-      width: 2em;
       color: var(--paper-item-icon-active-color);
-      margin-left: 1em;
     }
 
     #title {
@@ -331,7 +341,6 @@ class TransmissionCard extends LitElement {
       width: auto;
       margin-left: 0.7em;
     }
-
     .status {
       font-size: 1em;
     }
@@ -350,18 +359,8 @@ class TransmissionCard extends LitElement {
     .no-torrent {
       margin-left: 1.4em;
     }
-    #ttype {
-      background-color: var(--light-primary-color);
-      color: var(--text-light-primary-color, var(--primary-text-color));
-      border-radius: 0.4em;
-      margin-bottom: 0.7em;
-      margin-left: 0.7em;
-      height: 1.5em;
-      line-height: 1.5em;
-      display: flex;
-      padding-left: 1.3em;
-      padding-right: 1em;
-      width: auto;
+    .type-dropdown {
+      width: 100px;
     }
     .torrents {
       margin-left: 1.4em;
