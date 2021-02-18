@@ -1,9 +1,8 @@
-              action: call-service
-              service: browser_mod.popup
-              service_data:
+              action: fire-dom-event
+              browser_mod:
+                command: popup
                 title: Dammsugare
                 hide_header: true
-                deviceID: this
                 style:
                   .: |
                     :host .content {
@@ -27,9 +26,9 @@
                           class: add_header
                           entities:
 
-                          - entity: sensor.roborock_state
-
-                          - entity: sensor.roborock_battery
+                          - entity: vacuum.xiaomi_vacuum_cleaner
+                            name: Roborock S5
+                            icon: custom:roborock-vacuum
 
                           - entity: sensor.roborock_last_clean
 
@@ -52,33 +51,18 @@
                             entity_row: true
                             entities:
 
+                              - entity: vacuum.xiaomi_vacuum_cleaner
+                                attribute: battery_level
+                                name: Batteri
+                                icon: mdi:battery
+
                               - entity: sensor.roborock_filter
-                                tap_action:
-                                  action: call-service
-                                  service: homeassistant.update_entity
-                                  service_data:
-                                    entity_id: sensor.roborock_filter
 
                               - entity: sensor.roborock_mainbrush
-                                tap_action:
-                                  action: call-service
-                                  service: homeassistant.update_entity
-                                  service_data:
-                                    entity_id: sensor.roborock_mainbrush
 
                               - entity: sensor.roborock_sidebrush
-                                tap_action:
-                                  action: call-service
-                                  service: homeassistant.update_entity
-                                  service_data:
-                                    entity_id: sensor.roborock_sidebrush
 
                               - entity: sensor.roborock_sensors
-                                tap_action:
-                                  action: call-service
-                                  service: homeassistant.update_entity
-                                  service_data:
-                                    entity_id: sensor.roborock_sensors
 
                           - entity: input_select.roborock_speed
 

@@ -1,8 +1,7 @@
-              action: call-service
-              service: browser_mod.popup
-              service_data:
+              action: fire-dom-event
+              browser_mod:
+                command: popup
                 title: Uppdateringar
-                deviceID: this
                 style: |
                   :host .content {
                     width: 60em;
@@ -61,7 +60,7 @@
                         {% if states('sensor.hass_version_installed') | regex_search('b') %}
                         <span><ha-icon icon="mdi:home-assistant"></ha-icon> Home Assistant {{ states('sensor.hass_version_installed') }}</span><br>
                         {% if states('sensor.hass_version_installed') == states('sensor.hass_version_latest_beta') %}
-                        <b>Inga uppdateringar - {{ state_attr('sensor.hass_dev_release', 'friendly_name') }} {{ states('sensor.hass_dev_release') | lower }}</b>
+                        <b>Inga uppdateringar</b>
                         {% else %}
                         <b>{{ states('sensor.hass_version_latest_beta') }} tillgänglig</b> {{ '\U0001f389' }}
                     
@@ -72,7 +71,7 @@
                         {% else %}
                         <span><ha-icon icon="mdi:home-assistant"></ha-icon> Home Assistant {{ states('sensor.hass_version_installed') }}</span><br>
                         {% if states('sensor.hass_version_installed') == states('sensor.hass_version_latest') %}
-                        <b>Inga uppdateringar - {{ state_attr('sensor.hass_dev_release', 'friendly_name') }} {{ states('sensor.hass_dev_release') | lower }}</b>
+                        <b>Inga uppdateringar</b>
                         {% else %}
                         <b>{{ states('sensor.hass_version_latest') }} tillgänglig</b> {{ '\U0001f389' }}
                     
@@ -125,11 +124,10 @@
                         card:
                           [filter: "[[[ return entity.state === '0' ? 'opacity(30%)' : 'drop-shadow(3px 3px 5px #00000050)'; ]]]"]
                       tap_action:
-                        action: call-service
-                        service: browser_mod.popup
-                        service_data:
+                        action: fire-dom-event
+                        browser_mod:
+                          command: popup
                           title: Home Assistant Community Store
-                          deviceID: this
                           style: ':host .content {width: 75em;}'
                           card:
                             type: custom:hui-element

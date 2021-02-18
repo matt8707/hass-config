@@ -1,9 +1,8 @@
-              action: call-service
-              service: browser_mod.popup
-              service_data:
+              action: fire-dom-event
+              browser_mod:
+                command: popup
                 title: Information
                 hide_header: true
-                deviceID: this
                 style:
                   .: |
                     :host .content {
@@ -36,7 +35,7 @@
 
                         - entity: sensor.home_assistant_log
 
-                        - entity: sensor.hass_uptime
+                        - entity: sensor.uptime
 
                         - type: custom:bar-card
                           width: 55%
@@ -100,24 +99,43 @@
                     - break
 
                     - type: entities
-                      title: Väggplattan
+                      title: Samsung Galaxy Tab
                       class: add_header
                       show_header_toggle: false
                       entities:
 
-                        - entity: switch.fullykiosk_screen
+                        - entity: switch.galaxy_tab_a_screensaver
+
+                        - entity: light.galaxy_tab_a_screen
 
                         - type: custom:slider-entity-row
-                          entity: input_number.fullykiosk_brightness_slider
+                          entity: light.galaxy_tab_a_screen
+                          name: Ljusstyrka
+                          icon: mdi:brightness-6
                           hide_state: false
 
-                        - entity: switch.fullykiosk_screensaver
+                        - entity: binary_sensor.galaxy_tab_a_plugged_in
 
-                        - entity: sensor.fullykiosk_battery
+                        - entity: sensor.fullykiosk_last_app_start
 
-                        - entity: sensor.fullykiosk_plugged
+                        - type: custom:bar-card
+                          width: 55%
+                          height: 2em
+                          decimal: 0
+                          unit_of_measurement: '%'
+                          positions: *bar_card_positions
+                          severity:
+                            - color: '#6d2525'
+                              from: 0
+                              to: 89
+                            - color: '#303435'
+                              from: 90
+                              to: 100
+                          entity_row: true
+                          entities:
 
-                        - entity: binary_sensor.fullykiosk_motion
+                            - entity: sensor.galaxy_tab_a_battery_level
+                              icon: mdi:battery
 
                         - type: custom:bar-card
                           width: 55%
@@ -157,7 +175,7 @@
                             tap_action:
                               services: |
                                 [[[ hass.callService('browser_mod', 'toast', {message: 'Laddar om startsidan...'});
-                                hass.callService('shell_command', 'fullykiosk_load_start_url'); ]]]
+                                hass.callService('fullykiosk', 'load_start_url', {entity_id: 'media_player.galaxy_tab_a_media_player'}); ]]]
                             template: name_action
 
                           - type: custom:button-card
@@ -165,7 +183,7 @@
                             tap_action:
                               services: |
                                 [[[ hass.callService('browser_mod', 'toast', {message: 'Startar om Fully Kiosk Browser...'});
-                                hass.callService('shell_command', 'fullykiosk_restart_app'); ]]]
+                                hass.callService('fullykiosk', 'restart', {entity_id: 'media_player.galaxy_tab_a_media_player'}); ]]]
                             template: name_action
 
                     - break
@@ -184,7 +202,8 @@
 
                         - entity: sensor.synology_maximum_disk_temp_volume_1
 
-                        - entity: sensor.drifttid
+                        - entity: sensor.nas_last_boot
+                          name: Senast omstart
 
                         - entity: sensor.nas_vpn
                           style: |

@@ -1,8 +1,7 @@
-              action: call-service
-              service: browser_mod.popup
-              service_data:
+              action: fire-dom-event
+              browser_mod:
+                command: popup
                 title: Playstation 4
-                deviceID: this
                 card:
                   type: custom:stack-in-card
                   cards:
@@ -13,18 +12,18 @@
                         - entity: switch.playstation_5
                           secondary_info: last-changed
 
-                        - entity: media_player.playstation_4
-                          type: custom:mini-media-player
-                          artwork: none
-                          icon: mdi:gamepad
-                          name: Spel
-                          group: true
-                          scale: 0.99
-                          hide:
-                            volume: true
-                            controls: true
-                            power: true
-                            info: true
+                        # - entity: media_player.playstation_4
+                        #   type: custom:mini-media-player
+                        #   artwork: none
+                        #   icon: mdi:gamepad
+                        #   name: Spel
+                        #   group: true
+                        #   scale: 0.99
+                        #   hide:
+                        #     volume: true
+                        #     controls: true
+                        #     power: true
+                        #     info: true
 
                     - type: custom:calendar-card
                       title: Kommande

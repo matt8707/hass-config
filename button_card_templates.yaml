@@ -10,9 +10,9 @@
           state: [color: 'rgba(0, 0, 0, 0.6)']
     tap_action:
       ui_sound: |
-        [[[ if (entity.state === 'off' && states['switch.fullykiosk_screensaver'].state === 'off') {
+        [[[ if (entity.state === 'off' && states['switch.galaxy_tab_a_screensaver'].state === 'off') {
         hass.callService('media_player', 'play_media', {entity_id: 'media_player.tablet', media_content_id: '/local/sound/on.m4a', media_content_type: 'music'}); }
-        else if (entity.state === 'on' && states['switch.fullykiosk_screensaver'].state === 'off') {
+        else if (entity.state === 'on' && states['switch.galaxy_tab_a_screensaver'].state === 'off') {
         hass.callService('media_player', 'play_media', {entity_id: 'media_player.tablet', media_content_id: '/local/sound/off.m4a', media_content_type: 'music'}); } ]]]
       action: toggle
       haptic: light
@@ -77,11 +77,10 @@
         transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: ${circumference}; stroke-dashoffset: ${circumference - brightness / 100 * circumference};" />
         <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">${brightness}<tspan font-size="10">%</tspan></text></svg>`; } ]]]
     hold_action:
-      action: call-service
-      service: browser_mod.popup
-      service_data:
+      action: fire-dom-event
+      browser_mod:
+        command: popup
         title: '[[[ return entity.attributes.friendly_name ]]]'
-        deviceID: this
         card:
           type: entities
           entities:
@@ -94,43 +93,70 @@
               borderRadius: 1.7em
               sliderColor: '#c7c7c7'
               sliderTrackColor: rgba(25, 25, 25, 0.9)
-              actionSize: 4.5em
-              actionsInARow: 2
-              actions:
-                - service: light.turn_on
+            - type: custom:hui-element
+              card_type: horizontal-stack
+              style: '#root { justify-content: center; margin-top: 2em; }'
+              cards:
+              - type: custom:button-card
+                styles:
+                  card:
+                    [background: '#d8d9e1']
+                tap_action:
+                  action: call-service
+                  service: light.turn_on
                   service_data:
                     entity_id: '[[[ return entity.entity_id ]]]'
                     color_temp: 153
-                  color: "#d8d9e1"
-                - service: light.turn_on
+                template: color_action
+              - type: custom:button-card
+                styles:
+                  card:
+                    [background: '#d5b08d']
+                tap_action:
+                  action: call-service
+                  service: light.turn_on
                   service_data:
                     entity_id: '[[[ return entity.entity_id ]]]'
                     color_temp: 326
-                  color: "#d5b08d"
-                - service: light.turn_on
+                template: color_action
+            - type: custom:hui-element
+              card_type: horizontal-stack
+              style: '#root { justify-content: center; margin-bottom: 1em; }'
+              cards:
+              - type: custom:button-card
+                styles:
+                  card: 
+                    [background: '#ce944b']
+                tap_action:
+                  action: call-service
+                  service: light.turn_on
                   service_data:
                     entity_id: '[[[ return entity.entity_id ]]]'
                     color_temp: 500
-                  color: "#ce944b"
-                - service: browser_mod.popup
-                  service_data:
+                template: color_action
+              - type: custom:button-card
+                styles:
+                  card:
+                    [background: 'radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 80%), 
+                    conic-gradient(rgb(120, 39, 230), rgb(230, 34, 231), rgb(228, 5, 136), rgb(228, 25, 25), 
+                    rgb(229, 105, 30), rgb(232, 226, 46), rgb(125, 230, 41), rgb(52, 232, 40), rgb(51, 231, 92), 
+                    rgb(52, 232, 224), rgb(32, 125, 229), rgb(18, 39, 229), rgb(120, 39, 230))']
+                tap_action:
+                  action: fire-dom-event
+                  browser_mod:
+                    command: popup
                     title: '[[[ return entity.attributes.friendly_name ]]]'
-                    deviceID: this
                     card:
-                      type: entities
-                      show_header_toggle: false
-                      entities:
-                        - entity: '[[[ return entity.entity_id ]]]'
-                          secondary_info: last-changed
-                        - type: custom:light-entity-card
-                          entity: '[[[ return entity.entity_id ]]]'
-                          brightness: false
-                          color_temp: true
-                          full_width_sliders: true
-                          hide_header: true
-                          show_slider_percent: true
-                          smooth_color_wheel: true
-                          consolidate_entities: true
+                      type: custom:light-entity-card
+                      entity: '[[[ return entity.entity_id ]]]'
+                      brightness: false
+                      color_temp: true
+                      full_width_sliders: false
+                      hide_header: true
+                      show_slider_percent: true
+                      smooth_color_wheel: true
+                      consolidate_entities: true
+                template: color_action
 
   shared_media:
     tap_action:
@@ -223,6 +249,11 @@
       state:
         [top: 87.5%, left: 5.3%, position: absolute, line-height: 2vw, z-index: 10, 
         white-space: nowrap, overflow: hidden, text-overflow: ellipsis, max-width: 90%]
+
+  color_action:
+    styles:
+      card:
+        [border-radius: 50%, height: 4em, width: 4em, margin: 4px]
 
   icon_action:
     color: '#9da0a2'

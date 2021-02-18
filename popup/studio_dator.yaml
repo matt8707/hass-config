@@ -1,8 +1,7 @@
-              action: call-service
-              service: browser_mod.popup
-              service_data:
+              action: fire-dom-event
+              browser_mod:
+                command: popup
                 title: Dator
-                deviceID: this
                 card:
                   type: entities
                   state_color: true
@@ -48,7 +47,7 @@
 
                     - entity: automation.macos_notification_motion_hall
 
-                    - entity: sensor.computer_imac_uptime
+                    - entity: sensor.imac_uptime
 
                     - entity: sensor.imac_vpn
                       tap_action:
