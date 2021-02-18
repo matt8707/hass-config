@@ -15,7 +15,7 @@ sun:
 system_health:
 
 #config flow
-#hue, pyatv, broadlink, mqtt, ps4, braviatv, IPP
+#hue, apple_tv, broadlink, mqtt, braviatv, IPP, transmission
 
 lovelace:
   mode: yaml
@@ -45,6 +45,7 @@ logger:
   logs:
     homeassistant.components.homekit.type_media_players: error
     homeassistant.components.command_line.sensor: error
+    homeassistant.components.command_line: fatal
     homeassistant.components.rest.sensor: error
     bravia_tv.braviarc: error
     homeassistant.components.websocket_api: fatal
@@ -88,22 +89,26 @@ wemo:
   discovery: false
   static: !secret wemo_static
 
+spotify:
+  client_id: !secret spotify_client_id
+  client_secret: !secret spotify_client_secret
+
 cast:
 
 media_player:
-  - platform: samsungtv_tizen
-    host: !secret samsungtv_host
-    mac: !secret samsungtv_mac
+  platform: samsungtv_tizen
+  host: !secret samsungtv_host
+  mac: !secret samsungtv_mac
 
 hacs:
   token: !secret hacs_token
 
 synology_dsm:
-  - host: !secret synologydsm_host
-    port: !secret synologydsm_port
-    ssl: false
-    username: !secret synologydsm_username
-    password: !secret synologydsm_password
+  host: !secret synologydsm_host
+  port: !secret synologydsm_port
+  ssl: false
+  username: !secret synologydsm_username
+  password: !secret synologydsm_password
 
 google:
   client_id: !secret google_client_id
@@ -115,9 +120,9 @@ vacuum:
     token: !secret roborock_token
 
 tts:
-  - platform: google_translate
-    language: 'sv'
-    base_url: !secret tts_base_url
+  platform: google_translate
+  language: 'sv'
+  base_url: !secret tts_base_url
 
 mqtt:
   broker: !secret mqtt_broker
@@ -148,12 +153,6 @@ shell_command:
   monitors_mute_off: !secret monitors_mute_off
   monitors_mute_on: !secret monitors_mute_on
 
-  fullykiosk_brightness_slider: !secret fullykiosk_brightness_slider
-  fullykiosk_load_start_url: !secret fullykiosk_load_start_url
-  fullykiosk_restart_app: !secret fullykiosk_restart_app
-  fullykiosk_screensaver_on: !secret fullykiosk_screensaver_on
-  fullykiosk_screensaver_off: !secret fullykiosk_screensaver_off
-
   reference_click: !secret reference_click
   reference_kill: !secret reference_kill
   reference_monitors: !secret reference_monitors
@@ -161,7 +160,6 @@ shell_command:
 
   ha_dockermon_restart_container: !secret ha_dockermon_restart_container
   clear_logs: truncate -s 0 /config/home-assistant.log
-  kwh_data_update: !secret kwh_data_update
   wake_ps5: !secret wake_ps5
 
 light:
@@ -205,49 +203,70 @@ ios:
             title: Uppdatera
 
 homekit:
-  ip_address: !secret homekit_ip_address
-  auto_start: false
-  filter:
-    include_entities: &include_entities
-      ['fan.studio_wemo', 'switch.wemo_monitors', 'switch.computer_imac', 'media_player.sony_bravia', 'switch.air_purifier', 'lock.dator', 
-      'media_player.samsung_tv_remote', 'switch.playstation_5', 'input_boolean.motion_hall', 'fan.sovrum_anslut', 'script.samsung_tv_energy_saving', 
-      'input_boolean.motion_garderob', 'input_boolean.motion_badrum', 'script.home_arrive', 'script.home_leave', 'vacuum.xiaomi_vacuum_cleaner', 
-      'person.mattias', 'person.sanja']
-  entity_config:
-    fan.studio_wemo:
-      name: Fläkt 2
-    fan.sovrum_anslut:
-      name: Fläkt
-    switch.air_purifier:
-      name: Luftrenare
-    script.samsung_tv_energy_saving:
-      name: Eko
-    switch.wemo_monitors:
-      name: Monitorer
-      type: outlet
-    switch.computer_imac:
-      name: Dator
-    media_player.sony_bravia:
-      name: Tv
-      feature_list:
-        - feature: on_off
-    media_player.samsung_tv_remote:
-      name: Samsung Tv
-      feature_list:
-        - feature: on_off
-    switch.playstation_5:
-      name: Playstation
-    script.home_arrive:
-      name: Hemma
-    script.home_leave:
-      name: Stäng allt
-    vacuum.xiaomi_vacuum_cleaner:
-      name: Morty
+  - ip_address: !secret homekit_ip_address
+    auto_start: false
+    filter:
+      include_entities:
+        ['fan.studio_wemo', 'switch.wemo_monitors', 'switch.computer_imac', 'switch.air_purifier', 'lock.dator', 'switch.playstation_5', 
+        'input_boolean.motion_hall', 'fan.sovrum_anslut', 'script.samsung_tv_energy_saving', 'input_boolean.motion_garderob', 'input_boolean.motion_badrum', 
+        'script.home_arrive', 'script.home_leave', 'vacuum.xiaomi_vacuum_cleaner', 'person.mattias', 'person.sanja']
+    entity_config:
+      fan.studio_wemo:
+        name: Fläkt 2
+      fan.sovrum_anslut:
+        name: Fläkt
+      switch.air_purifier:
+        name: Luftrenare
+      script.samsung_tv_energy_saving:
+        name: Eko
+      switch.wemo_monitors:
+        name: Monitorer
+        type: outlet
+      switch.computer_imac:
+        name: Dator
+      switch.playstation_5:
+        name: Playstation
+      script.home_arrive:
+        name: Hemma
+      script.home_leave:
+        name: Stäng allt
+      vacuum.xiaomi_vacuum_cleaner:
+        name: Morty
+
+  - name: HASS Bridge Sony
+    ip_address: !secret homekit_ip_address
+    port: 51828
+    mode: accessory
+    filter:
+      include_entities:
+        - media_player.sony_bravia
+    entity_config:
+      media_player.sony_bravia:
+        name: Tv
+        feature_list:
+          - feature: on_off
+
+  - name: HASS Bridge Samsung
+    ip_address: !secret homekit_ip_address
+    port: 51829
+    mode: accessory
+    filter:
+      include_entities:
+        - media_player.samsung_tv_remote
+    entity_config:
+      media_player.samsung_tv_remote:
+        name: Samsung Tv
+        feature_list:
+          - feature: on_off
 
 cloud:
   google_actions:
     filter:
-      include_entities: *include_entities
+      include_entities:
+        ['fan.studio_wemo', 'switch.wemo_monitors', 'switch.computer_imac', 'media_player.sony_bravia', 'switch.air_purifier', 'lock.dator', 
+        'media_player.samsung_tv_remote', 'switch.playstation_5', 'input_boolean.motion_hall', 'fan.sovrum_anslut', 'script.samsung_tv_energy_saving', 
+        'input_boolean.motion_garderob', 'input_boolean.motion_badrum', 'script.home_arrive', 'script.home_leave', 'vacuum.xiaomi_vacuum_cleaner', 
+        'person.mattias', 'person.sanja']
     entity_config:
       fan.studio_wemo:
         name: Fläkt 2
