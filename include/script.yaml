@@ -110,10 +110,10 @@ script:
       - choose:
         - conditions:
             - condition: state
-              entity_id: switch.fullykiosk_screen
+              entity_id: light.galaxy_tab_a_screen
               state: 'on'
             - condition: state
-              entity_id: switch.fullykiosk_screensaver
+              entity_id: switch.galaxy_tab_a_screensaver
               state: 'off'
           sequence:
             - service: tts.cloud_say
@@ -144,10 +144,10 @@ script:
       - choose:
         - conditions:
             - condition: state
-              entity_id: switch.fullykiosk_screen
+              entity_id: light.galaxy_tab_a_screen
               state: 'on'
             - condition: state
-              entity_id: switch.fullykiosk_screensaver
+              entity_id: switch.galaxy_tab_a_screensaver
               state: 'off'
           sequence:
             - service: tts.cloud_say

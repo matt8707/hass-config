@@ -63,11 +63,21 @@ binary_sensor:
           {% set start_time = state_attr('calendar.tvatta', 'start_time') %}
           {{ as_timestamp(start_time) - as_timestamp(now()) < 10 * 60 if start_time != None }}
 
-      fullykiosk_motion:
-        friendly_name: Kamera
-        icon_template: mdi:camera
+      update_color:
         value_template: >
-          {{ not is_state_attr('sensor.fullykiosk', 'motionDetectorStatus', 0) }}
+          {% if states('sensor.hass_version_installed') | regex_search('b') %}
+            {% if states('sensor.hass_version_installed') != states('sensor.hass_version_latest_beta') and 
+            not is_state('sensor.hass_version_latest', 'unknown') or 
+            not is_state('sensor.hacs', '0') and 
+            not is_state('sensor.hacs', 'unknown') %}
+              True {% else %} False {% endif %}
+          {% else %}
+            {% if states('sensor.hass_version_installed') != states('sensor.hass_version_latest') and 
+            not is_state('sensor.hass_version_latest', 'unknown') or 
+            not is_state('sensor.hacs', '0') and 
+            not is_state('sensor.hacs', 'unknown') %}
+              True {% else %} False {% endif %}
+          {% endif %}
 
 sensor:
 
@@ -94,10 +104,6 @@ sensor:
       - /config/home-assistant_v2.db
       - /config/home-assistant.log
 
-  - platform: file
-    name: oresundskraft
-    file_path: /config/python/data.kwh
-
   - platform: systemmonitor
     resources:
       - type: disk_use_percent
@@ -111,14 +117,6 @@ sensor:
   - platform: time_date
     display_options:
       ['time', 'date']
-
-  - platform: scrape
-    resource: https://elen.nu/dagens-spotpris/se4-malmo/
-    name: Aktuellt spotpris
-    select: "div.ml-2.flex-grow > div:nth-child(2) > span"
-    value_template: "{{ ((value.split(' ')[0]) | replace (',', '.')) }}"
-    unit_of_measurement: öre/kWh
-    scan_interval: 1800
 
   - platform: rest
     name: covid_19_folkhalsomyndigheten
@@ -153,12 +151,11 @@ sensor:
   - platform: rest
     name: fullykiosk
     json_attributes:
-      ['batteryLevel', 'screenBrightness', 'plugged', 'motionDetectorStatus', 
-      'lastAppStart', 'internalStorageFreeSpace', 'internalStorageTotalSpace', 
-      'ramFreeMemory', 'ramTotalMemory', 'isInScreensaver']
+      ['internalStorageFreeSpace', 'internalStorageTotalSpace', 
+      'ramFreeMemory', 'ramTotalMemory']
     resource: !secret fullykiosk_rest_resource
     value_template: '{{ value_json.screenOn }}'
-    scan_interval: 10
+    scan_interval: 900
 
   - platform: rest
     name: docker_cpu
@@ -177,25 +174,6 @@ sensor:
       {{ value_json.status.split(' ')[1:] | join(' ') | replace ('About a minute', '1 minut') 
       | replace ('About an hour', '1 timme')  | replace ('seconds', 'sekunder') | replace ('minutes', 'minuter') 
       | replace ('hours', 'timmar') | replace ('days', 'dagar') + ' sedan' }}
-
-  - platform: snmp
-    host: !secret synologydsm_host
-    community: public
-    name: Drifttid
-    baseoid: !secret synologydsm_baseoid
-    value_template: >
-      {% set uptime = value %}
-      {% set days = ((uptime | int) / 8640000) | int %}
-      {% set hours = ((uptime | int) / 360000) | int %}
-      {% set minutes = ((uptime | int) / 6000) | int %}
-      {% if days >= 2 %} {{ days }} dagar
-      {% elif days >= 1 %} {{ days }} dag
-      {% elif minutes < 1 %} Mindre än 1 minut
-      {% elif minutes <= 1 %} {{ minutes }} minut
-      {% elif minutes < 60 %} {{ minutes }} minuter
-      {% elif hours <= 1 %} {{ hours }} timme
-      {% elif hours < 24 %} {{ hours }} timmar
-      {% endif %}
 
   - platform: plex_recently_added
     token: !secret plex_token
@@ -265,6 +243,8 @@ sensor:
     name: imac_uptime
     scan_interval: 86400
     command: !secret imac_uptime
+    value_template: >
+      {{ value | int | timestamp_custom('%Y-%m-%dT%H:%M:%S') }}
 
   - platform: command_line
     name: hacs_version
@@ -414,20 +394,6 @@ sensor:
           mdi:shield-{{ 'alert' if is_state('switch.computer_imac', 'on') and 
           states('sensor.imac_ip') == states('sensor.public_ip') else 'check' }}
 
-      computer_imac_uptime:
-        friendly_name: Drifttid
-        icon_template: mdi:calendar-clock
-        value_template: >
-          {% set uptime = (as_timestamp(now()) - as_timestamp(states('sensor.imac_uptime') | int | timestamp_local)) | default(0) %}
-          {% if uptime | timestamp_custom('%d') | int -1 == 1 %} {{ uptime | timestamp_custom('%d') | int -1 }} dag
-          {% elif uptime | timestamp_custom('%d') | int -1 >= 2 %} {{ uptime | timestamp_custom('%d') | int -1 }} dagar
-          {% elif uptime | timestamp_custom('%H') | int -1 == 1 %} {{ uptime | timestamp_custom('%H') | int -1 }} timme
-          {% elif uptime | timestamp_custom('%H') | int -1 >= 2 %} {{ uptime | timestamp_custom('%H') | int -1 }} timmar
-          {% elif uptime | timestamp_custom('%M') | int == 1 %} {{ uptime | timestamp_custom('%M') | int }} minut
-          {% elif uptime | timestamp_custom('%M') | int >= 2 %} {{ uptime | timestamp_custom('%M') | int }} minuter
-          {% else %} Minde än 1 minut
-          {% endif %}
-
       hass_version:
         icon_template: mdi:home-assistant
         friendly_name_template: >
@@ -439,15 +405,9 @@ sensor:
       hass_dev_release:
         icon_template: mdi:dev-to
         friendly_name: Kommande release
+        device_class: timestamp
         value_template: >
-          {% set dev = ((as_timestamp(state_attr('calendar.home_assistant_devs', 
-          'start_time')) - as_timestamp(now())) / 86400) %}
-          {% if dev < -1 %} Släppt
-          {% elif dev < 0 %} Idag
-          {% elif dev < 1 %} Imorgon
-          {% elif dev > 35 %} Ingen
-          {% else %} {{ dev | int + 1 }} dagar
-          {% endif %}
+          {{ state_attr('calendar.home_assistant_devs', 'start_time') | replace(' ','T') }}
 
       printer_status:
         friendly_name: Skrivare
@@ -471,84 +431,46 @@ sensor:
     #                                                  #
     ####################################################
 
-      roborock_battery:
-        friendly_name: Batteri
-        unit_of_measurement: '%'
-        value_template: >
-          {{ state_attr('vacuum.xiaomi_vacuum_cleaner', 'battery_level') }}
-        icon_template: >
-          {{ state_attr('vacuum.xiaomi_vacuum_cleaner', 'battery_icon') }}
-
-      roborock_state:
-        friendly_name: Roborock S5
-        icon_template: custom:roborock-vacuum
-        value_template: >
-          {% set entity_id = 'vacuum.xiaomi_vacuum_cleaner' %}
-          {% if is_state(entity_id, 'docked') %} Dockad
-          {% elif is_state(entity_id, 'paused') %} Pausad
-          {% elif is_state(entity_id, 'cleaning') %} Städar
-          {% elif is_state(entity_id, 'returning') %} Återvänder
-          {% else %} {{ states(entity_id) }}
-          {% endif %}
-
-      roborock_speed:
-        value_template: >
-          {{ state_attr('vacuum.xiaomi_vacuum_cleaner', 'fan_speed') }}
-
       roborock_filter:
         friendly_name: Filter
         icon_template: custom:roborock-filter
         unit_of_measurement: '%'
         value_template: >
-          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'filter_left') / 1.5) | round | default(0) }}
+          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'filter_left') / 1.5) | round }}
 
       roborock_mainbrush:
         friendly_name: Huvudborste
         icon_template: custom:roborock-mainbrush
         unit_of_measurement: '%'
         value_template: >
-          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'main_brush_left') / 3) | round | default(0) }}
+          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'main_brush_left') / 3) | round }}
 
       roborock_sensors:
         friendly_name: Sensorer
         icon_template: custom:roborock-sensor
         unit_of_measurement: '%'
         value_template: >
-          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'sensor_dirty_left') / 0.3) | round | default(0) }}
+          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'sensor_dirty_left') / 0.3) | round }}
 
       roborock_sidebrush:
         friendly_name: Sidoborste
         icon_template: custom:roborock-sidebrush
         unit_of_measurement: '%'
         value_template: >
-          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'side_brush_left') / 2) | round | default(0) }}
+          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'side_brush_left') / 2) | round }}
 
       roborock_last_clean:
         friendly_name: Senast städat
         icon_template: mdi:calendar-clock
+        device_class: timestamp
         value_template: >
-          {% set last_cleaned = (as_timestamp(now()) - as_timestamp(state_attr('vacuum.xiaomi_vacuum_cleaner', 'clean_stop'))) | default(0) %}
-          {% if last_cleaned | timestamp_custom('%d') | int -1 == 1 %} {{ last_cleaned | timestamp_custom('%d') | int -1 }} dag sedan
-          {% elif last_cleaned | timestamp_custom('%d') | int -1 >= 2 %} {{ last_cleaned | timestamp_custom('%d') | int -1 }} dagar sedan
-          {% elif last_cleaned | timestamp_custom('%H') | int -1 == 1 %} {{ last_cleaned | timestamp_custom('%H') | int -1 }} timme sedan
-          {% elif last_cleaned | timestamp_custom('%H') | int -1 >= 2 %} {{ last_cleaned | timestamp_custom('%H') | int -1 }} timmar sedan
-          {% elif last_cleaned | timestamp_custom('%M') | int == 1 %} {{ last_cleaned | timestamp_custom('%M') | int }} minut sedan
-          {% elif last_cleaned | timestamp_custom('%M') | int >= 2 %} {{ last_cleaned | timestamp_custom('%M') | int }} minuter sedan
-          {% else %} Minde än 1 minut sedan
-          {% endif %}
+          {{ state_attr('vacuum.xiaomi_vacuum_cleaner', 'clean_stop') | replace(' ','T') }}
 
     ####################################################
     #                                                  #
     #                      TABLET                      #
     #                                                  #
     ####################################################
-
-      fullykiosk_plugged:
-        friendly_name: Strömsladd ansluten
-        value_template: >
-          {{ 'Ja' if is_state_attr('sensor.fullykiosk', 'plugged', true) else 'Nej' }}
-        icon_template: >
-          mdi:power-plug{{ '-off' if is_state_attr('sensor.fullykiosk', 'plugged', false) }}
 
       fullykiosk_storage:
         friendly_name: Lagring
@@ -574,15 +496,12 @@ sensor:
             {{ 100 - (FreeMemory / TotalMemory * 100) | int }}
           {% endif %}
 
-      fullykiosk_battery:
-        friendly_name: Batteri
-        unit_of_measurement: '%'
+      fullykiosk_last_app_start:
+        friendly_name: Senast omstart
+        icon_template: mdi:update
+        device_class: timestamp
         value_template: >
-          {{ state_attr('sensor.fullykiosk', 'batteryLevel') }}
-        icon_template: >
-          {% set battery = (state_attr('sensor.fullykiosk', 'batteryLevel') | int / 10) | int * 10 | default(0) %}
-            mdi:battery{% if battery == 100 %}{% elif battery > 0 %}-{{ battery }}{% else %}-alert
-          {% endif %}
+          {{ states('sensor.galaxy_tab_a_last_app_start') | replace(' ','T') }}
 
     ####################################################
     #                                                  #
@@ -665,22 +584,6 @@ sensor:
             {% endif %}
           {% endif %}
 
-      hass_uptime:
-        friendly_name: Senast omstart
-        icon_template: mdi:update
-        value_template: >
-          {% set uptime = (as_timestamp(now()) - as_timestamp(states('sensor.uptime'))) | float / 60 %}
-          {% if uptime < 1 %} {{ (uptime * 60) | int }} sekunder sedan
-          {% elif uptime | int == 1 %} 1 minut sedan
-          {% elif uptime | int > 1 %}
-            {% if uptime | int < 60 %} {{ uptime | int }} minuter sedan
-            {% elif uptime | int / 60 == 24 %} {{ (uptime | int / 60 / 24) | int }} dag sedan
-            {% elif uptime | int / 60 >= 24 %} {{ (uptime | int / 60 / 24) | int }} dagar sedan
-            {% elif uptime | int >= 60 and uptime | int < 120 %} {{ (uptime | int / 60) | int }} timme sedan
-            {% elif uptime | int >= 120 %} {{ (uptime | int / 60) | int }} timmar sedan
-            {% endif %}
-          {% endif %}
-
     ####################################################
     #                                                  #
     #                       NAS                        #
@@ -721,151 +624,3 @@ sensor:
           {{ 'Ej Ansluten' if states('sensor.myip') == states('sensor.public_ip') else 'Ansluten' }}
         icon_template: >
           mdi:shield-{{ 'alert' if states('sensor.myip') == states('sensor.public_ip') else 'check' }}
-
-    ####################################################
-    #                                                  #
-    #                    Monthly kWh                   #
-    #                                                  #
-    ####################################################
-
-      oresundskraft_1:
-        friendly_name_template: >
-          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[0].split(' ')[1], 
-          '%Y-%m-%d')) | timestamp_custom('%b') }}
-        value_template: "{{ states('sensor.oresundskraft').split(',')[0].split(' ')[2] | int }}"
-
-      oresundskraft_2:
-        friendly_name_template: >
-          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[1].split(' ')[1], 
-          '%Y-%m-%d')) | timestamp_custom('%b') }}
-        value_template: "{{ states('sensor.oresundskraft').split(',')[1].split(' ')[2] | int }}"
-
-      oresundskraft_3:
-        friendly_name_template: >
-          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[2].split(' ')[1], 
-          '%Y-%m-%d')) | timestamp_custom('%b') }}
-        value_template: "{{ states('sensor.oresundskraft').split(',')[2].split(' ')[2] | int }}"
-
-      oresundskraft_4:
-        friendly_name_template: >
-          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[3].split(' ')[1], 
-          '%Y-%m-%d')) | timestamp_custom('%b') }}
-        value_template: "{{ states('sensor.oresundskraft').split(',')[3].split(' ')[2] | int }}"
-
-      oresundskraft_5:
-        friendly_name_template: >
-          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[4].split(' ')[1], 
-          '%Y-%m-%d')) | timestamp_custom('%b') | replace('y','j') }}
-        value_template: "{{ states('sensor.oresundskraft').split(',')[4].split(' ')[2] | int }}"
-
-      oresundskraft_6:
-        friendly_name_template: >
-          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[5].split(' ')[1], 
-          '%Y-%m-%d')) | timestamp_custom('%b') }}
-        value_template: "{{ states('sensor.oresundskraft').split(',')[5].split(' ')[2] | int }}"
-
-      oresundskraft_7:
-        friendly_name_template: >
-          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[6].split(' ')[1], 
-          '%Y-%m-%d')) | timestamp_custom('%b') }}
-        value_template: "{{ states('sensor.oresundskraft').split(',')[6].split(' ')[2] | int }}"
-
-      oresundskraft_8:
-        friendly_name_template: >
-          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[7].split(' ')[1], 
-          '%Y-%m-%d')) | timestamp_custom('%b') }}
-        value_template: "{{ states('sensor.oresundskraft').split(',')[7].split(' ')[2] | int }}"
-
-      oresundskraft_9:
-        friendly_name_template: >
-          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[8].split(' ')[1], 
-          '%Y-%m-%d')) | timestamp_custom('%b') }}
-        value_template: "{{ states('sensor.oresundskraft').split(',')[8].split(' ')[2] | int }}"
-
-      oresundskraft_10:
-        friendly_name_template: >
-          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[9].split(' ')[1], 
-          '%Y-%m-%d')) | timestamp_custom('%b') | replace('c','k') }}
-        value_template: "{{ states('sensor.oresundskraft').split(',')[9].split(' ')[2] | int }}"
-
-      oresundskraft_11:
-        friendly_name_template: >
-          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[10].split(' ')[1], 
-          '%Y-%m-%d')) | timestamp_custom('%b') }}
-        value_template: "{{ states('sensor.oresundskraft').split(',')[10].split(' ')[2] | int }}"
-
-      oresundskraft_12:
-        friendly_name_template: >
-          {{ as_timestamp(strptime(states('sensor.oresundskraft').split(',')[11].split(' ')[1], 
-          '%Y-%m-%d')) | timestamp_custom('%b') }}
-        value_template: "{{ states('sensor.oresundskraft').split(',')[11].split(' ')[2] | int }}"
-
-      oresundskraft_last_month_kwh:
-        unit_of_measurement: 'kWh'
-        value_template: >
-          {% set entity_id = 'sensor.oresundskraft' %}
-          {% for month in range(12) %}
-            {% if now().month-1 == (states(entity_id).split(',')
-            [month].split(' ')[0]|join|string).lstrip('0')|int %}
-              {{ states(entity_id).split(',')[month].split(' ')[2] }}
-            {% endif %}
-          {% endfor %}
-
-      oresundskraft_last_month_price:
-        icon_template: mdi:calculator
-        friendly_name_template: >
-          {% set entity_id = 'sensor.oresundskraft' %}
-          {% if now().month-1 == 0 %}
-            Beräknad {{ as_timestamp(strptime(states(entity_id).split(',')[11].split(' ')[1], '%Y-%m-%d')) | 
-            timestamp_custom('%B') | replace('ay', 'aj') | replace('y', 'i') | replace('ch', 's') 
-            | replace('ne', 'ni') | replace('ust', 'usti') | replace('ct', 'kt')  }}
-          {% else %}
-            {% for month in range(12) %}
-              {% if now().month-1 == (states(entity_id).split(',')[month].split(' ')[0]|join|string).lstrip('0')|int %}
-                Beräknad {{ as_timestamp(strptime(states(entity_id).split(',')[month].split(' ')[1], '%Y-%m-%d')) | 
-                timestamp_custom('%B') | replace('ay', 'aj') | replace('y', 'i') | replace('ch', 's') 
-                | replace('ne', 'ni') | replace('ust', 'usti') | replace('ct', 'kt')  }}
-              {% endif %}
-            {% endfor %}
-          {% endif %}
-        value_template: >
-          {% set entity_id = 'sensor.oresundskraft' %}
-          {% set dagar %}
-            {% if now().month-1 == 0 %}
-              {{ states(entity_id).split(',')[11].split(' ')[1].split('-')[2] | int }}
-            {% else %}
-              {% for month in range(12) %}
-                {% if now().month-1 == (states(entity_id).split(',')[month].split(' ')[0]|join|string).lstrip('0')|int %}
-                  {{ states(entity_id).split(',')[month].split(' ')[1].split('-')[2] | int }}
-                {% endif %}
-              {% endfor %}
-            {% endif %}
-          {% endset %}
-          {% set kwh = states('sensor.oresundskraft_last_month_kwh') | float %}
-            {% set eon_solkraft = states('sensor.oresundskraft_last_month_kwh') | float * 0.05 %}
-            {% set eon_arsavgift = 480 / 366 * dagar | float %}
-              {% set spotpris = states('sensor.aktuellt_spotpris') | float / 100 %}
-            {% set ore_abonnemang = 1020 / 366 * dagar | float %}
-            {% set ore_elöverföring = kwh * 0.1400 %}
-            {% set ore_energiskatt = kwh * 0.3530 %}
-              {% set eon = (eon_solkraft + eon_arsavgift + (0.2373 * kwh * 1.25)) | round(2) %}
-              {% set ore = ((ore_abonnemang + ore_elöverföring + ore_energiskatt) * 1.25) | round(2) %}
-          {{ (eon + ore) | round }}
-        unit_of_measurement: 'kr'
-
-      oresundskraft_total_year_kwh:
-        icon_template: mdi:poll-box
-        friendly_name_template: > 
-          Totalt {{ now().year }}
-        value_template: "{{ states('sensor.oresundskraft').split('total=')[1]}}"
-        unit_of_measurement: 'kWh'
-
-      oresundskraft_year:
-        icon_template: mdi:checkbox-blank
-        friendly_name_template: "{{ now().year }}"
-        value_template: ' '
-
-      oresundskraft_last_year:
-        icon_template: mdi:checkbox-blank
-        friendly_name_template: "{{ now().year-1 }}"
-        value_template: ' '

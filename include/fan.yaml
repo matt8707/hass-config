@@ -138,7 +138,20 @@ fan:
                     topic: cmnd/gosund1/status
                     payload: 10
 
-      ###todo
+
+
+
+
+
+
+
+
+  ####################################################
+  #                                                  #
+  #            !!! TODO AIR PURIFIER !!!             #
+  #                                                  #
+  ####################################################
+
       air_purifier:
         friendly_name: Luftrenare
         value_template: >

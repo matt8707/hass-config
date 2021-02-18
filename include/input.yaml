@@ -58,15 +58,6 @@ input_number:
     step: 2
     unit_of_measurement: '%'
 
-  fullykiosk_brightness_slider:
-    name: Ljusstyrka
-    icon: mdi:brightness-6
-    initial: 20
-    min: 0
-    max: 100
-    step: 1
-    unit_of_measurement: '%'
-
   wemo_fan_timer:
     name: Stäng efter
     icon: mdi:timer-outline
@@ -110,7 +101,7 @@ input_select:
   roborock_speed:
     name: Rengöringsläge
     options:
-      ['Tyst', 'Standard', 'Medium', 'Turbo']
+      ['Tyst', 'Standard', 'Medium', 'Turbo', 'Moppa']
     icon: mdi:format-list-bulleted
 
   sovrum_anslut_speed:
@@ -131,7 +122,7 @@ input_select:
   conditional_media:
     initial: Senast nedladdat
     options:
-      ['Senast nedladdat', 'Vardagsrum', 'Sovrum', 'PlayStation 4', 'Google Nest Mini']
+      ['Senast nedladdat', 'Vardagsrum', 'Sovrum', 'Spotify', 'Google Nest Mini']
 
 lock:
 

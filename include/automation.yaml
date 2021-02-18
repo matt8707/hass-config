@@ -23,13 +23,12 @@ automation:
       - service: browser_mod.lovelace_reload
       - delay:
           seconds: 10
-      - service: shell_command.fullykiosk_restart_app
       - choose:
         - conditions:
             - condition: state
               entity_id: 
                 ['media_player.sony_bravia', 'media_player.samsung_tv_remote', 
-                'media_player.google_nest_mini']
+                'media_player.spotify', 'media_player.google_nest_mini']
               state: 'off'
           sequence:
             - service: input_select.select_option
@@ -38,7 +37,9 @@ automation:
                 option: Senast nedladdat
       - delay:
           seconds: 10
-      - service: shell_command.fullykiosk_load_start_url
+      - service: fullykiosk.load_start_url
+        data:
+          entity_id: media_player.galaxy_tab_a_media_player
       - choose:
         - conditions:
             - condition: state
@@ -46,7 +47,7 @@ automation:
               state: 'off'
           sequence:
             - service: switch.turn_on
-              entity_id: switch.fullykiosk_screensaver
+              entity_id: switch.galaxy_tab_a_screensaver
       - service: homekit.start
 
   - alias: lovelace_updated_ignore
@@ -336,11 +337,6 @@ automation:
         entity_id: switch.wemo_monitors
         from: ['on', 'off']
         to: ['on', 'off']
-    # condition:
-    #   - condition: template
-    #     value_template: >
-    #       {{ trigger.from_state.state != 'unknown' and 
-    #       trigger.to_state.state != 'unknown' }}
     action:
       - service: shell_command.reference_click
       - delay:
@@ -487,19 +483,11 @@ automation:
     #                                                  #
     ####################################################
 
-  - alias: fullykiosk_brightness_slider
-    initial_state: true
-    trigger:
-      - platform: state
-        entity_id: input_number.fullykiosk_brightness_slider
-    action:
-      - service: shell_command.fullykiosk_brightness_slider
-
   - alias: fullykiosk_close_popup
     initial_state: true
     trigger:
       - platform: state
-        entity_id: switch.fullykiosk_screensaver
+        entity_id: switch.galaxy_tab_a_screensaver
         from: 'off'
         to: 'on'
         for:
@@ -518,11 +506,11 @@ automation:
         to: 'on'
     action:
       - service: switch.turn_off
-        entity_id: switch.fullykiosk_screensaver
-      - service: input_number.set_value
+        entity_id: switch.galaxy_tab_a_screensaver
+      - service: light.turn_on
         data:
-          entity_id: input_number.fullykiosk_brightness_slider
-          value: >
+          entity_id: light.galaxy_tab_a_screen
+          brightness_pct: >
             {{ 90 if is_state('sun.sun', 'above_horizon') else 60 }}
       - service: input_boolean.turn_off
         data:
@@ -538,7 +526,7 @@ automation:
         to: 'off'
     action:
       - service: switch.turn_on
-        entity_id: switch.fullykiosk_screensaver
+        entity_id: switch.galaxy_tab_a_screensaver
 
     ####################################################
     #                                                  #
@@ -717,24 +705,27 @@ automation:
             {% elif is_state(trigger.entity_id, 'Standard') %} Standard
             {% elif is_state(trigger.entity_id, 'Medium') %} Medium
             {% elif is_state(trigger.entity_id, 'Turbo') %} Turbo
-            {% else %} Standard
+            {% elif is_state(trigger.entity_id, 'Moppa') %} Gentle
             {% endif %}
 
   - alias: roborock_speed_update
     initial_state: true
     trigger:
       - platform: state
-        entity_id: sensor.roborock_speed
+        entity_id: vacuum.xiaomi_vacuum_cleaner
+      - platform: homeassistant
+        event: start
     action:
       - service: input_select.select_option
         data:
           entity_id: input_select.roborock_speed
           option: >
-            {% if is_state(trigger.entity_id, 'Silent') %} Tyst
-            {% elif is_state(trigger.entity_id, 'Standard') %} Standard
-            {% elif is_state(trigger.entity_id, 'Medium') %} Medium
-            {% elif is_state(trigger.entity_id, 'Turbo') %} Turbo
-            {% else %} Standard
+            {% set entity_id = 'vacuum.xiaomi_vacuum_cleaner' %}
+            {% if is_state_attr(entity_id, 'fan_speed', 'Silent') %} Tyst
+            {% elif is_state_attr(entity_id, 'fan_speed', 'Standard') %} Standard
+            {% elif is_state_attr(entity_id, 'fan_speed', 'Medium') %} Medium
+            {% elif is_state_attr(entity_id, 'fan_speed', 'Turbo') %} Turbo
+            {% elif is_state_attr(entity_id, 'fan_speed', 'Gentle') %} Moppa
             {% endif %}
 
       ####################################################
@@ -750,7 +741,7 @@ automation:
       - platform: state
         entity_id:
           ['media_player.vardagsrum', 'media_player.sovrum', 
-          'media_player.playstation_4', 'media_player.google_nest_mini']
+          'media_player.spotify', 'media_player.google_nest_mini']
         to: playing
     action:
       - service: input_select.select_option
@@ -766,13 +757,13 @@ automation:
       - platform: state
         entity_id:
           ['media_player.vardagsrum', 'media_player.sovrum', 
-          'media_player.playstation_4', 'media_player.google_nest_mini']
+          'media_player.spotify', 'media_player.google_nest_mini']
         to:
           ['off', 'idle', 'standby']
       - platform: state
         entity_id:
           ['media_player.vardagsrum', 'media_player.sovrum', 
-          'media_player.playstation_4', 'media_player.google_nest_mini']
+          'media_player.spotify', 'media_player.google_nest_mini']
         to: paused
         for:
           minutes: 10
@@ -783,7 +774,7 @@ automation:
           option: >
             {% set media_players = 
               [states.media_player.vardagsrum, states.media_player.sovrum, 
-               states.media_player.playstation_4, states.media_player.google_nest_mini] %}
+               states.media_player.spotify, states.media_player.google_nest_mini] %}
             {% if media_players | selectattr('state','eq','playing') | list | count == 0 %}
               {% if media_players | selectattr('state','eq','paused') | list | count == 0 %}
               Senast nedladdat
@@ -801,7 +792,7 @@ automation:
         value_template: >
           {{ is_state('media_player.vardagsrum', 'idle') and
           is_state('media_player.sovrum', 'idle') and
-          is_state('media_player.playstation_4', 'standby') and
+          is_state('media_player.spotify', 'idle') and
           is_state('media_player.google_nest_mini', 'off') 
           or
           is_state('media_player.sony_bravia', 'off') and
@@ -828,7 +819,7 @@ automation:
           entity_id: input_select.conditional_media
           option: >
             {% set media_players = 
-              [states.media_player.vardagsrum, states.media_player.playstation_4, 
+              [states.media_player.vardagsrum, states.media_player.spotify, 
                states.media_player.google_nest_mini] %}
             {% if media_players | selectattr('state','eq','playing') | list | count == 0 %}
               {% if media_players | selectattr('state','eq','paused') | list | count == 0 %}
@@ -861,7 +852,7 @@ automation:
           entity_id: input_select.conditional_media
           option: >
             {% set media_players = 
-              [states.media_player.vardagsrum, states.media_player.playstation_4, 
+              [states.media_player.vardagsrum, states.media_player.spotify, 
                states.media_player.google_nest_mini] %}
             {% if media_players | selectattr('state','eq','playing') | list | count == 0 %}
               {% if media_players | selectattr('state','eq','paused') | list | count == 0 %}
@@ -885,6 +876,7 @@ automation:
     #                                                  #
     ####################################################
 
+  ## test
   - alias: ui_sound_popup
     initial_state: true
     trigger:
@@ -895,7 +887,7 @@ automation:
           service: popup
     condition:
       - condition: state
-        entity_id: switch.fullykiosk_screensaver
+        entity_id: switch.galaxy_tab_a_screensaver
         state: 'off'
     action:
       - service: media_player.play_media

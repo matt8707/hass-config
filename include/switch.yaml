@@ -19,15 +19,6 @@ switch:
     body_off: '{"state": "stop"}'
     is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
 
-  - platform: command_line
-    switches:
-      fullykiosk_screen:
-        friendly_name: Display
-        command_on: !secret fullykiosk_screen_on
-        command_off: !secret fullykiosk_screen_off
-        command_state: !secret fullykiosk_screen_state
-        value_template: "{{ value == 'on' }}"
-
   - platform: mqtt
     name: Strömbrytare
     icon: mdi:power-socket-de
@@ -152,15 +143,6 @@ switch:
             entity_id: media_player.sony_bravia
           - service: homeassistant.update_entity
             entity_id: sensor.playstation
-
-      fullykiosk_screensaver:
-        friendly_name: Skärmsläckare
-        icon_template: mdi:power-sleep
-        value_template: "{{ is_state_attr('sensor.fullykiosk', 'isInScreensaver', true) }}"
-        turn_on:
-          - service: shell_command.fullykiosk_screensaver_on
-        turn_off:
-          - service: shell_command.fullykiosk_screensaver_off
 
       air_purifier:
         friendly_name: Luftrenare

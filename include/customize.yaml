@@ -34,9 +34,6 @@ homeassistant:
     sensor.aktuellt_spotpris:
       icon: mdi:home-currency-usd
 
-    sensor.fullykiosk:
-      icon: mdi:tablet-dashboard
-
     sensor.docker_cpu:
       friendly_name: Processor
       icon: mdi:chip
@@ -78,6 +75,34 @@ homeassistant:
     sensor.home_assistant_log:
       friendly_name: Loggfil
       icon: mdi:file-document
+
+    sensor.imac_uptime:
+      friendly_name: Senaste omstart
+      icon: mdi:update
+      device_class: timestamp
+
+    sensor.uptime:
+      friendly_name: Senast omstart
+      icon: mdi:update
+      device_class: timestamp
+
+
+    #fullykiosk integration
+
+    light.galaxy_tab_a_screen:
+      friendly_name: Display
+      icon: mdi:tablet
+
+    switch.galaxy_tab_a_screensaver:
+      friendly_name: Skärmsläckare
+      icon: mdi:power-sleep
+
+    sensor.galaxy_tab_a_battery_level:
+      friendly_name: Batteri
+
+    binary_sensor.galaxy_tab_a_plugged_in:
+      friendly_name: Strömtillförsel
+      icon: mdi:power-plug
 
 
     #media_player
@@ -146,9 +171,6 @@ homeassistant:
 
     switch.watchtower:
       icon: custom:docker-watchtower
-
-    switch.fullykiosk_screen:
-      icon: mdi:tablet
 
 
     #fan
