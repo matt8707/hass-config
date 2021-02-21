@@ -149,12 +149,13 @@
                     card:
                       type: custom:light-entity-card
                       entity: '[[[ return entity.entity_id ]]]'
-                      brightness: false
+                      brightness: true
                       color_temp: true
                       full_width_sliders: false
                       hide_header: true
                       show_slider_percent: true
                       smooth_color_wheel: true
+                      persist_features: true
                       consolidate_entities: true
                 template: color_action
 
