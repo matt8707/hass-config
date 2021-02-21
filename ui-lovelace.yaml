@@ -14,7 +14,7 @@ anchors:
     max-width: 1px
     cursor: default
 
-button_card_templates: !include button_card_templates.yaml  
+button_card_templates: !include button_card_templates.yaml
 
 ##########################################################################
 #                                                                        #
@@ -221,6 +221,8 @@ views:
               padding: 0.8vw
               --mdc-icon-size: 4vw
             tap_action: !include popup/sidebar_vacuum.yaml
+            hold_action:
+              action: none
 
           #################################################
           #                                               #
@@ -238,6 +240,8 @@ views:
               padding: 0.8vw
               --mdc-icon-size: 4vw
             tap_action: !include popup/sidebar_information.yaml
+            hold_action:
+              action: none
 
           #################################################
           #                                               #
@@ -255,6 +259,8 @@ views:
               padding: 0.8vw
               --mdc-icon-size: 4vw
             tap_action: !include popup/sidebar_update.yaml
+            hold_action:
+              action: none
 
           ##########################################################################
           #                                                                        #
@@ -562,9 +568,9 @@ views:
           #################################################
 
           - type: custom:button-card
-            entity: switch.air_purifier
+            entity: fan.air_purifier
             triggers_update:
-              ['switch.air_purifier', 'input_boolean.air_purifier']
+              ['fan.air_purifier', 'input_boolean.air_purifier', 'input_select.air_purifier_speed']
             style:
               top: 20.35%
               left: 91.05%
@@ -575,11 +581,26 @@ views:
             custom_fields:
               icon_air_purifier: >
                 <svg viewBox="0 0 50 50"><path d="M36.8 1.2v1.7a5.34 5.34 0 0 1-5.3 5.3H18.4a5.34 5.34 0 0 1-5.3-5.3V1.2c-2.6.4-4.7 2.8-4.7 5.6v36.5c0 3.1 2.6 5.7 5.7 5.7h21.8c3.1 0 5.7-2.6 5.7-5.7V6.8c0-2.8-2.1-5.2-4.8-5.6zm-1.7 35.6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1 .3-1.8.7-2.1.9l-.6.3a9.75 9.75 0 0 1-1.4.6c-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1 .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5 2.1.5h.1v2.7zm0-6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1 .3-1.8.7-2.1.9l-.6.3a9.75 9.75 0 0 1-1.4.6c-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1 .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5 2.1.5h.1v2.7zm0-6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1 .3-1.8.7-2.1.9l-.6.3c-.4.2-.8.4-1.4.6-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1 .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5 2.1.5h.1v2.7zM15.7 1.9v-.8h18.6V3c0 1.5-1.2 2.8-2.8 2.8H18.4c-1.5 0-2.8-1.2-2.8-2.8V1.9z"/></svg>
+              circle: >
+                [[[ if (entity.state === 'on') {
+                var select_state = states['input_select.air_purifier_speed'].state;
+                var select_percent;
+                if (select_state == 'Tyst') { select_percent = "25"; }
+                else if (select_state == 'Låg') { select_percent = "50"; }
+                else if (select_state == 'Hög') { select_percent = "75"; }
+                else if (select_state == 'Turbo') { select_percent = "100"; }
+                const speed = select_percent;
+                const radius = 20.5; const circumference = radius * 2 * Math.PI;
+                return `<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="${radius}" stroke="#b2b2b2" stroke-width="1.5" fill="none" style="
+                transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: ${circumference}; stroke-dashoffset: ${circumference - speed / 100 * circumference};" />
+                <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">${speed}<tspan font-size="10">%</tspan></text></svg>`; } ]]]
             styles:
               custom_fields:
                 icon_air_purifier:
                   [top: 11%, left: 6.3%, width: 3.05vw, position: absolute,
                   fill: "[[[ return entity.state === 'on' ? '#5daeea' : '#9da0a2'; ]]]"]
+                circle:
+                  [display: "[[[ return states[entity.entity_id.replace(entity.entity_id.split('.')[0], 'input_boolean')].state === 'on' ? 'none' : 'initial'; ]]]"]
             template: ['base', 'loader']
 
           #################################################
@@ -591,7 +612,7 @@ views:
           - type: custom:button-card
             entity: fan.sovrum_anslut
             triggers_update:
-              ['fan.sovrum_anslut', 'input_boolean.sovrum_anslut']
+              ['fan.sovrum_anslut', 'input_boolean.sovrum_anslut', 'input_select.sovrum_anslut_speed']
             style:
               top: 37.9%
               left: 80.05%
@@ -608,10 +629,24 @@ views:
                 if (entity.state === 'on' && boolean === 'off') { return `${style}<g class="start">${path}</g><g class="on_delay">${path}</g></svg>`; }
                 if (entity.state === 'on' && boolean === 'on') { return `${style}<g class="on">${path}</g></svg>`; }
                 else if (entity.state==='off' && boolean==='on') { return `${style}<g fill="#9ca2a5">${path}</g></svg>`; } ]]]
+              circle: >
+                [[[ if (entity.state === 'on') {
+                var select_state = states['input_select.sovrum_anslut_speed'].state;
+                var select_percent;
+                if (select_state == 'Tyst') { select_percent = "33"; }
+                else if (select_state == 'Medium') { select_percent = "66"; }
+                else if (select_state == 'Max') { select_percent = "100"; }
+                const speed = select_percent;
+                const radius = 20.5; const circumference = radius * 2 * Math.PI;
+                return `<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="${radius}" stroke="#b2b2b2" stroke-width="1.5" fill="none" style="
+                transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: ${circumference}; stroke-dashoffset: ${circumference - speed / 100 * circumference};" />
+                <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">${speed}<tspan font-size="10">%</tspan></text></svg>`; } ]]]
             styles:
               custom_fields:
                 icon_fan:
                   [top: 9%, left: 10%, width: 3vw, position: absolute]
+                circle:
+                  [display: "[[[ return states[entity.entity_id.replace(entity.entity_id.split('.')[0], 'input_boolean')].state === 'on' ? 'none' : 'initial'; ]]]"]
             template: ['base', 'loader']
 
           #################################################
@@ -649,7 +684,7 @@ views:
               <<: *title-style
 
           - type: custom:swipe-card
-            start_card: 2
+            start_card: 1
             parameters:
               roundLengths: true
               effect: coverflow
@@ -666,36 +701,6 @@ views:
               height: 1px
               --ha-card-border-radius: .88vw
             cards:
-
-              ### test transmission ###
-              - type: custom:transmission-card
-                no_torrent_label: Inga nedladdningar
-                hide_startstop: true
-                hide_turtle: true
-                hide_type: true
-                display_mode: full
-                style: |
-                  ha-card {
-                    margin: 10px 0 0 -1vw !important;
-                  }
-                  ha-card > h1 {
-                    display: none;
-                  }
-                  #title1 {
-                    display: none !important;
-                  }
-                  .torrent:not(:last-child) {
-                    border: none !important;
-                    margin-bottom: 0.5vw;
-                  }
-                  div.torrent_name {
-                    font-size: 1.1vw !important;
-                    font-family: SF Text;
-                  }
-                  div.torrent_state, div.torrent_details {
-                    font-size: 0.6vw !important;
-                    font-family: SF Text;
-                  }
 
               - type: picture-elements
                 image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50' /%3E"
@@ -1017,7 +1022,8 @@ views:
               left: 80.05%
               width: 10%
             tap_action: !include popup/hemma_mattias.yaml
-            hold_action: !include popup/hemma_mattias.yaml
+            hold_action:
+              action: none
             template: person
 
           #################################################
@@ -1035,7 +1041,8 @@ views:
               left: 91.05%
               width: 10%
             tap_action: !include popup/hemma_sanja.yaml
-            hold_action: !include popup/hemma_sanja.yaml
+            hold_action:
+              action: none
             template: person
 
           #################################################
