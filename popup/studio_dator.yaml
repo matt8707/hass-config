@@ -3,118 +3,168 @@
                 command: popup
                 title: Dator
                 card:
-                  type: entities
-                  state_color: true
-                  show_header_toggle: false
-                  entities:
+                  type: vertical-stack
+                  cards:
 
-                    - entity: switch.computer_imac
-                      name: iMac
-                      secondary_info: last-changed
+                    ### ON ###
+                    - type: conditional
+                      conditions:
+                        - entity: switch.computer_imac
+                          state: 'on'
+                      card:
+                        type: entities
+                        state_color: true
+                        show_header_toggle: false
+                        entities:
 
-                    - type: custom:bar-card
-                      width: 55%
-                      height: 2em
-                      decimal: 0
-                      unit_of_measurement: '%'
-                      positions: &pos
-                        icon: outside
-                        indicator: 'off'
-                        name: outside
-                      severity: &sev
-                        - color: '#303435'
-                          from: 0
-                          to: 89
-                        - color: '#6d2525'
-                          from: 90
-                          to: 100
-                      entity_row: true
-                      entities:
+                          - entity: switch.computer_imac
+                            name: iMac
+                            secondary_info: last-changed
 
-                        - entity: sensor.imac_cpu
-                          tap_action:
-                            action: call-service
-                            service: homeassistant.update_entity
-                            service_data:
-                              entity_id: sensor.imac_cpu
+                          - type: custom:bar-card
+                            width: 55%
+                            height: 2em
+                            decimal: 0
+                            unit_of_measurement: '%'
+                            positions: &pos
+                              icon: outside
+                              indicator: 'off'
+                              name: outside
+                            severity: &sev
+                              - color: '#303435'
+                                from: 0
+                                to: 89
+                              - color: '#6d2525'
+                                from: 90
+                                to: 100
+                            entity_row: true
+                            entities:
 
-                        - entity: sensor.imac_mem
-                          tap_action:
-                            action: call-service
-                            service: homeassistant.update_entity
-                            service_data:
-                              entity_id: sensor.imac_mem
+                              - entity: sensor.imac_cpu
+                                tap_action:
+                                  action: call-service
+                                  service: homeassistant.update_entity
+                                  service_data:
+                                    entity_id: sensor.imac_cpu
 
-                    - entity: automation.macos_notification_motion_hall
+                              - entity: sensor.imac_mem
+                                tap_action:
+                                  action: call-service
+                                  service: homeassistant.update_entity
+                                  service_data:
+                                    entity_id: sensor.imac_mem
 
-                    - entity: sensor.imac_uptime
+                          - entity: automation.macos_notification_motion_hall
 
-                    - entity: sensor.imac_vpn
-                      tap_action:
-                        action: call-service
-                        service: homeassistant.update_entity
-                        service_data:
-                          entity_id: sensor.imac_ip
-                      style: |
-                        :host {
-                          --paper-item-icon-color: 
-                            {{ '#9e9e9e' if is_state(config.entity, 'Ansluten') else 'red' }};
-                          }
+                          - entity: sensor.imac_uptime
 
-                    - entity: input_boolean.computer_lock
+                          - entity: sensor.imac_vpn
+                            tap_action:
+                              action: call-service
+                              service: homeassistant.update_entity
+                              service_data:
+                                entity_id: sensor.imac_ip
+                            style: |
+                              :host {
+                                --paper-item-icon-color: 
+                                  {{ '#9e9e9e' if is_state(config.entity, 'Ansluten') else 'red' }};
+                                }
 
-                    - type: custom:bar-card
-                      width: 55%
-                      height: 2em
-                      decimal: 0
-                      unit_of_measurement: '%'
-                      positions: *pos
-                      severity: *sev
-                      entity_row: true
-                      entities:
+                          - entity: input_boolean.computer_lock
 
-                        - entity: sensor.imac_system_ssd
-                          tap_action:
-                            action: call-service
-                            service: homeassistant.update_entity
-                            service_data:
-                              entity_id: sensor.imac_system_ssd
+                          - type: custom:bar-card
+                            width: 55%
+                            height: 2em
+                            decimal: 0
+                            unit_of_measurement: '%'
+                            positions: *pos
+                            severity: *sev
+                            entity_row: true
+                            entities:
 
-                        - entity: sensor.imac_macintosh_hd
-                          tap_action:
-                            action: call-service
-                            service: homeassistant.update_entity
-                            service_data:
-                              entity_id: sensor.imac_macintosh_hd
+                              - entity: sensor.imac_system_ssd
+                                tap_action:
+                                  action: call-service
+                                  service: homeassistant.update_entity
+                                  service_data:
+                                    entity_id: sensor.imac_system_ssd
 
-                        - entity: sensor.imac_time_machine
-                          tap_action:
-                            action: call-service
-                            service: homeassistant.update_entity
-                            service_data:
-                              entity_id: sensor.imac_time_machine
+                              - entity: sensor.imac_macintosh_hd
+                                tap_action:
+                                  action: call-service
+                                  service: homeassistant.update_entity
+                                  service_data:
+                                    entity_id: sensor.imac_macintosh_hd
 
-                    - type: custom:hui-element
-                      card_type: horizontal-stack
-                      style: |
-                        #root {
-                          justify-content: space-evenly;
-                          margin: 1.4em -0.7em 0.7em 0;
-                        }
-                      cards:
+                              - entity: sensor.imac_time_machine
+                                tap_action:
+                                  action: call-service
+                                  service: homeassistant.update_entity
+                                  service_data:
+                                    entity_id: sensor.imac_time_machine
 
-                      - type: custom:button-card
-                        name: >
-                          <ha-icon icon="mdi:power-sleep"></ha-icon> Försätt i vila
-                        tap_action:
-                          action: call-service
-                          service: shell_command.imac_sleep
-                        template: name_action
+                          - type: custom:hui-element
+                            card_type: horizontal-stack
+                            style: |
+                              #root {
+                                justify-content: space-evenly;
+                                margin: 1.4em -0.7em 0.7em 0;
+                              }
+                            cards:
 
-                      - type: custom:button-card
-                        name: >
-                          <ha-icon icon="mdi:restart"></ha-icon> Starta om
-                        tap_action:
-                          action: call-service
-                          service: shell_command.imac_restart
-                        template: name_action
+                            - type: custom:button-card
+                              name: >
+                                <ha-icon icon="mdi:power-sleep"></ha-icon> Försätt i vila
+                              tap_action:
+                                action: call-service
+                                service: shell_command.imac_sleep
+                              template: name_action
+
+                            - type: custom:button-card
+                              name: >
+                                <ha-icon icon="mdi:restart"></ha-icon> Starta om
+                              tap_action:
+                                action: call-service
+                                service: shell_command.imac_restart
+                              template: name_action
+
+
+
+                    ### OFF ###
+                    - type: conditional
+                      conditions:
+                        - entity: switch.computer_imac
+                          state: 'off'
+                      card:
+                        type: entities
+                        state_color: true
+                        show_header_toggle: false
+                        entities:
+
+                          - entity: switch.computer_imac
+                            name: iMac
+                            secondary_info: last-changed
+
+                          - entity: automation.macos_notification_motion_hall
+
+                          - entity: sensor.imac_uptime
+
+                          - entity: input_boolean.computer_lock
+
+                          - type: custom:hui-element
+                            card_type: horizontal-stack
+                            style: |
+                              #root {
+                                justify-content: space-evenly;
+                                margin: 1.4em -0.7em 0.7em 0;
+                              }
+                            cards:
+                            - type: custom:button-card
+                              name: >
+                                <ha-icon icon="mdi:power"></ha-icon> Sätt igång Dator
+                              tap_action:
+                                action: call-service
+                                service: switch.turn_on
+                                service_data:
+                                  entity_id: switch.computer_imac
+                              template: name_action

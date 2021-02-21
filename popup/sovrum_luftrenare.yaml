@@ -8,12 +8,11 @@
                   show_header_toggle: false
                   entities:
 
-                    - entity: switch.air_purifier
+                    - entity: fan.air_purifier
                       icon: mdi:air-purifier
                       secondary_info: last-changed
 
-                    - entity: input_select.sovrum_anslut_speed
-                      name: TODO
+                    - entity: input_select.air_purifier_speed
 
                     - type: divider
                       style: {height: 15px, opacity: 0}
