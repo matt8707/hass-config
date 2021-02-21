@@ -29,6 +29,7 @@ lovelace:
       {url: /hacsfiles/lovelace-hui-element/hui-element.js,                   type: module},
       {url: /hacsfiles/lovelace-layout-card/layout-card.js,                   type: module},
       {url: /hacsfiles/lovelace-slider-entity-row/slider-entity-row.js,       type: module},
+      {url: /hacsfiles/lovelace-valetudo-map-card/valetudo-map-card.js,       type: module},
       {url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js,             type: module},
       {url: /hacsfiles/mini-media-player/mini-media-player-bundle.js,         type: module},
       {url: /hacsfiles/swipe-card/swipe-card.js,                              type: module},
@@ -36,7 +37,6 @@ lovelace:
 
       {url: '/local/calendar-card.js?v=31091',                                type: module},
       {url: '/local/stack-in-card.js?v=101',                                  type: module},
-      {url: '/local/valetudo-map-card.js?v=42dbceb',                          type: module},
       {url: '/local/custom_icons.js?v=25052001',                              type: module},
       {url: /local/font.css,                                                  type: css} ]
 
@@ -207,15 +207,15 @@ homekit:
     auto_start: false
     filter:
       include_entities:
-        ['fan.studio_wemo', 'switch.wemo_monitors', 'switch.computer_imac', 'switch.air_purifier', 'lock.dator', 'switch.playstation_5', 
+        ['fan.studio_wemo', 'switch.wemo_monitors', 'switch.computer_imac', 'fan.air_purifier', 'lock.dator', 'switch.playstation_5', 
         'input_boolean.motion_hall', 'fan.sovrum_anslut', 'script.samsung_tv_energy_saving', 'input_boolean.motion_garderob', 'input_boolean.motion_badrum', 
-        'script.home_arrive', 'script.home_leave', 'vacuum.xiaomi_vacuum_cleaner', 'person.mattias', 'person.sanja']
+        'script.home_arrive', 'script.home_leave', 'vacuum.robot', 'person.mattias', 'person.sanja']
     entity_config:
       fan.studio_wemo:
         name: Fläkt 2
       fan.sovrum_anslut:
         name: Fläkt
-      switch.air_purifier:
+      fan.air_purifier:
         name: Luftrenare
       script.samsung_tv_energy_saving:
         name: Eko
@@ -230,7 +230,7 @@ homekit:
         name: Hemma
       script.home_leave:
         name: Stäng allt
-      vacuum.xiaomi_vacuum_cleaner:
+      vacuum.robot:
         name: Morty
 
   - name: HASS Bridge Sony
@@ -263,9 +263,9 @@ cloud:
   google_actions:
     filter:
       include_entities:
-        ['fan.studio_wemo', 'switch.wemo_monitors', 'switch.computer_imac', 'media_player.sony_bravia', 'switch.air_purifier', 'lock.dator', 
+        ['fan.studio_wemo', 'switch.wemo_monitors', 'switch.computer_imac', 'media_player.sony_bravia', 'fan.air_purifier', 'lock.dator', 
         'media_player.samsung_tv_remote', 'switch.playstation_5', 'input_boolean.motion_hall', 'fan.sovrum_anslut', 'script.samsung_tv_energy_saving', 
-        'input_boolean.motion_garderob', 'input_boolean.motion_badrum', 'script.home_arrive', 'script.home_leave', 'vacuum.xiaomi_vacuum_cleaner', 
+        'input_boolean.motion_garderob', 'input_boolean.motion_badrum', 'script.home_arrive', 'script.home_leave', 'vacuum.robot', 
         'person.mattias', 'person.sanja']
     entity_config:
       fan.studio_wemo:
@@ -276,7 +276,7 @@ cloud:
         name: Fläkt
         aliases: ['Fläkt', 'Fläkten']
         room: Sovrum
-      switch.air_purifier:
+      fan.air_purifier:
         name: Luftrenare
         room: Sovrum
       script.samsung_tv_energy_saving:
@@ -312,6 +312,6 @@ cloud:
         name: Stäng allt
         aliases: ['Stäng allt', 'Auto Stäng allt']
         room: Hall
-      vacuum.xiaomi_vacuum_cleaner:
+      vacuum.robot:
         name: Morty
         room: Vardagsrum
