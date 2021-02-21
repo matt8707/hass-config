@@ -167,14 +167,6 @@ sensor:
     json_attributes:
       ['cpu_stats', 'precpu_stats', 'memory_stats']
 
-  - platform: rest
-    name: docker_uptime
-    resource: !secret ha_dockermon_uptime
-    value_template: >
-      {{ value_json.status.split(' ')[1:] | join(' ') | replace ('About a minute', '1 minut') 
-      | replace ('About an hour', '1 timme')  | replace ('seconds', 'sekunder') | replace ('minutes', 'minuter') 
-      | replace ('hours', 'timmar') | replace ('days', 'dagar') + ' sedan' }}
-
   - platform: plex_recently_added
     token: !secret plex_token
     host: !secret plex_host
@@ -182,13 +174,6 @@ sensor:
     max: 1
     img_dir: '/'
     image_resolution: 500
-
-  - platform: mqtt
-    state_topic: valetudo/rockrobo/state
-    json_attributes_topic: valetudo/rockrobo/map_data
-    name: xiaomi_map
-    value_template: OK
-    scan_interval: 15
 
   - platform: krisinformation
     country: Sverige
@@ -310,7 +295,7 @@ sensor:
 
           {% set switches = [states.switch.computer_imac, states.switch.tv_sony, states.switch.tv_samsung, 
           states.switch.playstation_5, states.switch.wemo_monitors, states.fan.studio_wemo, 
-          states.fan.sovrum_anslut, states.switch.air_purifier] %}
+          states.fan.sovrum_anslut, states.fan.air_purifier] %}
           {% set switches_on = switches | selectattr('state','eq','on') | list %} 
           {% set switches_name = switches | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
 
@@ -341,7 +326,7 @@ sensor:
 
       sidebar_vacuum:
         value_template: >
-          {% set entity_id = 'vacuum.xiaomi_vacuum_cleaner' %}
+          {% set entity_id = 'vacuum.robot' %}
           {% if is_state(entity_id, 'cleaning') %} Morty dammsuger
           {% elif is_state(entity_id, 'returning') %} Morty är färdig
           {% endif %}
@@ -436,28 +421,28 @@ sensor:
         icon_template: custom:roborock-filter
         unit_of_measurement: '%'
         value_template: >
-          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'filter_left') / 1.5) | round }}
+          {{ ((states('sensor.main_filter') | int / 60) / 150 * 100) | round }}
 
       roborock_mainbrush:
         friendly_name: Huvudborste
         icon_template: custom:roborock-mainbrush
         unit_of_measurement: '%'
         value_template: >
-          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'main_brush_left') / 3) | round }}
+          {{ ((states('sensor.main_brush') | int / 60) / 300 * 100) | round }}
 
       roborock_sensors:
         friendly_name: Sensorer
         icon_template: custom:roborock-sensor
         unit_of_measurement: '%'
         value_template: >
-          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'sensor_dirty_left') / 0.3) | round }}
+          {{ ((states('sensor.sensor') | int / 60) / 30 * 100) | round }}
 
       roborock_sidebrush:
         friendly_name: Sidoborste
         icon_template: custom:roborock-sidebrush
         unit_of_measurement: '%'
         value_template: >
-          {{ (state_attr('vacuum.xiaomi_vacuum_cleaner', 'side_brush_left') / 2) | round }}
+          {{ ((states('sensor.right_side_brush') | int / 60) / 200 * 100) | round }}
 
       roborock_last_clean:
         friendly_name: Senast städat

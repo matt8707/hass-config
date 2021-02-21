@@ -101,7 +101,7 @@ input_select:
   roborock_speed:
     name: Rengöringsläge
     options:
-      ['Tyst', 'Standard', 'Medium', 'Turbo', 'Moppa']
+      ['Tyst', 'Standard', 'Medium', 'Turbo', 'Av']
     icon: mdi:format-list-bulleted
 
   sovrum_anslut_speed:
@@ -110,9 +110,9 @@ input_select:
       ['Tyst', 'Medium', 'Max']
 
   air_purifier_speed:
-    name: Fläkthastighet
+    name: Hastighet
     options:
-      ['Tyst', 'Medium', 'Max']
+      ['Tyst', 'Låg', 'Hög', 'Turbo']
 
   roborock_zone:
     initial: Ingen vald

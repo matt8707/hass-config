@@ -249,6 +249,23 @@ automation:
       - service: switch.turn_on
         entity_id: switch.watchtower
 
+  - alias: notify_and_remove_completed_torrent
+    initial_state: true
+    trigger:
+      - platform: event
+        event_type: transmission_downloaded_torrent
+    action:
+      - service: notify.mobile_app_iphone
+        data:
+          title: Torrent nedladdad
+          message: >
+            {{ trigger.event.data.name }}
+      - service: transmission.remove_torrent
+        data:
+          name: Transmission
+          id: >
+            {{ trigger.event.data.id | int }}
+
     ####################################################
     #                                                  #
     #                  SCAN INTERVAL                   #
@@ -437,9 +454,7 @@ automation:
       - service: remote.send_command
         data:
           entity_id: remote.broadlink
-          device: fläkt
-          delay_secs: 0.2
-          command: swing_1
+          command: !secret ir_fan_swing
 
   - alias: sovrum_anslut_speed
     mode: queued
@@ -456,13 +471,13 @@ automation:
                 trigger.from_state.state == 'Medium' and trigger.to_state.state == 'Tyst' or 
                 trigger.from_state.state == 'Tyst' and trigger.to_state.state == 'Max' }}
           sequence:
-            - service: remote.send_command
-              data:
-                entity_id: remote.broadlink
-                device: fläkt
-                delay_secs: 0.2
-                command: speed_1
-                num_repeats: 2
+            - repeat:
+                count: 2
+                sequence:
+                  - service: remote.send_command
+                    data:
+                      entity_id: remote.broadlink
+                      command: !secret ir_fan_speed
         - conditions:
             - condition: template
               value_template: >
@@ -473,9 +488,89 @@ automation:
             - service: remote.send_command
               data:
                 entity_id: remote.broadlink
-                device: fläkt
-                delay_secs: 0.2
-                command: speed_1
+                command: !secret ir_fan_speed
+
+    ####################################################
+    #                                                  #
+    #                   AIR PURIFIER                   #
+    #                                                  #
+    ####################################################
+
+  - alias: air_purifier_speed
+    mode: queued
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: input_select.air_purifier_speed
+    action:
+      - choose:
+        - conditions:
+            - condition: template
+              value_template: >
+                {{ trigger.from_state.state == 'Tyst' and trigger.to_state.state == 'Låg' or 
+                trigger.from_state.state == 'Låg' and trigger.to_state.state == 'Hög' }}
+          sequence:
+            - service: remote.send_command
+              data:
+                entity_id: remote.broadlink
+                command: !secret ir_purifier_speed_up
+        - conditions:
+            - condition: template
+              value_template: >
+                {{ trigger.from_state.state == 'Tyst' and trigger.to_state.state == 'Hög' }}
+          sequence:
+            - repeat:
+                count: 2
+                sequence:
+                  - service: remote.send_command
+                    data:
+                      entity_id: remote.broadlink
+                      command: !secret ir_purifier_speed_up
+        - conditions:
+            - condition: template
+              value_template: >
+                {{ trigger.from_state.state == 'Låg' and trigger.to_state.state == 'Tyst' or 
+                trigger.from_state.state == 'Hög' and trigger.to_state.state == 'Låg' or 
+                trigger.from_state.state == 'Turbo' and trigger.to_state.state == 'Hög' }}
+          sequence:
+            - service: remote.send_command
+              data:
+                entity_id: remote.broadlink
+                command: !secret ir_purifier_speed_down
+        - conditions:
+            - condition: template
+              value_template: >
+                {{ trigger.from_state.state == 'Hög' and trigger.to_state.state == 'Tyst' or 
+                trigger.from_state.state == 'Turbo' and trigger.to_state.state == 'Låg' }}
+          sequence:
+            - repeat:
+                count: 2
+                sequence:
+                  - service: remote.send_command
+                    data:
+                      entity_id: remote.broadlink
+                      command: !secret ir_purifier_speed_down
+        - conditions:
+            - condition: template
+              value_template: >
+                {{ trigger.to_state.state == 'Turbo' }}
+          sequence:
+            - service: remote.send_command
+              data:
+                entity_id: remote.broadlink
+                command: !secret ir_purifier_turbo
+        - conditions:
+            - condition: template
+              value_template: >
+                {{ trigger.from_state.state == 'Turbo' and trigger.to_state.state == 'Tyst' }}
+          sequence:
+            - repeat:
+                count: 3
+                sequence:
+                  - service: remote.send_command
+                    data:
+                      entity_id: remote.broadlink
+                      command: !secret ir_purifier_speed_down
 
     ####################################################
     #                                                  #
@@ -540,7 +635,7 @@ automation:
       - platform: state
         entity_id:
           ['media_player.sony_bravia', 'media_player.samsung_tv_remote', 'switch.computer_imac', 
-          'switch.playstation_5', 'fan.sovrum_anslut', 'switch.air_purifier']
+          'switch.playstation_5', 'fan.sovrum_anslut', 'fan.air_purifier']
     action:
       - service: input_boolean.turn_off
         data:
@@ -699,20 +794,20 @@ automation:
     action:
       - service: vacuum.set_fan_speed
         data:
-          entity_id: vacuum.xiaomi_vacuum_cleaner
+          entity_id: vacuum.robot
           fan_speed: >
-            {% if is_state(trigger.entity_id, 'Tyst') %} Silent
-            {% elif is_state(trigger.entity_id, 'Standard') %} Standard
-            {% elif is_state(trigger.entity_id, 'Medium') %} Medium
-            {% elif is_state(trigger.entity_id, 'Turbo') %} Turbo
-            {% elif is_state(trigger.entity_id, 'Moppa') %} Gentle
+            {% if is_state(trigger.entity_id, 'Tyst') %} low
+            {% elif is_state(trigger.entity_id, 'Standard') %} medium
+            {% elif is_state(trigger.entity_id, 'Medium') %} high
+            {% elif is_state(trigger.entity_id, 'Turbo') %} max
+            {% elif is_state(trigger.entity_id, 'Av') %} off
             {% endif %}
 
   - alias: roborock_speed_update
     initial_state: true
     trigger:
       - platform: state
-        entity_id: vacuum.xiaomi_vacuum_cleaner
+        entity_id: vacuum.robot
       - platform: homeassistant
         event: start
     action:
@@ -720,12 +815,12 @@ automation:
         data:
           entity_id: input_select.roborock_speed
           option: >
-            {% set entity_id = 'vacuum.xiaomi_vacuum_cleaner' %}
-            {% if is_state_attr(entity_id, 'fan_speed', 'Silent') %} Tyst
-            {% elif is_state_attr(entity_id, 'fan_speed', 'Standard') %} Standard
-            {% elif is_state_attr(entity_id, 'fan_speed', 'Medium') %} Medium
-            {% elif is_state_attr(entity_id, 'fan_speed', 'Turbo') %} Turbo
-            {% elif is_state_attr(entity_id, 'fan_speed', 'Gentle') %} Moppa
+            {% set entity_id = 'vacuum.robot' %}
+            {% if is_state_attr(entity_id, 'fan_speed', 'low') %} Tyst
+            {% elif is_state_attr(entity_id, 'fan_speed', 'medium') %} Standard
+            {% elif is_state_attr(entity_id, 'fan_speed', 'high') %} Medium
+            {% elif is_state_attr(entity_id, 'fan_speed', 'max') %} Turbo
+            {% elif is_state_attr(entity_id, 'fan_speed', 'off') %} Av
             {% endif %}
 
       ####################################################

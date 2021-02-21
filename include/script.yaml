@@ -199,7 +199,7 @@ script:
               entity_id: binary_sensor.gosund_air_purifier
               state: 'on'
           sequence:
-            - service: switch.turn_off
-              entity_id: switch.air_purifier
+            - service: fan.turn_off
+              entity_id: fan.air_purifier
       - delay:
           seconds: 4

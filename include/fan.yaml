@@ -13,6 +13,8 @@ fan:
         value_template: >
           {{ 'off' if is_state('switch.wemo_fan', 'unavailable') 
           else states('switch.wemo_fan') }}
+        speeds:
+         - none
         turn_on:
           - service: switch.turn_on
             entity_id: switch.wemo_fan
@@ -138,19 +140,11 @@ fan:
                     topic: cmnd/gosund1/status
                     payload: 10
 
-
-
-
-
-
-
-
-
-  ####################################################
-  #                                                  #
-  #            !!! TODO AIR PURIFIER !!!             #
-  #                                                  #
-  ####################################################
+    ####################################################
+    #                                                  #
+    #                   AIR PURIFIER                   #
+    #                                                  #
+    ####################################################
 
       air_purifier:
         friendly_name: Luftrenare
@@ -159,7 +153,7 @@ fan:
         speed_template: >
           {{ states('input_select.air_purifier_speed') }}
         speeds: 
-          ['Tyst', 'Medium', 'Max']
+          ['Tyst', 'Låg', 'Hög', 'Turbo']
         set_speed:
           # homekit set_speed from off
           - choose:
@@ -175,55 +169,45 @@ fan:
                 data:
                   entity_id: input_select.air_purifier_speed
                   option: "{{ speed }}"
-        # oscillating_template: >
-        #   {{ is_state('input_boolean.sovrum_anslut_oscillate', 'on') }}
-        # set_oscillating:
-        #   - service: input_boolean.toggle
-        #     entity_id: input_boolean.sovrum_anslut_oscillate
         turn_on:
-          - condition: state
-            entity_id: binary_sensor.gosund_air_purifier
-            state: 'off'
           - service: input_boolean.turn_on
             entity_id: input_boolean.air_purifier
           - service: remote.send_command
             data:
               entity_id: remote.broadlink
-              command: !secret ir_purifier_auto #wake
+              command: !secret ir_purifier_speed_down #wake
           - service: remote.send_command
             data:
               entity_id: remote.broadlink
               command: !secret ir_purifier_power
-          # - choose:
-          #   # initial oscillation
-          #   - conditions:
-          #       - condition: state
-          #         entity_id: input_boolean.sovrum_anslut_oscillate
-          #         state: 'on'
-          #     sequence:
-          #       - service: remote.send_command
-          #         data:
-          #           entity_id: remote.broadlink
-          #           command: !secret ir_fan_swing
           - choose:
             # initial speed
             - conditions:
                 - condition: state
                   entity_id: input_select.air_purifier_speed
-                  state: Max
+                  state: Turbo
               sequence:
                 - service: remote.send_command
                   data:
                     entity_id: remote.broadlink
-                    command: !secret ir_purifier_speed_up
-                - service: remote.send_command
-                  data:
-                    entity_id: remote.broadlink
-                    command: !secret ir_purifier_speed_up
+                    command: !secret ir_purifier_turbo
             - conditions:
                 - condition: state
                   entity_id: input_select.air_purifier_speed
-                  state: Medium
+                  state: Hög
+              sequence:
+                - service: remote.send_command
+                  data:
+                    entity_id: remote.broadlink
+                    command: !secret ir_purifier_turbo
+                - service: remote.send_command
+                  data:
+                    entity_id: remote.broadlink
+                    command: !secret ir_purifier_speed_down
+            - conditions:
+                - condition: state
+                  entity_id: input_select.air_purifier_speed
+                  state: Låg
               sequence:
                 - service: remote.send_command
                   data:
@@ -243,9 +227,6 @@ fan:
                     topic: cmnd/gosund2/status
                     payload: 10
         turn_off:
-          - condition: state
-            entity_id: binary_sensor.gosund_air_purifier
-            state: 'on'
           - service: input_boolean.turn_on
             entity_id: input_boolean.air_purifier
           - service: remote.send_command
