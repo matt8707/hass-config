@@ -49,25 +49,16 @@ binary_sensor:
 
   - platform: template
     sensors:
-      krisinformation_time_trigger:
-        icon_template: mdi:alert
-        value_template: >
-          {% set entity_id = 'sensor.krisinformation_sverige' %}
-          {% if not is_state_attr(entity_id, 'messages', []) and state_attr(entity_id, 'messages') != None %}
-            {% set published = state_attr(entity_id, 'messages')[0]['Published'] %}
-            {{ 'false' if ((as_timestamp(published) - as_timestamp(now())) / 86400) <= -0.5 else 'true' }}
-          {% endif %}
-
       laundry_time_trigger:
         value_template: >
           {% set start_time = state_attr('calendar.tvatta', 'start_time') %}
           {{ as_timestamp(start_time) - as_timestamp(now()) < 10 * 60 if start_time != None }}
 
-      update_color:
+      sidebar_update_color:
         value_template: >
           {% if states('sensor.hass_version_installed') | regex_search('b') %}
             {% if states('sensor.hass_version_installed') != states('sensor.hass_version_latest_beta') and 
-            not is_state('sensor.hass_version_latest', 'unknown') or 
+            not is_state('sensor.hass_version_latest_beta', 'unknown') or 
             not is_state('sensor.hacs', '0') and 
             not is_state('sensor.hacs', 'unknown') %}
               True {% else %} False {% endif %}
@@ -174,9 +165,6 @@ sensor:
     max: 1
     img_dir: '/'
     image_resolution: 500
-
-  - platform: krisinformation
-    country: Sverige
 
     ####################################################
     #                                                  #
@@ -356,11 +344,35 @@ sensor:
           {{ 'Nästa buss går ' + states(entity_id) if not is_state(entity_id, 'från') }}
           {% endif %}
 
+      covid_19_template:
+        value_template: none
+        attribute_templates:
+          render: >
+            {% if is_state('sensor.covid_19_folkhalsomyndigheten', 'Tillgänglig') %}
+              {% set data = state_attr('sensor.covid_19_folkhalsomyndigheten', 'embedCode') %}
+              {% set total = data | regex_findall_index('Totalt[^,]*?(\d+)[^,]*?(\d+)[^,]*?(\d+)') | list %}
+              {% set break = '‍ ‍ ‍ ‍ ‍ ‍<font color="#2f3436">|</font> ‍ ‍ ‍ ‍ ' %}
+              <font color='#6a7377'>
+              <ha-icon icon="mdi:virus"></ha-icon> <b>Coronavirus</b>{{ break -}}
+              <ha-icon icon="mdi:chart-bar"></ha-icon> <b>{{ ((total[0] | int / 10327589) * 100) | round(2) }}%</b> av Sverige{{ break -}}
+              <ha-icon icon="mdi:emoticon-sad"></ha-icon> <b>{{ total[0] }}</b> fall{{ break -}}
+              <ha-icon icon="mdi:grave-stone"></ha-icon> <b>{{ total[2] }}</b> avlidna{{ break -}}
+              <ha-icon icon="mdi:map-marker-radius"></ha-icon> <b>{{ data | regex_findall_index('Skåne[^,]*?(\d+)') }}</b> fall i Skåne
+              </font>
+            {% endif %}
+
       public_ip:
         value_template: !secret public_ip
 
       placeholder:
         value_template: ' '
+        attribute_templates:
+          vardagsrum: Vardagsrum
+          studio: Studio
+          sovrum: Sovrum
+          media: Media
+          ovrigt: Övrigt
+          hemma: Hemma
 
       dockermon_mem:
         friendly_name: Minne

@@ -136,7 +136,7 @@ homeassistant:
       friendly_name: Storlampa
       icon: mdi:silverware-fork-knife
 
-    light.kladkammare_2:
+    light.kladkammare:
       friendly_name: Garderob
       icon: mdi:door
 

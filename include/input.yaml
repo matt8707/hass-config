@@ -20,7 +20,6 @@ input_boolean:
   air_purifier:
     initial: off
 
-  krisinformation_visibility:
   laundry_timer_visibility:
 
   sovrum_anslut_oscillate:
@@ -55,7 +54,6 @@ input_number:
     initial: 20
     min: 7
     max: 75
-    step: 2
     unit_of_measurement: '%'
 
   wemo_fan_timer:
@@ -64,7 +62,6 @@ input_number:
     initial: 12
     min: 1
     max: 12
-    step: 1
     unit_of_measurement: 'h'
 
   sovrum_anslut_timer:
@@ -73,8 +70,21 @@ input_number:
     initial: 12
     min: 1
     max: 12
-    step: 1
     unit_of_measurement: 'h'
+
+  sovrum_anslut_speed:
+    name: Fläkthastighet
+    initial: 0
+    min: 0
+    max: 100
+    unit_of_measurement: '%'
+
+  air_purifier_speed:
+    name: Hastighet
+    initial: 0
+    min: 0
+    max: 100
+    unit_of_measurement: '%'
 
 input_select:
 
