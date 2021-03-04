@@ -18,11 +18,12 @@
 
                     - type: custom:hui-element
                       card_type: horizontal-stack
-                      style: |
-                        #root {
-                          justify-content: space-evenly;
-                          margin: 1.4em -0.7em 0.7em 0;
-                        }
+                      card_mod:
+                        style: |
+                          #root {
+                            justify-content: space-evenly;
+                            margin: 1.4em -0.7em 0.7em 0;
+                          }
                       cards:
 
                       - type: custom:button-card
@@ -37,8 +38,7 @@
                               [[[ return entity.entity_id; ]]]
                             is_volume_muted: >
                               [[[ return entity.attributes.is_volume_muted === 'false' ? 'true' : 'false'; ]]]
-
-                        template: icon_action
+                        template: icon_only
 
                       - type: custom:button-card
                         icon: mdi:volume-minus
@@ -47,7 +47,7 @@
                           service: media_player.volume_down
                           service_data:
                             entity_id: media_player.samsung_tv_remote
-                        template: icon_action
+                        template: icon_only
 
                       - type: custom:button-card
                         icon: mdi:volume-plus
@@ -56,5 +56,5 @@
                           service: media_player.volume_up
                           service_data:
                             entity_id: media_player.samsung_tv_remote
-                        template: icon_action
+                        template: icon_only
 

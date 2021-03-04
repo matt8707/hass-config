@@ -22,63 +22,44 @@
                         - type: custom:hui-element
                           card_type: glance
                           show_state: false
-                          style:
-                            .: |
-                              ha-card {
-                                background: none;
-                                box-shadow: none;
-                              }
-                            "ha-card>div>div:nth-child(1)":
-                              $:
-                                "state-badge":
-                                  $: |
-                                    ha-icon {
-                                      color: {{ '#3182b7' if is_state('device_tracker.sanja', 'home') else '#FFFFFF20' }};
-                                    }
-                            "ha-card>div>div:nth-child(2)":
-                              $:
-                                "state-badge":
-                                  $: |
-                                    ha-icon {
-                                      color: {{ '#3182b7' if is_state('device_tracker.sanja_bluetooth', 'home') else '#FFFFFF20' }};
-                                    }
-                            "ha-card>div>div:nth-child(3)":
-                              $:
-                                "state-badge":
-                                  $: |
-                                    ha-icon {
-                                      color: {{ '#3182b7' if is_state('device_tracker.sanja_iphone', 'home') else '#FFFFFF20' }};
-                                    }
                           entities:
 
                             - entity: device_tracker.sanja
                               name: Router
                               icon: mdi:wifi
+                              card_mod: &style
+                                style: |
+                                  state-badge {
+                                    color: {{ '#3182b7' if is_state(config.entity, 'home') else '#3c3f3f' }};
+                                  }
 
                             - entity: device_tracker.sanja_bluetooth
                               name: Bluetooth
                               icon: mdi:bluetooth
+                              card_mod: *style
 
                             - entity: device_tracker.sanja_iphone
                               name: Position
                               icon: custom:iphone-modern
+                              card_mod: *style
 
                         - type: custom:hui-element
                           card_type: horizontal-stack
-                          style: |
-                            #root {
-                              justify-content: space-evenly;
-                              margin: -0.5em 0 2em 0;
-                            }
+                          card_mod:
+                            style: |
+                              #root {
+                                justify-content: space-evenly;
+                                margin: -0.5em 0 2em 0;
+                              }
                           cards:
 
                           - type: custom:button-card
-                            name: >
-                              <ha-icon icon="mdi:volume-high"></ha-icon> Spela upp ljud på iPhone XR
+                            name: Spela upp ljud på iPhone XR
+                            icon: mdi:volume-high
                             tap_action:
                               action: call-service
                               service: script.sanja_find_my_iphone
-                            template: name_action
+                            template: icon_name
 
                         - entity: sensor.printer_status
 
@@ -98,7 +79,8 @@
                             - color: '#6d2525'
                               from: 0
                               to: 10
-                          style: 'ha-card { margin-bottom: 1em; }'
+                          card_mod:
+                            style: 'ha-card { margin-bottom: 1em; }'
                           entity_row: true
                           entities:
 

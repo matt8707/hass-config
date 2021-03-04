@@ -31,35 +31,34 @@
                       show:
                         {fill: fade, icon: true, name: true, state: true, 
                         name_adaptive_color: false, labels: hover, legend: false}
-                      style: |
-                        ha-card {
-                          border-radius: 0.35em;
-                          background: none;
-                          box-shadow: none;
-                          margin-top: -0.4em;
-                        }
-                        .name > span,
-                        .state > span.state__value.ellipsis,
-                        .state > span.state__uom.ellipsis {
-                          font-size: 14px !important;
-                          font-weight: 400 !important;
-                          opacity: 1 !important;
-                        }
-                        .name > span {
-                          margin-left: 16px !important;
-                        }
-                        .icon {
-                          margin-left: 31px !important;
-                        }
-                        .state {
-                          margin-top: -36px;
-                          margin-right: 33px;
-                        }
-                        .state > span.state__uom.ellipsis {
-                          margin-top: -3px;
-                        }
-                        .state > div {
-                          opacity: 0;
-                        }
+                      card_mod:
+                        style: |
+                          ha-card {
+                            border-radius: 0.35em;
+                            margin-top: -0.4em;
+                          }
+                          .name > span,
+                          .state > span.state__value.ellipsis,
+                          .state > span.state__uom.ellipsis {
+                            font-size: 14px !important;
+                            font-weight: 400 !important;
+                            opacity: 1 !important;
+                          }
+                          .name > span {
+                            margin-left: 16px !important;
+                          }
+                          .icon {
+                            margin-left: 31px !important;
+                          }
+                          .state {
+                            margin-top: -36px;
+                            margin-right: 33px;
+                          }
+                          .state > span.state__uom.ellipsis {
+                            margin-top: -3px;
+                          }
+                          .state > div {
+                            opacity: 0;
+                          }
                       tap_action:
                         action: none

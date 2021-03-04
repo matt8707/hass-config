@@ -15,6 +15,7 @@
                     - entity: input_select.air_purifier_speed
 
                     - type: divider
-                      style: {height: 15px, opacity: 0}
+                      card_mod:
+                        style: {height: 15px, opacity: 0}
 
                     - entity: switch.strombrytare_2

@@ -8,20 +8,20 @@
                     :host .content {
                       width: calc(385px + 385px + 385px);
                       max-width: 90vw;
+                      height: 569px;
                     }
                   $: |
                     .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
-                      background: none !important;
+                      background: none;
                     }
                 card:
-                  type: custom:layout-card
-                  column_num: 3
-                  column_width: [385, 385, 385]
-                  layout: vertical
+                  type: grid
+                  columns: 3
                   cards:
                     - type: entities
                       title: Home Assistant
-                      class: add_header
+                      card_mod:
+                        class: add-header
                       show_header_toggle: false
                       entities:
 
@@ -72,35 +72,45 @@
 
                         - type: custom:hui-element
                           card_type: horizontal-stack
-                          style: &horizontal-style |
-                            #root {
-                              justify-content: space-evenly;
-                              margin: 1.4em -0.7em 0.7em 0;
-                            }
+                          card_mod:
+                            style: &horizontal-style |
+                              #root {
+                                justify-content: space-evenly;
+                                margin: 1.7em -0.7em 0 0;
+                              }
                           cards:
 
                           - type: custom:button-card
-                            name: '<ha-icon icon="mdi:reload"></ha-icon> Home Assistant'
+                            name: Home Assistant
+                            icon: mdi:reload
                             tap_action:
                               services: |
-                                [[[ hass.callService('browser_mod', 'toast', {message: 'Startar om Home Assistant...'});
-                                hass.callService('homeassistant', 'restart'); ]]]
-                            template: name_action
+                                [[[
+                                  hass.callService('browser_mod', 'toast', {
+                                    message: 'Startar om Home Assistant...'
+                                  });
+                                  hass.callService('homeassistant', 'restart');
+                                ]]]
+                            template: icon_name
 
                           - type: custom:button-card
-                            name: '<ha-icon icon="mdi:reload"></ha-icon> Container'
+                            name: Container
+                            icon: mdi:reload
                             tap_action:
                               action: call-service
                               service: script.turn_on
                               service_data:
                                 entity_id: script.homeassistant_restart
-                            template: name_action
+                            template: icon_name
 
-                    - break
+
+                    ################################################################
+
 
                     - type: entities
                       title: Samsung Galaxy Tab
-                      class: add_header
+                      card_mod:
+                        class: add-header
                       show_header_toggle: false
                       entities:
 
@@ -167,35 +177,57 @@
 
                         - type: custom:hui-element
                           card_type: horizontal-stack
-                          style: *horizontal-style
+                          card_mod:
+                            style: *horizontal-style
                           cards:
 
                           - type: custom:button-card
-                            name: '<ha-icon icon="mdi:reload"></ha-icon> Startsidan'
+                            name: Startsidan
+                            icon: mdi:reload
                             tap_action:
                               services: |
-                                [[[ hass.callService('browser_mod', 'toast', {message: 'Laddar om startsidan...'});
-                                hass.callService('fullykiosk', 'load_start_url', {entity_id: 'media_player.galaxy_tab_a_media_player'}); ]]]
-                            template: name_action
+                                [[[
+                                  hass.callService('browser_mod', 'toast', {
+                                    message: 'Laddar om startsidan...'
+                                  });
+                                  hass.callService('fullykiosk', 'load_start_url', {
+                                    entity_id: 'media_player.galaxy_tab_a_media_player'
+                                  });
+                                ]]]
+                            template: icon_name
 
                           - type: custom:button-card
-                            name: '<ha-icon icon="mdi:reload"></ha-icon> Hela appen'
+                            name: Hela appen
+                            icon: mdi:reload
                             tap_action:
                               services: |
-                                [[[ hass.callService('browser_mod', 'toast', {message: 'Startar om Fully Kiosk Browser...'});
-                                hass.callService('fullykiosk', 'restart', {entity_id: 'media_player.galaxy_tab_a_media_player'}); ]]]
-                            template: name_action
+                                [[[
+                                  hass.callService('browser_mod', 'toast', {
+                                    message: 'Startar om Fully Kiosk Browser...'
+                                  });
+                                  hass.callService('fullykiosk', 'restart', {
+                                    entity_id: 'media_player.galaxy_tab_a_media_player'
+                                  });
+                                ]]]
+                            template: icon_name
 
-                    - break
+
+                    ################################################################
+
 
                     - type: entities
                       title: Synology NAS
-                      class: add_header
                       show_header_toggle: false
-                      style: |
-                        #states > div > mini-graph-card {
-                          margin: -22.7px -34px -21px -23px;
-                        }
+                      card_mod:
+                        class: add-header
+                        style: |
+                          mini-graph-card {
+                            margin: -22.7px -18px -6px -7px;
+                          }
+                          .footer {
+                            overflow: visible !important;
+                          }
+
                       entities:
 
                         - entity: sensor.nas_status
@@ -206,10 +238,11 @@
                           name: Senast omstart
 
                         - entity: sensor.nas_vpn
-                          style: |
-                            :host {
-                              --paper-item-icon-color: {{ '#9e9e9e' if is_state(config.entity, 'Ansluten') else 'red' }};
-                              }
+                          card_mod:
+                            style: |
+                              :host {
+                                --paper-item-icon-color: {{ '#9e9e9e' if is_state(config.entity, 'Ansluten') else 'red' }};
+                                }
 
                         - type: custom:bar-card
                           width: 55%
@@ -250,31 +283,42 @@
                           cards:
 
                             - type: entities
-                              class: information_network
+                              card_mod:
+                                class: information_network
                               entities:
                                 - entity: sensor.nas_net_down
-                                  style: ':host {--paper-item-icon-color: green;}'
+                                  card_mod:
+                                    style: >
+                                      :host {
+                                        --paper-item-icon-color: green;
+                                      }
 
                             - type: entities
-                              class: information_network
+                              card_mod:
+                                class: information_network
                               entities:
                                 - entity: sensor.nas_net_up
-                                  style: ':host {--paper-item-icon-color: #385581;}'
+                                  card_mod:
+                                    style: >
+                                      :host {
+                                        --paper-item-icon-color: #385581;
+                                      }
 
-                        - type: custom:mini-graph-card
-                          entities:
-                            - color: '#385581'
-                              entity: sensor.synology_network_up
-                            - color: green
-                              entity: sensor.synology_network_down
-                          align_state: left
-                          group: false
-                          points_per_hour: 15
-                          line_width: 3
-                          hour24: true
-                          hours_to_show: 1.5
-                          show:
-                            {fill: fade, icon: false, name: false, state: false, 
-                            name_adaptive_color: true, labels: hover, legend: false}
-                          tap_action:
-                            action: none
+                      footer:
+                        type: custom:mini-graph-card
+                        entities:
+                          - color: '#385581'
+                            entity: sensor.synology_network_up
+                          - color: green
+                            entity: sensor.synology_network_down
+                        align_state: left
+                        group: false
+                        points_per_hour: 15
+                        line_width: 3
+                        hour24: true
+                        hours_to_show: 1.5
+                        show:
+                          {fill: fade, icon: false, name: false, state: false, 
+                          name_adaptive_color: true, labels: hover, legend: false}
+                        tap_action:
+                          action: none

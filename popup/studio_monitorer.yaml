@@ -14,15 +14,16 @@
                     - type: custom:slider-entity-row
                       entity: input_number.monitors_volume
                       hide_state: false
-                      style: |
-                        :host {
-                        --paper-item-icon-color: 
-                          {% if is_state('binary_sensor.monitors_mute_check', 'on') %} #FFFFFF20;
-                          {% elif states(config.entity) | int == 0 %} #9da0a2;
-                          {% elif states(config.entity) | int < 60 %} #3182b7;
-                          {% else %} red;
-                          {% endif %}
-                          }
+                      card_mod:
+                        style: |
+                          :host {
+                          --paper-item-icon-color:
+                            {% if is_state('binary_sensor.monitors_mute_check', 'on') %} #FFFFFF20;
+                            {% elif states(config.entity) | int == 0 %} #9da0a2;
+                            {% elif states(config.entity) | int < 60 %} #3182b7;
+                            {% else %} red;
+                            {% endif %}
+                            }
 
                     - entity: automation.turn_off_monitors
 
@@ -30,11 +31,12 @@
 
                     - type: custom:hui-element
                       card_type: horizontal-stack
-                      style: |
-                        #root {
-                          justify-content: space-evenly;
-                          margin: 1.4em -0.7em 0.7em 0;
-                        }
+                      card_mod:
+                        style: |
+                          #root {
+                            justify-content: space-evenly;
+                            margin: 1.4em -0.7em 0.7em 0;
+                          }
                       cards:
 
                       - type: custom:button-card
@@ -42,7 +44,7 @@
                         tap_action:
                           action: call-service
                           service: script.monitors_mute
-                        template: icon_action
+                        template: icon_only
 
                       - type: custom:button-card
                         icon: mdi:volume-minus
@@ -51,7 +53,7 @@
                           service: input_number.decrement
                           service_data:
                             entity_id: input_number.monitors_volume
-                        template: icon_action
+                        template: icon_only
 
                       - type: custom:button-card
                         icon: mdi:volume-plus
@@ -60,4 +62,4 @@
                           service: input_number.increment
                           service_data:
                             entity_id: input_number.monitors_volume
-                        template: icon_action
+                        template: icon_only

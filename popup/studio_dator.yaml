@@ -64,11 +64,12 @@
                               service: homeassistant.update_entity
                               service_data:
                                 entity_id: sensor.imac_ip
-                            style: |
-                              :host {
-                                --paper-item-icon-color: 
-                                  {{ '#9e9e9e' if is_state(config.entity, 'Ansluten') else 'red' }};
-                                }
+                            card_mod:
+                              style: |
+                                :host {
+                                  --paper-item-icon-color:
+                                    {{ '#9e9e9e' if is_state(config.entity, 'Ansluten') else 'red' }};
+                                  }
 
                           - entity: input_boolean.computer_lock
 
@@ -105,28 +106,29 @@
 
                           - type: custom:hui-element
                             card_type: horizontal-stack
-                            style: |
-                              #root {
-                                justify-content: space-evenly;
-                                margin: 1.4em -0.7em 0.7em 0;
-                              }
+                            card_mod:
+                              style: |
+                                #root {
+                                  justify-content: space-evenly;
+                                  margin: 1.4em -0.7em 0.7em 0;
+                                }
                             cards:
 
                             - type: custom:button-card
-                              name: >
-                                <ha-icon icon="mdi:power-sleep"></ha-icon> Försätt i vila
+                              name: Försätt i vila
+                              icon: mdi:power-sleep
                               tap_action:
                                 action: call-service
                                 service: shell_command.imac_sleep
-                              template: name_action
+                              template: icon_name
 
                             - type: custom:button-card
-                              name: >
-                                <ha-icon icon="mdi:restart"></ha-icon> Starta om
+                              name: Starta om
+                              icon: mdi:restart
                               tap_action:
                                 action: call-service
                                 service: shell_command.imac_restart
-                              template: name_action
+                              template: icon_name
 
 
 
@@ -153,18 +155,19 @@
 
                           - type: custom:hui-element
                             card_type: horizontal-stack
-                            style: |
-                              #root {
-                                justify-content: space-evenly;
-                                margin: 1.4em -0.7em 0.7em 0;
-                              }
+                            card_mod:
+                              style: |
+                                #root {
+                                  justify-content: space-evenly;
+                                  margin: 1.4em -0.7em 0.7em 0;
+                                }
                             cards:
                             - type: custom:button-card
-                              name: >
-                                <ha-icon icon="mdi:power"></ha-icon> Sätt igång Dator
+                              name: Sätt igång Dator
+                              icon: mdi:power
                               tap_action:
                                 action: call-service
                                 service: switch.turn_on
                                 service_data:
                                   entity_id: switch.computer_imac
-                              template: name_action
+                              template: icon_name
