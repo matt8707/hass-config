@@ -20,7 +20,7 @@ automation:
       - service: browser_mod.close_popup
       - delay:
           seconds: 1
-      - service: browser_mod.lovelace_reload
+      - service: frontend.reload_themes
       - delay:
           seconds: 10
       - choose:
@@ -136,24 +136,6 @@ automation:
       - service: light.turn_off
         data:
           entity_id: light.badrum
-
-  - alias: krisinformation_visibility
-    initial_state: true
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.krisinformation_time_trigger
-    action:
-      - choose:
-        - conditions:
-            - condition: state
-              entity_id: binary_sensor.krisinformation_time_trigger
-              state: 'on'
-          sequence:
-            - service: input_boolean.turn_on
-              entity_id: input_boolean.krisinformation_visibility
-        default:
-          - service: input_boolean.turn_off
-            entity_id: input_boolean.krisinformation_visibility
 
     ####################################################
     #                                                  #
@@ -461,15 +443,13 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: input_select.sovrum_anslut_speed
+        entity_id: fan.sovrum_anslut
     action:
       - choose:
-        - conditions:
-            - condition: template
-              value_template: >
-                {{ trigger.from_state.state == 'Max' and trigger.to_state.state == 'Medium' or 
-                trigger.from_state.state == 'Medium' and trigger.to_state.state == 'Tyst' or 
-                trigger.from_state.state == 'Tyst' and trigger.to_state.state == 'Max' }}
+        - conditions: >
+            {{ trigger.from_state.attributes.speed == 'high' and trigger.to_state.attributes.speed == 'medium' or 
+            trigger.from_state.attributes.speed == 'medium' and trigger.to_state.attributes.speed == 'low' or 
+            trigger.from_state.attributes.speed == 'low' and trigger.to_state.attributes.speed == 'high' }}
           sequence:
             - repeat:
                 count: 2
@@ -478,12 +458,10 @@ automation:
                     data:
                       entity_id: remote.broadlink
                       command: !secret ir_fan_speed
-        - conditions:
-            - condition: template
-              value_template: >
-                {{ trigger.from_state.state == 'Max' and trigger.to_state.state == 'Tyst' or 
-                trigger.from_state.state == 'Medium' and trigger.to_state.state == 'Max' or 
-                trigger.from_state.state == 'Tyst' and trigger.to_state.state == 'Medium' }}
+        - conditions: >
+            {{ trigger.from_state.attributes.speed == 'high' and trigger.to_state.attributes.speed == 'low' or 
+            trigger.from_state.attributes.speed == 'medium' and trigger.to_state.attributes.speed == 'high' or 
+            trigger.from_state.attributes.speed == 'low' and trigger.to_state.attributes.speed == 'medium' }}
           sequence:
             - service: remote.send_command
               data:
@@ -501,14 +479,20 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: input_select.air_purifier_speed
+        entity_id: input_number.air_purifier_speed
     action:
       - choose:
         - conditions:
             - condition: template
               value_template: >
-                {{ trigger.from_state.state == 'Tyst' and trigger.to_state.state == 'Låg' or 
-                trigger.from_state.state == 'Låg' and trigger.to_state.state == 'Hög' }}
+                {% set from_1 = ( trigger.from_state.state  | int > 0    and   trigger.from_state.state  | int <= 25  ) %}
+                {% set from_2 = ( trigger.from_state.state  | int > 25   and   trigger.from_state.state  | int <= 50  ) %}
+                {% set to_2   = ( trigger.to_state.state    | int > 25   and   trigger.to_state.state    | int <= 50  ) %}
+                {% set from_3 = ( trigger.from_state.state  | int > 50   and   trigger.from_state.state  | int <= 75  ) %}
+                {% set to_3   = ( trigger.to_state.state    | int > 50   and   trigger.to_state.state    | int <= 75  ) %}
+                {% set to_4   = ( trigger.to_state.state    | int > 75   and   trigger.to_state.state    | int <= 100 ) %}
+
+                {{ from_1 and to_2 or from_2 and to_3 or from_3 and to_4 }}
           sequence:
             - service: remote.send_command
               data:
@@ -517,7 +501,10 @@ automation:
         - conditions:
             - condition: template
               value_template: >
-                {{ trigger.from_state.state == 'Tyst' and trigger.to_state.state == 'Hög' }}
+                {% set from_1 = ( trigger.from_state.state  | int > 0    and   trigger.from_state.state  | int <= 25  ) %}
+                {% set to_3   = ( trigger.to_state.state    | int > 50   and   trigger.to_state.state    | int <= 75  ) %}
+
+                {{ from_1 and to_3 }}
           sequence:
             - repeat:
                 count: 2
@@ -529,9 +516,14 @@ automation:
         - conditions:
             - condition: template
               value_template: >
-                {{ trigger.from_state.state == 'Låg' and trigger.to_state.state == 'Tyst' or 
-                trigger.from_state.state == 'Hög' and trigger.to_state.state == 'Låg' or 
-                trigger.from_state.state == 'Turbo' and trigger.to_state.state == 'Hög' }}
+                {% set to_1   = ( trigger.to_state.state    | int > 0    and   trigger.to_state.state    | int <= 25  ) %}
+                {% set from_2 = ( trigger.from_state.state  | int > 25   and   trigger.from_state.state  | int <= 50  ) %}
+                {% set to_2   = ( trigger.to_state.state    | int > 25   and   trigger.to_state.state    | int <= 50  ) %}
+                {% set from_3 = ( trigger.from_state.state  | int > 50   and   trigger.from_state.state  | int <= 75  ) %}
+                {% set to_3   = ( trigger.to_state.state    | int > 50   and   trigger.to_state.state    | int <= 75  ) %}
+                {% set from_4 = ( trigger.from_state.state  | int > 75   and   trigger.from_state.state  | int <= 100 ) %}
+
+                {{ from_2 and to_1 or from_3 and to_2 or from_4 and to_3 }}
           sequence:
             - service: remote.send_command
               data:
@@ -540,8 +532,12 @@ automation:
         - conditions:
             - condition: template
               value_template: >
-                {{ trigger.from_state.state == 'Hög' and trigger.to_state.state == 'Tyst' or 
-                trigger.from_state.state == 'Turbo' and trigger.to_state.state == 'Låg' }}
+                x{% set to_1   = ( trigger.to_state.state    | int > 0    and   trigger.to_state.state    | int <= 25  ) %}
+                x{% set to_2   = ( trigger.to_state.state    | int > 25   and   trigger.to_state.state    | int <= 50  ) %}
+                x{% set from_3 = ( trigger.from_state.state  | int > 50   and   trigger.from_state.state  | int <= 75  ) %}
+                x{% set from_4 = ( trigger.from_state.state  | int > 75   and   trigger.from_state.state  | int <= 100 ) %}
+
+                {{ from_3 and to_1 or from_4 and to_2 }}
           sequence:
             - repeat:
                 count: 2
@@ -553,7 +549,9 @@ automation:
         - conditions:
             - condition: template
               value_template: >
-                {{ trigger.to_state.state == 'Turbo' }}
+                {% set to_4   = ( trigger.to_state.state    | int > 75   and   trigger.to_state.state    | int <= 100 ) %}
+
+                {{ to_4 }}
           sequence:
             - service: remote.send_command
               data:
@@ -562,7 +560,10 @@ automation:
         - conditions:
             - condition: template
               value_template: >
-                {{ trigger.from_state.state == 'Turbo' and trigger.to_state.state == 'Tyst' }}
+                {% set to_1   = ( trigger.to_state.state    | int > 0    and   trigger.to_state.state    | int <= 25  ) %}
+                {% set from_4 = ( trigger.from_state.state  | int > 75   and   trigger.from_state.state  | int <= 100 ) %}
+
+                {{ from_4 and to_1 }}
           sequence:
             - repeat:
                 count: 3
