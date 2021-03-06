@@ -172,6 +172,7 @@ views:
 
           - type: icon
             icon: custom:roborock-vacuum
+            title: null
             style:
               top: 87.41%
               left: 4.8%
@@ -188,6 +189,7 @@ views:
 
           - type: icon
             icon: mdi:information-outline
+            title: null
             style:
               top: 87.41%
               left: 10.7%
@@ -204,6 +206,7 @@ views:
 
           - type: icon
             icon: mdi:arrow-up-bold-circle-outline
+            title: null
             style:
               top: 87.41%
               left: 16.55%
@@ -232,17 +235,9 @@ views:
           - type: state-label
             entity: sensor.placeholder
             attribute: vardagsrum
-            style: &state-label
+            style:
               top: 9.15%
               left: 25.4%
-              color: '#bcbebf'
-              font-family: SF Text
-              font-size: 2.4vw
-              font-weight: 500
-              max-width: 1px
-              cursor: default
-              opacity: 0.85
-              pointer-events: none
 
           #################################################
           #                                               #
@@ -328,7 +323,6 @@ views:
             style:
               top: 9.15%
               left: 50.2%
-              <<: *state-label
 
           #################################################
           #                                               #
@@ -421,7 +415,6 @@ views:
             style:
               top: 9.15%
               left: 75.1%
-              <<: *state-label
 
           #################################################
           #                                               #
@@ -519,7 +512,6 @@ views:
             style:
               top: 53.4%
               left: 25.4%
-              <<: *state-label
 
           - type: custom:swipe-card
             start_card: 1
@@ -714,7 +706,6 @@ views:
             style:
               top: 53.4%
               left: 50.2%
-              <<: *state-label
 
           #################################################
           #                                               #
@@ -794,7 +785,6 @@ views:
             style:
               top: 53.4%
               left: 75.1%
-              <<: *state-label
 
           #################################################
           #                                               #

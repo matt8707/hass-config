@@ -105,6 +105,17 @@ frontend:
           transition: none;
         }
 
+        #root>hui-state-label-element {
+          color: #bcbebf;
+          font-family: SF Text;
+          font-size: 2.4vw;
+          font-weight: 500;
+          max-width: 1px;
+          cursor: default;
+          opacity: 0.85;
+          pointer-events: none;
+        }
+
         /* * * * * * * * * * * * * * * * * *
           *                                 *
           *              TYPES              *
