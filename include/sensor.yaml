@@ -106,6 +106,30 @@ sensor:
     display_options:
       ['time', 'date']
 
+  - platform: mqtt
+    name: valetudo_version_installed
+    state_topic: homeassistant/vacuum/valetudo_robot/config
+    value_template: >
+      {{ value_json.device.sw_version.split(' ')[0] }}
+
+  - platform: rest
+    name: valetudo_version_latest
+    resource: https://api.github.com/repos/Hypfer/Valetudo/releases/latest
+    value_template: '{{ value_json.tag_name }}'
+    scan_interval: 86400
+
+  - platform: mqtt
+    name: tasmota_version_installed
+    state_topic: tasmota/discovery/C44F33B95EBA/config
+    value_template: >
+      {{ value_json.sw }}
+
+  - platform: rest
+    name: tasmota_version_latest
+    resource: https://api.github.com/repos/arendst/Tasmota/releases/latest
+    value_template: '{{ value_json.tag_name.split("v")[1] }}'
+    scan_interval: 86400
+
   - platform: rest
     name: covid_19_folkhalsomyndigheten
     resource: https://www.arcgis.com/sharing/rest/content/items/2dc63e26f509468f896ec69476b0dab3/data
@@ -398,7 +422,15 @@ sensor:
 
       hass_dev_release:
         icon_template: mdi:dev-to
-        friendly_name: Kommande release
+        friendly_name_template: >
+          {% set release = state_attr('calendar.home_assistant_devs','message') %}
+          {% if release == 'Home Assistant Core Beta Release' %}
+            Nästa beta
+          {% elif release == 'Home Assistant Core Release' %}
+            Nästa release
+          {% else %}
+            {{ release }}
+          {% endif %}
         device_class: timestamp
         value_template: >
           {{ state_attr('calendar.home_assistant_devs', 'start_time') | replace(' ','T') }}

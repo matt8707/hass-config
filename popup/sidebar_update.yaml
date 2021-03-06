@@ -55,6 +55,8 @@
                               }
                   entities:
 
+                    ### home assistant
+
                     - type: custom:hui-element
                       card_type: markdown
                       content: >
@@ -108,6 +110,8 @@
                           ]]]
                       template: icon_name
 
+                    ### hacs
+
                     - type: custom:hui-element
                       card_type: markdown
                       content: >
@@ -151,3 +155,21 @@
                                   border-radius: 0 0 1em 1em;
                                 }
                       template: icon_name
+
+                    ### other
+
+                    - type: custom:hui-element
+                      card_type: markdown
+                      content: >
+                        {% set tasmota_installed = states('sensor.tasmota_version_installed') %}
+                        {% set tasmota_latest = states('sensor.tasmota_version_latest') %}
+                        {% set valetudo_installed = states('sensor.valetudo_version_installed') %}
+                        {% set valetudo_latest = states('sensor.valetudo_version_latest') %}
+                        <span><ha-icon icon="mdi:update"></ha-icon> Övrigt</span><br>
+                        {% if tasmota_installed == tasmota_latest and valetudo_installed == valetudo_latest %}
+                        <b>Inga uppdateringar</b>
+                        {% else %}
+                        {{ '[<b>Tasmota ' + tasmota_latest + '](https://github.com/arendst/Tasmota/releases/latest) tillgänglig</b> ' + '\U0001f389' if tasmota_installed != tasmota_latest }}
+
+                        {{ '[<b>Valetudo ' + valetudo_latest + '](https://github.com/Hypfer/Valetudo/releases/latest) tillgänglig</b> ' + '\U0001f389' if valetudo_installed != valetudo_latest }}
+                        {% endif %}
