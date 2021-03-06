@@ -613,6 +613,46 @@ automation:
                       entity_id: remote.broadlink
                       command: !secret ir_purifier_speed_down
 
+  ###temp
+  - alias: air_purifier_speed_fix1_sync
+    mode: queued
+    initial_state: true
+    trigger:
+      - platform: template
+        value_template: >
+          {{ is_state('binary_sensor.gosund_air_purifier', 'off') and not is_state('input_number.air_purifier_speed', '0') }}
+    action:
+      - service: automation.turn_off
+        target:
+          entity_id: automation.air_purifier_speed
+      - service: input_number.set_value
+        data:
+          entity_id: input_number.air_purifier_speed
+          value: 0
+      - service: automation.turn_on
+        target:
+          entity_id: automation.air_purifier_speed
+
+  - alias: air_purifier_speed_fix2_restore
+    mode: queued
+    initial_state: true
+    trigger:
+      - platform: template
+        value_template: >
+          {{ is_state('binary_sensor.gosund_air_purifier', 'on') and is_state('input_number.air_purifier_speed', '0') }}
+    action:
+      - service: automation.turn_off
+        target:
+          entity_id: automation.air_purifier_speed
+      - service: input_number.air_purifier_speed
+        data:
+          entity_id: input_number.air_purifier_speed
+          value: 25
+      - service: automation.turn_on
+        target:
+          entity_id: automation.air_purifier_speed
+  ###
+
     ####################################################
     #                                                  #
     #                      TABLET                      #
