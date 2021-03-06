@@ -47,7 +47,9 @@ frontend:
           #image {
             pointer-events: none;
           }
-
+          #brokenImage {
+            opacity: 0 !important;
+          }
         "hui-panel-view$hui-picture-elements-card$#root>hui-state-label-element":
           $: |
             div {
@@ -55,41 +57,6 @@ frontend:
             }
 
       card-mod-element: |
-        .type-image {
-          width: 21.5%;
-          pointer-events: none;
-          border-right: 2px solid rgba(58,69,73,0.2);
-        }
-
-        .type-state-label {
-          color: '#bcbebf';
-          font-family: SF Text;
-          font-size: 2.4vw;
-          font-weight: 500;
-          max-width: 1px;
-          cursor: default;
-          opacity: 0.85;
-          pointer-events: none
-        }
-
-        .type-icon {
-          color: rgb(255, 255, 255);
-          opacity: 0.1;
-          padding: 0.8vw;
-          --mdc-icon-size: 4vw;
-          transition: 0.4s;
-        }
-
-        .type-icon:hover {
-          opacity: 0.25;
-          transition: none;
-        }
-
-        .type-icon:active {
-          opacity: 0.35;
-          transition: none;
-        }
-
         .markdown-sidebar {
           font-size: 1.5vw;
           font-weight: 300;
@@ -118,6 +85,24 @@ frontend:
       card-mod-card: |
         ha-card {
           background: none;
+        }
+
+        #root>hui-icon-element {
+          color: rgb(255, 255, 255);
+          opacity: 0.1;
+          padding: 0.8vw;
+          --mdc-icon-size: 4vw;
+          transition: 0.4s;
+        }
+
+        #root>hui-icon-element:hover {
+          opacity: 0.25 !important;
+          transition: none;
+        }
+
+        #root>hui-icon-element:active {
+          opacity: 0.35 !important;
+          transition: none;
         }
 
         /* * * * * * * * * * * * * * * * * *

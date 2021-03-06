@@ -57,6 +57,15 @@ views:
             style:
               top: 49.24%
               left: 10.6%
+              width: 21.5%
+              pointer-events: none
+              border-right: 2px solid rgba(58,69,73,0.2)
+            card_mod:
+              style:
+                hui-image$div: |
+                  #brokenImage {
+                    opacity: 0 !important;
+                  }
 
           #################################################
           #                                               #
@@ -223,9 +232,17 @@ views:
           - type: state-label
             entity: sensor.placeholder
             attribute: vardagsrum
-            style:
+            style: &state-label
               top: 9.15%
               left: 25.4%
+              color: '#bcbebf'
+              font-family: SF Text
+              font-size: 2.4vw
+              font-weight: 500
+              max-width: 1px
+              cursor: default
+              opacity: 0.85
+              pointer-events: none
 
           #################################################
           #                                               #
@@ -311,6 +328,7 @@ views:
             style:
               top: 9.15%
               left: 50.2%
+              <<: *state-label
 
           #################################################
           #                                               #
@@ -403,6 +421,7 @@ views:
             style:
               top: 9.15%
               left: 75.1%
+              <<: *state-label
 
           #################################################
           #                                               #
@@ -500,6 +519,7 @@ views:
             style:
               top: 53.4%
               left: 25.4%
+              <<: *state-label
 
           - type: custom:swipe-card
             start_card: 1
@@ -694,6 +714,7 @@ views:
             style:
               top: 53.4%
               left: 50.2%
+              <<: *state-label
 
           #################################################
           #                                               #
@@ -773,6 +794,7 @@ views:
             style:
               top: 53.4%
               left: 75.1%
+              <<: *state-label
 
           #################################################
           #                                               #
