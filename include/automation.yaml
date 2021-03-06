@@ -16,7 +16,7 @@ automation:
       - service: mqtt.publish
         data:
           topic: cmnd/tasmotas/status
-          payload: 10
+          payload: 8
       - service: browser_mod.close_popup
       - delay:
           seconds: 1
@@ -279,7 +279,7 @@ automation:
       - service: mqtt.publish
         data:
           topic: cmnd/tasmotas/status
-          payload: 10
+          payload: 8
 
     ####################################################
     #                                                  #
@@ -468,6 +468,46 @@ automation:
                 entity_id: remote.broadlink
                 command: !secret ir_fan_speed
 
+  ###temp
+  - alias: sovrum_anslut_speed_fix1_sync
+    mode: queued
+    initial_state: true
+    trigger:
+      - platform: template
+        value_template: >
+          {{ is_state('binary_sensor.gosund_fan', 'off') and not is_state('input_number.sovrum_anslut_speed', '0') }}
+    action:
+      - service: automation.turn_off
+        target:
+          entity_id: automation.sovrum_anslut_speed
+      - service: input_number.set_value
+        data:
+          entity_id: input_number.sovrum_anslut_speed
+          value: 0
+      - service: automation.turn_on
+        target:
+          entity_id: automation.sovrum_anslut_speed
+
+  - alias: sovrum_anslut_speed_fix2_restore
+    mode: queued
+    initial_state: true
+    trigger:
+      - platform: template
+        value_template: >
+          {{ is_state('binary_sensor.gosund_fan', 'on') and is_state('input_number.sovrum_anslut_speed', '0') }}
+    action:
+      - service: automation.turn_off
+        target:
+          entity_id: automation.sovrum_anslut_speed
+      - service: input_number.set_value
+        data:
+          entity_id: input_number.sovrum_anslut_speed
+          value: 33
+      - service: automation.turn_on
+        target:
+          entity_id: automation.sovrum_anslut_speed
+  ###
+
     ####################################################
     #                                                  #
     #                   AIR PURIFIER                   #
@@ -486,10 +526,10 @@ automation:
             - condition: template
               value_template: >
                 {% set from_1 = ( trigger.from_state.state  | int > 0    and   trigger.from_state.state  | int <= 25  ) %}
-                {% set from_2 = ( trigger.from_state.state  | int > 25   and   trigger.from_state.state  | int <= 50  ) %}
                 {% set to_2   = ( trigger.to_state.state    | int > 25   and   trigger.to_state.state    | int <= 50  ) %}
-                {% set from_3 = ( trigger.from_state.state  | int > 50   and   trigger.from_state.state  | int <= 75  ) %}
+                {% set from_2 = ( trigger.from_state.state  | int > 25   and   trigger.from_state.state  | int <= 50  ) %}
                 {% set to_3   = ( trigger.to_state.state    | int > 50   and   trigger.to_state.state    | int <= 75  ) %}
+                {% set from_3 = ( trigger.from_state.state  | int > 50   and   trigger.from_state.state  | int <= 75  ) %}
                 {% set to_4   = ( trigger.to_state.state    | int > 75   and   trigger.to_state.state    | int <= 100 ) %}
 
                 {{ from_1 and to_2 or from_2 and to_3 or from_3 and to_4 }}
@@ -516,12 +556,12 @@ automation:
         - conditions:
             - condition: template
               value_template: >
-                {% set to_1   = ( trigger.to_state.state    | int > 0    and   trigger.to_state.state    | int <= 25  ) %}
                 {% set from_2 = ( trigger.from_state.state  | int > 25   and   trigger.from_state.state  | int <= 50  ) %}
-                {% set to_2   = ( trigger.to_state.state    | int > 25   and   trigger.to_state.state    | int <= 50  ) %}
+                {% set to_1   = ( trigger.to_state.state    | int > 0    and   trigger.to_state.state    | int <= 25  ) %}
                 {% set from_3 = ( trigger.from_state.state  | int > 50   and   trigger.from_state.state  | int <= 75  ) %}
-                {% set to_3   = ( trigger.to_state.state    | int > 50   and   trigger.to_state.state    | int <= 75  ) %}
+                {% set to_2   = ( trigger.to_state.state    | int > 25   and   trigger.to_state.state    | int <= 50  ) %}
                 {% set from_4 = ( trigger.from_state.state  | int > 75   and   trigger.from_state.state  | int <= 100 ) %}
+                {% set to_3   = ( trigger.to_state.state    | int > 50   and   trigger.to_state.state    | int <= 75  ) %}
 
                 {{ from_2 and to_1 or from_3 and to_2 or from_4 and to_3 }}
           sequence:
@@ -532,10 +572,10 @@ automation:
         - conditions:
             - condition: template
               value_template: >
-                x{% set to_1   = ( trigger.to_state.state    | int > 0    and   trigger.to_state.state    | int <= 25  ) %}
-                x{% set to_2   = ( trigger.to_state.state    | int > 25   and   trigger.to_state.state    | int <= 50  ) %}
-                x{% set from_3 = ( trigger.from_state.state  | int > 50   and   trigger.from_state.state  | int <= 75  ) %}
-                x{% set from_4 = ( trigger.from_state.state  | int > 75   and   trigger.from_state.state  | int <= 100 ) %}
+                {% set from_3 = ( trigger.from_state.state  | int > 50   and   trigger.from_state.state  | int <= 75  ) %}
+                {% set to_1   = ( trigger.to_state.state    | int > 0    and   trigger.to_state.state    | int <= 25  ) %}
+                {% set from_4 = ( trigger.from_state.state  | int > 75   and   trigger.from_state.state  | int <= 100 ) %}
+                {% set to_2   = ( trigger.to_state.state    | int > 25   and   trigger.to_state.state    | int <= 50  ) %}
 
                 {{ from_3 and to_1 or from_4 and to_2 }}
           sequence:
@@ -560,8 +600,8 @@ automation:
         - conditions:
             - condition: template
               value_template: >
-                {% set to_1   = ( trigger.to_state.state    | int > 0    and   trigger.to_state.state    | int <= 25  ) %}
                 {% set from_4 = ( trigger.from_state.state  | int > 75   and   trigger.from_state.state  | int <= 100 ) %}
+                {% set to_1   = ( trigger.to_state.state    | int > 0    and   trigger.to_state.state    | int <= 25  ) %}
 
                 {{ from_4 and to_1 }}
           sequence:

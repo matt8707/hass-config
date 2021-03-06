@@ -31,21 +31,18 @@ binary_sensor:
 
   - platform: mqtt
     name: gosund_fan
-    state_topic: stat/gosund1/STATUS10
-    force_update: true
-    payload_on: 'on'
-    payload_off: 'off'
+    state_topic: stat/gosund1/STATUS8
+    #https://tasmota.github.io/docs/Commands/#rules
+    #Backlog Rule1 ON ENERGY#Power>10 DO Status 8 ENDON ON ENERGY#Power<10 DO Status 8 ENDON; Rule1 1; Rule1 5
     value_template: >
-      {{ 'on' if value_json.StatusSNS.ENERGY.Power | int > 10 else 'off' }}
+      {{ 'ON' if value_json.StatusSNS.ENERGY.Power | int > 10 else 'OFF' }}
 
   - platform: mqtt
     name: gosund_air_purifier
-    state_topic: stat/gosund2/STATUS10
-    force_update: true
-    payload_on: 'on'
-    payload_off: 'off'
+    state_topic: stat/gosund2/STATUS8
+    #Backlog Rule1 ON ENERGY#Power>0 DO Status 8 ENDON ON ENERGY#Power==0 DO Status 8 ENDON; Rule1 1; Rule1 5
     value_template: >
-      {{ 'on' if value_json.StatusSNS.ENERGY.Power | int > 0 else 'off' }}
+      {{ 'ON' if value_json.StatusSNS.ENERGY.Power | int > 0 else 'OFF' }}
 
   - platform: template
     sensors:

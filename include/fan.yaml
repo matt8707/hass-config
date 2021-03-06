@@ -68,19 +68,6 @@ fan:
                   data:
                     entity_id: remote.broadlink
                     command: !secret ir_fan_swing
-          - repeat:
-            # report state
-              count: 20
-              sequence:
-                - condition: state
-                  entity_id: binary_sensor.gosund_fan
-                  state: 'off'
-                - delay:
-                    seconds: 1
-                - service: mqtt.publish
-                  data:
-                    topic: cmnd/gosund1/status
-                    payload: 10
         turn_off:
           - condition: state
             entity_id: binary_sensor.gosund_fan
@@ -100,19 +87,6 @@ fan:
             data:
               entity_id: remote.broadlink
               command: !secret ir_fan_power
-          - repeat:
-            # report state
-              count: 20
-              sequence:
-                - condition: state
-                  entity_id: binary_sensor.gosund_fan
-                  state: 'on'
-                - delay:
-                    seconds: 1
-                - service: mqtt.publish
-                  data:
-                    topic: cmnd/gosund1/status
-                    payload: 10
 
     ####################################################
     #                                                  #
@@ -152,19 +126,6 @@ fan:
             data:
               entity_id: remote.broadlink
               command: !secret ir_purifier_power
-          - repeat:
-            # report state
-              count: 20
-              sequence:
-                - condition: state
-                  entity_id: binary_sensor.gosund_air_purifier
-                  state: 'off'
-                - delay:
-                    seconds: 1
-                - service: mqtt.publish
-                  data:
-                    topic: cmnd/gosund2/status
-                    payload: 10
         turn_off:
           - condition: state
             entity_id: binary_sensor.gosund_air_purifier
@@ -184,16 +145,3 @@ fan:
             data:
               entity_id: remote.broadlink
               command: !secret ir_purifier_power
-          - repeat:
-            # report state
-              count: 20
-              sequence:
-                - condition: state
-                  entity_id: binary_sensor.gosund_air_purifier
-                  state: 'on'
-                - delay:
-                    seconds: 1
-                - service: mqtt.publish
-                  data:
-                    topic: cmnd/gosund2/status
-                    payload: 10
