@@ -80,7 +80,7 @@
                   }
                 </style>
                 <circle cx="25" cy="25" r="${radius}" stroke="#b2b2b2" stroke-width="1.5" fill="none" />
-                <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">${input}<tspan font-size="10">%</tspan></text>
+                <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle" dominant-baseline="middle">${input}<tspan font-size="10">%</tspan></text>
               </svg>
             `;
           }
@@ -284,7 +284,7 @@
                 }
               </style>
               <circle cx="25" cy="25" r="20.5" stroke="${stroke_color}" stroke-width="1.5" fill="${fill_color}" />
-              <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle">${last_changed}</text>
+              <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle" dominant-baseline="middle">${last_changed}</text>
             </svg>
           `;
         ]]]
