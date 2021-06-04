@@ -1,289 +1,124 @@
 button_card_templates: !include button_card_templates.yaml
 
-##########################################################################
-#                                                                        #
-#                              * LOVELACE *                              #
-#                                                                        #
-##########################################################################
-
 views:
-  - title: Hemma
-    panel: true
-    path: default_view
+  - type: custom:grid-layout
+    path: 0
+    layout:
+      #default
+      grid-gap: var(--custom-layout-card-padding)
+      grid-template-columns: repeat(4, 1fr) 0
+      grid-template-rows: 0 repeat(2, fit-content(100%)) 0fr
+      grid-template-areas: |
+        "sidebar  .           .       .       ."
+        "sidebar  vardagsrum  studio  sovrum  ."
+        "sidebar  media       övrigt  hemma   ."
+        "sidebar  footer      footer  footer  ."
+      mediaquery:
+        #phone
+        "(max-width: 800px)":
+          grid-gap: calc(var(--custom-layout-card-padding) * 1.5)
+          grid-template-columns: 0 repeat(2, 1fr) 0
+          grid-template-rows: 0 repeat(5, fit-content(100%)) 0fr
+          grid-template-areas: |
+            ".  .           .        ."
+            ".  sidebar     sidebar  ."
+            ".  vardagsrum  sovrum   ."
+            ".  studio      övrigt   ."
+            ".  media       hemma    ."
+            ".  footer      footer   ."
+            ".  .           .        ."
+        #portrait
+        "(max-width: 1200px)":
+          grid-gap: var(--custom-layout-card-padding)
+          grid-template-columns: repeat(3, 1fr) 0
+          grid-template-rows: 0 repeat(3, fit-content(100%)) 0fr
+          grid-template-areas: |
+            "sidebar  .           .       ."
+            "sidebar  vardagsrum  sovrum  ."
+            "sidebar  studio      övrigt  ."
+            "sidebar  media       hemma   ."
+            "sidebar  footer      footer  ."
+            "sidebar  .           .       ."
     cards:
-      - type: picture-elements
-        image: /local/background.png
-        theme: tablet
-        elements:
 
-          #################################################
-          #                                               #
-          #                   COVID-19                    #
-          #                                               #
-          #################################################
+      #################################################
+      #                                               #
+      #                    SIDEBAR                    #
+      #                                               #
+      #################################################
 
-          - type: custom:hui-element
-            card_type: markdown
-            style:
-              top: 93.65%
-              left: 70.2%
-            content: >
-              {{ state_attr('sensor.covid_19_template', 'render') }}
-            card_mod:
-              class: markdown-covid19
-              style:
-                .: |
-                  ha-markdown {
-                    padding: 0 !important;
-                  }
-                ha-markdown:
-                  $: |
-                    ha-markdown-element {
-                      opacity: 0.6;
-                    }
-                    ha-markdown-element > font > ha-icon {
-                      vertical-align: 3%;
-                      opacity: 0.4;
-                    }
+      - type: markdown
+        view_layout:
+          grid-area: sidebar
+        content: |
+          {% set attributes = states.sensor.template_sidebar.attributes | default %}
+          {% for template in attributes %}
+          {{ state_attr('sensor.template_sidebar', template) }}
+          {% endfor %}
 
-          ##########################################################################
-          #                                                                        #
-          #                              * SIDEBAR *                               #
-          #                                                                        #
-          ##########################################################################
+      - type: conditional
+        view_layout:
+          grid-area: sidebar
+        conditions:
+          - entity: input_boolean.laundry_display
+            state: 'on'
+        card:
+          type: custom:button-card
+          entity: timer.laundry
+          template: laundry
 
-          - type: image
-            image: local/sidebar.png
-            style:
-              top: 49.24%
-              left: 10.6%
-              width: 21.5%
-              pointer-events: none
-              border-right: 2px solid rgba(58,69,73,0.2)
-            card_mod:
-              style:
-                hui-image$div: |
-                  #brokenImage {
-                    opacity: 0 !important;
-                  }
-
-          #################################################
-          #                                               #
-          #                   MARKDOWN                    #
-          #                                               #
-          #################################################
-
-          - type: custom:hui-element
-            card_type: markdown
-            style:
-              top: 9%
-              left: 11.1%
-            card_mod:
-              class: markdown-sidebar
-              style:
-                .: |
-                  ha-markdown {
-                    padding: 0 !important;
-                  }
-                ha-markdown:
-                  $: |
-                    :host {
-                      opacity: 0.9;
-                    }
-                    ha-markdown-element > p > span {
-                      font-family: SF Text;
-                      font-size: 5vw;
-                      font-weight: 200;
-                      margin-left: -0.3vw;
-                      letter-spacing: -0.05vw;
-                    }
-                    ha-markdown-element > p > span > span {
-                      position: relative;
-                      top: -.09em;
-                    }
-
-            content: >
-              <span>{{ now().strftime('%H') }}<span>:</span>{{ now().strftime('%M') }}</span>
-
-
-              <font color='#6a7377'><b>{{ states('sensor.sidebar_day') }}</b><br>
-              <b>{{ states('sensor.sidebar_date') }}</b> </font><br> 
-
-
-              <b>{{ states('sensor.sidebar_greeting') }}</b>
-
-
-              <b>{{ states('sensor.sidebar_active') }}</b>
-
-
-              <font color='#6a7377'>
-              <b>{{ states('sensor.sidebar_vacuum') }}</b>
-
-
-              {{ states('sensor.sidebar_weather') }}
-
-
-              {{ states('sensor.sidebar_skanetrafiken') }}
-
-
-              {{ states('sensor.tvatta_countdown') }}
-
-
-              {{ states('sensor.mathem_countdown') }}
-
-
-              {% if is_state('switch.computer_imac', 'on') and 
-              states('sensor.imac_ip') == states('sensor.public_ip') 
-              or states('sensor.myip') == states('sensor.public_ip') %}
-              {{'\u26A0\uFE0F'}} Kontrollera VPN-anslutning. {% endif %}
-              
-
-              {% if is_state('binary_sensor.plex_availability', 'off') %}
-              {{'\u26A0\uFE0F'}} Plex är nere...{% endif %}
-
-
-              {% if is_state('binary_sensor.nas_internet_access', 'off') %}
-              {{'\u26A0\uFE0F'}} Kontrollera NAS internetåtkomst{% endif %}
-              </font>
-
-          #################################################
-          #                                               #
-          #                 LAUNDRY TIMER                 #
-          #                                               #
-          #################################################
-
-          - type: conditional
-            conditions:
-              - entity: input_boolean.laundry_timer_visibility
-                state: 'on'
-            elements:
-              - type: custom:button-card
-                entity: timer.laundry
-                template: laundry
-                style:
-                  top: 77%
-                  left: 10.7%
-
-          #################################################
-          #                                               #
-          #                 VACUUM BUTTON                 #
-          #                                               #
-          #################################################
-
-          - type: icon
-            icon: custom:roborock-vacuum
-            title: null
-            style:
-              top: 87.41%
-              left: 4.8%
+      - type: grid
+        view_layout:
+          grid-area: sidebar
+        cards:
+          - type: button
+            icon: mdi:robot-vacuum
             tap_action:
               !include popup/sidebar_vacuum.yaml
-            hold_action:
-              action: none
 
-          #################################################
-          #                                               #
-          #                  INFO BUTTON                  #
-          #                                               #
-          #################################################
-
-          - type: icon
+          - type: button
             icon: mdi:information-outline
-            title: null
-            style:
-              top: 87.41%
-              left: 10.7%
             tap_action:
               !include popup/sidebar_information.yaml
-            hold_action:
-              action: none
 
-          #################################################
-          #                                               #
-          #                UPDATES BUTTON                 #
-          #                                               #
-          #################################################
-
-          - type: icon
+          - type: button
             icon: mdi:arrow-up-bold-circle-outline
-            title: null
-            style:
-              top: 87.41%
-              left: 16.55%
             tap_action:
               !include popup/sidebar_update.yaml
-            hold_action:
-              action: call-service
-              service: homeassistant.update_entity
-              service_data:
-                entity_id: sensor.hacs
-            card_mod:
-              style: |
-                :host {
-                  {% if is_state('binary_sensor.sidebar_update_color', 'on') %}
-                    color: rgb(35,78,106) !important; 
-                    opacity: 1 !important;
-                  {% endif %}
-                  }
 
-          ##########################################################################
-          #                                                                        #
-          #                             * VARDAGSRUM *                             #
-          #                                                                        #
-          ##########################################################################
+      #################################################
+      #                                               #
+      #                  VARDAGSRUM                   #
+      #                                               #
+      #################################################
 
-          - type: state-label
-            entity: sensor.placeholder
-            attribute: vardagsrum
-            style:
-              top: 9.15%
-              left: 25.4%
-
-          #################################################
-          #                                               #
-          #                   BELYSNING                   #
-          #                                               #
-          #################################################
+      - type: grid
+        title: Vardagsrum
+        view_layout:
+          grid-area: vardagsrum
+        columns: 2
+        cards:
 
           - type: custom:button-card
-            entity: light.belysning
-            style:
-              top: 20.35%
-              left: 30.31%
-              width: 10%
-            template:
-              - light
-              - icon_hue
-
-          #################################################
-          #                                               #
-          #                   SKRIVBORD                   #
-          #                                               #
-          #################################################
-
-          - type: custom:button-card
-            entity: light.skrivbord
-            style:
-              top: 20.35%
-              left: 41.31%
-              width: 10%
+            entity: light.vardagsrum #hue_group
+            name: Belysning
             template:
               - light
               - icon_shade
 
-          #################################################
-          #                                               #
-          #                      TV                       #
-          #                                               #
-          #################################################
+          - type: custom:button-card
+            entity: switch.balkong
+            name: Balkong
+            hold_action:
+              !include popup/vardagsrum_balkong.yaml
+            template:
+              - base
+              - icon_hue
+              - loader
 
           - type: custom:button-card
-            entity: media_player.sony_bravia
-            triggers_update: input_boolean.sony_bravia
-            style:
-              top: 37.9%
-              left: 30.31%
-              width: 10%
+            entity: media_player.sony_bravia_tv
+            name: Tv
             hold_action:
               !include popup/vardagsrum_tv.yaml
             template:
@@ -291,208 +126,134 @@ views:
               - icon_tv
               - loader
 
-          #################################################
-          #                                               #
-          #                  PLAYSTATION                  #
-          #                                               #
-          #################################################
-
           - type: custom:button-card
             entity: switch.playstation_5
-            triggers_update: input_boolean.playstation_5
+            name: Playstation
             hold_action:
               !include popup/vardagsrum_playstation.yaml
-            style:
-              top: 37.9%
-              left: 41.31%
-              width: 10%
             template:
               - base
               - icon_ps5
               - loader
 
-          ##########################################################################
-          #                                                                        #
-          #                               * STUDIO *                               #
-          #                                                                        #
-          ##########################################################################
+      #################################################
+      #                                               #
+      #                    STUDIO                     #
+      #                                               #
+      #################################################
 
-          - type: state-label
-            entity: sensor.placeholder
-            attribute: studio
-            style:
-              top: 9.15%
-              left: 50.2%
-
-          #################################################
-          #                                               #
-          #                  DATORLAMPA                   #
-          #                                               #
-          #################################################
+      - type: grid
+        title: Studio
+        view_layout:
+          grid-area: studio
+        columns: 2
+        cards:
 
           - type: custom:button-card
-            entity: light.datorlampa
-            style:
-              top: 20.35%
-              left: 55.18%
-              width: 10%
+            entity: light.dator
+            name: Datorlampa
             template:
               - light
               - icon_hue
 
-          #################################################
-          #                                               #
-          #                   TAKLAMPOR                   #
-          #                                               #
-          #################################################
-
           - type: custom:button-card
-            entity: light.taklampor
-            style:
-              top: 20.35%
-              left: 66.14%
-              width: 10%
+            entity: light.taklampor #hue_group
+            name: Taklampor
             template:
               - light
               - icon_spot
 
-          #################################################
-          #                                               #
-          #                     DATOR                     #
-          #                                               #
-          #################################################
-
           - type: custom:button-card
             entity: switch.computer_imac
+            name: Dator
             triggers_update:
-              - input_boolean.computer_imac
-              - input_boolean.computer_lock
+              - lock.dator
               - script.home_leave
-            style:
-              top: 37.9%
-              left: 55.18%
-              width: 10%
             hold_action:
               !include popup/studio_dator.yaml
             template:
               - base
               - icon_imac
               - loader
-              - computer_lock
-
-          #################################################
-          #                                               #
-          #                   MONITORER                   #
-          #                                               #
-          #################################################
+              - lock
 
           - type: custom:button-card
             entity: switch.wemo_monitors
+            name: Monitorer
             triggers_update: sensor.monitors_volume
-            style:
-              top: 37.9%
-              left: 66.14%
-              width: 10%
             hold_action:
               !include popup/studio_monitorer.yaml
             template:
               - base
               - icon_monitors
               - circle
+              - loader
             variables:
               circle_input: >
-                [[[ return states['sensor.monitors_volume'].state; ]]]
+                [[[
+                  var entity_id = 'sensor.monitors_volume';
+                  return states[entity_id] === undefined ? null : states[entity_id].state;
+                ]]]
 
-          ##########################################################################
-          #                                                                        #
-          #                               * SOVRUM *                               #
-          #                                                                        #
-          ##########################################################################
+      #################################################
+      #                                               #
+      #                    SOVRUM                     #
+      #                                               #
+      #################################################
 
-          - type: state-label
-            entity: sensor.placeholder
-            attribute: sovrum
-            style:
-              top: 9.15%
-              left: 75.1%
-
-          #################################################
-          #                                               #
-          #                  SÄNGLAMPOR                   #
-          #                                               #
-          #################################################
+      - type: grid
+        title: Sovrum
+        view_layout:
+          grid-area: sovrum
+        columns: 2
+        cards:
 
           - type: custom:button-card
-            entity: light.sanglampor
-            style:
-              top: 20.35%
-              left: 80.05%
-              width: 10%
+            entity: light.sovrum #hue_group
+            name: Sänglampor
             template:
               - light
               - icon_lamp
 
-          #################################################
-          #                                               #
-          #                 AIR PURIFIER                  #
-          #                                               #
-          #################################################
-
           - type: custom:button-card
             entity: fan.air_purifier
-            triggers_update: input_boolean.air_purifier
-            style:
-              top: 20.35%
-              left: 91.05%
-              width: 10%
+            name: Luftrenare
             hold_action:
               !include popup/sovrum_luftrenare.yaml
             template:
               - base
               - icon_air_purifier
-              - loader
               - circle
+              - loader
             variables:
               circle_input: >
-                [[[ return parseInt(entity.attributes.percentage_step); ]]]
-
-          #################################################
-          #                                               #
-          #                      FAN                      #
-          #                                               #
-          #################################################
+                [[[
+                  return entity === undefined ?
+                    null :
+                    parseInt(entity.attributes.percentage_step);
+                ]]]
 
           - type: custom:button-card
             entity: fan.sovrum_anslut
-            triggers_update: input_boolean.sovrum_anslut
-            style:
-              top: 37.9%
-              left: 80.05%
-              width: 10%
+            name: Fläkt
             hold_action:
               !include popup/sovrum_flakt.yaml
             template:
               - base
               - icon_fan
-              - loader
               - circle
+              - loader
             variables:
               circle_input: >
-                [[[ return parseInt(entity.attributes.percentage_step); ]]]
-
-          #################################################
-          #                                               #
-          #                      TV2                      #
-          #                                               #
-          #################################################
+                [[[
+                  return entity === undefined ?
+                    null :
+                    parseInt(entity.attributes.percentage_step);
+                ]]]
 
           - type: custom:button-card
-            entity: media_player.samsung_tv_remote
-            triggers_update: input_boolean.samsung_tv_remote
-            style:
-              top: 37.9%
-              left: 91.05%
-              width: 10%
+            entity: media_player.samsung_tv
+            name: "Tv\u00B2"
             hold_action:
               !include popup/sovrum_tv2.yaml
             template:
@@ -500,18 +261,18 @@ views:
               - icon_tv
               - loader
 
-          ##########################################################################
-          #                                                                        #
-          #                               * MEDIA *                                #
-          #                                                                        #
-          ##########################################################################
- 
-          - type: state-label
-            entity: sensor.placeholder
-            attribute: media
-            style:
-              top: 53.4%
-              left: 25.4%
+      #################################################
+      #                                               #
+      #                     MEDIA                     #
+      #                                               #
+      #################################################
+
+      - type: grid
+        title: Media
+        view_layout:
+          grid-area: media
+        columns: 1
+        cards:
 
           - type: custom:swipe-card
             start_card: 1
@@ -524,150 +285,83 @@ views:
               coverflowEffect:
                 rotate: 80
                 depth: 300
-            style:
-              top: 56.55%
-              left: 35.8%
-              width: 20.97%
-              height: 1px
             cards:
 
-              - type: picture-elements
-                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50' /%3E"
-                elements:
-
-                  #################################################
-                  #                                               #
-                  #              RECENTLY DOWNLOADED              #
-                  #                                               #
-                  #################################################
+              - type: vertical-stack
+                cards:
 
                   - type: conditional
                     conditions:
                       - entity: input_select.conditional_media
                         state: Senast nedladdat
-                    elements:
-                      - type: custom:button-card
-                        entity: sensor.plex_recently_added
-                        tap_action:
-                          action: none
-                        style:
-                          top: 50%
-                          left: 50%
-                          width: 100%
-                        template:
-                          - conditional_media
-                          - recently_downloaded
-                          - icon_plex
-
-                  #################################################
-                  #                                               #
-                  #              APPLE TV VARDAGSRUM              #
-                  #                                               #
-                  #################################################
+                    card:
+                      type: custom:button-card
+                      entity: sensor.plex_recently_added
+                      tap_action:
+                        action: none
+                      template:
+                        - conditional_media
+                        - recently_downloaded
+                        - icon_plex
 
                   - type: conditional
                     conditions:
                       - entity: input_select.conditional_media
                         state: Vardagsrum
-                    elements:
-                      - type: custom:button-card
-                        entity: media_player.vardagsrum
-                        style:
-                          top: 50%
-                          left: 50%
-                          width: 100%
-                        template:
-                          - conditional_media
-                          - icon_apple_tv
-
-                  #################################################
-                  #                                               #
-                  #                APPLE TV SOVRUM                #
-                  #                                               #
-                  #################################################
+                    card:
+                      type: custom:button-card
+                      entity: media_player.vardagsrum
+                      template:
+                        - conditional_media
+                        - icon_apple_tv
 
                   - type: conditional
                     conditions:
                       - entity: input_select.conditional_media
                         state: Sovrum
-                    elements:
-                      - type: custom:button-card
-                        entity: media_player.sovrum
-                        style:
-                          top: 50%
-                          left: 50%
-                          width: 100%
-                        template:
-                          - conditional_media
-                          - icon_apple_tv
-
-                  #################################################
-                  #                                               #
-                  #                    SPOTIFY                    #
-                  #                                               #
-                  #################################################
+                    card:
+                      type: custom:button-card
+                      entity: media_player.sovrum
+                      template:
+                        - conditional_media
+                        - icon_apple_tv
 
                   - type: conditional
                     conditions:
                       - entity: input_select.conditional_media
                         state: Spotify
-                    elements:
-                      - type: custom:button-card
-                        entity: media_player.spotify
-                        style:
-                          top: 50%
-                          left: 50%
-                          width: 100%
-                        template:
-                          - conditional_media
-                          - icon_spotify
-
-                  #################################################
-                  #                                               #
-                  #               GOOGLE NEST MINI                #
-                  #                                               #
-                  #################################################
+                    card:
+                      type: custom:button-card
+                      entity: media_player.spotify
+                      template:
+                        - conditional_media
+                        - icon_spotify
 
                   - type: conditional
                     conditions:
                       - entity: input_select.conditional_media
                         state: Google Nest Mini
-                    elements:
-                      - type: custom:button-card
-                        entity: media_player.google_nest_mini
-                        style:
-                          top: 50%
-                          left: 50%
-                          width: 100%
-                        template:
-                          - conditional_media
-                          - icon_nest_mini
+                    card:
+                      type: custom:button-card
+                      entity: media_player.kok
+                      template:
+                        - conditional_media
+                        - icon_nest_mini
 
-                  #################################################
-                  #                                               #
-                  #           * SMALL MEDIA CONTROLS *            #
-                  #                                               #
-                  #################################################
+              - type: grid
+                columns: 2
+                cards:
 
-              - type: picture-elements
-                image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50' /%3E"
-                elements:
                   - type: custom:button-card
                     entity: media_player.vardagsrum
-                    style:
-                      top: 23.9%
-                      left: 23.8%
-                      width: 47.7%
+                    name: Vardagsrum
                     template:
                       - media
                       - icon_apple_tv
 
                   - type: custom:button-card
+                    name: Sovrum
                     entity: media_player.sovrum
-                    style:
-                      top: 23.9%
-                      left: 76.2%
-                      width: 47.7%
                     template:
                       - media
                       - icon_apple_tv
@@ -675,195 +369,118 @@ views:
                   - type: custom:button-card
                     entity: media_player.spotify
                     name: Spotify
-                    style:
-                      top: 76.2%
-                      left: 23.8%
-                      width: 47.7%
                     template:
                       - media
                       - icon_spotify
 
                   - type: custom:button-card
-                    entity: media_player.google_nest_mini
+                    entity: media_player.kok
                     name: Nest Mini
-                    style:
-                      top: 76.2%
-                      left: 76.2%
-                      width: 47.7%
                     template:
                       - media
                       - icon_nest_mini
 
-          ##########################################################################
-          #                                                                        #
-          #                               * ÖVRIGT *                               #
-          #                                                                        #
-          ##########################################################################
+      #################################################
+      #                                               #
+      #                    ÖVRIGT                     #
+      #                                               #
+      #################################################
 
-          - type: state-label
-            entity: sensor.placeholder
-            attribute: ovrigt
-            style:
-              top: 53.4%
-              left: 50.2%
-
-          #################################################
-          #                                               #
-          #                    BADRUM                     #
-          #                                               #
-          #################################################
+      - type: grid
+        title: Övrigt
+        view_layout:
+          grid-area: övrigt
+        columns: 2
+        cards:
 
           - type: custom:button-card
-            entity: light.badrum
-            style:
-              top: 64.5%
-              left: 55.18%
-              width: 10%
+            entity: light.badrum #hue_group
+            name: Badrum
             template:
               - light
               - icon_bathroom
 
-          #################################################
-          #                                               #
-          #                    FLÄKT2                     #
-          #                                               #
-          #################################################
-
           - type: custom:button-card
             entity: fan.studio_wemo
-            style:
-              top: 64.5%
-              left: 66.14%
-              width: 10%
+            name: "Fläkt\u00B2"
             hold_action:
               !include popup/studio_flakt.yaml
             template:
               - base
               - icon_fan2
-
-          #################################################
-          #                                               #
-          #                   GARDEROB                    #
-          #                                               #
-          #################################################
+              - loader
 
           - type: custom:button-card
-            entity: light.kladkammare
-            style:
-              top: 82.1%
-              left: 55.18%
-              width: 10%
+            entity: light.garderob
+            name: Garderob
             template:
               - light
               - icon_closet
 
-          #################################################
-          #                                               #
-          #                     HALL                      #
-          #                                               #
-          #################################################
-
           - type: custom:button-card
-            entity: light.hall
-            style:
-              top: 82.1%
-              left: 66.14%
-              width: 10%
+            entity: light.hall #hue_group
+            name: Hall
             template:
               - light
               - icon_spot
 
-          ##########################################################################
-          #                                                                        #
-          #                               * HEMMA *                                #
-          #                                                                        #
-          ##########################################################################
+      #################################################
+      #                                               #
+      #                     HEMMA                     #
+      #                                               #
+      #################################################
 
-          - type: state-label
-            entity: sensor.placeholder
-            attribute: hemma
-            style:
-              top: 53.4%
-              left: 75.1%
-
-          #################################################
-          #                                               #
-          #                    MATTIAS                    #
-          #                                               #
-          #################################################
+      - type: grid
+        title: Hemma
+        view_layout:
+          grid-area: hemma
+        columns: 2
+        cards:
 
           - type: custom:button-card
-            entity: person.mattias
-            triggers_update: sensor.time
-            style:
-              top: 64.5%
-              left: 80.05%
-              width: 10%
+            entity: person.matte
+            name: Mattias
             tap_action:
               !include popup/hemma_mattias.yaml
             hold_action:
               action: none
             template: person
 
-          #################################################
-          #                                               #
-          #                     SANJA                     #
-          #                                               #
-          #################################################
-
           - type: custom:button-card
             entity: person.sanja
-            triggers_update: sensor.time
-            style:
-              top: 64.5%
-              left: 91.05%
-              width: 10%
+            name: Sanja
             tap_action:
               !include popup/hemma_sanja.yaml
             hold_action:
               action: none
             template: person
 
-          #################################################
-          #                                               #
-          #                  STÄNG ALLT                   #
-          #                                               #
-          #################################################
-
           - type: custom:button-card
             entity: script.home_leave
-            state_display: Auto
-            style:
-              top: 82.1%
-              left: 80.05%
-              width: 10%
+            name: Stäng allt
             hold_action:
               action: none
-            styles:
-              card:
-                - transition: all 0.3s ease-out
             template:
               - base
               - icon_away
 
-          #################################################
-          #                                               #
-          #                     HEMMA                     #
-          #                                               #
-          #################################################
-
           - type: custom:button-card
             entity: script.home_arrive
-            state_display: Auto
-            style:
-              top: 82.1%
-              left: 91.05%
-              width: 10%
+            name: Hemma
             hold_action:
               action: none
-            styles:
-              card:
-                - transition: all 0.3s ease-out
             template:
               - base
               - icon_home
+
+      #################################################
+      #                                               #
+      #                    FOOTER                     #
+      #                                               #
+      #################################################
+
+      - type: markdown
+        view_layout:
+          grid-area: footer
+        content: >
+          {{ state_attr('sensor.template_coronavirus', 'template') }}
