@@ -1,4 +1,3 @@
-
 automation:
 
     ####################################################
@@ -8,6 +7,7 @@ automation:
     ####################################################
 
   - alias: homeassistant_start
+    id: '7426848686945'
     initial_state: true
     trigger:
       - platform: homeassistant
@@ -26,9 +26,11 @@ automation:
       - choose:
         - conditions:
             - condition: state
-              entity_id: 
-                ['media_player.sony_bravia', 'media_player.samsung_tv_remote', 
-                'media_player.spotify', 'media_player.google_nest_mini']
+              entity_id:
+                - media_player.sony_bravia_tv
+                - media_player.samsung_tv
+                - media_player.spotify
+                - media_player.kok
               state: 'off'
           sequence:
             - service: input_select.select_option
@@ -39,7 +41,7 @@ automation:
           seconds: 10
       - service: fullykiosk.load_start_url
         data:
-          entity_id: media_player.galaxy_tab_a_media_player
+          entity_id: media_player.galaxy_tab_a
       - choose:
         - conditions:
             - condition: state
@@ -48,9 +50,9 @@ automation:
           sequence:
             - service: switch.turn_on
               entity_id: switch.galaxy_tab_a_screensaver
-      - service: homekit.start
 
   - alias: lovelace_updated_ignore
+    id: '9381519720051'
     mode: restart
     initial_state: true
     trigger:
@@ -62,24 +64,18 @@ automation:
           duration: 1
           message: ' '
 
-  - alias: restart_homekit
-    initial_state: true
-    trigger:
-      - platform: time
-        at: 04:00:00
-    action:
-      - service: homekit.start
-
   - alias: clear_log_filesize
+    id: '3331821824310'
     initial_state: true
     trigger:
       - platform: numeric_state
         entity_id: sensor.home_assistant_log
         above: 50
     action:
-      - service: shell_command.clear_logs
+      - service: shell_command.ha_purge_logs
 
-  - alias: computer_on_update
+  - alias: imac_update
+    id: '3673314240807'
     initial_state: true
     trigger:
       - platform: state
@@ -91,21 +87,29 @@ automation:
           seconds: 10
       - service: homeassistant.update_entity
         entity_id:
-          ['sensor.imac_cpu', 'sensor.imac_mem', 'sensor.imac_system_ssd', 'sensor.imac_macintosh_hd', 
-          'sensor.imac_time_machine', 'sensor.monitors_volume', 'sensor.imac_uptime']
+          - sensor.imac_ip
+          - sensor.imac_cpu
+          - sensor.imac_mem
+          - sensor.imac_system_ssd
+          - sensor.imac_macintosh_hd
+          - sensor.monitors_volume
+          - binary_sensor.monitors_mute_check
+          - sensor.imac_uptime
 
   - alias: tv_on_lights
+    id: '6657050215613'
     initial_state: true
     trigger:
       - platform: state
-        entity_id: media_player.sony_bravia
+        entity_id: media_player.sony_bravia_tv
         from: 'off'
         to: 'on'
     action:
       - service: light.turn_on
-        entity_id: light.tvlampa
+        entity_id: light.tv
 
   - alias: hacs_version_grep
+    id: '4283610675891'
     initial_state: true
     trigger:
       - platform: state
@@ -115,20 +119,25 @@ automation:
         entity_id: sensor.hacs_version
 
   - alias: update_hass_release_notes
+    id: '4289040658246'
     initial_state: true
     trigger:
       - platform: state
-        entity_id: ['sensor.hass_version_latest', 'sensor.hass_version_latest_beta']
+        entity_id:
+          - sensor.hass_version_latest
+          - sensor.hass_version_latest_beta
     action:
       - service: homeassistant.update_entity
         entity_id:
-          ['sensor.hass_release_notes', 'sensor.hass_release_notes_rc']
+          - sensor.hass_release_notes
+          - sensor.hass_release_notes_rc
 
   - alias: no_motion_bathroom
+    id: '9936892396917'
     initial_state: true
     trigger:
       - platform: state
-        entity_id: input_boolean.motion_badrum
+        entity_id: binary_sensor.sensor_badrum_motion
         to: 'off'
         for:
           minutes: 30
@@ -144,12 +153,15 @@ automation:
     ####################################################
 
   - alias: toast
+    id: '3900676590344'
+    mode: parallel
     initial_state: true
     trigger:
       - platform: state
         entity_id:
-          ['input_boolean.motion_garderob', 'input_boolean.motion_badrum', 
-          'binary_sensor.wemo_motion']
+          - binary_sensor.sensor_garderob_motion
+          - binary_sensor.sensor_badrum_motion
+          - binary_sensor.wemo_motion
         from: 'off'
         to: 'on'
     action:
@@ -158,16 +170,13 @@ automation:
           duration: 8000
           message: >
             Rörelse detekterat i {{ trigger.to_state.name }}
-      - service: input_boolean.turn_off
-        data:
-          entity_id: >
-            {{ trigger.entity_id }}
 
   - alias: macos_notification_motion_hall
+    id: '4135668040301'
     initial_state: false
     trigger:
       - platform: state
-        entity_id: input_boolean.motion_hall
+        entity_id: binary_sensor.sensor_hall_motion
         from: 'off'
         to: 'on'
     condition:
@@ -175,18 +184,20 @@ automation:
         entity_id: switch.computer_imac
         state: 'on'
     action:
-      - service: shell_command.imac_notify_motion_hallway
+      - service: shell_command.imac_notify_motion_hall
 
   - alias: ios_notify_hass_rc
+    id: '3984233949106'
     initial_state: true
     trigger:
       - platform: state
         entity_id: sensor.hass_version_latest_beta
     condition:
       - condition: state
-        entity_id: sensor.hass_dev_release
+        entity_id: sensor.template_hass_dev_release
         state:
-          ['Idag', 'Släppt']
+          - Idag
+          - Släppt
     action:
       - service: notify.mobile_app_iphone
         data:
@@ -197,17 +208,19 @@ automation:
             url: https://rc.home-assistant.io/latest-release-notes/
 
   - alias: ios_notify_hass_update
+    id: '7958228563778'
     initial_state: true
     trigger:
       - platform: state
-        entity_id: sensor.hass_version
+        entity_id: sensor.template_hass_version
     condition:
       condition: not
       conditions:
         - condition: state
-          entity_id: sensor.hass_version
+          entity_id: sensor.template_hass_version
           state:
-            ['Senaste', 'unknown']
+            - Senaste
+            - unknown
     action:
       - service: notify.mobile_app_iphone
         data:
@@ -221,6 +234,7 @@ automation:
               category: ios_hass
 
   - alias: ios_notify_hass_update_action
+    id: '0694774018396'
     initial_state: true
     trigger:
       - platform: event
@@ -232,6 +246,9 @@ automation:
         entity_id: switch.watchtower
 
   - alias: notify_and_remove_completed_torrent
+    id: '7876919385611'
+    mode: parallel
+    max: 25
     initial_state: true
     trigger:
       - platform: event
@@ -242,6 +259,13 @@ automation:
           title: Torrent nedladdad
           message: >
             {{ trigger.event.data.name }}
+      - service: transmission.stop_torrent
+        data:
+          name: Transmission
+          id: >
+            {{ trigger.event.data.id | int }}
+      - delay:
+          minutes: 15
       - service: transmission.remove_torrent
         data:
           name: Transmission
@@ -255,6 +279,7 @@ automation:
     ####################################################
 
   - alias: conditional_scan_interval
+    id: '0007659752611'
     initial_state: true
     trigger:
       - platform: time_pattern
@@ -266,11 +291,17 @@ automation:
     action:
       - service: homeassistant.update_entity
         entity_id:
-          ['sensor.imac_ip', 'sensor.imac_system_ssd', 'sensor.imac_macintosh_hd', 
-          'sensor.imac_time_machine', 'sensor.imac_mem', 'sensor.monitors_volume', 
-          'binary_sensor.monitors_mute_check', 'sensor.imac_uptime', 'sensor.imac_cpu']
+          - sensor.imac_ip
+          - sensor.imac_cpu
+          - sensor.imac_mem
+          - sensor.imac_system_ssd
+          - sensor.imac_macintosh_hd
+          - sensor.monitors_volume
+          - binary_sensor.monitors_mute_check
+          - sensor.imac_uptime
 
   - alias: tasmota_scan_interval
+    id: '2405277038357'
     initial_state: true
     trigger:
       - platform: time_pattern
@@ -288,6 +319,7 @@ automation:
     ####################################################
 
   - alias: monitors_volume_slider
+    id: '0022255594357'
     initial_state: true
     trigger:
       - platform: state
@@ -304,6 +336,7 @@ automation:
         entity_id: sensor.monitors_volume
 
   - alias: monitors_volume_update
+    id: '1275485733091'
     initial_state: true
     trigger:
       - platform: state
@@ -329,13 +362,18 @@ automation:
             {% endif %}
 
   - alias: eq_calibration
+    id: '7780410156815'
     mode: queued
     initial_state: true
     trigger:
       - platform: state
         entity_id: switch.wemo_monitors
-        from: ['on', 'off']
-        to: ['on', 'off']
+        from:
+          - 'on'
+          - 'off'
+        to:
+          - 'on'
+          - 'off'
     action:
       - service: shell_command.reference_click
       - delay:
@@ -354,6 +392,7 @@ automation:
           - service: shell_command.reference_headphones
 
   - alias: turn_off_monitors
+    id: '9863921240123'
     initial_state: true
     trigger:
       - platform: state
@@ -361,7 +400,7 @@ automation:
         from: 'on'
         to: 'off'
         for:
-          minutes: 5
+          minutes: 15
     action:
       - service: switch.turn_off
         entity_id: switch.wemo_monitors
@@ -373,6 +412,7 @@ automation:
     ####################################################
 
   - alias: wemo_fan_turn_off
+    id: '0568618309657'
     initial_state: true
     trigger:
       - platform: state
@@ -392,6 +432,7 @@ automation:
     ####################################################
 
   - alias: sovrum_anslut_turn_off
+    id: '1050805589188'
     initial_state: true
     trigger:
       - platform: state
@@ -405,10 +446,11 @@ automation:
         entity_id: fan.sovrum_anslut
 
   - alias: sovrum_anslut_turn_on_temp
+    id: '0099808622760'
     initial_state: true
     trigger:
       - platform: numeric_state
-        entity_id: sensor.hall_temperature
+        entity_id: sensor.sensor_hall_temperature
         above: 24
     condition:
       condition: and
@@ -418,7 +460,8 @@ automation:
           before: '07:00:00'
         - condition: state
           entity_id:
-            ['person.mattias', 'person.sanja']
+            - person.matte
+            - person.sanja
           state: home
     action:
       - condition: state
@@ -428,6 +471,7 @@ automation:
         entity_id: fan.sovrum_anslut
 
   - alias: sovrum_anslut_oscillate
+    id: '9897303821028'
     initial_state: true
     trigger:
       - platform: state
@@ -435,10 +479,11 @@ automation:
     action:
       - service: remote.send_command
         data:
-          entity_id: remote.broadlink
+          entity_id: remote.broadlink_remote
           command: !secret ir_fan_swing
 
   - alias: sovrum_anslut_speed
+    id: '9292376382008'
     mode: queued
     initial_state: true
     trigger:
@@ -456,7 +501,7 @@ automation:
                 sequence:
                   - service: remote.send_command
                     data:
-                      entity_id: remote.broadlink
+                      entity_id: remote.broadlink_remote
                       command: !secret ir_fan_speed
         - conditions: >
             {{ trigger.from_state.attributes.speed == 'high' and trigger.to_state.attributes.speed == 'low' or 
@@ -465,48 +510,47 @@ automation:
           sequence:
             - service: remote.send_command
               data:
-                entity_id: remote.broadlink
+                entity_id: remote.broadlink_remote
                 command: !secret ir_fan_speed
 
-  ###temp
-  - alias: sovrum_anslut_speed_fix1_sync
-    mode: queued
-    initial_state: true
-    trigger:
-      - platform: template
-        value_template: >
-          {{ is_state('binary_sensor.gosund_fan', 'off') and not is_state('input_number.sovrum_anslut_speed', '0') }}
-    action:
-      - service: automation.turn_off
-        target:
-          entity_id: automation.sovrum_anslut_speed
-      - service: input_number.set_value
-        data:
-          entity_id: input_number.sovrum_anslut_speed
-          value: 0
-      - service: automation.turn_on
-        target:
-          entity_id: automation.sovrum_anslut_speed
+  # ###temp
+  # - alias: sovrum_anslut_speed_fix1_sync
+  #   mode: queued
+  #   initial_state: true
+  #   trigger:
+  #     - platform: template
+  #       value_template: >
+  #         {{ is_state('binary_sensor.gosund_fan', 'off') and not is_state('input_number.sovrum_anslut_speed', '0') }}
+  #   action:
+  #     - service: automation.turn_off
+  #       target:
+  #         entity_id: automation.sovrum_anslut_speed
+  #     - service: input_number.set_value
+  #       data:
+  #         entity_id: input_number.sovrum_anslut_speed
+  #         value: 0
+  #     - service: automation.turn_on
+  #       target:
+  #         entity_id: automation.sovrum_anslut_speed
 
-  - alias: sovrum_anslut_speed_fix2_restore
-    mode: queued
-    initial_state: true
-    trigger:
-      - platform: template
-        value_template: >
-          {{ is_state('binary_sensor.gosund_fan', 'on') and is_state('input_number.sovrum_anslut_speed', '0') }}
-    action:
-      - service: automation.turn_off
-        target:
-          entity_id: automation.sovrum_anslut_speed
-      - service: input_number.set_value
-        data:
-          entity_id: input_number.sovrum_anslut_speed
-          value: 33
-      - service: automation.turn_on
-        target:
-          entity_id: automation.sovrum_anslut_speed
-  ###
+  # - alias: sovrum_anslut_speed_fix2_restore
+  #   mode: queued
+  #   initial_state: true
+  #   trigger:
+  #     - platform: template
+  #       value_template: >
+  #         {{ is_state('binary_sensor.gosund_fan', 'on') and is_state('input_number.sovrum_anslut_speed', '0') }}
+  #   action:
+  #     - service: automation.turn_off
+  #       target:
+  #         entity_id: automation.sovrum_anslut_speed
+  #     - service: input_number.set_value
+  #       data:
+  #         entity_id: input_number.sovrum_anslut_speed
+  #         value: 33
+  #     - service: automation.turn_on
+  #       target:
+  #         entity_id: automation.sovrum_anslut_speed
 
     ####################################################
     #                                                  #
@@ -515,6 +559,7 @@ automation:
     ####################################################
 
   - alias: air_purifier_speed
+    id: '3692857919366'
     mode: queued
     initial_state: true
     trigger:
@@ -536,7 +581,7 @@ automation:
           sequence:
             - service: remote.send_command
               data:
-                entity_id: remote.broadlink
+                entity_id: remote.broadlink_remote
                 command: !secret ir_purifier_speed_up
         - conditions:
             - condition: template
@@ -551,7 +596,7 @@ automation:
                 sequence:
                   - service: remote.send_command
                     data:
-                      entity_id: remote.broadlink
+                      entity_id: remote.broadlink_remote
                       command: !secret ir_purifier_speed_up
         - conditions:
             - condition: template
@@ -567,7 +612,7 @@ automation:
           sequence:
             - service: remote.send_command
               data:
-                entity_id: remote.broadlink
+                entity_id: remote.broadlink_remote
                 command: !secret ir_purifier_speed_down
         - conditions:
             - condition: template
@@ -584,7 +629,7 @@ automation:
                 sequence:
                   - service: remote.send_command
                     data:
-                      entity_id: remote.broadlink
+                      entity_id: remote.broadlink_remote
                       command: !secret ir_purifier_speed_down
         - conditions:
             - condition: template
@@ -595,7 +640,7 @@ automation:
           sequence:
             - service: remote.send_command
               data:
-                entity_id: remote.broadlink
+                entity_id: remote.broadlink_remote
                 command: !secret ir_purifier_turbo
         - conditions:
             - condition: template
@@ -610,48 +655,48 @@ automation:
                 sequence:
                   - service: remote.send_command
                     data:
-                      entity_id: remote.broadlink
+                      entity_id: remote.broadlink_remote
                       command: !secret ir_purifier_speed_down
 
-  ###temp
-  - alias: air_purifier_speed_fix1_sync
-    mode: queued
-    initial_state: true
-    trigger:
-      - platform: template
-        value_template: >
-          {{ is_state('binary_sensor.gosund_air_purifier', 'off') and not is_state('input_number.air_purifier_speed', '0') }}
-    action:
-      - service: automation.turn_off
-        target:
-          entity_id: automation.air_purifier_speed
-      - service: input_number.set_value
-        data:
-          entity_id: input_number.air_purifier_speed
-          value: 0
-      - service: automation.turn_on
-        target:
-          entity_id: automation.air_purifier_speed
+  # ###temp
+  # - alias: air_purifier_speed_fix1_sync
+  #   mode: queued
+  #   initial_state: true
+  #   trigger:
+  #     - platform: template
+  #       value_template: >
+  #         {{ is_state('binary_sensor.gosund_air_purifier', 'off') and not is_state('input_number.air_purifier_speed', '0') }}
+  #   action:
+  #     - service: automation.turn_off
+  #       target:
+  #         entity_id: automation.air_purifier_speed
+  #     - service: input_number.set_value
+  #       data:
+  #         entity_id: input_number.air_purifier_speed
+  #         value: 0
+  #     - service: automation.turn_on
+  #       target:
+  #         entity_id: automation.air_purifier_speed
 
-  - alias: air_purifier_speed_fix2_restore
-    mode: queued
-    initial_state: true
-    trigger:
-      - platform: template
-        value_template: >
-          {{ is_state('binary_sensor.gosund_air_purifier', 'on') and is_state('input_number.air_purifier_speed', '0') }}
-    action:
-      - service: automation.turn_off
-        target:
-          entity_id: automation.air_purifier_speed
-      - service: input_number.air_purifier_speed
-        data:
-          entity_id: input_number.air_purifier_speed
-          value: 25
-      - service: automation.turn_on
-        target:
-          entity_id: automation.air_purifier_speed
-  ###
+  # - alias: air_purifier_speed_fix2_restore
+  #   mode: queued
+  #   initial_state: true
+  #   trigger:
+  #     - platform: template
+  #       value_template: >
+  #         {{ is_state('binary_sensor.gosund_air_purifier', 'on') and is_state('input_number.air_purifier_speed', '0') }}
+  #   action:
+  #     - service: automation.turn_off
+  #       target:
+  #         entity_id: automation.air_purifier_speed
+  #     - service: input_number.air_purifier_speed
+  #       data:
+  #         entity_id: input_number.air_purifier_speed
+  #         value: 25
+  #     - service: automation.turn_on
+  #       target:
+  #         entity_id: automation.air_purifier_speed
+  # ###
 
     ####################################################
     #                                                  #
@@ -659,85 +704,39 @@ automation:
     #                                                  #
     ####################################################
 
-  - alias: fullykiosk_close_popup
+  - alias: fullykiosk_screensaver
+    id: '9452750674803'
+    mode: restart
     initial_state: true
     trigger:
       - platform: state
-        entity_id: switch.galaxy_tab_a_screensaver
+        entity_id: binary_sensor.sensor_hall_motion
         from: 'off'
         to: 'on'
-        for:
-          minutes: 10
-    action:
-      - service: browser_mod.close_popup
-        data:
-          deviceID: tablet
-
-  - alias: fullykiosk_turn_on_screen
-    initial_state: true
-    trigger:
-      - platform: state
-        entity_id: input_boolean.motion_hall
-        from: 'off'
-        to: 'on'
-    action:
-      - service: switch.turn_off
-        entity_id: switch.galaxy_tab_a_screensaver
-      - service: light.turn_on
-        data:
-          entity_id: light.galaxy_tab_a_screen
-          brightness_pct: >
-            {{ 90 if is_state('sun.sun', 'above_horizon') else 60 }}
-      - service: input_boolean.turn_off
-        data:
-          entity_id: >
-            {{ trigger.entity_id }}
-
-  - alias: fullykiosk_turn_off_screen
-    initial_state: true
-    trigger:
       - platform: state
         entity_id: light.hall
         from: 'on'
         to: 'off'
     action:
-      - service: switch.turn_on
-        entity_id: switch.galaxy_tab_a_screensaver
-
-    ####################################################
-    #                                                  #
-    #                     LOADING                      #
-    #                                                  #
-    ####################################################
-
-  - alias: turn_off_loading_wheel
-    initial_state: true
-    trigger:
-      - platform: state
-        entity_id:
-          ['media_player.sony_bravia', 'media_player.samsung_tv_remote', 'switch.computer_imac', 
-          'switch.playstation_5', 'fan.sovrum_anslut', 'fan.air_purifier']
-    action:
-      - service: input_boolean.turn_off
-        data:
-          entity_id: >
-            {{ trigger.entity_id | replace(trigger.entity_id.split('.')[0], 'input_boolean') }}
-
-  - alias: turn_off_loading_wheel_failsafe
-    initial_state: true
-    trigger:
-      - platform: state
-        entity_id:
-          ['input_boolean.sony_bravia', 'input_boolean.samsung_tv_remote', 'input_boolean.computer_imac', 
-          'input_boolean.playstation_5', 'input_boolean.sovrum_anslut', 'input_boolean.air_purifier']
-        to: 'on'
-        for:
-          minutes: 1
-    action:
-      - service: input_boolean.turn_off
-        data:
-          entity_id: >
-            {{ trigger.entity_id }}
+      - choose:
+        - conditions: >
+            {{ trigger.entity_id == 'binary_sensor.sensor_hall_motion' }}
+          sequence:
+            - service: switch.turn_off
+              entity_id: switch.galaxy_tab_a_screensaver
+            - service: light.turn_on
+              data:
+                entity_id: light.galaxy_tab_a_screen
+                brightness_pct: >
+                  {{ 90 if is_state('sun.sun', 'above_horizon') else 60 }}
+        default:
+          - service: switch.turn_on
+            entity_id: switch.galaxy_tab_a_screensaver
+          - delay:
+              minutes: 15
+          - service: browser_mod.close_popup
+            data:
+              deviceID: galaxy_tab_a
 
     ####################################################
     #                                                  #
@@ -746,30 +745,29 @@ automation:
     ####################################################
 
   - alias: hdmi_input_select
+    id: '9559814521978'
+    mode: parallel
     initial_state: true
     trigger:
       - platform: state
         entity_id: input_select.hdmi
-    action:
-      - service: media_player.select_source
-        data:
-          entity_id: media_player.sony_bravia
-          source: >
-            {{ states(trigger.entity_id) }}
-
-  - alias: hdmi2_input_select
-    initial_state: true
-    trigger:
       - platform: state
         entity_id: input_select.hdmi2
     action:
       - service: media_player.select_source
         data:
-          entity_id: media_player.samsung_tv_remote
+          entity_id: >
+            {% if trigger.entity_id == 'input_select.hdmi' %}
+              media_player.sony_bravia_tv
+            {% elif trigger.entity_id == 'input_select.hdmi2' %}
+              media_player.samsung_tv
+            {% endif %}
           source: >
             {{ states(trigger.entity_id) }}
 
-  - alias: turn_on_tv_failsafe
+  - alias: turn_on_tv_fail_safe
+    id: '0703991107325'
+    mode: parallel
     initial_state: true
     trigger:
       - platform: event
@@ -778,37 +776,35 @@ automation:
           domain: media_player
           service: turn_on
           service_data:
-            entity_id: media_player.sony_bravia
-    action:
-      - service: media_player.turn_on
-        data:
-          entity_id: media_player.vardagsrum
-      - delay:
-          seconds: 1
-      - service: remote.send_command
-        data:
-          entity_id: remote.vardagsrum
-          command: menu
-
-  - alias: turn_on_tv2_failsafe
-    initial_state: true
-    trigger:
+            entity_id: media_player.sony_bravia_tv
       - platform: event
         event_type: call_service
         event_data:
           domain: media_player
           service: turn_on
           service_data:
-            entity_id: media_player.samsung_tv_remote
+            entity_id: media_player.samsung_tv
     action:
       - service: media_player.turn_on
         data:
-          entity_id: media_player.sovrum
+          entity_id: >
+            {% set trigger = trigger.event.data.service_data.entity_id %}
+            {% if trigger == 'media_player.sony_bravia_tv' %}
+              media_player.vardagsrum
+            {% elif trigger == 'media_player.samsung_tv' %}
+              media_player.sovrum
+            {% endif %}
       - delay:
           seconds: 1
       - service: remote.send_command
         data:
-          entity_id: remote.sovrum
+          entity_id: >
+            {% set trigger = trigger.event.data.service_data.entity_id %}
+            {% if trigger == 'media_player.sony_bravia_tv' %}
+              remote.vardagsrum
+            {% elif trigger == 'media_player.samsung_tv' %}
+              remote.sovrum
+            {% endif %}
           command: menu
 
     ####################################################
@@ -817,7 +813,8 @@ automation:
     #                                                  #
     ####################################################
 
-  - alias: laundry_timer_reveal
+  - alias: laundry_display
+    id: '4792508317061'
     mode: restart
     initial_state: true
     trigger:
@@ -826,13 +823,14 @@ automation:
         to: 'on'
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.laundry_timer_visibility
+        entity_id: input_boolean.laundry_display
       - delay:
           hours: 4
       - service: input_boolean.turn_off
-        entity_id: input_boolean.laundry_timer_visibility
+        entity_id: input_boolean.laundry_display
 
-  - alias: laundry_timer_alert
+  - alias: laundry_alert
+    id: '3403466403120'
     initial_state: true
     trigger:
       - platform: event
@@ -842,14 +840,14 @@ automation:
     action:
       - service: media_player.play_media
         data:
-          entity_id: media_player.tablet
+          entity_id: media_player.galaxy_tab_a
           media_content_id: /local/sound/timer.mp3
           media_content_type: music
       - delay:
           seconds: 2
       - service: tts.cloud_say
         data:
-          entity_id: media_player.tablet
+          entity_id: media_player.galaxy_tab_a
           message: >
             {{ ['Tvätten är färdig', 'Tvätten är klar', 'Dags att gå ner!'] | random }}
           language: sv-SE
@@ -868,6 +866,7 @@ automation:
     ####################################################
 
   - alias: roborock_speed
+    id: '0054872718027'
     initial_state: true
     trigger:
       - platform: state
@@ -875,7 +874,7 @@ automation:
     action:
       - service: vacuum.set_fan_speed
         data:
-          entity_id: vacuum.robot
+          entity_id: vacuum.valetudo_robot
           fan_speed: >
             {% if is_state(trigger.entity_id, 'Tyst') %} low
             {% elif is_state(trigger.entity_id, 'Standard') %} medium
@@ -885,10 +884,11 @@ automation:
             {% endif %}
 
   - alias: roborock_speed_update
+    id: '3154087574817'
     initial_state: true
     trigger:
       - platform: state
-        entity_id: vacuum.robot
+        entity_id: vacuum.valetudo_robot
       - platform: homeassistant
         event: start
     action:
@@ -896,7 +896,7 @@ automation:
         data:
           entity_id: input_select.roborock_speed
           option: >
-            {% set entity_id = 'vacuum.robot' %}
+            {% set entity_id = 'vacuum.valetudo_robot' %}
             {% if is_state_attr(entity_id, 'fan_speed', 'low') %} Tyst
             {% elif is_state_attr(entity_id, 'fan_speed', 'medium') %} Standard
             {% elif is_state_attr(entity_id, 'fan_speed', 'high') %} Medium
@@ -911,13 +911,16 @@ automation:
       ####################################################
 
   - alias: conditional_media_playing
+    id: '5557842567134'
     initial_state: true
     mode: restart
     trigger:
       - platform: state
         entity_id:
-          ['media_player.vardagsrum', 'media_player.sovrum', 
-          'media_player.spotify', 'media_player.google_nest_mini']
+          - media_player.vardagsrum
+          - media_player.sovrum
+          - media_player.spotify
+          - media_player.kok
         to: playing
     action:
       - service: input_select.select_option
@@ -927,19 +930,24 @@ automation:
             {{ trigger.to_state.name }}
 
   - alias: conditional_media_paused_idle
+    id: '3603627624707'
     initial_state: true
     mode: restart
     trigger:
       - platform: state
         entity_id:
-          ['media_player.vardagsrum', 'media_player.sovrum', 
-          'media_player.spotify', 'media_player.google_nest_mini']
+          - media_player.vardagsrum
+          - media_player.sovrum
+          - media_player.spotify
+          - media_player.kok
         to:
           ['off', 'idle', 'standby']
       - platform: state
         entity_id:
-          ['media_player.vardagsrum', 'media_player.sovrum', 
-          'media_player.spotify', 'media_player.google_nest_mini']
+          - media_player.vardagsrum
+          - media_player.sovrum
+          - media_player.spotify
+          - media_player.kok
         to: paused
         for:
           minutes: 10
@@ -950,7 +958,7 @@ automation:
           option: >
             {% set media_players = 
               [states.media_player.vardagsrum, states.media_player.sovrum, 
-               states.media_player.spotify, states.media_player.google_nest_mini] %}
+               states.media_player.spotify, states.media_player.kok] %}
             {% if media_players | selectattr('state','eq','playing') | list | count == 0 %}
               {% if media_players | selectattr('state','eq','paused') | list | count == 0 %}
               Senast nedladdat
@@ -962,6 +970,7 @@ automation:
             {% endif %}
 
   - alias: conditional_media_all_off
+    id: '6882931899148'
     initial_state: true
     trigger:
       - platform: template
@@ -969,11 +978,11 @@ automation:
           {{ is_state('media_player.vardagsrum', 'idle') and
           is_state('media_player.sovrum', 'idle') and
           is_state('media_player.spotify', 'idle') and
-          is_state('media_player.google_nest_mini', 'off') 
+          is_state('media_player.kok', 'off') 
           or
-          is_state('media_player.sony_bravia', 'off') and
-          is_state('media_player.samsung_tv_remote', 'off') and
-          is_state('media_player.google_nest_mini', 'off') }}
+          is_state('media_player.sony_bravia_tv', 'off') and
+          is_state('media_player.samsung_tv', 'off') and
+          is_state('media_player.kok', 'off') }}
     action:
       - service: input_select.select_option
         data:
@@ -981,6 +990,7 @@ automation:
           option: Senast nedladdat
 
   - alias: conditional_media_atv1_fix
+    id: '8872219660798'
     initial_state: true
     trigger:
       - platform: template
@@ -996,7 +1006,7 @@ automation:
           option: >
             {% set media_players = 
               [states.media_player.vardagsrum, states.media_player.spotify, 
-               states.media_player.google_nest_mini] %}
+               states.media_player.kok] %}
             {% if media_players | selectattr('state','eq','playing') | list | count == 0 %}
               {% if media_players | selectattr('state','eq','paused') | list | count == 0 %}
               Senast nedladdat
@@ -1014,6 +1024,7 @@ automation:
             {% endif %}
 
   - alias: conditional_media_atv2_fix
+    id: '4497990852096'
     initial_state: true
     trigger:
       - platform: template
@@ -1029,7 +1040,7 @@ automation:
           option: >
             {% set media_players = 
               [states.media_player.vardagsrum, states.media_player.spotify, 
-               states.media_player.google_nest_mini] %}
+               states.media_player.kok] %}
             {% if media_players | selectattr('state','eq','playing') | list | count == 0 %}
               {% if media_players | selectattr('state','eq','paused') | list | count == 0 %}
               Senast nedladdat
@@ -1045,37 +1056,3 @@ automation:
             {% else %}
             {{ media_players | selectattr('state','eq','playing') | map(attribute='name') | max }}
             {% endif %}
-
-    ####################################################
-    #                                                  #
-    #                     UI SOUND                     #
-    #                                                  #
-    ####################################################
-
-  ## test
-  - alias: ui_sound_popup
-    initial_state: true
-    trigger:
-      - platform: event
-        event_type: call_service
-        event_data:
-          domain: browser_mod
-          service: popup
-    condition:
-      - condition: state
-        entity_id: switch.galaxy_tab_a_screensaver
-        state: 'off'
-    action:
-      - service: media_player.play_media
-        data:
-          entity_id: media_player.tablet
-          media_content_id: /local/sound/popup.m4a
-          media_content_type: music
-
-    ####################################################
-    #                                                  #
-    #                       TEST                       #
-    #                                                  #
-    ####################################################
-
-    # ...

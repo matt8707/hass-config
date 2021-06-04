@@ -1,0 +1,85 @@
+homekit:
+
+    ####################################################
+    #                                                  #
+    #                     HOMEKIT                      #
+    #                                                  #
+    ####################################################
+
+  - ip_address: !secret homekit_ip_address
+    filter:
+      include_entities:
+        - switch.playstation_5
+        - switch.computer_imac
+        - switch.wemo_monitors
+        - fan.air_purifier
+        - fan.sovrum_anslut
+        - fan.studio_wemo
+        - person.matte
+        - person.sanja
+        - script.home_leave
+        - script.home_arrive
+        - script.samsung_tv_energy_saving
+        - vacuum.valetudo_robot
+    entity_config:
+      switch.playstation_5:
+        name: Playstation
+      switch.computer_imac:
+        name: Dator
+      switch.wemo_monitors:
+        name: Monitorer
+      fan.air_purifier:
+        name: Luftrenare
+      fan.sovrum_anslut:
+        name: Fläkt
+      fan.studio_wemo:
+        name: Fläkt 2
+      person.matte:
+        name: Mattias
+      person.sanja:
+        name: Sanja
+      script.home_leave:
+        name: Stäng allt
+      script.home_arrive:
+        name: Hemma
+      script.samsung_tv_energy_saving:
+        name: Eko
+      vacuum.valetudo_robot:
+        name: Morty
+
+  - name: HASS Bridge Sony
+    ip_address: !secret homekit_ip_address
+    port: 51828
+    mode: accessory
+    filter:
+      include_entities:
+        - media_player.sony_bravia_tv
+    entity_config:
+      media_player.sony_bravia_tv:
+        name: Sony TV
+        feature_list:
+          - feature: on_off
+
+  - name: HASS Bridge Samsung
+    ip_address: !secret homekit_ip_address
+    port: 51829
+    mode: accessory
+    filter:
+      include_entities:
+        - media_player.samsung_tv
+    entity_config:
+      media_player.samsung_tv:
+        name: Samsung TV
+        feature_list:
+          - feature: on_off
+
+  - name: HASS Bridge Lock
+    ip_address: !secret homekit_ip_address
+    port: 51830
+    mode: accessory
+    filter:
+      include_entities:
+        - lock.dator
+    entity_config:
+      lock.dator:
+        name: Dator

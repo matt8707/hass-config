@@ -2,7 +2,7 @@ fan:
 
     ####################################################
     #                                                  #
-    #                       FANS                       #
+    #                       FAN                        #
     #                                                  #
     ####################################################
 
@@ -19,6 +19,12 @@ fan:
         turn_off:
           - service: switch.turn_off
             entity_id: switch.wemo_fan
+
+    ####################################################
+    #                                                  #
+    #                      FAN 2                       #
+    #                                                  #
+    ####################################################
 
       sovrum_anslut:
         friendly_name: Fläkt
@@ -42,8 +48,6 @@ fan:
           - condition: state
             entity_id: binary_sensor.gosund_fan
             state: 'off'
-          - service: input_boolean.turn_on
-            entity_id: input_boolean.sovrum_anslut
           - service: input_number.set_value
             data:
               entity_id: input_number.sovrum_anslut_speed
@@ -51,11 +55,11 @@ fan:
           #wake?
           - service: remote.send_command
             data:
-              entity_id: remote.broadlink
+              entity_id: remote.broadlink_remote
               command: !secret ir_fan_speed
           - service: remote.send_command
             data:
-              entity_id: remote.broadlink
+              entity_id: remote.broadlink_remote
               command: !secret ir_fan_power
           - choose:
             # initial oscillation
@@ -66,14 +70,12 @@ fan:
               sequence:
                 - service: remote.send_command
                   data:
-                    entity_id: remote.broadlink
+                    entity_id: remote.broadlink_remote
                     command: !secret ir_fan_swing
         turn_off:
           - condition: state
             entity_id: binary_sensor.gosund_fan
             state: 'on'
-          - service: input_boolean.turn_on
-            entity_id: input_boolean.sovrum_anslut
           - service: input_number.set_value
             data:
               entity_id: input_number.sovrum_anslut_speed
@@ -81,11 +83,11 @@ fan:
           #wake?
           - service: remote.send_command
             data:
-              entity_id: remote.broadlink
+              entity_id: remote.broadlink_remote
               command: !secret ir_fan_speed
           - service: remote.send_command
             data:
-              entity_id: remote.broadlink
+              entity_id: remote.broadlink_remote
               command: !secret ir_fan_power
 
     ####################################################
@@ -111,29 +113,25 @@ fan:
           - condition: state
             entity_id: binary_sensor.gosund_air_purifier
             state: 'off'
-          - service: input_boolean.turn_on
-            entity_id: input_boolean.air_purifier
           #wake?
           - service: remote.send_command
             data:
-              entity_id: remote.broadlink
+              entity_id: remote.broadlink_remote
               command: !secret ir_purifier_speed_down
           - service: remote.send_command
             data:
-              entity_id: remote.broadlink
+              entity_id: remote.broadlink_remote
               command: !secret ir_purifier_power
         turn_off:
           - condition: state
             entity_id: binary_sensor.gosund_air_purifier
             state: 'on'
-          - service: input_boolean.turn_on
-            entity_id: input_boolean.air_purifier
           #wake?
           - service: remote.send_command
             data:
-              entity_id: remote.broadlink
+              entity_id: remote.broadlink_remote
               command: !secret ir_purifier_auto
           - service: remote.send_command
             data:
-              entity_id: remote.broadlink
+              entity_id: remote.broadlink_remote
               command: !secret ir_purifier_power

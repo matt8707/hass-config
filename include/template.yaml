@@ -1,0 +1,362 @@
+template:
+
+  ####################################################
+  #                                                  #
+  #                     TEMPLATE                     #
+  #                                                  #
+  ####################################################
+
+  sensor:
+    - unique_id: sidebar
+      state: template
+      attributes:
+        time: |
+          {%- set hours = '<span>' + now().strftime('%H') + '<span>' %}
+          {%- set minutes = '</span>' + now().strftime('%M') + '</span>' %}
+          {{ hours }}:{{ minutes }}
+        date: |
+          <font color='#6a7377'><b>
+          {%- if strptime(states('sensor.date'), '%Y-%m-%d').day != null %}
+          {%- set days = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'] %}
+          {%- set months = ['Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni', 
+          'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December'] %}
+            {{- days[now().weekday()] }}<br>
+            {{- strptime(states('sensor.date'), '%Y-%m-%d').day }} {{ months[now().month-1] }}
+          {%- endif -%}
+          </b></font>
+        greet: |
+          <b>
+          {%- set time = now().hour %}
+          {%- if time <= 1 -%} God natt {{'\U0001F611'}}
+          {%- elif time <= 3 -%} God natt {{'\U0001F62A'}}
+          {%- elif time <= 5 -%} God natt {{'\U0001F634'}}
+          {%- elif time <= 7 -%} God morgon {{'\U0001F4A9'}}
+          {%- elif time <= 9 -%} God morgon {{'\u2615\uFE0F'}}
+          {%- elif time <= 10 -%} God morgon {{'\U0001F642'}}
+          {%- elif time <= 13 -%} God dag {{'\U0001F60A'}}
+          {%- elif time <= 15 -%} God dag {{'\U0001F60E'}}
+          {%- elif time <= 17 -%} God dag {{'\U0001F44B\U0001F3FB'}}
+          {%- elif time <= 19 -%} God kväll {{'\U0001F44B\U0001F3FB'}}
+          {%- elif time <= 22 -%} God kväll {{'\U0001F60C'}}
+          {%- elif time <= 23 -%} God kväll {{'\U0001F974'}}
+          {%- else %} God kväll {{'\U0001F974'}}
+          {%- endif -%}
+          </b>
+        active: |
+          <b>
+          {%- set lights = [
+            states.light.tv,
+            states.light.golv,
+            states.light.horna,
+            states.light.dator,
+            states.light.vask_hoger,
+            states.light.vask_vanster,
+            states.light.byra,
+            states.light.garderob,
+            states.light.hall_1,
+            states.light.hall_2,
+            states.light.hall_3,
+            states.light.mattias,
+            states.light.sanja,
+            states.light.spot_1,
+            states.light.spot_2,
+            states.switch.balkong
+          ] %}
+
+          {%- set switches = [
+            states.switch.computer_imac,
+            states.switch.tv_sony,
+            states.switch.tv_samsung,
+            states.switch.playstation_5,
+            states.switch.wemo_monitors,
+            states.fan.studio_wemo,
+            states.fan.sovrum_anslut,
+            states.fan.air_purifier
+          ] %}
+
+          {%- set lights_on = lights | selectattr('state','eq','on') | list %}
+          {%- set lights_name = lights | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
+
+          {%- set switches_on = switches | selectattr('state','eq','on') | list %} 
+          {%- set switches_name = switches | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
+
+          {%- if (lights_on | length == 0) and (switches_on | length > 0) -%} 
+            {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på
+
+          {%- elif (lights_on | length == 1) and (switches_on | length == 1) -%}
+            {{ lights_name }} och {{switches_name }} är på
+
+          {%- elif (lights_on | length == 1) and (switches_on | length > 1) -%}
+            {{ lights_name }}, {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på
+
+          {%- elif (lights_on | length > 1) and (switches_on | length == 1) -%}
+            {{ lights_on | length }} lampor och {{ switches_name }} är på
+
+          {%- elif (lights_on | length > 1) and (switches_on | length > 1) -%}
+            {{ lights_on | length }} lampor, {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på
+
+          {%- elif (lights_on | length == 1) and (switches_on | length == 0) -%}
+            {{ lights_name }} är på
+
+          {%- elif (lights_on | length > 1) and (switches_on | length == 0) -%}
+            {{ lights_on | length }} lampor är på
+
+          {%- else %}
+            <font color='#6a7377'>Allt är avstängt</font>
+          {%- endif -%}
+          </b>
+        vacuum: |
+          {% set entity_id = 'vacuum.valetudo_robot' %}
+          {%- if is_state(entity_id, 'cleaning') -%}
+            <b>Morty dammsuger</b>
+          {%- elif is_state(entity_id, 'returning') -%}
+            <b>Morty är färdig</b>
+          {%- endif %}
+        weather: |
+          {%- set temperature = states('sensor.dark_sky_temperature') %}
+          {%- set apparent = states('sensor.dark_sky_apparent_temperature') | round %}
+          {%- set precip = states('sensor.dark_sky_precip_probability') | round %}
+          {% if not is_state('sensor.dark_sky_temperature', 'unknown') %}
+            {%- if temperature | float <= 0.0 -%}
+              Känns som {{ apparent }}° med {{ precip }}% risk för snö {{'\u2744\uFE0F'}}
+            {%- elif temperature | float > 0.0 -%} 
+              Känns som {{ apparent}}° med {{ precip }}% risk för regn {{ '\u2614\uFE0F' if precip > 30 }}
+            {%- endif %}
+          {%- else %}
+            Kan inte läsa in väderinformation...
+          {%- endif %}
+        transport: |
+          {% set entity_id = 'sensor.skanetrafiken' %}
+          {%- set date = strptime(state_attr(entity_id, 'date') + ' ' + state_attr(entity_id, 'time'), "%X") %}
+          {%- set time = as_timestamp(date) | timestamp_custom('%H:%M') -%}
+            Nästa buss går {{ time }} från {{ state_attr(entity_id, 'name').split()[1] }}
+        laundry: |
+          {%- set start_time = state_attr('calendar.tvatta', 'start_time') %}
+          {% if start_time != None %}
+            {%- set time = as_timestamp(start_time) | timestamp_custom('%H:%M') %}
+            {%- set hours = as_timestamp(start_time) | timestamp_custom('%H') | int / 24 %}
+            {%- set count = (as_timestamp(start_time) - as_timestamp(now())) / 86400 - hours %}
+            {%- set day = strptime(start_time, '%Y-%m-%d %H:%M:%S').strftime('%A') 
+            | replace('Monday', 'Måndag')
+            | replace('Tuesday', 'Tisdag')
+            | replace('Wednesday', 'Onsdag')
+            | replace('Thursday', 'Torsdag')
+            | replace('Friday', 'Fredag')
+            | replace('Saturday', 'Lördag')
+            | replace('Sunday', 'Söndag') %}
+            {%- if count <= 0.0 -%}
+              {{'\U0001F4A6'}} Tvätt idag {{ time }}
+            {%- elif count <= 1.0 -%}
+              Tvätt imorgon klockan {{ time }}
+            {%- elif count <= 2.0 -%}
+              Tvätt i övermorgon klockan {{ time }}
+            {%- else -%}
+              Tvätt om {{ (count + hours) | round }} dagar på {{ day }} kl {{ time }}
+            {%- endif %}
+          {%- endif %}
+        mathem: |
+          {%- set start_time = state_attr('calendar.mathem', 'start_time') %}
+          {%- set end_time = state_attr('calendar.mathem', 'end_time') %}
+          {% if start_time != None %}
+            {%- set time = as_timestamp(start_time) | timestamp_custom('%H:%M') %}
+            {%- set time_end = as_timestamp(end_time) | timestamp_custom('%H:%M') %}
+            {%- set hours = as_timestamp(start_time) | timestamp_custom('%H') | int / 24 %}
+            {%- set count = (as_timestamp(start_time) - as_timestamp(now())) / 86400 - hours %}
+            {%- set day = strptime(start_time, '%Y-%m-%d %H:%M:%S').strftime('%A') 
+            | replace('Monday', 'Måndag')
+            | replace('Tuesday', 'Tisdag')
+            | replace('Wednesday', 'Onsdag')
+            | replace('Thursday', 'Torsdag')
+            | replace('Friday', 'Fredag')
+            | replace('Saturday', 'Lördag')
+            | replace('Sunday', 'Söndag') %}
+            {%- if count <= 0.0 -%}
+              {{'\U0001F6D2'}} Mathem idag mellan {{ time }}-{{ time_end }}
+            {%- elif count <= 1.0 -%}
+              Mathem imorgon mellan {{ time }}-{{ time_end }}
+            {%- elif count <= 2.0 -%}
+              Mathem i övermorgon mellan {{ time }}-{{ time_end }}
+            {%- else -%}
+              Mathem om {{ (count + hours) | round }} dagar på {{ day }} mellan {{ time }}-{{ time_end }}
+            {%- endif %}
+          {%- endif %}
+        plex: |
+          {% if is_state('binary_sensor.plex_availability', 'off') -%}
+            {{-'\u26A0\uFE0F'}} Plex är nere...
+          {%- endif %}
+        nas: |
+          {% if is_state('binary_sensor.nas_internet_access', 'off') -%}
+            {{-'\u26A0\uFE0F'}} Kontrollera NAS internetåtkomst
+          {%- endif %}
+
+    - unique_id: coronavirus
+      icon: mdi:virus
+      state: template
+      attributes:
+        template: >
+          {% if is_state('sensor.covid_19_folkhalsomyndigheten', 'Tillgänglig') %}
+            {% set data = state_attr('sensor.covid_19_folkhalsomyndigheten', 'embedCode') %}
+            {% set total = data | regex_findall_index('Totalt[^,]*?(\d+)[^,]*?(\d+)[^,]*?(\d+)') | list %}
+            {% set break = '‍ ‍ ‍ ‍ ‍ ‍<font color="#2f3436">|</font> ‍ ‍ ‍ ‍ ' %}
+            <font color='#6a7377'>
+            <ha-icon icon="mdi:virus"></ha-icon> <b>Coronavirus</b>{{ break -}}
+            <ha-icon icon="mdi:chart-bar"></ha-icon> <b>{{ ((total[0] | int / 10327589) * 100) | round(2) }}%</b> av Sverige{{ break -}}
+            <ha-icon icon="mdi:emoticon-sad"></ha-icon> <b>{{ total[0] }}</b> fall{{ break -}}
+            <ha-icon icon="mdi:grave-stone"></ha-icon> <b>{{ total[2] }}</b> avlidna{{ break -}}
+            <ha-icon icon="mdi:map-marker-radius"></ha-icon> <b>{{ data | regex_findall_index('Skåne[^,]*?(\d+)') }}</b> fall i Skåne
+            </font>
+          {% endif %}
+
+    - unique_id: public_ip
+      icon: mdi:ip
+      state: !secret public_ip
+
+    - unique_id: dockermon_mem
+      icon: mdi:memory
+      state: >
+        {% set entity_id = 'sensor.docker_cpu' %}
+        {{ (state_attr(entity_id, 'memory_stats')['usage'] / 
+        state_attr(entity_id, 'memory_stats')['limit'] * 100) | round(1) | default(0) }}
+
+    - unique_id: imac_vpn
+      state: >
+        {{ 'Ej Ansluten' if is_state('switch.computer_imac', 'on') and 
+        states('sensor.imac_ip') == states('sensor.template_public_ip') else 'Ansluten' }}
+      icon: >
+        mdi:shield-{{ 'alert' if is_state('switch.computer_imac', 'on') and 
+        states('sensor.imac_ip') == states('sensor.template_public_ip') else 'check' }}
+
+    - unique_id: printer_status
+      icon: mdi:printer-wireless
+      state: >
+        {% macro prt(state, translate) %}
+        {{ translate if states('sensor.hp_deskjet_2600_series') == state }}
+        {% endmacro %}
+        {{ prt('On', 'På') }}
+        {{ prt('Scanning', 'Skannar') }}
+        {{ prt('Copying', 'Kopierar') }}
+        {{ prt('Printing', 'Skriver ut') }}
+        {{ prt('Cancelling Job', 'Avbryter') }}
+        {{ prt('trayEmptyOrOpen', 'Inga papper') }}
+        {{ prt('idle', 'Viloläge') }}
+        {{ prt('Off', 'Av') }}
+
+    - unique_id: roborock_filter
+      icon: custom:roborock-filter
+      unit_of_measurement: '%'
+      state: >
+        {{ (states('sensor.main_filter') | float / 60 / 150 * 100) | round }}
+
+    - unique_id: roborock_mainbrush
+      icon: custom:roborock-mainbrush
+      unit_of_measurement: '%'
+      state: >
+        {{ (states('sensor.main_brush') | float / 60 / 300 * 100) | round }}
+
+    - unique_id: roborock_sensors
+      icon: custom:roborock-sensor
+      unit_of_measurement: '%'
+      state: >
+        {{ (states('sensor.sensor_cleaning') | float / 60 / 30 * 100) | round }}
+
+    - unique_id: roborock_sidebrush
+      icon: custom:roborock-sidebrush
+      unit_of_measurement: '%'
+      state: >
+        {{ (states('sensor.right_brush') | float / 60 / 200 * 100) | round }}
+
+    - unique_id: roborock_last_clean
+      icon: mdi:calendar-clock
+      device_class: timestamp
+      state: >
+        {{ state_attr('vacuum.roborock_vacuum_s5', 'clean_stop') | replace(' ','T') }}
+
+    - unique_id: fullykiosk_storage
+      icon: mdi:sd
+      unit_of_measurement: '%'
+      state: >
+        {% set FreeSpace = states('sensor.galaxy_tab_a_internal_storage_free_space') | float %}
+        {% set TotalSpace = states('sensor.galaxy_tab_a_internal_storage_total_space') | float %}
+        {% if not (FreeSpace == 0.0 or TotalSpace == 0.0) %}
+          {{ 100 - (FreeSpace / TotalSpace * 100) | int }}
+        {% endif %}
+
+    - unique_id: fullykiosk_memory
+      icon: mdi:memory
+      unit_of_measurement: '%'
+      state: >
+        {% set FreeMemory = states('sensor.galaxy_tab_a_ram_free_memory') | float %}
+        {% set TotalMemory = states('sensor.galaxy_tab_a_ram_total_memory') | float %}
+        {% if not (FreeMemory == 0.0 or TotalMemory == 0.0) %}
+          {{ 100 - (FreeMemory / TotalMemory * 100) | int }}
+        {% endif %}
+
+    - unique_id: fullykiosk_last_app_start
+      icon: mdi:update
+      device_class: timestamp
+      state: >
+        {{ states('sensor.galaxy_tab_a_last_app_start') | replace(' ','T') }}
+
+    - unique_id: nas_status
+      icon: custom:synology-nas
+      state: >
+        {% set entity_id = 'sensor.nas_volume_1_status' %}
+        {% if is_state(entity_id, 'normal') %}
+          Bra
+        {% elif is_state(entity_id, 'background') %}
+          Verifierar
+        {% else %}
+          {{ states(entity_id) }}
+        {% endif %}
+
+    - unique_id: nas_vpn
+      state: >
+        {{ 'Ej Ansluten' if states('sensor.myip') == states('sensor.template_public_ip') else 'Ansluten' }}
+      icon: >
+        mdi:shield-{{ 'alert' if states('sensor.myip') == states('sensor.template_public_ip') else 'check' }}
+
+#legacy
+sensor:
+
+  - platform: template
+    sensors:
+      hass_version:
+        icon_template: mdi:home-assistant
+        friendly_name_template: >
+          Installerad {{ states('sensor.hass_version_installed') }}
+        value_template: >
+          {{ 'Senaste' if states('sensor.hass_version_installed') == 
+          states('sensor.hass_version_latest') else states('sensor.hass_version_latest') }}
+
+      hass_dev_release:
+        icon_template: mdi:dev-to
+        device_class: timestamp
+        friendly_name_template: >
+          {% set release = state_attr('calendar.home_assistant_devs','message') %}
+          {% if release == 'Home Assistant Core Beta Release' %}
+            Nästa beta
+          {% elif release == 'Home Assistant Core Release' %}
+            Nästa release
+          {% else %}
+            {{ release }}
+          {% endif %}
+        value_template: >
+          {{ state_attr('calendar.home_assistant_devs', 'start_time') | replace(' ','T') }}
+
+      nas_net_down:
+        value_template: ' '
+        icon_template: mdi:arrow-down-bold
+        friendly_name_template: >
+          {% set down = states('sensor.nas_network_down') | float %}
+          {% if down < 1000 %} {{ down | round(0) }} kb/s
+          {% elif down >= 1000 %} {{ ((down / 1000) | round(2) | string).rstrip('.0') }} Mb/s
+          {% endif %}
+
+      nas_net_up:
+        value_template: ' '
+        icon_template: mdi:arrow-up-bold
+        friendly_name_template: >
+          {% set up = states('sensor.nas_network_up') | float %}
+          {% if up < 1000 %} {{ up | round(0) }} kb/s
+          {% elif up >= 1000 %} {{ ((up / 1000) | round(2) | string).rstrip('.0') }} Mb/s
+          {% endif %}

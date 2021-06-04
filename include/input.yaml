@@ -7,20 +7,7 @@ input_boolean:
   #                                                  #
   ####################################################
 
-  computer_imac:
-    initial: off
-  sony_bravia:
-    initial: off
-  samsung_tv_remote:
-    initial: off
-  playstation_5:
-    initial: off
-  sovrum_anslut:
-    initial: off
-  air_purifier:
-    initial: off
-
-  laundry_timer_visibility:
+  laundry_display:
 
   sovrum_anslut_oscillate:
     name: Oscillera
@@ -29,16 +16,6 @@ input_boolean:
   computer_lock:
     name: Avstängningslås
     icon: custom:lock
-
-  motion_hall:
-    name: hallen
-    initial: off
-  motion_garderob:
-    name: klädkammaren
-    initial: off
-  motion_badrum:
-    name: badrummet
-    initial: off
 
 input_number:
 
@@ -62,7 +39,7 @@ input_number:
     initial: 12
     min: 1
     max: 12
-    unit_of_measurement: 'h'
+    unit_of_measurement: h
 
   sovrum_anslut_timer:
     name: Stäng efter
@@ -70,7 +47,7 @@ input_number:
     initial: 12
     min: 1
     max: 12
-    unit_of_measurement: 'h'
+    unit_of_measurement: h
 
   sovrum_anslut_speed:
     name: Fläkthastighet
@@ -97,57 +74,61 @@ input_select:
   hdmi:
     name: Källa
     options:
-      ['HDMI 1', 'HDMI 2/MHL', 'HDMI 3', 'HDMI 4']
+      - HDMI 1
+      - HDMI 2/MHL
+      - HDMI 3
+      - HDMI 4
     initial: HDMI 1
     icon: custom:hdmi-source
 
   hdmi2:
     name: Källa
     options:
-      ['TV', 'HDMI']
+      - TV
+      - HDMI
     initial: HDMI
     icon: custom:hdmi-source
 
   roborock_speed:
     name: Rengöringsläge
-    options:
-      ['Tyst', 'Standard', 'Medium', 'Turbo', 'Av']
     icon: mdi:format-list-bulleted
+    options:
+      - Tyst
+      - Standard
+      - Medium
+      - Turbo
+      - Av
 
   sovrum_anslut_speed:
     name: Fläkthastighet
     options:
-      ['Tyst', 'Medium', 'Max']
+      - Tyst
+      - Medium
+      - Max
 
   air_purifier_speed:
     name: Hastighet
     options:
-      ['Tyst', 'Låg', 'Hög', 'Turbo']
+      - Tyst
+      - Låg
+      - Hög
+      - Turbo
 
   roborock_zone:
     initial: Ingen vald
     options:
-      ['Ingen vald', 'Hall', 'Kök', 'Vardagsrum', 'Studio', 'Sovrum']
+      - Ingen vald
+      - Hall
+      - Kök
+      - Vardagsrum
+      - Studio
+      - Sovrum
 
   conditional_media:
     initial: Senast nedladdat
     options:
-      ['Senast nedladdat', 'Vardagsrum', 'Sovrum', 'Spotify', 'Google Nest Mini']
-
-lock:
-
-  ####################################################
-  #                                                  #
-  #                       LOCK                       #
-  #                                                  #
-  ####################################################
-
-  - platform: template
-    name: Dator
-    value_template: "{{ states('input_boolean.computer_lock') }}"
-    lock:
-      service: input_boolean.turn_on
-      entity_id: input_boolean.computer_lock
-    unlock:
-      service: input_boolean.turn_off
-      entity_id: input_boolean.computer_lock
+      - Senast nedladdat
+      - Vardagsrum
+      - Sovrum
+      - Spotify
+      - Google Nest Mini

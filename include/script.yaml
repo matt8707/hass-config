@@ -1,9 +1,8 @@
-
 script:
 
   ####################################################
   #                                                  #
-  #                     SCRIPTS                      #
+  #                      SCRIPT                      #
   #                                                  #
   ####################################################
 
@@ -53,21 +52,19 @@ script:
         data:
           duration: 8000
           message: Ställer in eko-läge på Tv i sovrummet...
-      - service: remote.send_command
+      - service: media_player.play_media
         data:
-          entity_id: remote.broadlink
-          delay_secs: 1.5
-          device: samsung_tv
-          command:
-            ['exit_15', 'settings_1', 'down_2', 'down_2' , 'down_2', 'enter_5', 'down_2', 'down_2', 'down_2', 
-            'down_2', 'enter_5', 'enter_5', 'down_2', 'down_2', 'enter_5', 'exit_15', 'exit_15']
+          entity_id: media_player.samsung_tv
+          media_content_type: send_key
+          media_content_id: >
+            KEY_MENU+870+KEY_DOWN+470+KEY_DOWN+470+KEY_DOWN+470+KEY_ENTER+870+KEY_DOWN+470+KEY_DOWN+470+KEY_DOWN+470+KEY_DOWN+470+KEY_ENTER+870+KEY_ENTER+870+KEY_DOWN+470+KEY_DOWN+470+KEY_ENTER+870+KEY_HOME+470+KEY_HOME+470
 
   mattias_find_my_iphone:
     sequence:
       - repeat:
           count: 3
           sequence:
-            - service: notify.mobile_app_iphone
+            - service: notify.mobile_app_mattias_iphone_ios
               data:
                 title: Hitta min iPhone
                 message: Här är jag
@@ -118,7 +115,7 @@ script:
           sequence:
             - service: tts.cloud_say
               data:
-                entity_id: media_player.tablet
+                entity_id: media_player.galaxy_tab_a
                 message: >
                   {{ ['Hej', 'Startar', 'Värmer upp', 'Välkommen hem'] | random }}
                 language: sv-SE
@@ -144,62 +141,30 @@ script:
       - choose:
         - conditions:
             - condition: state
-              entity_id: light.galaxy_tab_a_screen
-              state: 'on'
-            - condition: state
               entity_id: switch.galaxy_tab_a_screensaver
               state: 'off'
           sequence:
             - service: tts.cloud_say
               data:
-                entity_id: media_player.tablet
+                entity_id: media_player.galaxy_tab_a
                 message: >
                   {{ ['Ha det bra', 'Saknar dig redan', 'Hej då', 'Stänger ner allt'] | random }}
-                language: sv-SE
-      - service: light.turn_off
-        entity_id: light.all_lights_exclude_hall
-      - service: switch.turn_off
-        entity_id:
-          ['switch.wemo_fan', 'switch.wemo_monitors']
-      - choose:
-        - conditions:
-            - condition: state
-              entity_id: switch.wol_imac
-              state: 'on'
-          sequence:
-            - service: switch.turn_off
-              entity_id: switch.computer_imac
-      - choose:
-        - conditions:
-            - condition: state
-              entity_id: media_player.sony_bravia
-              state: 'on'
-          sequence:
-            - service: switch.turn_off
-              entity_id: switch.tv_sony
-      - choose:
-        - conditions:
-            - condition: state
-              entity_id: media_player.samsung_tv_remote
-              state: 'on'
-          sequence:
-            - service: switch.turn_off
-              entity_id: switch.tv_samsung
-      - choose:
-        - conditions:
-            - condition: state
-              entity_id: binary_sensor.gosund_fan
-              state: 'on'
-          sequence:
-            - service: fan.turn_off
-              entity_id: fan.sovrum_anslut
-      - choose:
-        - conditions:
-            - condition: state
-              entity_id: binary_sensor.gosund_air_purifier
-              state: 'on'
-          sequence:
-            - service: fan.turn_off
-              entity_id: fan.air_purifier
+      - service: homeassistant.turn_off
+        data:
+          entity_id: >
+            {% set states = [
+              states.light.all_lights_exclude_hall,
+              states.switch.wemo_fan,
+              states.switch.wemo_monitors,
+              states.switch.computer_imac,
+              states.switch.balkong,
+              states.switch.tv_sony,
+              states.switch.tv_samsung,
+              states.fan.sovrum_anslut ] %}
+            {{ states | selectattr('state','eq','on') | map(attribute='entity_id') | list }}
+      - delay:
+          seconds: 1
+      - service: fan.turn_off
+        entity_id: fan.air_purifier
       - delay:
           seconds: 4

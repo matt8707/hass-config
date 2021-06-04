@@ -1,0 +1,27 @@
+shell_command:
+
+  ####################################################
+  #                                                  #
+  #                  SHELL COMMAND                   #
+  #                                                  #
+  ####################################################
+
+  imac_switchbot: !secret imac_switchbot
+  imac_off: !secret imac_off
+  imac_sleep: !secret imac_sleep
+  imac_restart: !secret imac_restart
+  imac_notify_motion_hall: !secret imac_notify_motion_hall
+  imac_notify_laundry: !secret imac_notify_laundry
+
+  monitors_volume_slider: !secret monitors_volume_slider
+  monitors_mute_on: !secret monitors_mute_on
+  monitors_mute_off: !secret monitors_mute_off
+
+  reference_click: !secret reference_click
+  reference_kill: !secret reference_kill
+  reference_monitors: !secret reference_monitors
+  reference_headphones: !secret reference_headphones
+
+  ha_dockermon_restart_container: !secret ha_dockermon_restart_container
+  ha_purge_logs: truncate -s 0 /config/home-assistant.log
+  playstation_5_wake: !secret playstation_5_wake

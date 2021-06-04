@@ -2,7 +2,7 @@ scene:
   - id: '1574796562965'
     name: Hemma below horizon
     entities:
-      light.datorlampa:
+      light.dator:
         brightness: 254
         color_temp: 414
         effect: none
@@ -93,7 +93,7 @@ scene:
         brightness: 83
         color_temp: 454
         state: 'on'
-      light.datorlampa:
+      light.dator:
         brightness: 254
         color_temp: 319
         effect: none
@@ -129,7 +129,7 @@ scene:
         min_mireds: 153
         state: 'off'
         supported_features: 63
-      light.datorlampa:
+      light.dator:
         effect_list:
         - colorloop
         - random
@@ -203,7 +203,7 @@ scene:
   - id: '1580746000987'
     name: Party
     entities:
-      light.datorlampa:
+      light.dator:
         brightness: 254
         effect: colorloop
         effect_list:
@@ -354,7 +354,7 @@ scene:
   - id: '1580746572051'
     name: Filmdags
     entities:
-      light.datorlampa:
+      light.dator:
         brightness: 123
         color_temp: 500
         effect: none
