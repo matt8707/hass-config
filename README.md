@@ -1,14 +1,50 @@
 # Home Assistant Configuration
 
-[Home Assistant Core](https://home-assistant.io/) in [docker](https://www.docker.com/) on a  [Synology DiskStation DS918+](https://www.synology.com/products/DS918+). My use case is a [wall mounted](https://www.durable.eu/information-and-presentation/tablet-holder/wall-mounted-tablet-holder/tablet-holder-wall.html) tablet [[Samsung 10.1"](https://www.samsung.com/us/mobile/tablets/galaxy-tab-a/galaxy-tab-a-10-1-2019-32gb-black-wi-fi-sm-t510nzkaxar/)] displaying Home Assistant in [Fully Kiosk Browser](https://www.ozerov.de/fully-kiosk-browser/) and on desktop using [applicationize](https://applicationize.me/) (chrome). My configuration is exposed to HomeKit with Apple Tv acting as a hub for remote connection. I also support [Nabu Casa](https://www.nabucasa.com/).
+[Home Assistant Container](https://www.home-assistant.io/installation/#compare-installation-methods) ([Docker](https://hub.docker.com/r/homeassistant/home-assistant)) on a NAS ([Synology DiskStation DS918+](https://www.synology.com/products/DS918+)). My use case is a [wall mounted](https://www.durable.eu/information-and-presentation/tablet-holder/wall-mounted-tablet-holder/tablet-holder-wall.html) tablet ([Galaxy Tab A 10.1](https://www.samsung.com/us/mobile/tablets/galaxy-tab-a/galaxy-tab-a-10-1-2019-32gb-black-wi-fi-sm-t510nzkaxar/)) using [Fully Kiosk Browser](https://www.ozerov.de/fully-kiosk-browser/), and on desktop using [homeassistant-desktop](https://github.com/mrvnklm/homeassistant-desktop). My configuration is exposed to HomeKit with Apple Tv acting as a hub for remote connection. I also support [Nabu Casa](https://www.nabucasa.com/).
 
-If you like anything here, Be sure to :star2: my repo!
+If you like anything here be sure to :star2: my repo!
 
 ![screenshot](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/screenshot.png)
 
+
+# June 2021
+
+While picture elements is still a valid card for layouts that doesn't follow a specific grid, this dashboard does. Instead of placing button cards using coordinates, it's now placed onto a grid that is responsive.
+
+**Layout** `custom:layout-card`
+* CSS grid everything and as a bonus...
+* Mobile and portrait dashboards
+
+![responsive](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/responsive_demo.mp4)
+
+**Buttons** `custom:button-card`
+* Loader template doesn't need any `input_boolean` helpers anymore 
+* Icons will only animate on state change to prevent all icons animating on dashboard refresh
+* Some entity checks for undefined entities, no errors on restarts
+* Added a bounce effect to the button when pressed
+
+**Theme** `custom:card-mod`
+* Reworked themes with focus on performance
+* Wrote a tool to help with styling [card-mod-helper](https://matt8707.github.io/card-mod-helper/)
+
+**Deprecated**
+*If you're looking for picture elements, browse this repository before March 2021 [https://github.com/matt8707/hass-config/tree/c9dd19e04bd4fde2322e610a42f4e246b58ee19a](https://github.com/matt8707/hass-config/tree/c9dd19e04bd4fde2322e610a42f4e246b58ee19a)*
+
+**Includes**
+Since this configuration is split into several yaml files, I'm using [lovelace-gulp-watch](https://github.com/akmolina28/lovelace-gulp-watch), which auto updates lovelace if an included file is changed.
+
+**Known issues**
+* card-mod randomly not applying markdown styling on 2021.6.0 [#130](https://github.com/thomasloven/lovelace-card-mod/issues/130)
+* swipe-card not updating size unless resizing window [#32](https://github.com/bramkragten/swipe-card/issues/32) [#147](https://github.com/thomasloven/lovelace-layout-card/issues/147)
+
+**Support**
+If you want, you can [buy me a beer](https://www.buymeacoffee.com/matt8707) :blush:
+
+---
+
 ## Features
 
-* A different take on designing a [Lovelace UI](https://www.home-assistant.io/lovelace/) using a [Picture Elements Card](https://www.home-assistant.io/lovelace/picture-elements/) in [panel mode](https://www.home-assistant.io/lovelace/dashboards-and-views#panel)
+* A different take on designing a [Lovelace UI](https://www.home-assistant.io/lovelace/) using <s>picture elements card</s> [custom:layout-card](https://github.com/thomasloven/lovelace-layout-card)
 * Achieving a less cluttered interface by displaying [more information](https://github.com/thomasloven/hass-browser_mod#popup) on a [long press](https://www.home-assistant.io/lovelace/picture-elements/#hold_action)
 * Loading wheel for slow responding entities such as booting a computer.
 * [Adding sounds](https://github.com/thomasloven/hass-browser_mod#media_player) to the UI using automations listening for events
@@ -18,7 +54,7 @@ If you like anything here, Be sure to :star2: my repo!
 
 ### The sidebar
 
-[Markdown Card](https://www.home-assistant.io/lovelace/markdown/) inside a [Picture Elements Card](https://www.home-assistant.io/lovelace/picture-elements/) to create dynamic [templates](https://www.home-assistant.io/docs/configuration/templating/).
+[Markdown Card](https://www.home-assistant.io/lovelace/markdown/) to create dynamic [templates](https://www.home-assistant.io/docs/configuration/templating/).
 
 * Time and date with greeting based on time of day
 * Lights and switches that are on, using natural language
@@ -28,7 +64,7 @@ If you like anything here, Be sure to :star2: my repo!
 
 ### Sidebar footer
 
-The three icons at the bottom in order
+The three icons at the bottom in order:
 
 * Card to control [robot vacuum](https://www.mi-store.se/en/smart-homes/robot-vacuum-cleaners/xiaomi-robot-vacuum-2-roborock)
 * Monitor [Home Assistant](https://home-assistant.io/), [tablet](https://www.samsung.com/us/mobile/tablets/galaxy-tab-a/galaxy-tab-a-10-1-2019-32gb-black-wi-fi-sm-t510nzkaxar/) and [Network Attached Storage](https://www.synology.com/products/DS918+)
@@ -46,13 +82,8 @@ Conditionally displaying media player controls based on last active device such 
 
 All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.meethue.com/en-gb/p/hue-motion-sensor/8718696743171) in hallway, bathroom and walk-in closet.
 
-* Injecting current lamp color to only parts of an icon
-* Vertical dimmer for touch
-* Brightness in a dynamic circle
-
 ![light](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/light.gif)
 
-***
 
 ### Switches
 
@@ -63,13 +94,13 @@ All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.m
 
 ![info_light](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/info_light.png)
 
-***
 
 ### Custom icons
 
 I made some custom icons located in `www/custom_icons.js`. If you want to make your own I recommend reading the [material design principles](https://material.io/design/iconography/system-icons.html#design-principles).
 
 ![custom_icons](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/custom_icons.png)
+
 
 ### Misc
 
