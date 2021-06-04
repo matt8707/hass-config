@@ -1,7 +1,7 @@
 """Fully Kiosk Browser sensor."""
 import logging
 
-from homeassistant.const import DEVICE_CLASS_BATTERY, PERCENTAGE
+from homeassistant.const import DATA_MEGABYTES, DEVICE_CLASS_BATTERY, PERCENTAGE
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -16,7 +16,18 @@ SENSOR_TYPES = {
     "lastAppStart": "Last App Start",
     "wifiSignalLevel": "WiFi Signal Level",
     "currentPage": "Current Page",
+    "internalStorageFreeSpace": "Internal Storage Free Space",
+    "internalStorageTotalSpace": "Internal Storage Total Space",
+    "ramFreeMemory": "RAM Free Memory",
+    "ramTotalMemory": "RAM Total Memory",
 }
+
+STORAGE_SENSORS = [
+    "internalStorageFreeSpace",
+    "internalStorageTotalSpace",
+    "ramFreeMemory",
+    "ramTotalMemory",
+]
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -49,14 +60,20 @@ class FullySensor(CoordinatorEntity, Entity):
     @property
     def state(self):
         """Return the state of the sensor."""
-        if self.coordinator.data:
-            return self.coordinator.data[self._sensor]
+        if not self.coordinator.data:
+            return None
+
+        if self._sensor in STORAGE_SENSORS:
+            return round(self.coordinator.data[self._sensor] * 0.000001, 1)
+
+        return self.coordinator.data[self._sensor]
 
     @property
     def device_class(self):
         """Return the device class."""
         if self._sensor == "batteryLevel":
             return DEVICE_CLASS_BATTERY
+
         return None
 
     @property
@@ -64,6 +81,10 @@ class FullySensor(CoordinatorEntity, Entity):
         """Return the unit of measurement."""
         if self._sensor == "batteryLevel":
             return PERCENTAGE
+
+        if self._sensor in STORAGE_SENSORS:
+            return DATA_MEGABYTES
+
         return None
 
     @property

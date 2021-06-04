@@ -1,91 +1,193 @@
 # Describes the format for available fullykiosk services
 
 load_start_url:
+  name: Load Start URL
   description: Load Fully Kiosk Browser start URL.
   fields:
     entity_id:
       description: Name(s) of entities to load the start URL on.
       example: "media_player.amazon_fire_media_player"
+      name: Entity
+      required: true
+      selector:
+        entity:
+          integration: fullykiosk
+          domain: media_player
 
 load_url:
+  name: Load URL
   description: Load URL on Fully Kiosk Browser.
   fields:
     entity_id:
       description: Name(s) of entities to load the start URL on.
       example: "media_player.amazon_fire_media_player"
+      name: Entity
+      required: true
+      selector:
+        entity:
+          integration: fullykiosk
+          domain: media_player
     url:
       description: URL to be loaded.
       example: "https://www.fully-kiosk.com"
+      name: URL
+      required: true
+      selector:
+        text:
 
 play_audio:
+  name: Play Audio
   description: Play audio on a Fully Kiosk Browser.
   fields:
     entity_id:
       description: Name(s) of entities to play media on
       example: "media_player.amazon_fire_media_player"
+      name: Entity
+      required: true
+      selector:
+        entity:
+          integration: fullykiosk
+          domain: media_player
     url:
       description: The URL of the audio to play.
       example: "https://home-assistant.io/audio/test.mp3"
+      name: URL
+      required: true
+      selector:
+        text:
     stream:
+      name: Stream
       description: Stream on which to play the audio
       example: 3
+      selector:
+        number:
+          min: 0
+          max: 10
+          mode: box
 
 reboot_device:
+  name: Reboot Device
   description: Reboot the device running the Fully Kiosk Browser app.
   fields:
     entity_id:
       description: Name(s) of entities to reboot.
       example: "media_player.amazon_fire_media_player"
+      name: Entity
+      required: true
+      selector:
+        entity:
+          integration: fullykiosk
+          domain: media_player
 
 restart:
+  name: Restart
   description: Restart the Fully Kiosk Browser app.
   fields:
     entity_id:
       description: Name(s) of entities to restart the app on.
       example: "media_player.amazon_fire_media_player"
+      name: Entity
+      required: true
+      selector:
+        entity:
+          integration: fullykiosk
+          domain: media_player
 
 set_config:
+  name: Set Config
   description: Modify a setting in Fully Kiosk Browser.
   fields:
     entity_id:
       description: Name(s) of entities to modify the setting on.
       example: "media_player.amazon_fire_media_player"
+      name: Entity
+      required: true
+      selector:
+        entity:
+          integration: fullykiosk
+          domain: media_player
     config_type:
       description: Type of setting (either 'string' or 'bool')
       example: "string"
     key:
       description: Key of the setting to change
       example: "startURL"
+      name: Key
+      required: true
+      selector:
+        text:
     value:
       description: New value of the setting
       example: "https://www.fully-kiosk.com"
+      name: Value
+      required: true
+      selector:
+        text:
 
 start_application:
+  name: Start Application
   description: Start an application on the device.
   fields:
     entity_id:
       description: Name(s) of entities to start the app on.
       example: "media_player.amazon_fire_media_player"
+      name: Entity
+      required: true
+      selector:
+        entity:
+          integration: fullykiosk
+          domain: media_player
     application:
       description: Package name of the application to start.
       example: "de.ozerov.fully"
+      name: Application
+      required: true
+      selector:
+        text:
 
 to_foreground:
+  name: To Foreground
   description: Bring the Fully Kiosk Browser app to the foreground.
   fields:
     entity_id:
       description: Name(s) of entities on which to bring the app to the foreground.
       example: "media_player.amazon_fire_media_player"
+      name: Entity
+      required: true
+      selector:
+        entity:
+          integration: fullykiosk
+          domain: media_player
 
 volume_set:
+  name: Set Volume
   description: Set a Fully Kiosk Browser volume level.
   fields:
     entity_id:
       description: Name(s) of entities to set volume level on.
       example: "media_player.amazon_fire_media_player"
+      name: Entity
+      required: true
+      selector:
+        entity:
+          integration: fullykiosk
+          domain: media_player
     volume_level:
+      name: Volume Level
       description: Volume level to set as float.
       example: 0.6
+      selector:
+        number:
+          min: 0
+          max: 1
+          step: .1
+          mode: slider
     stream:
+      name: Stream
       description: Stream for which to set the volume level (1-10)
       example: 3
+      selector:
+        number:
+          min: 0
+          max: 10
+          mode: box

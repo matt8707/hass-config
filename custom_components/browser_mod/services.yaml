@@ -1,128 +1,128 @@
 command:
-  description: 'Send a command to a browser.'
+  description: "Send a command to a browser."
   fields:
     command:
-      description: 'Command to send'
-      example: 'navigate'
+      description: "Command to send"
+      example: "navigate"
     deviceID:
-      description: '(optional) List of receiving browsers'
+      description: "(optional) List of receiving browsers"
       example: '["99980b13-dabc9563", "office_computer"]'
 commands:
-  description: 'Send several commands to a browser'
+  description: "Send several commands to a browser"
   fields:
     commands:
       description: "List of commands to send"
     deviceID:
-      description: '(optional) List of receiving browsers'
+      description: "(optional) List of receiving browsers"
       example: '["99980b13-dabc9563", "office_computer"]'
 debug:
-  description: 'On all browsers, show a popup, and a javascript alert with the current device ID.'
+  description: "On all browsers, show a popup, and a javascript alert with the current device ID."
   fields:
     deviceID:
-      description: '(optional) List of receiving browsers'
+      description: "(optional) List of receiving browsers"
       example: '["99980b13-dabc9563", "office_computer"]'
 set_theme:
-  description: 'On all browsers, change the theme.'
+  description: "On all browsers, change the theme."
   fields:
     theme:
-      description: 'Theme to change to'
+      description: "Theme to change to"
       example: '{theme: "clear_light"}'
     deviceID:
-      description: '(optional) List of receiving browsers'
+      description: "(optional) List of receiving browsers"
       example: '["99980b13-dabc9563", "office_computer"]'
 navigate:
-  description: 'Navigate to a path on a browser.'
+  description: "Navigate to a path on a browser."
   fields:
     navigation_path:
-      description: 'Path to navigate to'
-      example: '/lovelace/1'
+      description: "Path to navigate to"
+      example: "/lovelace/1"
     deviceID:
-      description: '(optional) List of receiving browsers'
+      description: "(optional) List of receiving browsers"
       example: '["99980b13-dabc9563", "office_computer"]'
 more_info:
-  description: 'Open the more info dialog of an entity on a browser.'
+  description: "Open the more info dialog of an entity on a browser."
   fields:
     entity_id:
-      description: 'Entity to show more info for'
-      example: 'camera.front_door'
+      description: "Entity to show more info for"
+      example: "camera.front_door"
     deviceID:
-      description: '(optional) List of receiving browsers'
+      description: "(optional) List of receiving browsers"
       example: '["99980b13-dabc9563", "office_computer"]'
     large:
-      description: '(optional) Set to true to make wider'
-      example: 'true'
+      description: "(optional) Set to true to make wider"
+      example: "true"
 toast:
-  description: 'Show a toast message in the bottom left on all browsers.'
+  description: "Show a toast message in the bottom left on all browsers."
   fields:
     message:
-      description: 'Message to show'
-      example: 'Short message'
+      description: "Message to show"
+      example: "Short message"
     deviceID:
-      description: '(optional) List of receiving browsers'
+      description: "(optional) List of receiving browsers"
       example: '["99980b13-dabc9563", "office_computer"]'
     duration:
-      description: '(optional) Time in milliseconds to show message for. Set to 0 for persistent display.'
-      example: '10000'
+      description: "(optional) Time in milliseconds to show message for. Set to 0 for persistent display."
+      example: "10000"
 popup:
-  description: 'Pop up a card on a browser.'
+  description: "Pop up a card on a browser."
   fields:
     title:
-      description: 'Name to show in popup bar'
-      example: 'Popup example'
+      description: "Name to show in popup bar"
+      example: "Popup example"
     card:
-      description: 'YAML config for card to show'
+      description: "YAML config for card to show"
     deviceID:
-      description: '(optional) List of receiving browsers'
+      description: "(optional) List of receiving browsers"
       example: '["99980b13-dabc9563", "office_computer"]'
     large:
-      description: '(optional) Set to true to make wider'
-      example: 'true'
+      description: "(optional) Set to true to make wider"
+      example: "true"
     hide_header:
-      description: '(optional) Hide header title and close button'
-      example: 'true'
+      description: "(optional) Hide header title and close button"
+      example: "true"
     auto_close:
-      description: '(optional) Close popup when mouse is moved or key is pressed. Also hides header'
-      example: 'true'
+      description: "(optional) Close popup when mouse is moved or key is pressed. Also hides header"
+      example: "true"
     time:
       description: "(optional) When mouse isn't moved or keys aren't pressed for this amount of seconds, reopen. Only usable with auto_close. See blackout"
-      example: '20'
+      example: "20"
 close_popup:
-  description: 'Close all popups on all browsers.'
+  description: "Close all popups on all browsers."
   fields:
     deviceID:
-      description: '(optional) List of receiving browsers'
+      description: "(optional) List of receiving browsers"
       example: '["99980b13-dabc9563", "office_computer"]'
 blackout:
-  description: 'Cover screen in black until the mouse is moved or a key is pressed.'
+  description: "Cover screen in black until the mouse is moved or a key is pressed."
   fields:
     time:
-      description: '(optional) The blackout will turn on automatically after the specified number of seconds. It works kind of like a screensaver and will keep turning on until blackout is called again with time: -1.'
-      example: '20'
+      description: "(optional) The blackout will turn on automatically after the specified number of seconds. It works kind of like a screensaver and will keep turning on until blackout is called again with time: -1."
+      example: "20"
     deviceID:
-      description: '(optional) List of receiving browsers'
+      description: "(optional) List of receiving browsers"
       example: '["99980b13-dabc9563", "office_computer"]'
 no_blackout:
-  description: 'Remove a blackout from a browser.'
+  description: "Remove a blackout from a browser."
   fields:
     brightness:
-      description: '(optional) On a Fully Kiosk Browser Plus set the screen brightness from 0 - 255.'
+      description: "(optional) On a Fully Kiosk Browser Plus set the screen brightness from 0 - 255."
     deviceID:
-      description: '(optional) List of receiving browsers'
+      description: "(optional) List of receiving browsers"
       example: '["99980b13-dabc9563", "office_computer"]'
 lovelace_reload:
-  description: 'Refresh the lovelace configuration.'
+  description: "Refresh the lovelace configuration."
   fields:
     deviceID:
-      description: '(optional) List of receiving browsers'
+      description: "(optional) List of receiving browsers"
       example: '["99980b13-dabc9563", "office_computer"]'
 delay:
-  description: 'Do nothing for a while'
+  description: "Do nothing for a while"
   fields:
     seconds:
-      description: 'Number of seconds to delay'
-      example: '5'
+      description: "Number of seconds to delay"
+      example: "5"
     deviceID:
-      description: '(optional) List of receiving browsers'
+      description: "(optional) List of receiving browsers"
       example: '["99980b13-dabc9563", "office_computer"]'
 call_service:
   description: ""

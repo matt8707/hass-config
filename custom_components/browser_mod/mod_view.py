@@ -5,12 +5,11 @@ from .const import FRONTEND_SCRIPT_URL, DATA_EXTRA_MODULE_URL
 
 
 def setup_view(hass):
-    if DATA_EXTRA_MODULE_URL not in hass.data:
-        hass.data[DATA_EXTRA_MODULE_URL] = set()
     url_set = hass.data[DATA_EXTRA_MODULE_URL]
     url_set.add(FRONTEND_SCRIPT_URL)
 
     hass.http.register_view(ModView(hass, FRONTEND_SCRIPT_URL))
+
 
 class ModView(HomeAssistantView):
 
@@ -30,7 +29,9 @@ class ModView(HomeAssistantView):
             with open(path, mode="r", encoding="utf-8", errors="ignore") as localfile:
                 filecontent = localfile.read()
                 localfile.close()
-        except Exception as exception:
+        except Exception:
             pass
 
-        return web.Response(body=filecontent, content_type="text/javascript", charset="utf-8")
+        return web.Response(
+            body=filecontent, content_type="text/javascript", charset="utf-8"
+        )

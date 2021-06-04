@@ -46,7 +46,7 @@ async def validate_input(hass: core.HomeAssistant, data):
     fully = FullyKiosk(session, data["host"], data["port"], data["password"])
 
     try:
-        with timeout(10):
+        with timeout(15):
             deviceInfo = await fully.getDeviceInfo()
     except (FullyKioskError, ClientConnectorError):
         raise CannotConnect

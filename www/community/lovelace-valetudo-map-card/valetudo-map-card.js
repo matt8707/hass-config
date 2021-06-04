@@ -1,6 +1,7 @@
 class ValetudoMapCard extends HTMLElement {
   constructor() {
     super();
+
     this.drawingMap = false;
     this.drawingControls = false;
     this.lastUpdatedControls = "";
@@ -9,7 +10,6 @@ class ValetudoMapCard extends HTMLElement {
     this.isPollingMap = false;
     this.lastRobotState = "docked";
     this.pollInterval = POLL_INTERVAL_STATE_MAP["cleaning"];
-
 
     this.cardContainer = document.createElement('ha-card');
     this.cardContainer.id = 'lovelaceValetudoHaCard';
@@ -186,7 +186,7 @@ class ValetudoMapCard extends HTMLElement {
     return this.getEntities(attributes, 'no_go_area');
   };
 
-  drawMap(mapContainer, attributes, mapHeight, mapWidth, floorColor, wallColor, currentlyCleanedZoneColor, noGoAreaColor, virtualWallColor, pathColor, chargerColor, vacuumColor, gotoTargetColor) {
+  drawMap(mapContainer, attributes, mapHeight, mapWidth, boundingBox, floorColor, wallColor, currentlyCleanedZoneColor, noGoAreaColor, virtualWallColor, pathColor, chargerColor, vacuumColor, gotoTargetColor) {
     // Points to pixels
     let pixelSize = 50;
     pixelSize = attributes.pixelSize;
@@ -199,9 +199,8 @@ class ValetudoMapCard extends HTMLElement {
     let mapLeftOffset = 0;
     let mapTopOffset = 0;
 
-    let floorLayer = this.getLayers(attributes, 'floor', 1)[0];
-    mapLeftOffset = ((floorLayer.dimensions.x.min) - 1) * this._config.map_scale;
-    mapTopOffset = ((floorLayer.dimensions.y.min) - 1) * this._config.map_scale;
+    mapLeftOffset = ((boundingBox.minX) - 1) * this._config.map_scale;
+    mapTopOffset = ((boundingBox.minY) - 1) * this._config.map_scale;
 
 
     // Create all objects
@@ -529,6 +528,7 @@ class ValetudoMapCard extends HTMLElement {
     if (this._config.show_pause_button === undefined) this._config.show_pause_button = true;
     if (this._config.show_stop_button === undefined) this._config.show_stop_button = true;
     if (this._config.show_home_button === undefined) this._config.show_home_button = true;
+    if (this._config.show_locate_button === undefined) this._config.show_locate_button = true;
 
     // Width settings
     if (this._config.virtual_wall_width === undefined) this._config.virtual_wall_width = 1;
@@ -702,10 +702,31 @@ class ValetudoMapCard extends HTMLElement {
       // Calculate map height and width
       let width;
       let height;
-      let floorLayer = this.getLayers(attributes, 'floor', 1)[0];
-      width = (floorLayer.dimensions.x.max - floorLayer.dimensions.x.min) + 2;
-      height = (floorLayer.dimensions.y.max - floorLayer.dimensions.y.min) + 2;
 
+      let boundingBox = {
+        minX: attributes.size.x / attributes.pixelSize,
+        minY: attributes.size.y / attributes.pixelSize,
+        maxX: 0,
+        maxY: 0
+      };
+
+      attributes.layers.forEach(l => {
+        if(l.dimensions.x.min < boundingBox.minX) {
+          boundingBox.minX = l.dimensions.x.min;
+        }
+        if(l.dimensions.y.min < boundingBox.minY) {
+          boundingBox.minY = l.dimensions.y.min;
+        }
+        if(l.dimensions.x.max > boundingBox.maxX) {
+          boundingBox.maxX = l.dimensions.x.max;
+        }
+        if(l.dimensions.y.max > boundingBox.maxY) {
+          boundingBox.maxY = l.dimensions.y.max;
+        }
+      })
+
+      width = (boundingBox.maxX - boundingBox.minX) + 2;
+      height = (boundingBox.maxY - boundingBox.minY) + 2;
 
       const mapWidth = width - this._config.crop.right;
       const mapHeight = height - this._config.crop.bottom;
@@ -762,7 +783,7 @@ class ValetudoMapCard extends HTMLElement {
         // Start drawing map
         this.drawingMap = true;
 
-        this.drawMap(this.mapContainer, attributes, mapHeight, mapWidth, floorColor, wallColor, currentlyCleanedZoneColor, noGoAreaColor, virtualWallColor, pathColor, chargerColor, vacuumColor, gotoTargetColor);
+        this.drawMap(this.mapContainer, attributes, mapHeight, mapWidth, boundingBox, floorColor, wallColor, currentlyCleanedZoneColor, noGoAreaColor, virtualWallColor, pathColor, chargerColor, vacuumColor, gotoTargetColor);
 
         this.drawingMap = false;
       }
@@ -883,6 +904,19 @@ class ValetudoMapCard extends HTMLElement {
             this._hass.callService('vacuum', 'return_to_base', { entity_id: this._config.vacuum_entity }).then();
           });
           this.controlFlexBox.appendChild(homeButton);
+        }
+
+        if (this._config.show_locate_button) {
+          const locateButton = document.createElement('paper-button');
+          const locateIcon = document.createElement('ha-icon');
+          const locateRipple = document.createElement('paper-ripple');
+          locateIcon.icon = 'hass:map-marker';
+          locateButton.appendChild(locateIcon);
+          locateButton.appendChild(locateRipple);
+          locateButton.addEventListener('click', (event) => {
+            this._hass.callService('vacuum', 'locate', { entity_id: this._config.vacuum_entity }).then();
+          });
+          this.controlFlexBox.appendChild(locateButton);
         }
 
         this.customControlFlexBox = document.createElement('div');

@@ -31,11 +31,7 @@ async def async_setup(hass, config):
     if not hass.config_entries.async_entries(DOMAIN):
         hass.async_create_task(
             hass.config_entries.flow.async_init(
-                DOMAIN,
-                context={
-                    "source": config_entries.SOURCE_IMPORT
-                },
-                data={}
+                DOMAIN, context={"source": config_entries.SOURCE_IMPORT}, data={}
             )
         )
 
@@ -43,7 +39,7 @@ async def async_setup(hass, config):
     for d in config[DOMAIN].get(CONFIG_DEVICES, {}):
         name = config[DOMAIN][CONFIG_DEVICES][d].get("name", None)
         if name:
-            aliases[name] = d.replace('_', '-')
+            aliases[name] = d.replace("_", "-")
 
     hass.data[DOMAIN] = {
         DATA_DEVICES: {},
@@ -51,19 +47,14 @@ async def async_setup(hass, config):
         DATA_ADDERS: {},
         DATA_CONFIG: config[DOMAIN],
         DATA_SETUP_COMPLETE: False,
-        }
+    }
 
     await setup_connection(hass, config)
     setup_view(hass)
 
     for component in COMPONENTS:
         hass.async_create_task(
-            hass.helpers.discovery.async_load_platform(
-                component,
-                DOMAIN,
-                {},
-                config
-            )
+            hass.helpers.discovery.async_load_platform(component, DOMAIN, {}, config)
         )
 
     await setup_service(hass)
@@ -79,9 +70,6 @@ async def async_setup(hass, config):
 async def async_setup_entry(hass, config_entry):
     for component in COMPONENTS:
         hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(
-                config_entry,
-                component
-            )
+            hass.config_entries.async_forward_entry_setup(config_entry, component)
         )
     return True

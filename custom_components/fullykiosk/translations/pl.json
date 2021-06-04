@@ -1,0 +1,23 @@
+{
+	"config": {
+		"title": "Fully Kiosk Browser",
+		"step": {
+			"user": {
+				"title": "Połącz się z urządzeniem",
+				"data": {
+					"host": "IP/Host",
+					"port": "Port",
+					"password": "Hasło administracji zdalnej"
+				}
+			}
+		},
+		"error": {
+			"cannot_connect": "Nie udało się połączyć, spróbuj ponownie",
+			"invalid_auth": "Nieprawidłowe uwierzytelnienie",
+			"unknown": "Niespodziewany błąd"
+		},
+		"abort": {
+			"already_configured": "Urządzenie jest już skonfigurowane"
+		}
+	}
+}

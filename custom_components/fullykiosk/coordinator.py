@@ -34,7 +34,7 @@ class FullyKioskDataUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Update data via library."""
         try:
-            with timeout(10):
+            with timeout(15):
                 return await self.fully.getDeviceInfo()
         except (FullyKioskError, ClientConnectorError) as error:
             raise UpdateFailed(error) from error
