@@ -7,50 +7,126 @@
   #################################################
 
   base:
+    variables:
+      state: >
+        [[[ return entity === undefined || entity.state; ]]]
+      timeout: >
+        [[[ return entity === undefined || Date.now() - Date.parse(entity.last_changed); ]]]
+      light_color: >
+        [[[ return entity === undefined ? 'var(--state-icon-color)' : 'var(--button-card-light-color-no-temperature)'; ]]]
     aspect_ratio: 1/1
     show_state: true
     show_icon: false
+    state_display: >
+      [[[ if (variables.state === true) return 'Okänd'; ]]]
     tap_action:
-      ui_sound: |
+      ui_sound_tablet: |
         [[[
-          if (entity.state === 'off' && states['switch.galaxy_tab_a_screensaver'].state === 'off') {
+          const tablet = states['switch.galaxy_tab_a_screensaver'];
+          const screensaver = states[tablet] === undefined || states[tablet].state;
+
+          if (variables.state === 'off' && screensaver === 'off') {
             hass.callService('media_player', 'play_media', {
-              entity_id: 'media_player.tablet',
+              entity_id: 'media_player.galaxy_tab_a',
               media_content_id: '/local/sound/on.m4a',
               media_content_type: 'music'
             });
-          } else if (entity.state === 'on' && states['switch.galaxy_tab_a_screensaver'].state === 'off') {
+          }
+          if (variables.state === 'on' && screensaver === 'off') {
             hass.callService('media_player', 'play_media', {
-              entity_id: 'media_player.tablet',
+              entity_id: 'media_player.galaxy_tab_a',
               media_content_id: '/local/sound/off.m4a',
               media_content_type: 'music'
             });
           }
         ]]]
+      animation_card: |
+        [[[
+          const animation_speed_ms = 900;
+          const animation = `card_bounce ${animation_speed_ms}ms cubic-bezier(0.22, 1, 0.36, 1)`;
+          this.shadowRoot.getElementById("card").style.animation = animation;
+          window.setTimeout(() => {
+            this.shadowRoot.getElementById("card").style.animation = "none";
+          }, animation_speed_ms)
+        ]]]
       action: toggle
-      haptic: light
+      haptic: medium
     styles:
+      grid:
+        - grid-template-areas: |
+            "icon  circle"
+            "n     n"
+            "s     s"
+        - grid-template-columns: repeat(2, 1fr)
+        - grid-template-rows: auto repeat(2, min-content)
+        - gap: 2%
+        - align-items: start
       name:
-        - top: 57.7%
-        - left: 10.1%
-        - line-height: 2vw
-        - position: absolute
+        - justify-self: start
+        - line-height: 115%
       state:
-        - top: 74%
-        - left: 11%
-        - line-height: 2vw
-        - position: absolute
+        - justify-self: start
+        - line-height: 115%
       card:
         - font-family: Sf Display
-        - letter-spacing: 0.05vw
-        - font-weight: 400
-        - font-size: 1.34vw
-        - border-radius: 0.8vw
+        - border-radius: var(--custom-button-card-border-radius)
+        - -webkit-tap-highlight-color: rgba(0,0,0,0)
         - transition: none
+        - padding: 10%
+        - --mdc-ripple-color: >
+            [[[
+              return (variables.state === 'on' || variables.state === 'home') ?
+                'rgb(0, 0, 0)' :
+                'rgba(255, 255, 255, 0.3)';
+            ]]]
         - color: >
-            [[[ return (entity.state === 'on' || entity.state === 'home') ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.3)'; ]]]
+            [[[
+              return (variables.state === 'on' || variables.state === 'home') ?
+                'rgba(0, 0, 0, 0.6)' :
+                'rgba(255, 255, 255, 0.3)';
+            ]]]
         - background-color: >
-            [[[ return (entity.state === 'on' || entity.state === 'home') ? 'rgba(255, 255, 255, 0.8)' : 'rgba(115, 115, 115, 0.2)'; ]]]
+            [[[
+              return (variables.state === 'on' || variables.state === 'home') ?
+                'rgba(255, 255, 255, 0.8)' :
+                'rgba(115, 115, 115, 0.2)';
+            ]]]
+    extra_styles: |
+      #name, #state {
+        font-size: 1.34vw;
+        letter-spacing: 0.05vw;
+      }
+      /* portrait */
+      @media screen and (max-width: 1200px) {
+        #name, #state {
+          font-size: 2vw;
+          letter-spacing: 0.05vw;
+        }
+      }
+      /* phone */
+      @media screen and (max-width: 800px) {
+        #name, #state {
+          font-size: 3.1vw;
+          letter-spacing: 0.12vw;
+        }
+      }
+      @keyframes card_bounce {
+        0% {
+          transform: scale(1);
+        }
+        15% {
+          transform: scale(0.9);
+        }
+        25% {
+          transform: scale(1);
+        }
+        30% {
+          transform: scale(0.98);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
 
   #################################################
   #                                               #
@@ -62,7 +138,7 @@
     custom_fields:
       circle: >
         [[[
-          if (entity.state === 'on') {
+          if (variables.state === 'on') {
             const input = variables.circle_input;
             const radius = 20.5;
             const circumference = radius * 2 * Math.PI;
@@ -88,11 +164,12 @@
     styles:
       custom_fields:
         circle: &person
-          - top: 8.5%
-          - left: 56.2%
-          - width: 3.5vw
-          - position: absolute
+          - display: initial
+          - width: 90%
           - letter-spacing: 0.03vw
+          - margin: -6% -6% 0 0
+          - justify-self: end
+          - opacity: 1
 
   #################################################
   #                                               #
@@ -103,21 +180,35 @@
   loader:
     custom_fields:
       loader: >
+        <img src="/local/loader.svg" width="100%">
+    tap_action:
+      loader: >
         [[[
-          if (states[entity.entity_id.replace(entity.entity_id.split('.')[0], 'input_boolean')].state === 'on') {
-            return '<img src="/local/loader.svg" width="100%">';
+          if (entity !== undefined) {
+            let elt = this.shadowRoot;
+            const loader = (id, style, timeout) => {
+              if (elt.getElementById(id)) {
+                elt.getElementById(id).style.display = style;
+                window.setTimeout(() => {
+                  elt.getElementById(id).style.display = timeout;
+                }, 20000)
+              }
+            };
+            loader('circle', 'none', 'initial');
+            loader('loader', 'initial', 'none');
           }
         ]]]
     styles:
       custom_fields:
         loader:
+          - display: none
           - top: 3%
           - left: 60%
-          - width: 3.7vw
+          - width: 37%
           - position: absolute
-          - opacity: 0.6
+          - opacity: 0.5
           - filter: >
-              [[[ return entity.state === 'off' ? 'invert(1)' : 'none'; ]]]
+              [[[ return variables.state === 'off' ? 'invert(1)' : 'none'; ]]]
 
   #################################################
   #                                               #
@@ -131,13 +222,13 @@
       - circle
     variables:
       circle_input: >
-        [[[ return Math.round(entity.attributes.brightness / 2.54); ]]]
+        [[[ return entity === undefined || Math.round(entity.attributes.brightness / 2.54); ]]]
     hold_action:
       action: fire-dom-event
       browser_mod:
         command: popup
         title: >
-          [[[ return entity.attributes.friendly_name ]]]
+          [[[ return entity.attributes.friendly_name; ]]]
         card:
           type: entities
           entities:
@@ -151,14 +242,14 @@
               borderRadius: 1.7em
               sliderColor: '#c7c7c7'
               sliderTrackColor: rgba(25, 25, 25, 0.9)
+              displayType: slider
             - type: custom:hui-element
               card_type: horizontal-stack
-              card_mod:
-                style: >
-                  #root {
-                    justify-content: center;
-                    margin-top: 2em;
-                  }
+              style: >
+                #root {
+                  justify-content: center;
+                  margin-top: 2em;
+                }
               cards:
                 - type: custom:button-card
                   styles:
@@ -186,12 +277,11 @@
                   template: color_light
             - type: custom:hui-element
               card_type: horizontal-stack
-              card_mod:
-                style: >
-                  #root {
-                    justify-content: center;
-                    margin-bottom: 1em;
-                  }
+              style: >
+                #root {
+                  justify-content: center;
+                  margin-bottom: 1em;
+                }
               cards:
                 - type: custom:button-card
                   styles:
@@ -229,7 +319,7 @@
                         show_slider_percent: true
                         smooth_color_wheel: true
                         persist_features: true
-                        consolidate_entities: true
+                        consolidate_entities: false
                   template: color_light
 
   #################################################
@@ -239,27 +329,29 @@
   #################################################
 
   person:
-    template: base
-    show_entity_picture: true
+    template:
+      - base
+      - circle
     state_display: >
-      [[[ return entity.state === 'home' ? 'Ja' : 'Nej'; ]]]
+      [[[ return variables.state === 'home' ? 'Ja' : 'Nej'; ]]]
+    triggers_update: sensor.time
     styles:
-      entity_picture: 
-        - clip-path: circle(50% at center)
-        - top: 7.5%
-        - left: 11.2%
-        - width: 3vw
-        - position: absolute
       custom_fields:
-        circle: *person
+        icon:
+          - clip-path: circle()
+          - width: 79%
+          - pointer-events: none
+          - display: flex
     custom_fields:
+      icon: >
+        [[[ return entity === undefined || `<img src="${states[entity.entity_id].attributes.entity_picture}" width="100%">`; ]]]
       circle: >
         [[[
-          function time(c) {
-            var s = (c / 1000);
-            var m = (c / (1000 * 60));
-            var h = (c / (1000 * 60 * 60));
-            var d = (c / (1000 * 60 * 60 * 24));
+          const time = c => {
+            const s = (c / 1000);
+            const m = (c / (1000 * 60));
+            const h = (c / (1000 * 60 * 60));
+            const d = (c / (1000 * 60 * 60 * 24));
             if (s < 60) {
               return parseInt(s) + 's';
             } else if (m < 60) {
@@ -269,10 +361,10 @@
             } else {
               return parseInt(d) + 'd';
             }
-          }
-          const last_changed = time(Date.now() - Date.parse(states[entity.entity_id].last_changed));
-          const stroke_color = entity.state === 'home' ? '#b2b2b2' : '#313638';
-          const fill_color = entity.state === 'home' ? 'none' : '#FFFFFF08';
+          };
+          let last_changed = entity === undefined || time(Date.now() - Date.parse(states[entity.entity_id].last_changed));
+          const stroke_color = variables.state === 'home' ? '#b2b2b2' : '#313638';
+          const fill_color = variables.state === 'home' ? 'none' : '#FFFFFF08';
           return `
             <svg viewBox="0 0 50 50">
               <style>
@@ -299,45 +391,35 @@
     tap_action:
       action: >
         [[[
-          if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby') {
-            return 'none';
-          } else {
-            return 'call-service';
-          }
+          return !(variables.state === 'off' || variables.state === 'idle' || variables.state === 'standby') ? 'call-service' : 'none';
         ]]]
       service: media_player.media_play_pause
       service_data:
         entity_id: >
-          [[[ return entity.entity_id ]]]
+          [[[ return entity === undefined || entity.entity_id; ]]]
     double_tap_action:
       action: call-service
       service: >
-        [[[
-          if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby') {
-            return 'media_player.turn_on';
-          } else {
-            return 'media_player.turn_off';
-          }
-        ]]]
+        [[[ return variables.state === 'off' || variables.state === 'idle' || variables.state === 'standby' ? 'media_player.turn_on' : 'media_player.turn_off'; ]]]
       service_data:
         entity_id: >
-          [[[ return entity.entity_id ]]]
+          [[[ return entity === undefined || entity.entity_id; ]]]
     styles:
       card:
         - color: >
             [[[
-              if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby' ||
-                entity.state === 'unknown' || entity.state === 'unavailable') {
+              var entity_picture = entity === undefined || entity.attributes.entity_picture;
+              if (variables.state === 'off' || variables.state === 'idle' || variables.state === 'standby' ||
+                variables.state === 'unknown' || variables.state === 'unavailable' || entity === undefined) {
                 return 'rgba(255, 255, 255, 0.3)';
               }
-              if ((entity.state != 'off' && entity.state != 'idle' && entity.state != 'standby') && (entity.attributes.entity_picture == null)) {
-                return 'rgba(0, 0, 0, 0.6)';
-              } else {
-                return '#efefef';
-              }
+              return (variables.state != 'off' && variables.state != 'idle' && variables.state != 'standby') && (entity_picture == null) ? 'rgba(0, 0, 0, 0.6)' : '#efefef';
             ]]]
         - text-shadow: >
-            [[[ return entity.attributes.entity_picture == null ? 'none' : '1px 1px 5px rgba(18, 22, 23, 0.9)'; ]]]
+            [[[
+              const entity_picture = entity === undefined || entity.attributes.entity_picture;
+              return entity_picture == null ? 'none' : '1px 1px 5px rgba(18, 22, 23, 0.9)';
+            ]]]
 
   #################################################
   #                                               #
@@ -352,27 +434,26 @@
     styles:
       custom_fields:
         icon:
-          - top: 11.5%
-          - left: 11.5%
-          - width: 2.9vw
-          - position: absolute
+          - width: 70%
           - fill: '#9da0a2'
           - opacity: >
-              [[[ return entity.attributes.entity_picture == null ? 1 : 0; ]]]
+              [[[
+                const entity_picture = entity === undefined || entity.attributes.entity_picture;
+                return entity_picture == null ? 1 : 0;
+              ]]]
       card:
         - background-color: none
         - background-size: cover
         - background-image: >
             [[[
-              if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby' ||
-                entity.state === 'unknown' || entity.state === 'unavailable') {
+              const entity_picture = entity === undefined || entity.attributes.entity_picture;
+              if (variables.state === 'off' || variables.state === 'idle' || variables.state === 'standby' ||
+                variables.state === 'unknown' || variables.state === 'unavailable' || entity === undefined) {
                 return 'linear-gradient(0deg, rgba(115, 115, 115, 0.2) 0%, rgba(115, 115, 115, 0.2) 100%)';
               }
-              if ((entity.state != 'off' && entity.state != 'idle' && entity.state != 'standby') && (entity.attributes.entity_picture == null)) {
-                return 'linear-gradient(0deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.8) 100%)';
-              } else {
-                return 'linear-gradient(0deg, rgba(0,0,0,.8) 0%, rgba(0,0,0,0) 100%), url(' + entity.attributes.entity_picture + ')';
-              }
+              return (variables.state != 'off' && variables.state != 'idle' && variables.state != 'standby') && (entity_picture == null) ? 
+                'linear-gradient(0deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.8) 100%)' : 
+                'linear-gradient(0deg, rgba(0,0,0,.8) 0%, rgba(0,0,0,0) 100%), url(' + entity_picture + ')';
             ]]]
 
   #################################################
@@ -387,30 +468,22 @@
       - base_media
     state_display: >
       [[[
-        if (entity.attributes.media_title === 'Nothing playing' || entity.attributes.media_title === 'No title' && entity.state === 'paused') {
+        if (entity.attributes.media_title === 'Nothing playing' || entity.attributes.media_title === 'No title' && variables.state === 'paused') {
           return 'Inget spelas';
         }
-        if (entity.attributes.media_title === 'No title' && entity.state === 'playing') {
-          return 'Ingen titel';
-        } else {
-          return entity.attributes.media_title;
-        }
+        return entity.attributes.media_title === 'No title' && variables.state === 'playing' ? 'Ingen titel' : entity.attributes.media_title;
       ]]]
     custom_fields:
-      media_image: >
-        <svg viewBox="0 0 50 50" />
       blur: >
         [[[
-          if (entity.attributes.entity_picture != null) {
-            return '<svg viewBox="0 0 50 50" />';
-          }
+          if (entity.attributes.entity_picture !== undefined) return '<div></div>';
         ]]]
       overlay: >
-        [[[
-          if (entity.state != 'off' && entity.state != 'idle' && entity.state != 'standby' && entity.state != 'unavailable') {
-            return '<svg viewBox="0 0 50 50" />';
-          }
+        [[[ 
+          if (entity.attributes.entity_picture === undefined && entity.state !== 'idle' && entity.state !== 'unavailable') return '<div></div>';
         ]]]
+      media_image: >
+        <div></div>
       play_pause: >
         [[[
           const style = `
@@ -433,14 +506,14 @@
               }
             </style>
           `;
-          if (entity.state === 'playing') {
+          if (variables.state === 'playing') {
             return `
               <svg viewBox="0 0 166 166">${style}
                 <path class="scale-up" d="M0 0h59.9v166H0zm106.1 0H166v166h-59.9z"/>
               </svg>
             `;
           }
-          if (entity.state === 'paused') {
+          if (variables.state === 'paused') {
             return `
               <svg viewBox="0 0 166 166">${style}
                 <path class="scale-up" d="M0 0l166 83L0 166z"/>
@@ -450,54 +523,48 @@
         ]]]
     styles:
       name:
-        - top: 79.8%
-        - left: 5.3%
-        - position: absolute
-        - line-height: 2vw
-        - z-index: 10
+        - z-index: 3
+        - margin-bottom: -1%
       state:
-        - top: 87.5%
-        - left: 5.3%
-        - position: absolute
-        - line-height: 2vw
-        - z-index: 10
-        - white-space: nowrap
-        - overflow: hidden
-        - text-overflow: ellipsis
-        - max-width: 90%
+        - z-index: 3
+      card:
+        - padding: 5%
+        - border-radius: calc(var(--custom-button-card-border-radius) / 2)
+        - backdrop-filter: blur(0) #fix chrome bug
       custom_fields:
-        media_image:
-          - top: 0%
+        blur:
+          - z-index: 2
+          - top: 75.5%
           - left: 0%
           - width: 100%
+          - height: 26%
+          - position: absolute
+          - background-color: rgba(0, 0, 0, 0.2)
+          - backdrop-filter: blur(0.4em)
+          - -webkit-backdrop-filter: blur(0.4em)
+        overlay:
+          - z-index: 2
+          - opacity: 1
+          - top: 75.5%
+          - left: 0%
+          - width: 100%
+          - height: 26%
+          - position: absolute
+          - background-color: rgba(255, 255, 255, 0.8)
+        media_image:
+          - z-index: 1
+          - top: 0
+          - left: 0
+          - width: 100%
+          - height: 100%
           - position: absolute
           - background-size: cover
           - background-image: >
               [[[ 
-                return entity.attributes.entity_picture == null ? 'linear-gradient(0deg, rgba(115, 115, 115, 0.2) 0%, rgba(115, 115, 115, 0.2) 100%)' :
-                'linear-gradient(0deg, rgba(13,17,19,0.9) 0%, rgba(13,17,19,0) 50%), url(' + entity.attributes.entity_picture + ')';
+                return entity.attributes.entity_picture === undefined ? 'none' : `url(${entity.attributes.entity_picture})`;
               ]]]
-        blur:
-          - top: 0%
-          - left: 0%
-          - width: 100%
-          - position: absolute
-          - filter: blur(4px)
-          - clip-path: inset(16vw 0 0 0)
-          - background-size: cover
-          - background-image: >
-              [[[ return entity.attributes.entity_picture == null ? 'none' : 'url(' + entity.attributes.entity_picture + ')'; ]]]
-        overlay:
-          - top: 16vw
-          - left: 0%
-          - width: 100%
-          - position: absolute
-          - opacity: 1
-          - z-index: 0
-          - background-size: cover
-          - background: >
-              [[[ return entity.attributes.entity_picture == null ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.4)'; ]]]
         play_pause:
+          - z-index: 3
           - top: 0
           - right: 0
           - bottom: 0
@@ -508,17 +575,19 @@
           - position: absolute
           - fill: '#dedede'
           - filter: >
-              [[[ return entity.attributes.entity_picture == null ? 'none' : 'drop-shadow(0 0 1.3vw rgba(0,0,0,0.7))'; ]]]
+              [[[
+                const entity_picture = entity === undefined || entity.attributes.entity_picture;
+                return entity_picture == null ? 'none' : 'drop-shadow(0 0 1.3vw rgba(0,0,0,0.7))';
+              ]]]
         icon:
-          - top: 5.35%
-          - left: 5.35%
-          - width: 2.95vw
-          - position: absolute
+          - z-index: 3
+          - width: 29%
           - fill: >
               [[[ 
-                if (entity.state === 'off' || entity.state === 'idle' || entity.state === 'standby' ||
-                  entity.state === 'unknown' || entity.state === 'unavailable') return '#9da0a2';
-                else return 'rgba(255, 255, 255, 0.8)';
+                return variables.state === 'off' || variables.state === 'idle' || variables.state === 'standby' ||
+                variables.state === 'unknown' || variables.state === 'unavailable' || entity === undefined ? 
+                  '#9da0a2' : 
+                  'rgba(255, 255, 255, 0.8)';
               ]]]
 
   #################################################
@@ -531,25 +600,29 @@
     name: Senast nedladdat
     state_display: >
       [[[
-        const data = states[entity.entity_id].attributes.data;
-        const number = data[1].number == undefined ? '(' + data[1].aired.split('-')[0] + ')' : data[1].number;
-        return `${data[1].title} ${number}`;
+        if (entity != undefined) {
+          const data = states[entity.entity_id].attributes.data;
+          const number = data[1].number == undefined ? '(' + data[1].aired.split('-')[0] + ')' : data[1].number;
+          return `${data[1].title} ${number}`;
+        }
+        return 'Okänd';
       ]]]
     custom_fields:
       blur: >
-        <svg viewBox="0 0 50 50" /></svg>
+        [[[ return entity === undefined || '<div></div>'; ]]]
     styles:
       custom_fields:
-        media_image: &blur
+        media_image:
           - background-position: center center
           - background-image: >
-              [[[ return 'url(' + states[entity.entity_id].attributes.data[1].fanart + ')'; ]]]
-        blur: *blur
+              [[[ return entity === undefined || `url(${states[entity.entity_id].attributes.data[1].fanart})`; ]]]
         overlay:
-          - background: 'rgba(0, 0, 0, 0.4)'
+          - display: none
       card:
-        - color: '#efefef'
-        - text-shadow: '1px 1px 5px rgba(18, 22, 23, 0.9)'
+        - color: >
+            [[[ return entity === undefined ? 'rgba(255, 255, 255, 0.3)' : '#efefef'; ]]]
+        - text-shadow: >
+            [[[ return entity === undefined ? 'none' : '1px 1px 5px rgba(18, 22, 23, 0.9)'; ]]]
 
   #################################################
   #                                               #
@@ -557,22 +630,36 @@
   #                                               #
   #################################################
 
-  computer_lock:
+  lock:
     tap_action:
-      animate_locked: |
+      loader: |
         [[[
-          if (states['input_boolean.computer_lock'].state === 'on' && states['input_boolean.computer_imac'].state === 'off') {
-            this.shadowRoot.getElementById('lock').classList.add('locked');
+          let elt = this.shadowRoot;
+          if (states["lock.dator"].state === "locked") {
+            elt.getElementById("lock").classList.add("locked");
             window.setTimeout(() => {
-              this.shadowRoot.getElementById('lock').classList.remove('locked');
-            }, 1100)
+              elt.getElementById("lock").classList.remove("locked");
+            }, 1100);
+          } else {
+
+            // duplicate of "loader" template
+            const loader = (id, style, timeout) => {
+              if (elt.getElementById(id)) {
+                elt.getElementById(id).style.display = style;
+                window.setTimeout(() => {
+                  elt.getElementById(id).style.display = timeout;
+                }, 20000);
+              }
+            };
+            loader("circle", "none", "initial");
+            loader("loader", "initial", "none");
           }
         ]]]
     custom_fields:
-      icon_lock: >
+      circle: >
         [[[
           const state = states['script.home_leave'].state === 'on' ? 'locked' : null;
-          if (states['input_boolean.computer_lock'].state === 'on' && states['input_boolean.computer_imac'].state === 'off') {
+          if (states['lock.dator'].state === 'locked') {
             return `
               <svg viewBox="0 0 50 50">
                 <style>
@@ -606,12 +693,12 @@
         ]]]
     styles:
       custom_fields:
-        icon_lock:
-          - top: 11%
-          - left: 73%
-          - width: 1.7vw
-          - fill: '#b0b3b6'
-          - position: absolute
+        circle:
+          - width: 45%
+          - fill: var(--state-icon-color)
+          - margin: 0 2% 0 0
+          - justify-self: end
+          - opacity: 1
 
   #################################################
   #                                               #
@@ -640,7 +727,7 @@
             entity_id: entity.entity_id
           });
           hass.callService('input_boolean', 'turn_off', {
-            entity_id: 'input_boolean.laundry_timer_visibility'
+            entity_id: 'input_boolean.laundry_display'
           });
         ]]]
     styles:
@@ -653,6 +740,18 @@
         - font-family: SF Mono
         - opacity: 0.65
         - padding: 0.55vw 1.2vw 0.5vw 1.2vw
+    extra_styles: |
+      #card {
+        animation: fade 0.8s;
+      }
+      @keyframes fade {
+        0%, 30% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
 
   #################################################
   #                                               #
@@ -667,6 +766,9 @@
       grid:
         - grid-template-areas: '"i n"'
         - grid-column-gap: 0.3em
+      name:
+        - font-size: 1.06em
+        - letter-spacing: 0.015em
       card:
         - color: '#9da0a2'
         - border-radius: 0.6em
@@ -733,19 +835,18 @@
   icon_hue:
     styles:
       custom_fields:
-        icon_hue:
-          - top: 11%
-          - left: 4.5%
-          - width: 3.05vw
-          - position: absolute
+        icon:
+          - width: 77%
+          - margin-left: -14%
+          - margin-top: 1%
     custom_fields:
-      icon_hue: >
+      icon: >
         [[[
-          const state = entity.state === 'on' ? 'animate' : null;
+          const state = (variables.state === 'on' && variables.timeout < 2000) ? 'on' : null;
           return `
             <svg viewBox="0 0 50 50">
               <style>
-                @keyframes animate {
+                @keyframes on {
                   0% {
                     transform: scale(0.85);
                   }
@@ -765,13 +866,13 @@
                     transform: scale(1);
                   }
                 }
-                .animate {
-                  animation: animate 0.8s;
+                .on {
+                  animation: on 0.8s;
                   transform-origin: center;
                 }
               </style>
               <path fill="#9da0a2" d="M27.4 47.3h-4.9s-.7.1-.7.8.4.9.7.9h4.9c.3 0 .7-.1.7-.9s-.7-.8-.7-.8zm3.3-2.9H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9-.1-.8-.9-.8-.9-.8zm0-3H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9-.1-.8-.9-.8-.9-.8zm0-2.9H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9s-.9-.8-.9-.8zm5.2-23.2c-3.3-5.3-7-5.6-10.9-5.6-3.8 0-8.4.4-10.9 5.6-.1.1-.1.3.1.7.4.8 3.3 7.2 3.2 18.8 0 1.1-.1 1.6 0 1.7 0 .1 0 .7 1.1.7h13c1 0 1-.5 1.1-.7v-1.7c-.1-11.6 2.8-18 3.2-18.8.1-.4.1-.5.1-.7"/>
-              <path class="${state}" fill="var(--button-card-light-color-no-temperature)" d="M14.1 15.3c3.4-.3 7-.4 10.9-.4 3.8 0 7.5.2 10.9.4.4-.4.7-.8.9-1.1C39 8.5 38.9 6.5 38.9 6c-.2-4.4-8.4-5-12.1-5h0-3.4c-3.7 0-12 .5-12.1 5 0 .5-.1 2.5 2.1 8.2 0 .3.3.8.7 1.1z"/>
+              <path class="${state}" fill="${variables.light_color}" d="M14.1 15.3c3.4-.3 7-.4 10.9-.4 3.8 0 7.5.2 10.9.4.4-.4.7-.8.9-1.1C39 8.5 38.9 6.5 38.9 6c-.2-4.4-8.4-5-12.1-5h0-3.4c-3.7 0-12 .5-12.1 5 0 .5-.1 2.5 2.1 8.2 0 .3.3.8.7 1.1z"/>
             </svg>
           `;
         ]]]
@@ -779,19 +880,18 @@
   icon_shade:
     styles:
       custom_fields:
-        icon_shade:
-          - top: 11%
-          - left: 4.6%
-          - width: 3.05vw
-          - position: absolute
+        icon:
+          - width: 77%
+          - margin-left: -15%
+          - margin-top: 1%
     custom_fields:
-      icon_shade: >
+      icon: >
         [[[
-          const state = entity.state === 'on' ? 'animate' : null;
+          const state = (variables.state === 'on' && variables.timeout < 2000) ? 'on' : null;
           return `
             <svg viewBox="0 0 50 50">
               <style>
-                @keyframes animate {
+                @keyframes on {
                   0% {
                     transform: scale(0.85);
                   }
@@ -811,13 +911,13 @@
                     transform: scale(1);
                   }
                 }
-                .animate {
-                  animation: animate 0.8s;
+                .on {
+                  animation: on 0.8s;
                   transform-origin: center;
                 }
               </style>
               <path fill="#9da0a2" d="M26.4 25.6c.6-.3 1.1-.7 1.1-1.3L25 17.9l-2.5 6.4c0 .7.6 1.1 1.1 1.3v20.8h-5.5v2.7h13.7v-2.7h-5.5V25.6z"/>
-              <path class="${state}" fill="var(--button-card-light-color-no-temperature)" d="M24.6.9l-9.4.5c-.6.1-1.9 0-2.5 2.1s-2.4 9.1-4 16.9c-.2.7-.5 2-.5 2.3s-.4 1.6.9 1.6c.8.1 7.4.3 15.9.3 8.6 0 15.1-.3 15.9-.3 1.3-.1.9-1.3.9-1.6s-.3-1.6-.5-2.3c-1.6-7.8-3.4-14.8-4-16.9s-1.9-2-2.5-2.1c-1.6-.2-6.9-.4-9.4-.5"/>
+              <path class="${state}" fill="${variables.light_color}" d="M24.6.9l-9.4.5c-.6.1-1.9 0-2.5 2.1s-2.4 9.1-4 16.9c-.2.7-.5 2-.5 2.3s-.4 1.6.9 1.6c.8.1 7.4.3 15.9.3 8.6 0 15.1-.3 15.9-.3 1.3-.1.9-1.3.9-1.6s-.3-1.6-.5-2.3c-1.6-7.8-3.4-14.8-4-16.9s-1.9-2-2.5-2.1c-1.6-.2-6.9-.4-9.4-.5"/>
             </svg>
           `;
         ]]]
@@ -825,43 +925,20 @@
   icon_tv:
     styles:
       custom_fields:
-        icon_tv:
-          - top: 7%
-          - left: 10.7%
-          - width: 3.5vw
-          - position: absolute
+        icon:
+          - width: 89%
+          - margin-top: -7%
+          - margin-left: 1%
           - fill: >
-              [[[ return entity.state === 'on' ? '#616161' : '#9da0a2'; ]]]
-    tap_action:
-      services: |
-        [[[
-          if (entity.state === 'off') {
-            hass.callService('input_boolean', 'turn_on', {
-              entity_id: entity.entity_id.replace(entity.entity_id.split('.')[0], 'input_boolean')
-            });
-            hass.callService('media_player', 'turn_on', {
-              entity_id: entity.entity_id
-            });
-          }
-          if (entity.state === 'on') {
-            hass.callService('input_boolean', 'turn_on', {
-              entity_id: entity.entity_id.replace(entity.entity_id.split('.')[0], 'input_boolean')
-            });
-            hass.callService('media_player', 'turn_off', {
-              entity_id: entity.entity_id
-            });
-            hass.callService('media_player', 'turn_off', {
-              entity_id: entity.entity_id.replace('sony_bravia', 'vardagsrum').replace('samsung_tv_remote', 'sovrum')
-            });
-          }
-        ]]]
+              [[[
+                return variables.state === 'on' ? '#616161' : '#9da0a2';
+              ]]]
     custom_fields:
-      icon_tv: >
+      icon: >
         [[[
-          const boolean = states[entity.entity_id.replace(entity.entity_id.split('.')[0], 'input_boolean')].state;
           const style = `
             <style>
-              @keyframes animate_on {
+              @keyframes on {
                 from {
                   transform: scaleY(0);
                 }
@@ -869,12 +946,12 @@
                   transform: scaleY(1);
                 }
               }
-              .animate_on {
-                animation: animate_on 1s;
+              .on {
+                animation: on 1s;
                 transform-origin: -100% 46%;
                 animation-fill-mode: forwards;
               }
-              @keyframes animate_off {
+              @keyframes off {
                 from {
                   transform: scaleY(1);
                 }
@@ -882,8 +959,8 @@
                   transform: scaleY(0);
                 }
               }
-              .animate_off {
-                animation: animate_off 1s;
+              .off {
+                animation: off 1s;
                 transform-origin: -100% 46%;
                 animation-fill-mode: forwards;
               }
@@ -898,30 +975,33 @@
               <stop offset="1" stop-color="#7fdbe9"/>
             </linearGradient>
           `;
-          if (entity.state === 'off' && boolean === 'off') {
-            return `
-              <svg viewBox="0 0 50 50"> ${style} ${gradient} 
-                <path class="animate_off" d="M2.9,8h44.3v29.9H2.9V8z" fill="url(#A)"/> ${path} 
-              </svg>
-            `;
-          }
-          if (entity.state === 'on' && boolean === 'off') {
+          if (variables.state === 'on' && variables.timeout < 2000) {
             return `
               <svg viewBox="0 0 50 50"> ${style} ${gradient} 
                 <path d="M2.9,8h44.3v29.9H2.9V8z" fill="#20262890"/>
-                <path class="animate_on" d="M2.9,8h44.3v29.9H2.9V8z" fill="url(#A)"/> ${path} 
+                <path class="on" d="M2.9,8h44.3v29.9H2.9V8z" fill="url(#A)"/> ${path} 
               </svg>
             `;
           }
-          if (entity.state === 'on' && boolean === 'on') {
+          if (variables.state === 'on' && variables.timeout > 2000) {
             return `
               <svg viewBox="0 0 50 50"> ${gradient} 
-                <path d="M2.9,8h44.3v29.9H2.9V8z" fill="url(#A)"/> ${path} 
+                <path d="M2.9,8h44.3v29.9H2.9V8z" fill="#20262890"/>
+                <path class="on" d="M2.9,8h44.3v29.9H2.9V8z" fill="url(#A)"/> ${path} 
               </svg>
             `;
-          } else if (entity.state === 'off' && boolean === 'on') {
+          }
+          if (variables.state === 'off' && variables.timeout < 2000) {
             return `
-              <svg viewBox="0 0 50 50"> ${path} </svg>
+              <svg viewBox="0 0 50 50"> ${style} ${gradient} 
+                <path class="off" d="M2.9,8h44.3v29.9H2.9V8z" fill="url(#A)"/> ${path} 
+              </svg>
+            `;
+          } else {
+            return `
+              <svg viewBox="0 0 50 50"> ${style} 
+                ${path}
+              </svg>
             `;
           }
         ]]]
@@ -929,19 +1009,18 @@
   icon_ps5:
     styles:
       custom_fields:
-        icon_ps5:
-          - top: 7%
-          - left: 10%
-          - width: 3.5vw
-          - position: absolute
+        icon:
+          - width: 88%
+          - margin-left: -1%
+          - margin-top: -7%
     custom_fields:
-      icon_ps5: >
-        [[[ 
-          if (entity.state === 'on') {
+      icon: >
+        [[[
+          if (variables.state === 'on' && variables.timeout < 2000) {
             return `
               <svg viewBox="0 0 50 50">
                 <style>
-                @keyframes animate {
+                @keyframes on {
                   50% {
                     transform: translateY(0);
                   }
@@ -949,12 +1028,12 @@
                     transform: translateY(-45%);
                   }
                 }
-                .animate {
-                  animation: animate 2s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+                .on {
+                  animation: on 2s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
                 }
               </style>
               <g style="clip-path: url(#mask);">
-                <g class="animate">
+                <g class="on">
                   <path fill="#00aa9e" d="M49.2 38.9l-75.6-25.1v7.4l75.6 25.2z"/>
                   <path fill="#f3c202" d="M49.2 46.4l-75.6-25.2v7.5l75.6 25.1z"/>
                   <path fill="#326db3" d="M49.2 53.8l-75.6-25.1V51l75.6 25.1zm0-22.3L-26.4 6.4v7.4l75.6 25.1z"/>
@@ -968,31 +1047,55 @@
               <path fill="#de0029" d="M26.7 14.6v28.7l-7.3-2.5V7.1l9.3 2.6c6 1.7 9.6 5 9.6 10.7-.1 6.7-3 9.4-8.7 7.6V14.9c-.1-1.6-2.9-1.7-2.9-.3h0z"/>
             </svg>
           `;
-          } else {
-            return `
-              <svg viewBox="0 0 50 50">
-                <path fill="#9da0a2" d="M43.8 37h-.1l-10.6 4-4.2 1.6v-4.9l8-2.9 1.9-.7c3.8-1.3 2.2-2.7-1.8-1.9l-3.8 1.3-4.3 1.6v-4.5c3.1-1 6.3-1.6 9.5-1.4 5.3.4 8.7 1.6 9.1 3.9.3 1.4-.9 2.9-3.7 3.9zm-26.7-2.1l-.9.3-3.6 1.3c-2.2.8-4.1-1.1-2.1-1.9l1.7-.6 5-1.9v-4.2l-.6.2L6 31.9h-.1c-1.9.7-3.8 2.2-3.7 4.2.1 2.1 4.7 2.6 8.2 3.2 2.4.4 4.6.3 6.7-.1v-4.3zm12.4-20V28c5.7 1.7 8.7-.9 8.7-7.6.1-5.7-3.6-9-9.6-10.7l-9.3-2.6v33.8l7.2 2.5.1.1V14.6c.1-1.4 2.9-1.3 2.9.3z"/>
-              </svg>
-            `;
           }
+
+          return variables.state === 'on' && variables.timeout > 2000 ? `
+            <svg viewBox="0 0 50 50">
+            <g style="clip-path: url(#mask);">
+              <g style="transform: translateY(-45%);">
+                <path fill="#00aa9e" d="M49.2 38.9l-75.6-25.1v7.4l75.6 25.2z"/>
+                <path fill="#f3c202" d="M49.2 46.4l-75.6-25.2v7.5l75.6 25.1z"/>
+                <path fill="#326db3" d="M49.2 53.8l-75.6-25.1V51l75.6 25.1zm0-22.3L-26.4 6.4v7.4l75.6 25.1z"/>
+              </g>
+            </g>
+            <defs>
+              <clipPath id="mask">
+                <path d="M47.5 33.2c-.5-2.2-3.9-3.5-9.1-3.9-3.8-.3-7.5.6-11.1 1.9l-.6.2v-5.7l-5.7.8-4.6 1.6L6 31.9h-.1c-1.9.7-3.8 2.2-3.7 4.2.1 2.1 4.7 2.6 8.2 3.2 3.3.6 6.2.2 8.9-.7l7.3 4.8L33 41l10.7-4h.1c2.8-1 4-2.5 3.7-3.8zm-31.3 2l-3.6 1.3c-2.2.8-4.1-1.1-2.1-1.9l1.7-.6 7.2-2.7v2.8l-3.2 1.1zm22.5-1.1l-1.9.7-10.2 3.7V36l6.5-2.4 3.8-1.3c4-.9 5.6.5 1.8 1.8z"/>
+              </clipPath>
+            </defs>
+            <path fill="#de0029" d="M26.7 14.6v28.7l-7.3-2.5V7.1l9.3 2.6c6 1.7 9.6 5 9.6 10.7-.1 6.7-3 9.4-8.7 7.6V14.9c-.1-1.6-2.9-1.7-2.9-.3h0z"/>
+          </svg>
+          ` : `
+            <svg viewBox="0 0 50 50">
+              <path fill="#9da0a2" d="M43.8 37h-.1l-10.6 4-4.2 1.6v-4.9l8-2.9 1.9-.7c3.8-1.3 2.2-2.7-1.8-1.9l-3.8 1.3-4.3 1.6v-4.5c3.1-1 6.3-1.6 9.5-1.4 5.3.4 8.7 1.6 9.1 3.9.3 1.4-.9 2.9-3.7 3.9zm-26.7-2.1l-.9.3-3.6 1.3c-2.2.8-4.1-1.1-2.1-1.9l1.7-.6 5-1.9v-4.2l-.6.2L6 31.9h-.1c-1.9.7-3.8 2.2-3.7 4.2.1 2.1 4.7 2.6 8.2 3.2 2.4.4 4.6.3 6.7-.1v-4.3zm12.4-20V28c5.7 1.7 8.7-.9 8.7-7.6.1-5.7-3.6-9-9.6-10.7l-9.3-2.6v33.8l7.2 2.5.1.1V14.6c.1-1.4 2.9-1.3 2.9.3z"/>
+            </svg>
+          `;
         ]]]
 
   icon_spot:
     styles:
       custom_fields:
-        icon_spot:
-          - top: 11.5%
-          - left: 8%
-          - width: 2.7vw
-          - position: absolute
+        icon:
+          - width: 70%
+          - margin-left: -8%
+          - margin-top: 3%
     custom_fields:
-      icon_spot: >
+      icon: >
         [[[
-          const state = entity.state === 'on' ? 'animate_on' : 'animate_off';
+          let state;
+          if (variables.state === 'on' && variables.timeout < 2000) {
+            state = 'on';
+          } 
+          if (variables.state === 'off' && variables.timeout < 2000) {
+            state = 'off';
+          }
+          if (variables.state === 'on' && variables.timeout > 2000) {
+            state = 'on_timeout';
+          }
           return `
             <svg viewBox="0 0 50 50">
               <style>
-                @keyframes animate_on {
+                @keyframes on {
                   0% {
                     transform: rotateZ(0deg);
                     animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
@@ -1012,13 +1115,7 @@
                     transform: rotateZ(-15deg);
                   }
                 }
-                .animate_on {
-                  animation: animate_on 0.7s;
-                  transform-origin: 40% 20%;
-                  animation-fill-mode: forwards;
-                  animation-delay: -0.1s;
-                }
-                @keyframes animate_off {
+                @keyframes off {
                   0% {
                     transform: rotateZ(-15deg);
                     animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);
@@ -1038,10 +1135,20 @@
                     transform: rotateZ(0deg);
                   }
                 }
-                .animate_off {
-                  animation: animate_off 0.7s;
+                .on {
+                  animation: on 0.7s;
                   transform-origin: 40% 20%;
                   animation-fill-mode: forwards;
+                  animation-delay: -0.1s;
+                }
+                .off {
+                  animation: off 0.7s;
+                  transform-origin: 40% 20%;
+                  animation-fill-mode: forwards;
+                }
+                .on_timeout {
+                  transform: rotateZ(-15deg);
+                  transform-origin: 40% 20%;
                 }
               </style>
               <path style="clip-path: url(#mask);" fill="#9da0a2" d="M40.5.8H17.1c-.1 0-.1 0-.1.1A3.12 3.12 0 0 0 20.1 4h6.1c.1 0 .1 0 .1.1v7.4L18 19.1l3.6 3.5 9.1-8.6c.4-.4.6-1 .7-1.6V4c0-.1 0-.1.1-.1h6c1.7.1 3.1-1.3 3-3.1z"/>
@@ -1050,7 +1157,7 @@
                   <path class="${state}" d="M0 9.1h24l8.3 8.8H50V-9H0z"/>
                 </clipPath>
               </defs>
-              <path class="${state}" fill="var(--button-card-light-color-no-temperature)" d="M25.5 46.4s1.4.5 10.4-8.2c.5-.4 6.3-6.3 5.8-7.1-.7-.8-18.6-19.5-18.6-19.5s-.6-.9-8.6 6.4c-.6.5-8.7 8-7.7 9.1l18.7 19.3z"/>
+              <path class="${state}" fill="${variables.light_color}" d="M25.5 46.4s1.4.5 10.4-8.2c.5-.4 6.3-6.3 5.8-7.1-.7-.8-18.6-19.5-18.6-19.5s-.6-.9-8.6 6.4c-.6.5-8.7 8-7.7 9.1l18.7 19.3z"/>
             </svg>
           `;
         ]]]
@@ -1058,21 +1165,20 @@
   icon_imac:
     styles:
       custom_fields:
-        icon_imac:
-          - top: 8.5%
-          - left: 11%
-          - width: 3.3vw
-          - position: absolute
+        icon:
+          - width: 82%
+          - margin-left: 1%
+          - margin-top: -6%
           - fill: >
-              [[[ return entity.state === 'on' ? '#72757c' : '#9da0a2'; ]]]
+              [[[ return variables.state === 'on' ? '#72757c' : '#9da0a2'; ]]]
     custom_fields:
-      icon_imac: >
+      icon: >
         [[[
-          const state = entity.state === 'on' ? 'animate' : null;
+          const state = (variables.state === 'on' && variables.timeout < 2000) ? 'on' : null;
           return `
             <svg viewBox="0 0 50 50">
               <style>
-                @keyframes animate {
+                @keyframes on {
                   from {
                     opacity: 0.5;
                     transform: scale(0.6);
@@ -1081,8 +1187,8 @@
                     opacity: 1;
                   }
                 }
-                .animate {
-                  animation: animate 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+                .on {
+                  animation: on 0.8s cubic-bezier(0.25, 1, 0.5, 1);
                   transform-origin: center;
                 }
               </style>
@@ -1094,102 +1200,108 @@
   icon_monitors:
     styles:
       custom_fields:
-        icon_monitors:
-          - top: 11%
-          - left: 7%
-          - width: 2.8vw
-          - position: absolute
+        icon:
+          - width: 73%
+          - margin-left: -9%
     custom_fields:
-      icon_monitors: >
+      icon: >
         [[[
-          if (entity.state === "on") {
-            return `
-              <svg viewBox="0 0 50 50">
-                <style>
-                  @keyframes cone {
-                    35% {
-                      transform: scale(0.8);
-                      animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);
-                    }
-                    36% {
-                      transform: translateY(0%);
-                    }
-                    49% {
-                      transform: scale(1.25);
-                    }
-                    63% {
-                      transform: scale(0.85);
-                      animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);
-                    }
-                    77% {
-                      transform: scale(1.15);
-                      animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);
-                    }
-                    95% {
-                      transform: scale(1);
-                    }
-                  }
-                  .cone {
-                    animation: cone 1.4s;
-                    transform-origin: center;
-                  }
-                  @keyframes speaker {
-                    0% {
-                      transform: scale(1);
-                    }
-                    40% {
-                      transform: scale(1);
-                    }
-                    49% {
-                      transform: scale(0.95);
-                    }
-                    63% {
-                      transform: scale(1);
-                    }
-                    77% {
-                      transform: scale(0.95);
-                    }
-                    100% {
-                      transform: scale(1);
-                    }
-                  }
-                  .speaker {
-                    animation: speaker 1.3s;
-                    transform-origin: center;
-                  }
-                </style>
-                <g class="speaker">
-                  <path fill="#686868" d="M35.8 46.9H14.2c-1.1 0-2-1-2-2.3V6.7c0-1.3.9-2.3 2-2.3h21.5c1.1 0 2 1 2 2.3v37.9c0 1.2-.9 2.3-1.9 2.3z"/>
-                  <path fill="#2a2a2a" d="M39.2 1H10.8C9.4 1 8.3 2.1 8.2 3.5v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3c1.4 0 2.5-1.2 2.6-2.6V3.5c0-1.4-1.1-2.5-2.5-2.5zM25 7c1.3 0 2.4 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4C22.5 8 23.6 7 25 7zm10.2 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6s-.1-1.1-.4-1.9.6-.9.6-.9h19.3c0-.1.8-.1.5.9z"/>
-                </g>
-                <path class="cone" fill="#e5dd00" d="M25 15.7c-6.2 0-11.3 5.1-11.3 11.3S18.8 38.3 25 38.3 36.3 33.2 36.3 27c-.1-6.3-5.1-11.3-11.3-11.3zm0 14.5a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c-.1 1.9-1.5 3.3-3.3 3.3z"/>
-              </svg>
-            `;
-          } else {
-            return `
-              <svg viewBox="0 0 50 50">
-                <path fill="#9da0a2" d="M25 18.6c-4.6 0-8.4 3.8-8.4 8.4s3.8 8.4 8.4 8.4 8.4-3.8 8.4-8.4-3.7-8.4-8.4-8.4zm0 11.7a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c0 1.8-1.4 3.3-3.3 3.3zM39.2 1H10.9C9.4 1 8.3 2.1 8.3 3.6v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3a2.65 2.65 0 0 0 2.6-2.6v-43C41.7 2 40.5.9 39.2 1zM25 7c1.3 0 2.4 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4S23.7 7 25 7zm10.3 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6l-.4-1.9c-.2-.9.6-.9.6-.9h19.3s.9.1.6.9zM25 38.2c-6.2 0-11.3-5.1-11.3-11.3a11.29 11.29 0 1 1 22.6 0c.1 6.3-5 11.3-11.3 11.3z"/>
-              </svg>
-            `;
+          const style = `
+          <style>
+            @keyframes cone {
+              35% {
+                transform: scale(0.8);
+                animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);
+              }
+              36% {
+                transform: translateY(0%);
+              }
+              49% {
+                transform: scale(1.25);
+              }
+              63% {
+                transform: scale(0.85);
+                animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);
+              }
+              77% {
+                transform: scale(1.15);
+                animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);
+              }
+              95% {
+                transform: scale(1);
+              }
+            }
+            .cone {
+              animation: cone 1.2s;
+              transform-origin: center;
+            }
+            @keyframes speaker {
+              0% {
+                transform: scale(1);
+              }
+              40% {
+                transform: scale(1);
+              }
+              49% {
+                transform: scale(0.95);
+              }
+              63% {
+                transform: scale(1);
+              }
+              77% {
+                transform: scale(0.95);
+              }
+              100% {
+                transform: scale(1);
+              }
+            }
+            .speaker {
+              animation: speaker 1.3s;
+              transform-origin: center;
+            }
+          </style>
+          `;
+          const paths = `
+          <g class="speaker">
+            <path fill="#686868" d="M35.8 46.9H14.2c-1.1 0-2-1-2-2.3V6.7c0-1.3.9-2.3 2-2.3h21.5c1.1 0 2 1 2 2.3v37.9c0 1.2-.9 2.3-1.9 2.3z"/>
+            <path fill="#2a2a2a" d="M39.2 1H10.8C9.4 1 8.3 2.1 8.2 3.5v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3c1.4 0 2.5-1.2 2.6-2.6V3.5c0-1.4-1.1-2.5-2.5-2.5zM25 7c1.3 0 2.4 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4C22.5 8 23.6 7 25 7zm10.2 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6s-.1-1.1-.4-1.9.6-.9.6-.9h19.3c0-.1.8-.1.5.9z"/>
+          </g>
+          <path class="cone" fill="#e5dd00" d="M25 15.7c-6.2 0-11.3 5.1-11.3 11.3S18.8 38.3 25 38.3 36.3 33.2 36.3 27c-.1-6.3-5.1-11.3-11.3-11.3zm0 14.5a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c-.1 1.9-1.5 3.3-3.3 3.3z"/>
+          `;
+          if (variables.state === 'on' && variables.timeout < 2000) {
+          return `
+            <svg viewBox="0 0 50 50">
+              ${style}
+              ${paths}
+            </svg>
+          `;
           }
+
+          return variables.state === 'on' && variables.timeout > 2000 ? `
+            <svg viewBox="0 0 50 50">
+              ${paths}
+            </svg>
+          ` : `
+            <svg viewBox="0 0 50 50">
+              <path fill="#9da0a2" d="M25 18.6c-4.6 0-8.4 3.8-8.4 8.4s3.8 8.4 8.4 8.4 8.4-3.8 8.4-8.4-3.7-8.4-8.4-8.4zm0 11.7a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c0 1.8-1.4 3.3-3.3 3.3zM39.2 1H10.9C9.4 1 8.3 2.1 8.3 3.6v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3a2.65 2.65 0 0 0 2.6-2.6v-43C41.7 2 40.5.9 39.2 1zM25 7c1.3 0 2.4 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4S23.7 7 25 7zm10.3 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6l-.4-1.9c-.2-.9.6-.9.6-.9h19.3s.9.1.6.9zM25 38.2c-6.2 0-11.3-5.1-11.3-11.3a11.29 11.29 0 1 1 22.6 0c.1 6.3-5 11.3-11.3 11.3z"/>
+            </svg>
+          `;
         ]]]
 
   icon_lamp:
     styles:
       custom_fields:
-        icon_lamp:
-          - top: 11%
-          - left: 4.5%
-          - width: 3.05vw
-          - position: absolute
+        icon:
+          - width: 79%
+          - margin-left: -16%
     custom_fields:
-      icon_lamp: >
+      icon: >
         [[[
-          const state = entity.state === 'on' ? 'animate' : null;
+          const state = (variables.state === 'on' && variables.timeout < 2000) ? 'on' : null;
           return `
             <svg viewBox="0 0 50 50">
               <style>
-                @keyframes animate {
+                @keyframes on {
                   0% {
                     transform: scale(0.85);
                   }
@@ -1206,13 +1318,13 @@
                     transform: scale(0.97);
                   }
                 }
-                .animate {
-                  animation: animate 0.8s;
+                .on {
+                  animation: on 0.8s;
                   transform-origin: center;
                 }
               </style>
               <path fill="#9da0a2" d="M26.5 21.8l3.8-6.1H19.7l3.8 6.1c-5 .7-6.3 5.8-5.7 10.2.7 5.1 3.2 10.1 5.7 14.4H19v2.5h11.8v-2.5h-4.5C29 42 31.4 37 32.1 32c.6-4.4-.6-9.4-5.6-10.2zm3.1 9.1c-.3 4.3-2.3 8.7-4.4 12.4l-.2.1v.1-.1c-1.8-3-3.3-6.4-4.1-9.7-.7-3.1-1-7.2 2.7-8.4 1.4-.5 3.1-.1 4.2.8 1.6 1 1.8 3 1.8 4.8z"/>
-              <path class="${state}" fill="var(--button-card-light-color-no-temperature)" d="M38.1 20L35.7 3.8c-.3-1.9-.4-1.7-.6-2-.9-.6-2.3-.7-2.3-.7H17.4s-1.4 0-2.3.7c-.2.3-.3.1-.6 2C14 5.7 11.9 20 11.9 20s5.8.3 13.4.3h0c7.3 0 12.8-.3 12.8-.3z"/>
+              <path class="${state}" fill="${variables.light_color}" d="M38.1 20L35.7 3.8c-.3-1.9-.4-1.7-.6-2-.9-.6-2.3-.7-2.3-.7H17.4s-1.4 0-2.3.7c-.2.3-.3.1-.6 2C14 5.7 11.9 20 11.9 20s5.8.3 13.4.3h0c7.3 0 12.8-.3 12.8-.3z"/>
             </svg>
           `;
         ]]]
@@ -1220,18 +1332,13 @@
   icon_air_purifier:
     styles:
       custom_fields:
-        icon_air_purifier:
-          - top: 11%
-          - left: 6.3%
-          - width: 3.05vw
-          - position: absolute
+        icon:
+          - width: 78%
+          - margin-left: -10%
           - fill: >
-              [[[ return entity.state === 'on' ? '#5daeea' : '#9da0a2'; ]]]
-        circle:
-          - display: >
-              [[[ return states[entity.entity_id.replace(entity.entity_id.split('.')[0], 'input_boolean')].state === 'on' ? 'none' : 'initial'; ]]]
+              [[[ return variables.state === 'on' ? '#5daeea' : '#9da0a2'; ]]]
     custom_fields:
-      icon_air_purifier: >
+      icon: >
         <svg viewBox="0 0 50 50">
           <path d="M36.8 1.2v1.7a5.34 5.34 0 0 1-5.3 5.3H18.4a5.34 5.34 0 0 1-5.3-5.3V1.2c-2.6.4-4.7 2.8-4.7 5.6v36.5c0 3.1 2.6 5.7 5.7 5.7h21.8c3.1 0 5.7-2.6 5.7-5.7V6.8c0-2.8-2.1-5.2-4.8-5.6zm-1.7 35.6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1 .3-1.8.7-2.1.9l-.6.3a9.75 9.75 0 0 1-1.4.6c-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1 .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5 2.1.5h.1v2.7zm0-6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1 .3-1.8.7-2.1.9l-.6.3a9.75 9.75 0 0 1-1.4.6c-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1 .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5 2.1.5h.1v2.7zm0-6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1 .3-1.8.7-2.1.9l-.6.3c-.4.2-.8.4-1.4.6-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1 .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5 2.1.5h.1v2.7zM15.7 1.9v-.8h18.6V3c0 1.5-1.2 2.8-2.8 2.8H18.4c-1.5 0-2.8-1.2-2.8-2.8V1.9z"/>
         </svg>
@@ -1239,90 +1346,101 @@
   icon_fan:
     styles:
       custom_fields:
-        icon_fan:
-          - top: 9%
-          - left: 10%
-          - width: 3vw
-          - position: absolute
-        circle:
-          - display: >
-              [[[ return states[entity.entity_id.replace(entity.entity_id.split('.')[0], 'input_boolean')].state === 'on' ? 'none' : 'initial'; ]]]
+        icon:
+          - width: 75%
+          - margin-left: -3%
     custom_fields:
-      icon_fan: >
+      icon: >
         [[[
-          const boolean = states[entity.entity_id.replace(entity.entity_id.split('.')[0], 'input_boolean')].state;
           const style = `
-            <svg viewBox="0 0 50 50">
-              <style>
-                @keyframes rotate {
-                  0% {
-                    visibility: visible;
-                    transform: rotate(0deg)
-                  }
-                  100% {
-                    transform: rotate(1080deg)
-                  }
+          <svg viewBox="0 0 50 50">
+            <style>
+              @keyframes rotate {
+                0% {
+                  visibility: visible;
+                  transform: rotate(0deg) translateZ(0);
                 }
-                .start {
-                  animation: rotate 2.8s ease-in;
-                  transform-origin: center;
-                  fill: #5daeea;
-                  visibility: hidden
+                100% {
+                  transform: rotate(1080deg) translateZ(0);
                 }
-                .on_delay {
-                  animation: rotate 1.8s linear infinite;
-                  transform-origin: center;
-                  fill: #5daeea;
-                  animation-delay: 2.8s;
-                  visibility: hidden
-                }
-                .on {
-                  animation: rotate 1.8s linear infinite;
-                  transform-origin: center;
-                  fill: #5daeea;
-                  visibility: hidden
-                }
-                .end {
-                  animation: rotate 2.8s;
-                  transform-origin: center;
-                  fill: #9ca2a5;
-                  animation-timing-function: cubic-bezier(.61, 1, .88, 1)
-                }
-              </style>
-            `;
+              }
+              .start {
+                animation: rotate 2.8s ease-in;
+                transform-origin: center;
+                fill: #5daeea;
+                visibility: hidden;
+              }
+              .on_delay {
+                animation: rotate 1.8s linear infinite;
+                transform-origin: center;
+                fill: #5daeea;
+                animation-delay: 2.8s;
+                visibility: hidden;
+                will-change: transform;
+              }
+              .on_no_delay {
+                animation: rotate 1.8s linear infinite;
+                transform-origin: center;
+                fill: #5daeea;
+                will-change: transform;
+              }
+              .on {
+                animation: rotate 1.8s linear forwards;
+                transform-origin: center;
+                fill: #5daeea;
+                visibility: hidden;
+                will-change: transform;
+              }
+              .end {
+                animation: rotate 2.8s;
+                transform-origin: center;
+                fill: #9ca2a5;
+                animation-timing-function: cubic-bezier(.61, 1, .88, 1);
+              }
+            </style>
+          `;
           const path = `
-            <circle cx="25" cy="25" r="6.6"/>
-            <path d="M31.9 30.4c-.5.6-1.1 1.1-1.7 1.5-1.4 1.1-3.2 1.7-5.2 1.7-2.3 0-4.5-.9-6-2.4-.9 1.1-1.6 2.3-2.3 3.2l-4.9 5.4c-1.8 2.7.3 5.6 2.5 7 3.9 2.4 9.8 3.1 14.1 1.9 4.6-1.3 7.9-4.7 7.4-9.7-.2-3.4-1.9-6-3.9-8.6zM17 28.3c-.4-1-.6-2.1-.6-3.3a8.7 8.7 0 0 1 6.4-8.4l-1.6-3.5L19 6.2c-1.5-2.8-5-2.5-7.3-1.2-4 2.2-7.5 6.9-8.7 11.3-1.2 4.6.2 9.2 4.7 11.3 3.1 1.3 6.1 1.2 9.3.7zm26.9-17.6c-3.3-3.4-8-4.6-12.1-1.8-2.8 1.8-4.2 4.6-5.5 7.5 4.2.6 7.4 4.2 7.4 8.6 0 .9-.1 1.7-.4 2.5 1.3.2 2.8.3 3.8.4 2.3.4 4.7 1.3 7.1 1.7 3.2.3 4.7-3 4.8-5.6.3-4.6-1.9-10.1-5.1-13.3z"/>
-            `;
-          if (entity.state === 'off' && boolean === 'off') {
-            return `${style}<g class="end">${path}</g></svg>`;
+          <circle cx="25" cy="25" r="6.6"/>
+          <path d="M31.9 30.4c-.5.6-1.1 1.1-1.7 1.5-1.4 1.1-3.2 1.7-5.2 1.7-2.3 0-4.5-.9-6-2.4-.9 1.1-1.6 2.3-2.3 3.2l-4.9 5.4c-1.8 2.7.3 5.6 2.5 7 3.9 2.4 9.8 3.1 14.1 1.9 4.6-1.3 7.9-4.7 7.4-9.7-.2-3.4-1.9-6-3.9-8.6zM17 28.3c-.4-1-.6-2.1-.6-3.3a8.7 8.7 0 0 1 6.4-8.4l-1.6-3.5L19 6.2c-1.5-2.8-5-2.5-7.3-1.2-4 2.2-7.5 6.9-8.7 11.3-1.2 4.6.2 9.2 4.7 11.3 3.1 1.3 6.1 1.2 9.3.7zm26.9-17.6c-3.3-3.4-8-4.6-12.1-1.8-2.8 1.8-4.2 4.6-5.5 7.5 4.2.6 7.4 4.2 7.4 8.6 0 .9-.1 1.7-.4 2.5 1.3.2 2.8.3 3.8.4 2.3.4 4.7 1.3 7.1 1.7 3.2.3 4.7-3 4.8-5.6.3-4.6-1.9-10.1-5.1-13.3z"/>
+          `;
+          if (variables.state === 'off' && variables.timeout < 2000) {
+          return `${style}<g class="end">${path}</g></svg>`;
           }
-          if (entity.state === 'on' && boolean === 'off') {
-            return `${style}<g class="start">${path}</g><g class="on_delay">${path}</g></svg>`;
+          if (variables.state === 'off' && variables.timeout > 2000) {
+          return `<svg viewBox="0 0 50 50" fill="#9ca2a5"><g>${path}</g></svg>`;
           }
-          if (entity.state === 'on' && boolean === 'on') {
-            return `${style}<g class="on">${path}</g></svg>`;
-          } else if (entity.state === 'off' && boolean === 'on') {
-            return `${style}<g fill="#9ca2a5">${path}</g></svg>`;
+          if (variables.state === 'on' && variables.timeout > 2000) {
+          return `${style}<g class="on_no_delay">${path}</g></svg>`;
           }
+          if (variables.state === 'on' && variables.timeout < 2000) {
+          return `${style}<g class="start">${path}</g><g class="on_delay">${path}</g></svg>`;
+          }
+
         ]]]
 
   icon_bathroom:
     styles:
       custom_fields:
-        icon_bathroom:
-          - top: 11%
-          - left: 6.5%
-          - width: 3vw
-          - position: absolute
+        icon:
+          - width: 78%
+          - margin-left: -10%
     custom_fields:
-      icon_bathroom: >
+      icon: >
         [[[
-          const state = entity.state === 'on' ? 'animate_on' : 'animate_off';
+          let state;
+          if (variables.state === 'on' && variables.timeout < 2000) {
+            state = 'on';
+          } 
+          if (variables.state === 'off' && variables.timeout < 2000) {
+            state = 'off';
+          }
+          if (variables.state === 'on' && variables.timeout > 2000) {
+            state = 'on_timeout';
+          }
           return `
-            <svg viewBox="0 0 50 50" fill="var(--button-card-light-color-no-temperature)">
+            <svg viewBox="0 0 50 50" fill="${variables.light_color}">
               <style>
-                @keyframes animate_on {
+                @keyframes on {
                   0% {
                     transform: rotateZ(0deg) translate(0%, 0%);
                   }
@@ -1330,7 +1448,7 @@
                     transform: rotateZ(-90deg) translate(-1.5%, 0%);
                   }
                 }
-                @keyframes animate_off {
+                @keyframes off {
                   0% {
                     transform: rotateZ(-90deg) translate(-1.5%, 0%);
                   }
@@ -1353,14 +1471,18 @@
                     transform: rotateZ(0deg);
                   }
                 }
-                .animate_on {
-                  animation: animate_on 0.4s;
+                .on {
+                  animation: on 0.45s;
                   animation-fill-mode: forwards;
                   transform-origin: 45% 41%;
                   transition-timing-function: cubic-bezier(0.85, 0, 0.15, 1);
                 }
-                .animate_off {
-                  animation: animate_off 1.05s linear;
+                .on_timeout {
+                  transform: rotateZ(-90deg) translate(-1.5%, 0%);
+                  transform-origin: 45% 41%;
+                }
+                .off {
+                  animation: off 1.1s linear;
                   animation-delay: 0.05s;
                   animation-fill-mode: both;
                   transform-origin: 45% 41%;
@@ -1375,13 +1497,11 @@
   icon_fan2:
     styles:
       custom_fields:
-        icon_fan2:
-          - top: 9%
-          - left: 10%
-          - width: 3vw
-          - position: absolute
+        icon:
+          - width: 75%
+          - margin-left: -3%
     custom_fields:
-      icon_fan2: >
+      icon: >
         [[[
           const path = `
             <circle cx="25" cy="25" r="6.6"/>
@@ -1393,10 +1513,10 @@
                 @keyframes rotate {
                   0% {
                     visibility: visible;
-                    transform: rotate(0deg);
+                    transform: rotate(0deg) translateZ(0);
                   }
                   100% {
-                    transform: rotate(1080deg);
+                    transform: rotate(1080deg) translateZ(0);
                   }
                 }
                 .start {
@@ -1404,6 +1524,7 @@
                   transform-origin: center;
                   fill: #5daeea;
                   visibility: hidden;
+                  will-change: transform;
                 }
                 .on {
                   animation: rotate 1.8s linear infinite;
@@ -1411,48 +1532,63 @@
                   fill: #5daeea;
                   animation-delay: 2.8s;
                   visibility: hidden;
+                  will-change: transform;
                 }
                 .end {
                   animation: rotate 2.8s;
                   transform-origin: center;
                   fill: #9ca2a5;
                   animation-timing-function: cubic-bezier(0.61, 1, 0.88, 1);
+                  will-change: transform;
+                }
+                .start_timeout {
+                  animation: rotate 1.8s linear infinite;
+                  transform-origin: center;
+                  fill: #5daeea;
+                  visibility: hidden;
+                  will-change: transform;
+                }
+                .end_timeout {
+                  fill: #9ca2a5;
                 }
               </style>
           `;
-          if (entity.state === 'on') {
+          if (variables.state === 'on' && variables.timeout < 2000) {
             return `${style}<g class="start">${path}</g><g class="on">${path}</g></svg>`;
-          } else {
+          }
+          if (variables.state === 'off' && variables.timeout < 2000) {
             return `${style}<g class="end">${path}</g></svg>`;
+          }
+          if (variables.state === 'on' && variables.timeout > 2000) {
+            return `${style}<g class="start_timeout">${path}</g></svg>`;
+          }
+          if (variables.state === 'off' && variables.timeout > 2000) {
+            return `${style}<g class="end_timeout">${path}</g></svg>`;
           }
         ]]]
 
   icon_closet:
     styles:
       custom_fields:
-        icon_closet:
-          - top: 11%
-          - left: 4.1%
-          - width: 3.2vw
-          - position: absolute
+        icon:
+          - width: 80%
+          - margin-left: -15%
     custom_fields:
-      icon_closet: >
+      icon: >
         [[[
-          const state = entity.state === 'on' ? 'door' : 'door reverse';
-          const opacity = entity.state === 'on' ? 'room' : 'room reverse';
-          return `
-            <svg viewBox="0 0 50 50">
+          const room = 'd="M11.4,1.4h27.2v43.1H11.4V1.4z" fill="#bcbcbc"';
+          const door = 'd="M11.4 1.4v43.1h27.2V1.4H11.4zm23 23.4c0 1.1-.9 1.9-1.9 1.9h0c-1.1 0-1.9-.9-1.9-1.9V21c0-1.1.9-1.9 1.9-1.9h0c1.1 0 1.9.9 1.9 1.9v3.8z"';
+
+          if (variables.state === 'on' && variables.timeout < 2000) {
+            return `
               <style>
-                .door {
-                  animation: door 0.4s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+                .state {
+                  animation: state 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
                 }
-                .room {
-                  animation: room 0.4s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+                .opacity {
+                  animation: opacity 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
                 }
-                .reverse {
-                  animation-direction: reverse;
-                }
-                @keyframes door {
+                @keyframes state {
                   0% {
                     transform: none;
                     fill: #9da0a2;
@@ -1462,7 +1598,7 @@
                     fill: #b68349;
                   }
                 }
-                @keyframes room {
+                @keyframes opacity {
                   0% {
                     opacity: 0;
                   }
@@ -1471,30 +1607,92 @@
                   }
                 }
               </style>
-              <path class="${opacity}" d="M11.4,1.4h27.2v43.1H11.4V1.4z" fill="#bcbcbc"/>
-              <path class="${state}" d="M11.4 1.4v43.1h27.2V1.4H11.4zm23 23.4c0 1.1-.9 1.9-1.9 1.9h0c-1.1 0-1.9-.9-1.9-1.9V21c0-1.1.9-1.9 1.9-1.9h0c1.1 0 1.9.9 1.9 1.9v3.8z"/>
+              <svg viewBox="0 0 50 50">
+                <path class="opacity" ${room}/>
+                <path class="state" ${door}/>
+              </svg>
+            `;
+          }
+
+          if (variables.state === 'on' && variables.timeout > 2000) {
+            return `
+              <svg viewBox="0 0 50 50">
+                <style>
+                  .state_timeout_on {
+                    transform: skewY(10deg) translate(4.5%, -3.9%) scaleX(0.8);
+                    fill: #b68349;
+                  }
+                </style>
+                <path ${room}/>
+                <path class="state_timeout_on" ${door}/>
+              </svg>
+            `;
+          }
+
+          return variables.state === 'off' && variables.timeout < 2000 ? `
+            <style>
+              .state {
+                animation: state 0.4s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+              }
+              .opacity {
+                animation: opacity 0.4s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+              }
+              .reverse {
+                animation-direction: reverse;
+              }
+              @keyframes state {
+                0% {
+                  transform: none;
+                  fill: #9da0a2;
+                }
+                100% {
+                  transform: skewY(10deg) translate(4.5%, -3.9%) scaleX(0.8);
+                  fill: #b68349;
+                }
+              }
+              @keyframes opacity {
+                0% {
+                  opacity: 0;
+                }
+                100% {
+                  opacity: 1;
+                }
+              }
+            </style>
+            <svg viewBox="0 0 50 50">
+              <path class="opacity reverse" ${room}/>
+              <path class="state reverse" ${door}/>
+            </svg>
+          ` : `
+            <svg viewBox="0 0 50 50">
+              <style>
+                .state_timeout_off {
+                  fill: var(--state-icon-color);
+                }
+              </style>
+              <path class="state_timeout_off" ${door}/>
             </svg>
           `;
         ]]]
 
   icon_away:
+    state_display: Auto
     styles:
+      card:
+        - transition: all 0.3s ease-out
       custom_fields:
-        icon_away:
-          - top: 10%
-          - left: 10.1%
-          - width: 3.1vw
-          - position: absolute
+        icon:
+          - width: 79%
           - fill: >
-              [[[ return entity.state === 'on' ? '#516d82' : '#9da0a2'; ]]]
+              [[[ return variables.state === 'on' ? '#516d82' : '#9da0a2'; ]]]
     custom_fields:
-      icon_away: >
+      icon: >
         [[[
-          const state = entity.state === 'on' ? 'animate' : null;
+          const state = variables.state === 'on' ? 'on' : null;
           return `
             <svg viewBox="0 0 50 50">
               <style>
-                @keyframes animate {
+                @keyframes on {
                   10%,
                   20%,
                   100% {
@@ -1514,8 +1712,8 @@
                     transform: rotateZ(-7deg);
                   }
                 }
-                .animate {
-                  animation: animate 1.35s cubic-bezier(0.5, 1, 0.89, 1);
+                .on {
+                  animation: on 1.35s cubic-bezier(0.5, 1, 0.89, 1);
                   animation-fill-mode: both;
                   transform-origin: 70% 80%;
                   animation-delay: 0s;
@@ -1527,23 +1725,23 @@
         ]]]
 
   icon_home:
+    state_display: Auto
     styles:
+      card:
+        - transition: all 0.3s ease-out
       custom_fields:
-        icon_home:
-          - top: 10.5%
-          - left: 10.1%
-          - width: 2.9vw
-          - position: absolute
+        icon:
+          - width: 70%
           - fill: >
-              [[[ return entity.state === 'on' ? '#c7983e' : '#9da0a2'; ]]]
+              [[[ return variables.state === 'on' ? '#c7983e' : '#9da0a2'; ]]]
     custom_fields:
-      icon_home: >
+      icon: >
         [[[
-          const state = entity.state === 'on' ? 'animate' : null;
+          const state = variables.state === 'on' ? 'on' : null;
           return `
             <svg viewBox="0 0 50 50">
               <style>
-                @keyframes animate {
+                @keyframes on {
                   from,
                   20%,
                   40%,
@@ -1571,8 +1769,8 @@
                     transform: scale(1);
                   }
                 }
-                .animate {
-                  animation: animate 1s;
+                .on {
+                  animation: on 1s;
                   transform-origin: center;
                 }
               </style>
