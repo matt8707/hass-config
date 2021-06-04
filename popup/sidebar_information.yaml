@@ -1,324 +1,360 @@
-              action: fire-dom-event
-              browser_mod:
-                command: popup
-                title: Information
-                hide_header: true
-                style:
-                  .: |
-                    :host .content {
-                      width: calc(385px + 385px + 385px);
-                      max-width: 90vw;
-                      height: 569px;
-                    }
-                  $: |
-                    .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
-                      background: none;
-                    }
-                card:
-                  type: grid
-                  columns: 3
-                  cards:
-                    - type: entities
-                      title: Home Assistant
-                      card_mod:
-                        class: add-header
-                      show_header_toggle: false
-                      entities:
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Information
+  style:
+    .: |
+      :host .content {
+        width: calc(385px + 385px + 385px);
+        max-width: 90vw;
+      }
+  card:
+    type: custom:layout-card
+    layout_type: custom:grid-layout
+    layout:
+      grid-template-columns: repeat(3, 1fr)
+      grid-template-rows: 1fr
+      grid-template-areas: |
+        "hass tablet nas"
+      mediaquery:
+        #phone
+        "(max-width: 800px)":
+          grid-template-columns: 1fr
+          grid-template-rows: repeat(3, 1fr)
+          grid-template-areas: |
+            "hass"
+            "tablet"
+            "nas"
+    cards:
 
-                        - entity: sensor.hass_version
+      #################################################
+      #                                               #
+      #                HOME ASSISTANT                 #
+      #                                               #
+      #################################################
 
-                        - entity: switch.watchtower
+      - type: entities
+        view_layout:
+          grid-area: hass
+        title: Home Assistant
+        show_header_toggle: false
+        style: &border |
+          ha-card {
+            border-radius: 0;
+            animation: ha-card 1s forwards;
+          }
 
-                        - entity: sensor.hass_dev_release
+          @keyframes ha-card {
+            0%, 100% {
+                border-right: 1.5px solid rgba(0, 0, 0, 0.2);
+            }
+          }
 
-                        - entity: sensor.home_assistant_v2_db
+          /* phone */
+          @media screen and (max-width: 800px) {
+            ha-card {
+                border-bottom: 1.5px solid rgba(0, 0, 0, 0.2);
+                padding-right: 0;
+                animation: none;
+            }
+          }
+        entities:
+          - entity: sensor.hass_version
 
-                        - entity: sensor.home_assistant_log
+          - entity: switch.watchtower
 
-                        - entity: sensor.uptime
+          - entity: sensor.hass_dev_release
 
-                        - type: custom:bar-card
-                          width: 55%
-                          height: 2em
-                          decimal: 0
-                          unit_of_measurement: '%'
-                          positions: &bar_card_positions
-                            icon: outside
-                            indicator: 'off'
-                            name: outside
-                          severity: &bar_card_severity
-                            - color: '#303435'
-                              from: 0
-                              to: 89
-                            - color: '#6d2525'
-                              from: 90
-                              to: 100
-                          entity_row: true
-                          entities:
+          - entity: sensor.databas
 
-                            - entity: sensor.docker_cpu
-                              tap_action:
-                                action: call-service
-                                service: homeassistant.update_entity
-                                service_data:
-                                  entity_id: sensor.docker_cpu
+          - entity: sensor.home_assistant_log
 
-                            - entity: sensor.dockermon_mem
-                              tap_action:
-                                action: call-service
-                                service: homeassistant.update_entity
-                                service_data:
-                                  entity_id: sensor.dockermon_mem
+          - entity: sensor.uptime
 
-                        - type: custom:hui-element
-                          card_type: horizontal-stack
-                          card_mod:
-                            style: &horizontal-style |
-                              #root {
-                                justify-content: space-evenly;
-                                margin: 1.7em -0.7em 0 0;
-                              }
-                          cards:
+          - type: custom:bar-card
+            width: 55%
+            height: 2em
+            decimal: 0
+            unit_of_measurement: '%'
+            positions: &bar_card_positions
+              icon: outside
+              indicator: 'off'
+              name: outside
+            severity: &bar_card_severity
+              - color: '#303435'
+                from: 0
+                to: 89
+              - color: '#6d2525'
+                from: 90
+                to: 200
+            entity_row: true
+            entities:
 
-                          - type: custom:button-card
-                            name: Home Assistant
-                            icon: mdi:reload
-                            tap_action:
-                              services: |
-                                [[[
-                                  hass.callService('browser_mod', 'toast', {
-                                    message: 'Startar om Home Assistant...'
-                                  });
-                                  hass.callService('homeassistant', 'restart');
-                                ]]]
-                            template: icon_name
+              - entity: sensor.docker_cpu
+                tap_action:
+                  action: call-service
+                  service: homeassistant.update_entity
+                  service_data:
+                    entity_id: sensor.docker_cpu
 
-                          - type: custom:button-card
-                            name: Container
-                            icon: mdi:reload
-                            tap_action:
-                              action: call-service
-                              service: script.turn_on
-                              service_data:
-                                entity_id: script.homeassistant_restart
-                            template: icon_name
+              - entity: sensor.template_dockermon_mem
+                tap_action:
+                  action: call-service
+                  service: homeassistant.update_entity
+                  service_data:
+                    entity_id: sensor.template_dockermon_mem
 
+          - type: custom:hui-element
+            card_type: horizontal-stack
+            style: &horizontal-style |
+              #root {
+                justify-content: space-evenly;
+                margin-top: 2em;
+                margin-left: 1em;
+              }
+            cards:
+              - type: custom:button-card
+                name: Home Assistant
+                icon: mdi:reload
+                tap_action:
+                  services: |
+                    [[[
+                      hass.callService('browser_mod', 'toast', {
+                        message: 'Startar om Home Assistant...'
+                      });
+                      hass.callService('homeassistant', 'restart');
+                    ]]]
+                template: icon_name
 
-                    ################################################################
+              - type: custom:button-card
+                name: Container
+                icon: mdi:reload
+                tap_action:
+                  action: call-service
+                  service: script.turn_on
+                  service_data:
+                    entity_id: script.homeassistant_restart
+                template: icon_name
 
+      #################################################
+      #                                               #
+      #                    TABLET                     #
+      #                                               #
+      #################################################
 
-                    - type: entities
-                      title: Samsung Galaxy Tab
-                      card_mod:
-                        class: add-header
-                      show_header_toggle: false
-                      entities:
+      - type: entities
+        view_layout:
+          grid-area: tablet
+        title: Galaxy Tab A 10.1
+        show_header_toggle: false
+        style: *border
+        entities:
+          - entity: switch.galaxy_tab_a_screensaver
 
-                        - entity: switch.galaxy_tab_a_screensaver
+          - entity: light.galaxy_tab_a_screen
 
-                        - entity: light.galaxy_tab_a_screen
+          - type: custom:slider-entity-row
+            entity: light.galaxy_tab_a_screen
+            name: Ljusstyrka
+            icon: mdi:brightness-6
+            hide_state: false
 
-                        - type: custom:slider-entity-row
-                          entity: light.galaxy_tab_a_screen
-                          name: Ljusstyrka
-                          icon: mdi:brightness-6
-                          hide_state: false
+          - entity: binary_sensor.galaxy_tab_a_plugged_in
 
-                        - entity: binary_sensor.galaxy_tab_a_plugged_in
+          - entity: sensor.template_fullykiosk_last_app_start
 
-                        - entity: sensor.fullykiosk_last_app_start
+          - type: custom:bar-card
+            width: 55%
+            height: 2em
+            decimal: 0
+            unit_of_measurement: '%'
+            positions: *bar_card_positions
+            severity:
+              - color: '#6d2525'
+                from: 0
+                to: 89
+              - color: '#303435'
+                from: 90
+                to: 100
+            entity_row: true
+            entities:
 
-                        - type: custom:bar-card
-                          width: 55%
-                          height: 2em
-                          decimal: 0
-                          unit_of_measurement: '%'
-                          positions: *bar_card_positions
-                          severity:
-                            - color: '#6d2525'
-                              from: 0
-                              to: 89
-                            - color: '#303435'
-                              from: 90
-                              to: 100
-                          entity_row: true
-                          entities:
+              - entity: sensor.galaxy_tab_a_battery_level
+                icon: mdi:battery
 
-                            - entity: sensor.galaxy_tab_a_battery_level
-                              icon: mdi:battery
+          - type: custom:bar-card
+            width: 55%
+            height: 2em
+            decimal: 0
+            unit_of_measurement: '%'
+            positions: *bar_card_positions
+            severity: *bar_card_severity
+            entity_row: true
+            entities:
 
-                        - type: custom:bar-card
-                          width: 55%
-                          height: 2em
-                          decimal: 0
-                          unit_of_measurement: '%'
-                          positions: *bar_card_positions
-                          severity: *bar_card_severity
-                          entity_row: true
-                          entities:
+              - entity: sensor.template_fullykiosk_memory
+                name: Minne - 2GB
+                icon: mdi:memory
+                tap_action:
+                  action: call-service
+                  service: homeassistant.update_entity
+                  service_data:
+                    entity_id: sensor.template_fullykiosk_memory
 
-                            - entity: sensor.fullykiosk_memory
-                              name: Minne - 2GB
-                              icon: mdi:memory
-                              tap_action:
-                                action: call-service
-                                service: homeassistant.update_entity
-                                service_data:
-                                  entity_id: sensor.fullykiosk_memory
+              - entity: sensor.template_fullykiosk_storage
+                name: Lagring - 32GB
+                icon: mdi:sd
+                tap_action:
+                  action: call-service
+                  service: homeassistant.update_entity
+                  service_data:
+                    entity_id: sensor.template_fullykiosk_storage
 
-                            - entity: sensor.fullykiosk_storage
-                              name: Lagring - 32GB
-                              icon: mdi:sd
-                              tap_action:
-                                action: call-service
-                                service: homeassistant.update_entity
-                                service_data:
-                                  entity_id: sensor.fullykiosk_storage
+          - type: custom:hui-element
+            card_type: horizontal-stack
+            style: *horizontal-style
+            cards:
 
-                        - type: custom:hui-element
-                          card_type: horizontal-stack
-                          card_mod:
-                            style: *horizontal-style
-                          cards:
+              - type: custom:button-card
+                name: Startsidan
+                icon: mdi:reload
+                tap_action:
+                  services: |
+                    [[[
+                      hass.callService('browser_mod', 'toast', {
+                        message: 'Laddar om startsidan...'
+                      });
+                      hass.callService('fullykiosk', 'load_start_url', {
+                        entity_id: 'media_player.galaxy_tab_a'
+                      });
+                    ]]]
+                template: icon_name
 
-                          - type: custom:button-card
-                            name: Startsidan
-                            icon: mdi:reload
-                            tap_action:
-                              services: |
-                                [[[
-                                  hass.callService('browser_mod', 'toast', {
-                                    message: 'Laddar om startsidan...'
-                                  });
-                                  hass.callService('fullykiosk', 'load_start_url', {
-                                    entity_id: 'media_player.galaxy_tab_a_media_player'
-                                  });
-                                ]]]
-                            template: icon_name
+              - type: custom:button-card
+                name: Hela appen
+                icon: mdi:reload
+                tap_action:
+                  services: |
+                    [[[
+                      hass.callService('browser_mod', 'toast', {
+                        message: 'Startar om Fully Kiosk Browser...'
+                      });
+                      hass.callService('fullykiosk', 'restart', {
+                        entity_id: 'media_player.galaxy_tab_a'
+                      });
+                    ]]]
+                template: icon_name
 
-                          - type: custom:button-card
-                            name: Hela appen
-                            icon: mdi:reload
-                            tap_action:
-                              services: |
-                                [[[
-                                  hass.callService('browser_mod', 'toast', {
-                                    message: 'Startar om Fully Kiosk Browser...'
-                                  });
-                                  hass.callService('fullykiosk', 'restart', {
-                                    entity_id: 'media_player.galaxy_tab_a_media_player'
-                                  });
-                                ]]]
-                            template: icon_name
+      #################################################
+      #                                               #
+      #                      NAS                      #
+      #                                               #
+      #################################################
 
+      - type: entities
+        view_layout:
+          grid-area: nas
+        title: Synology DS918+
+        show_header_toggle: false
+        entities:
+          - entity: sensor.template_nas_status
 
-                    ################################################################
+          - entity: sensor.nas_volume_1_average_disk_temp
 
+          - entity: sensor.last_boot
+            name: Senast omstart
 
-                    - type: entities
-                      title: Synology NAS
-                      show_header_toggle: false
-                      card_mod:
-                        class: add-header
-                        style: |
-                          mini-graph-card {
-                            margin: -22.7px -18px -6px -7px;
-                          }
-                          .footer {
-                            overflow: visible !important;
-                          }
+          - entity: sensor.template_nas_vpn
+            style: |
+              :host {
+                --paper-item-icon-color: {{ '#9e9e9e' if is_state(config.entity, 'Ansluten') else '#9c2525' }};
+                }
 
-                      entities:
+          - type: custom:bar-card
+            width: 55%
+            height: 2em
+            decimal: 0
+            unit_of_measurement: '%'
+            positions: *bar_card_positions
+            severity: *bar_card_severity
+            entity_row: true
+            entities:
 
-                        - entity: sensor.nas_status
+              - entity: sensor.processor_use_percent
+                name: Processor
+                tap_action:
+                  action: call-service
+                  service: homeassistant.update_entity
+                  service_data:
+                    entity_id: sensor.processor_use_percent
 
-                        - entity: sensor.synology_maximum_disk_temp_volume_1
+              - entity: sensor.memory_use_percent
+                name: Minne - 4GB
+                tap_action:
+                  action: call-service
+                  service: homeassistant.update_entity
+                  service_data:
+                    entity_id: sensor.memory_use_percent
 
-                        - entity: sensor.nas_last_boot
-                          name: Senast omstart
+              - entity: sensor.disk_use_percent
+                name: Lagring - 10.5TB
+                tap_action:
+                  action: call-service
+                  service: homeassistant.update_entity
+                  service_data:
+                    entity_id: sensor.disk_use_percent
 
-                        - entity: sensor.nas_vpn
-                          card_mod:
-                            style: |
-                              :host {
-                                --paper-item-icon-color: {{ '#9e9e9e' if is_state(config.entity, 'Ansluten') else 'red' }};
-                                }
+          - type: custom:hui-element
+            card_type: horizontal-stack
+            style: |
+              #root {
+                justify-content: space-evenly;
+                margin-top: 1em;
+                width: 95% !important;
+              }
+              #root > * {
+                flex: none !important;
+              }
+            cards:
+              - type: entities
+                style: |
+                  #states {
+                    padding: 0;
+                  }
+                entities:
+                  - entity: sensor.nas_net_down
+                    style: |
+                      :host {
+                        --paper-item-icon-color: green;
+                      }
 
-                        - type: custom:bar-card
-                          width: 55%
-                          height: 2em
-                          decimal: 0
-                          unit_of_measurement: '%'
-                          positions: *bar_card_positions
-                          severity: *bar_card_severity
-                          entity_row: true
-                          entities:
+              - type: entities
+                style: |
+                  #states {
+                    padding: 0;
+                  }
+                entities:
+                  - entity: sensor.nas_net_up
+                    style: |
+                      :host {
+                        --paper-item-icon-color: #385581;
+                      }
 
-                            - entity: sensor.processor_use
-                              name: Processor
-                              tap_action:
-                                action: call-service
-                                service: homeassistant.update_entity
-                                service_data:
-                                  entity_id: sensor.processor_use
-
-                            - entity: sensor.memory_use_percent
-                              name: Minne - 4GB
-                              tap_action:
-                                action: call-service
-                                service: homeassistant.update_entity
-                                service_data:
-                                  entity_id: sensor.memory_use_percent
-
-                            - entity: sensor.disk_use_percent
-                              name: Lagring - 10.5TB
-                              tap_action:
-                                action: call-service
-                                service: homeassistant.update_entity
-                                service_data:
-                                  entity_id: sensor.disk_use_percent
-
-                        - type: custom:hui-element
-                          card_type: horizontal-stack
-                          cards:
-
-                            - type: entities
-                              card_mod:
-                                class: information_network
-                              entities:
-                                - entity: sensor.nas_net_down
-                                  card_mod:
-                                    style: >
-                                      :host {
-                                        --paper-item-icon-color: green;
-                                      }
-
-                            - type: entities
-                              card_mod:
-                                class: information_network
-                              entities:
-                                - entity: sensor.nas_net_up
-                                  card_mod:
-                                    style: >
-                                      :host {
-                                        --paper-item-icon-color: #385581;
-                                      }
-
-                      footer:
-                        type: custom:mini-graph-card
-                        entities:
-                          - color: '#385581'
-                            entity: sensor.synology_network_up
-                          - color: green
-                            entity: sensor.synology_network_down
-                        align_state: left
-                        group: false
-                        points_per_hour: 15
-                        line_width: 3
-                        hour24: true
-                        hours_to_show: 1.5
-                        show:
-                          {fill: fade, icon: false, name: false, state: false, 
-                          name_adaptive_color: true, labels: hover, legend: false}
-                        tap_action:
-                          action: none
+        footer:
+          type: custom:mini-graph-card
+          entities:
+            - color: '#385581'
+              entity: sensor.nas_network_up
+            - color: green
+              entity: sensor.nas_network_down
+          align_state: left
+          group: false
+          points_per_hour: 15
+          line_width: 3
+          hour24: true
+          hours_to_show: 1.5
+          show:
+            {fill: fade, icon: false, name: false, state: false, 
+            name_adaptive_color: true, labels: hover, legend: false}
+          tap_action:
+            action: none

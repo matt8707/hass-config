@@ -1,37 +1,21 @@
-              action: fire-dom-event
-              browser_mod:
-                command: popup
-                title: Playstation 4
-                card:
-                  type: custom:stack-in-card
-                  cards:
-                    - type: entities
-                      state_color: true
-                      entities:
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Playstation 5
+  card:
+    type: entities
+    state_color: true
+    entities:
 
-                        - entity: switch.playstation_5
-                          secondary_info: last-changed
+      - entity: switch.playstation_5
+        secondary_info: last-changed
 
-                        # - entity: media_player.playstation_4
-                        #   type: custom:mini-media-player
-                        #   artwork: none
-                        #   icon: mdi:gamepad
-                        #   name: Spel
-                        #   group: true
-                        #   scale: 0.99
-                        #   hide:
-                        #     volume: true
-                        #     controls: true
-                        #     power: true
-                        #     info: true
-
-                    - type: custom:calendar-card
-                      title: Kommande
-                      disableLinks: true
-                      numberOfDays: 730
-                      hidePastEvents: true
-                      hideTime: true
-                      dateTopFormat: ' '
-                      dateBottomFormat: DD MMM Y
-                      entities: [calendar.spel]
-
+      - type: custom:calendar-card
+        title: Kommande
+        disableLinks: true
+        numberOfDays: 730
+        hidePastEvents: true
+        hideTime: true
+        dateTopFormat: ' '
+        dateBottomFormat: DD MMM Y
+        entities: [calendar.spel]

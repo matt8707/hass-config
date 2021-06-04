@@ -1,60 +1,68 @@
-              action: fire-dom-event
-              browser_mod:
-                command: popup
-                title: Sovrum Tv
-                card:
-                  type: entities
-                  state_color: true
-                  show_header_toggle: false
-                  entities:
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Sovrum Tv
+  style:
+    hui-grid-card:
+      $hui-horizontal-stack-card$: |
+        #root {
+          justify-content: space-evenly !important;
+        }
+      $: |
+        hui-horizontal-stack-card {
+          padding: 0em 2em 0 2em !important;
+          height: 7em !important;
+        }
+        #root {
+          grid-gap: 0 !important;
+        }
+  card:
+    type: grid
+    columns: 1
+    square: false
+    cards:
+      - type: entities
+        state_color: true
+        show_header_toggle: false
+        entities:
 
-                    - entity: switch.tv_samsung
-                      name: Samsung TV
-                      secondary_info: last-changed
+          - entity: switch.tv_samsung
+            name: Samsung TV
+            secondary_info: last-changed
+          - entity: script.samsung_tv_energy_saving
+          - entity: input_select.hdmi2
 
-                    - entity: script.samsung_tv_energy_saving
+      - type: horizontal-stack
+        cards:
 
-                    - entity: input_select.hdmi2
+          - type: custom:button-card
+            entity: media_player.samsung_tv
+            icon: mdi:volume-mute
+            show_name: false
+            tap_action:
+              action: call-service
+              service: media_player.volume_mute
+              service_data:
+                entity_id: >
+                  [[[ return entity.entity_id; ]]]
+                is_volume_muted: >
+                  [[[ return entity.attributes.is_volume_muted === 'false' ? 'true' : 'false'; ]]]
+            template: icon_only
 
-                    - type: custom:hui-element
-                      card_type: horizontal-stack
-                      card_mod:
-                        style: |
-                          #root {
-                            justify-content: space-evenly;
-                            margin: 1.4em -0.7em 0.7em 0;
-                          }
-                      cards:
+          - type: custom:button-card
+            icon: mdi:volume-minus
+            tap_action:
+              action: call-service
+              service: media_player.volume_down
+              service_data:
+                entity_id: media_player.samsung_tv
+            template: icon_only
 
-                      - type: custom:button-card
-                        entity: media_player.samsung_tv_remote
-                        icon: mdi:volume-mute
-                        show_name: false
-                        tap_action:
-                          action: call-service
-                          service: media_player.volume_mute
-                          service_data:
-                            entity_id: > 
-                              [[[ return entity.entity_id; ]]]
-                            is_volume_muted: >
-                              [[[ return entity.attributes.is_volume_muted === 'false' ? 'true' : 'false'; ]]]
-                        template: icon_only
-
-                      - type: custom:button-card
-                        icon: mdi:volume-minus
-                        tap_action:
-                          action: call-service
-                          service: media_player.volume_down
-                          service_data:
-                            entity_id: media_player.samsung_tv_remote
-                        template: icon_only
-
-                      - type: custom:button-card
-                        icon: mdi:volume-plus
-                        tap_action:
-                          action: call-service
-                          service: media_player.volume_up
-                          service_data:
-                            entity_id: media_player.samsung_tv_remote
-                        template: icon_only
-
+          - type: custom:button-card
+            icon: mdi:volume-plus
+            tap_action:
+              action: call-service
+              service: media_player.volume_up
+              service_data:
+                entity_id: media_player.samsung_tv
+            template: icon_only

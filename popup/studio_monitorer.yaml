@@ -1,65 +1,73 @@
-              action: fire-dom-event
-              browser_mod:
-                command: popup
-                title: Monitorer
-                card:
-                  type: entities
-                  state_color: true
-                  show_header_toggle: false
-                  entities:
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Monitorer
+  style:
+    hui-grid-card:
+      $hui-horizontal-stack-card$: |
+        #root {
+          justify-content: space-evenly !important;
+        }
+      $: |
+        hui-horizontal-stack-card {
+          padding: 0em 2em 0 2em !important;
+          height: 7em !important;
+        }
+        #root {
+          grid-gap: 0 !important;
+        }
+  card:
+    type: grid
+    columns: 1
+    square: false
+    cards:
+      - type: entities
+        state_color: true
+        entities:
 
-                    - entity: switch.wemo_monitors
-                      secondary_info: last-changed
+          - entity: switch.wemo_monitors
+            secondary_info: last-changed
 
-                    - type: custom:slider-entity-row
-                      entity: input_number.monitors_volume
-                      hide_state: false
-                      card_mod:
-                        style: |
-                          :host {
-                          --paper-item-icon-color:
-                            {% if is_state('binary_sensor.monitors_mute_check', 'on') %} #FFFFFF20;
-                            {% elif states(config.entity) | int == 0 %} #9da0a2;
-                            {% elif states(config.entity) | int < 60 %} #3182b7;
-                            {% else %} red;
-                            {% endif %}
-                            }
+          - type: custom:slider-entity-row
+            entity: input_number.monitors_volume
+            hide_state: false
+            style: |
+              :host {
+              --paper-item-icon-color:
+                {% if is_state('binary_sensor.monitors_mute_check', 'on') %} #FFFFFF20;
+                {% elif states(config.entity) | int == 0 %} #9da0a2;
+                {% elif states(config.entity) | int < 60 %} #3182b7;
+                {% else %} red;
+                {% endif %}
+                }
 
-                    - entity: automation.turn_off_monitors
+          - entity: automation.turn_off_monitors
+          - entity: automation.eq_calibration
 
-                    - entity: automation.eq_calibration
+      - type: horizontal-stack
+        cards:
 
-                    - type: custom:hui-element
-                      card_type: horizontal-stack
-                      card_mod:
-                        style: |
-                          #root {
-                            justify-content: space-evenly;
-                            margin: 1.4em -0.7em 0.7em 0;
-                          }
-                      cards:
+          - type: custom:button-card
+            icon: mdi:volume-mute
+            tap_action:
+              action: call-service
+              service: script.monitors_mute
+            template: icon_only
 
-                      - type: custom:button-card
-                        icon: mdi:volume-mute
-                        tap_action:
-                          action: call-service
-                          service: script.monitors_mute
-                        template: icon_only
+          - type: custom:button-card
+            icon: mdi:volume-minus
+            tap_action:
+              action: call-service
+              service: input_number.decrement
+              service_data:
+                entity_id: input_number.monitors_volume
+            template: icon_only
 
-                      - type: custom:button-card
-                        icon: mdi:volume-minus
-                        tap_action:
-                          action: call-service
-                          service: input_number.decrement
-                          service_data:
-                            entity_id: input_number.monitors_volume
-                        template: icon_only
-
-                      - type: custom:button-card
-                        icon: mdi:volume-plus
-                        tap_action:
-                          action: call-service
-                          service: input_number.increment
-                          service_data:
-                            entity_id: input_number.monitors_volume
-                        template: icon_only
+          - type: custom:button-card
+            icon: mdi:volume-plus
+            tap_action:
+              action: call-service
+              service: input_number.increment
+              service_data:
+                entity_id: input_number.monitors_volume
+            template: icon_only

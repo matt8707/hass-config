@@ -1,0 +1,24 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Balkong
+  style:
+    hui-grid-card:
+      $: |
+        #root {
+          grid-gap: 0 !important;
+        }
+  card:
+    type: grid
+    columns: 1
+    square: false
+    cards:
+      - type: entities
+        state_color: true
+        show_header_toggle: false
+        entities:
+
+          - entity: switch.balkong
+            secondary_info: last-changed
+
+          - entity: automation.todo

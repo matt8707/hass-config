@@ -1,75 +1,82 @@
-              action: fire-dom-event
-              browser_mod:
-                command: popup
-                title: Mattias
-                style:
-                  .: |
-                    :host .content {
-                      height: 675px;
-                    }
-                card:
-                  type: custom:stack-in-card
-                  cards:
-                    - type: entities
-                      state_color: true
-                      show_header_toggle: false
-                      entities:
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Matte
+  style:
+    hui-grid-card:
+      $hui-entities-card$: |
+        #states {
+          padding-bottom: 0 !important;
+        }
+      $hui-history-graph-card$ : |
+        .content {
+          padding: 1.8em 2em 1.8em 2em !important;
+        }
+      $hui-glance-card$ : |
+        .entities.no-header {
+          padding-top: 0 !important;
+        }
+      $: |
+        button-card {
+          justify-self: center;
+          margin: 0.8em 0 2.5em 0;
+          width: 100%;
+        }
+        #root {
+          grid-gap: 0 !important;
+        }
+        hui-map-card {
+          height: 99.5% !important;
+        }
 
-                        - entity: person.mattias
-                          secondary_info: last-changed
+  card:
+    type: grid
+    columns: 1
+    square: false
+    cards:
+      - type: entities
+        entities:
+          - entity: person.matte
+            secondary_info: last-changed
 
-                        - type: custom:hui-element
-                          card_type: history-graph
-                          entities: [entity: person.mattias]
-                          hours_to_show: 24
-                          refresh_interval: 0
+      - type: history-graph
+        entities:
+          - entity: person.matte
+        hours_to_show: 24
+        refresh_interval: 0
 
-                        - type: custom:hui-element
-                          card_type: glance
-                          show_state: false
-                          entities:
+      - type: glance
+        show_state: false
+        entities:
 
-                            - entity: device_tracker.mattias
-                              name: Router
-                              icon: mdi:wifi
-                              card_mod: &style
-                                style: |
-                                  state-badge {
-                                    color: {{ '#3182b7' if is_state(config.entity, 'home') else '#3c3f3f' }};
-                                  }
+          - entity: device_tracker.mattias_iphonedetect
+            name: Router
+            icon: mdi:wifi
+            style: &style |
+              state-badge {
+                color: {{ '#3182b7' if is_state(config.entity, 'home') else '#3c3f3f' }};
+              }
 
-                            - entity: device_tracker.mattias_bluetooth
-                              name: Bluetooth
-                              icon: mdi:bluetooth
-                              card_mod: *style
+          - entity: device_tracker.mattias_bluetooth
+            name: Bluetooth
+            icon: mdi:bluetooth
+            style: *style
 
-                            - entity: device_tracker.iphone
-                              name: Position
-                              icon: custom:iphone-modern
-                              card_mod: *style
+          - entity: device_tracker.mattias_iphone_ios
+            name: Position
+            icon: custom:iphone-modern
+            style: *style
 
-                        - type: custom:hui-element
-                          card_type: horizontal-stack
-                          card_mod:
-                            style: |
-                              #root {
-                                justify-content: space-evenly;
-                                margin: -1em 0 0 0;
-                              }
-                          cards:
+      - type: custom:button-card
+        name: Spela upp ljud på iPhone X
+        icon: mdi:volume-high
+        tap_action:
+          action: call-service
+          service: script.mattias_find_my_iphone
+        template: icon_name
 
-                          - type: custom:button-card
-                            name: Spela upp ljud på iPhone X
-                            icon: mdi:volume-high
-                            tap_action:
-                              action: call-service
-                              service: script.mattias_find_my_iphone
-                            template: icon_name
-
-                    - type: custom:hui-element
-                      card_type: map
-                      card_mod:
-                        class: map
-                      entities: [device_tracker.iphone]
-                      default_zoom: 15
-
+      - type: map
+        entities:
+          - device_tracker.mattias_iphone_ios
+        default_zoom: 16
+        dark_mode: true

@@ -1,103 +1,117 @@
-              action: fire-dom-event
-              browser_mod:
-                command: popup
-                title: Sanja
-                card:
-                  type: custom:stack-in-card
-                  cards:
-                    - type: entities
-                      state_color: true
-                      show_header_toggle: false
-                      entities:
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Sanja
+  style:
+    hui-grid-card:
+      $hui-entities-card$: |
+        #states {
+          padding-bottom: 0 !important;
+        }
+      $hui-history-graph-card$ : |
+        .content {
+          padding: 1.8em 2em 1.8em 2em !important;
+        }
+      $hui-glance-card$ : |
+        .entities.no-header {
+          padding-top: 0 !important;
+        }
+      $: |
+        button-card {
+          justify-self: center;
+          margin: 0.8em 0 2.5em 0;
+          width: 100%;
+        }
+        #root {
+          grid-gap: 0 !important;
+        }
+      $hui-entities-card:last-of-type$: |
+        #states {
+          padding-top: 0 !important;
+        }
+  card:
+    type: grid
+    columns: 1
+    square: false
+    cards:
+      - type: entities
+        entities:
+          - entity: person.sanja
+            secondary_info: last-changed
 
-                        - entity: person.sanja
-                          secondary_info: last-changed
+      - type: history-graph
+        entities:
+          - entity: person.sanja
+        hours_to_show: 24
+        refresh_interval: 0
 
-                        - type: custom:hui-element
-                          card_type: history-graph
-                          entities: [entity: person.sanja]
-                          hours_to_show: 24
-                          refresh_interval: 0
+      - type: glance
+        show_state: false
+        entities:
 
-                        - type: custom:hui-element
-                          card_type: glance
-                          show_state: false
-                          entities:
+          - entity: device_tracker.sanja_iphonedetect
+            name: Router
+            icon: mdi:wifi
+            style: &style |
+              state-badge {
+                color: {{ '#3182b7' if is_state(config.entity, 'home') else '#3c3f3f' }};
+              }
 
-                            - entity: device_tracker.sanja
-                              name: Router
-                              icon: mdi:wifi
-                              card_mod: &style
-                                style: |
-                                  state-badge {
-                                    color: {{ '#3182b7' if is_state(config.entity, 'home') else '#3c3f3f' }};
-                                  }
+          - entity: device_tracker.sanja_bluetooth
+            name: Bluetooth
+            icon: mdi:bluetooth
+            style: *style
 
-                            - entity: device_tracker.sanja_bluetooth
-                              name: Bluetooth
-                              icon: mdi:bluetooth
-                              card_mod: *style
+          - entity: device_tracker.sanjas_iphone_ios
+            name: Position
+            icon: custom:iphone-modern
+            style: *style
 
-                            - entity: device_tracker.sanja_iphone
-                              name: Position
-                              icon: custom:iphone-modern
-                              card_mod: *style
+      - type: custom:button-card
+        name: Spela upp ljud på iPhone XR
+        icon: mdi:volume-high
+        tap_action:
+          action: call-service
+          service: script.sanja_find_my_iphone
+        template: icon_name
 
-                        - type: custom:hui-element
-                          card_type: horizontal-stack
-                          card_mod:
-                            style: |
-                              #root {
-                                justify-content: space-evenly;
-                                margin: -0.5em 0 2em 0;
-                              }
-                          cards:
+      - type: entities
+        entities:
+          - entity: sensor.template_printer_status
 
-                          - type: custom:button-card
-                            name: Spela upp ljud på iPhone XR
-                            icon: mdi:volume-high
-                            tap_action:
-                              action: call-service
-                              service: script.sanja_find_my_iphone
-                            template: icon_name
+          - type: custom:bar-card
+            width: 55%
+            height: 2em
+            decimal: 0
+            unit_of_measurement: '%'
+            positions:
+              icon: outside
+              indicator: 'off'
+              name: outside
+            severity:
+              - color: '#303435'
+                from: 11
+                to: 100
+              - color: '#6d2525'
+                from: 0
+                to: 10
+            entity_row: true
+            entities:
 
-                        - entity: sensor.printer_status
+              - entity: sensor.hp_deskjet_2600_series_black_ink
+                name: Svart
+                icon: mdi:water-outline
+                tap_action:
+                  action: call-service
+                  service: homeassistant.update_entity
+                  service_data:
+                    entity_id: sensor.hp_deskjet_2600_series_black_ink
 
-                        - type: custom:bar-card
-                          width: 55%
-                          height: 2em
-                          decimal: 0
-                          unit_of_measurement: '%'
-                          positions:
-                            icon: outside
-                            indicator: 'off'
-                            name: outside
-                          severity:
-                            - color: '#303435'
-                              from: 11
-                              to: 100
-                            - color: '#6d2525'
-                              from: 0
-                              to: 10
-                          card_mod:
-                            style: 'ha-card { margin-bottom: 1em; }'
-                          entity_row: true
-                          entities:
-
-                            - entity: sensor.hp_deskjet_2600_series_black_ink
-                              name: Svart
-                              icon: mdi:water-outline
-                              tap_action:
-                                action: call-service
-                                service: homeassistant.update_entity
-                                service_data:
-                                  entity_id: sensor.hp_deskjet_2600_series_black_ink
-
-                            - entity: sensor.hp_deskjet_2600_series_tri_color_ink
-                              name: Färg
-                              icon: mdi:water
-                              tap_action:
-                                action: call-service
-                                service: homeassistant.update_entity
-                                service_data:
-                                  entity_id: sensor.hp_deskjet_2600_series_tri_color_ink
+              - entity: sensor.hp_deskjet_2600_series_tri_color_ink
+                name: Färg
+                icon: mdi:water
+                tap_action:
+                  action: call-service
+                  service: homeassistant.update_entity
+                  service_data:
+                    entity_id: sensor.hp_deskjet_2600_series_tri_color_ink

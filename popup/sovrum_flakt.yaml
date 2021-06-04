@@ -1,76 +1,43 @@
-              action: fire-dom-event
-              browser_mod:
-                command: popup
-                title: Fläkt
-                card:
-                  type: custom:stack-in-card
-                  cards:
-                    - type: entities
-                      state_color: true
-                      show_header_toggle: false
-                      entities:
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Fläkt
+  style:
+    hui-grid-card$: |
+      #root {
+        grid-gap: 0 !important;
+      }
+  card:
+    type: grid
+    columns: 1
+    square: false
+    cards:
+      - type: entities
+        state_color: true
+        entities:
+          - entity: fan.sovrum_anslut
+            secondary_info: last-changed
+          - entity: input_boolean.sovrum_anslut_oscillate
+          - entity: input_number.sovrum_anslut_speed
+          - type: custom:slider-entity-row
+            entity: input_number.sovrum_anslut_timer
+            hide_state: false
+          - entity: switch.strombrytare
+          - entity: automation.sovrum_anslut_turn_on_temp
 
-                        - entity: fan.sovrum_anslut
-                          secondary_info: last-changed
-
-                        - entity: input_boolean.sovrum_anslut_oscillate
-
-                        - entity: input_number.sovrum_anslut_speed
-
-                        - type: divider
-                          card_mod:
-                            style: {height: 15px, opacity: 0}
-
-                        - type: custom:slider-entity-row
-                          entity: input_number.sovrum_anslut_timer
-                          hide_state: false
-
-                        - entity: switch.strombrytare
-
-                        - entity: automation.sovrum_anslut_turn_on_temp
-
-                    - type: custom:mini-graph-card
-                      entities:
-                        - color: '#385581'
-                          entity: sensor.hall_temperature
-                      line_width: 8
-                      hour24: true
-                      group: true
-                      align_icon: left
-                      align_state: right
-                      align_header: left
-                      hours_to_show: 24
-                      show:
-                        {fill: fade, icon: true, name: true, state: true, 
-                        name_adaptive_color: false, labels: hover, legend: false}
-                      card_mod:
-                        style: |
-                          ha-card {
-                            border-radius: 0.35em;
-                            margin-top: -0.4em;
-                          }
-                          .name > span,
-                          .state > span.state__value.ellipsis,
-                          .state > span.state__uom.ellipsis {
-                            font-size: 14px !important;
-                            font-weight: 400 !important;
-                            opacity: 1 !important;
-                          }
-                          .name > span {
-                            margin-left: 16px !important;
-                          }
-                          .icon {
-                            margin-left: 31px !important;
-                          }
-                          .state {
-                            margin-top: -36px;
-                            margin-right: 33px;
-                          }
-                          .state > span.state__uom.ellipsis {
-                            margin-top: -3px;
-                          }
-                          .state > div {
-                            opacity: 0;
-                          }
-                      tap_action:
-                        action: none
+      - type: custom:mini-graph-card
+        entities:
+          - color: '#385581'
+            entity: sensor.sensor_hall_temperature
+        line_width: 8
+        hour24: true
+        group: true
+        align_icon: left
+        align_state: right
+        align_header: left
+        hours_to_show: 24
+        show:
+          {fill: fade, icon: false, name: false, state: false, 
+          name_adaptive_color: false, labels: hover, legend: false}
+        tap_action:
+          action: none
