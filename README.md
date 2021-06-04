@@ -15,7 +15,7 @@ While picture elements is still a valid card for layouts that doesn't follow a s
 * CSS grid everything and as a bonus...
 * Mobile and portrait dashboards
 
-![responsive](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/responsive_demo.mp4)
+https://user-images.githubusercontent.com/36163594/120789256-ad825000-c531-11eb-97c2-18904c48efdd.mp4
 
 **Buttons** `custom:button-card`
 * Loader template doesn't need any `input_boolean` helpers anymore 
