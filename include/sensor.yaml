@@ -89,7 +89,10 @@ sensor:
       {{ value_json.Trip[0].LegList.Leg[1].Product.num }}
     json_attributes_path: $.Trip[0].LegList.Leg[1].Origin
     json_attributes: [name, time, date]
-    scan_interval: 60
+    scan_interval: 268
+    # {% set monthly_api_calls = 10000 %}
+    # {% set seconds_in_a_month = 2678400 %}
+    # {{ (seconds_in_a_month / monthly_api_calls) | round }}
 
   - platform: rest
     name: hass_release_notes
