@@ -22,8 +22,8 @@
     tap_action:
       ui_sound_tablet: |
         [[[
-          const tablet = states['switch.galaxy_tab_a_screensaver'];
-          const screensaver = states[tablet] === undefined || states[tablet].state;
+          const screensaver = states['switch.galaxy_tab_a_screensaver'] === undefined || 
+            states['switch.galaxy_tab_a_screensaver'].state;
 
           if (variables.state === 'off' && screensaver === 'off') {
             hass.callService('media_player', 'play_media', {
@@ -740,18 +740,6 @@
         - font-family: SF Mono
         - opacity: 0.65
         - padding: 0.55vw 1.2vw 0.5vw 1.2vw
-    extra_styles: |
-      #card {
-        animation: fade 0.8s;
-      }
-      @keyframes fade {
-        0%, 30% {
-          opacity: 0;
-        }
-        100% {
-          opacity: 1;
-        }
-      }
 
   #################################################
   #                                               #
