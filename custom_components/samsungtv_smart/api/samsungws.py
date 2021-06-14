@@ -343,7 +343,7 @@ class SamsungTVWS:
         # we set ping interval (1 hour) only to enable multi-threading mode
         # on socket. TV do not answer to ping but send ping to client
         self._ws_remote.run_forever(
-            sslopt=sslopt, ping_interval=3600, ping_timeout=2
+            sslopt=sslopt, ping_interval=3600
         )
         self._is_connected = False
         if self._ws_art:
@@ -354,7 +354,7 @@ class SamsungTVWS:
         self._ws_remote = None
         _LOGGING.debug("Thread SamsungRemote terminated")
 
-    def _on_ping_remote(self, payload):
+    def _on_ping_remote(self, _, payload):
         _LOGGING.debug("Received ping %s, sending pong", payload)
         self._last_ping = datetime.now()
         if self._ws_remote.sock:
@@ -363,7 +363,7 @@ class SamsungTVWS:
             except Exception as ex:
                 _LOGGING.warning("send_pong failed: {}".format(ex))
 
-    def _on_message_remote(self, message):
+    def _on_message_remote(self, _, message):
         response = self._process_api_response(message)
         _LOGGING.debug(response)
         event = response.get("event")
@@ -434,7 +434,7 @@ class SamsungTVWS:
         self._ws_control = None
         _LOGGING.debug("Thread SamsungControl terminated")
 
-    def _on_message_control(self, message):
+    def _on_message_control(self, _, message):
         response = self._process_api_response(message)
         _LOGGING.debug(response)
         result = response.get("result")
@@ -542,7 +542,7 @@ class SamsungTVWS:
         self._ws_art = None
         _LOGGING.debug("Thread SamsungArt terminated")
 
-    def _on_message_art(self, message):
+    def _on_message_art(self, _, message):
         response = self._process_api_response(message)
         _LOGGING.debug(response)
         event = response.get("event")
