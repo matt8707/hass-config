@@ -1,4 +1,3 @@
-
 frontend:
   themes:
     tablet:
@@ -417,27 +416,6 @@ frontend:
           }
         }
 
-        .type-map .leaflet-control-attribution {
-          display: none;
-        }
-
-        .type-map .leaflet-bar a {
-          background-color: rgba(47, 51, 51, 0.8);
-          color: #9da0a2;
-        }
-
-        .type-map a.leaflet-control-zoom-in {
-          border-bottom: 1px solid #000000;
-        }
-
-        .type-map #root > ha-icon-button {
-          color: var(--primary-color);
-        }
-
-        .type-map .leaflet-pane.leaflet-tile-pane {
-          filter: contrast(85%);
-        }
-
         /* * * * * * * * * * * * * * * * * *
           *                                 *
           *         CUSTOM BAR CARD         *
@@ -548,6 +526,40 @@ frontend:
           .mdc-dialog--closing {
             display: none !important;
           }
+
+        #################################################
+        #                                               #
+        #                MAP CARD POPUP                 #
+        #                                               #
+        #################################################
+
+        "hui-grid-card$hui-map-card$":
+          .: |
+            mwc-icon-button {
+              color: var(--primary-color);
+            }
+
+          "ha-map$#map": |
+            .leaflet-control-attribution {
+              display: none;
+            }
+
+            .leaflet-bar a {
+              background-color: rgba(47, 51, 51, 0.8) !important;
+              color: #9da0a2 !important;
+            }
+
+            a.leaflet-control-zoom-in {
+              border-bottom: 1px solid #000000 !important;
+            }
+
+            .leaflet-pane.leaflet-tile-pane {
+              filter: contrast(85%);
+            }
+
+            ha-entity-marker {
+              opacity: 0.5 !important;
+            }
 
         #################################################
         #                                               #
