@@ -42,8 +42,16 @@ async def async_setup_frontend():
     hass.data["frontend_extra_module_url"].add("/hacsfiles/iconset.js")
 
     # Register www/community for all other files
+    use_cache = hacs.core.lovelace_mode == "storage"
+    hacs.log.info(
+        "%s mode, cache for /hacsfiles/: %s",
+        hacs.core.lovelace_mode,
+        use_cache,
+    )
     hass.http.register_static_path(
-        URL_BASE, hass.config.path("www/community"), cache_headers=False
+        URL_BASE,
+        hass.config.path("www/community"),
+        cache_headers=use_cache,
     )
 
     hacs.frontend.version_running = FE_VERSION
@@ -63,7 +71,7 @@ async def async_setup_frontend():
                     "name": "hacs-frontend",
                     "embed_iframe": True,
                     "trust_external": False,
-                    "js_url": "/hacsfiles/frontend/entrypoint.js",
+                    "js_url": f"/hacsfiles/frontend/entrypoint.js?hacstag={FE_VERSION}",
                 }
             },
             require_admin=True,
