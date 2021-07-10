@@ -123,9 +123,7 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id:
-          - sensor.hass_version_latest
-          - sensor.hass_version_latest_beta
+        entity_id: binary_sensor.updater
     action:
       - service: homeassistant.update_entity
         entity_id:
@@ -191,15 +189,15 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: sensor.hass_version_latest_beta
+        entity_id: sensor.hass_release_notes_rc
     condition:
       - condition: state
-        entity_id: sensor.template_hass_dev_release
+        entity_id: sensor.hass_dev_release
         state:
           - Idag
           - Släppt
     action:
-      - service: notify.mobile_app_iphone
+      - service: notify.mobile_app_mattias_iphone_ios
         data:
           title: >
             RC {{ states(trigger.entity_id) }} tillgänglig
@@ -222,7 +220,7 @@ automation:
             - Senaste
             - unknown
     action:
-      - service: notify.mobile_app_iphone
+      - service: notify.mobile_app_mattias_iphone_ios
         data:
           title: >
             {{ states(trigger.entity_id) }} tillgänglig {{ '\U0001F389' }}
@@ -254,7 +252,7 @@ automation:
       - platform: event
         event_type: transmission_downloaded_torrent
     action:
-      - service: notify.mobile_app_iphone
+      - service: notify.mobile_app_mattias_iphone_ios
         data:
           title: Torrent nedladdad
           message: >
@@ -851,7 +849,7 @@ automation:
           message: >
             {{ ['Tvätten är färdig', 'Tvätten är klar', 'Dags att gå ner!'] | random }}
           language: sv-SE
-      - service: notify.mobile_app_iphone
+      - service: notify.mobile_app_mattias_iphone_ios
         data:
           message: >
             {{'\U0001F9FA'}} {{ ['Tvätten är färdig', 'Tvätten är klar', 'Dags att gå ner'] | random }}

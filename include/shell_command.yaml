@@ -24,4 +24,6 @@ shell_command:
 
   ha_dockermon_restart_container: !secret ha_dockermon_restart_container
   ha_purge_logs: truncate -s 0 /config/home-assistant.log
+
   playstation_5_wake: !secret playstation_5_wake
+  playstation_5_sleep: !secret playstation_5_sleep

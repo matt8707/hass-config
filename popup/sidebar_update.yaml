@@ -9,162 +9,177 @@ browser_mod:
         height: 100%;
         padding: 1.1em 1.9em 1.9em 1.9em;
       }
-    hui-grid-card:
-      $: |
-        button-card {
-          margin: 0.8em 0 2.5em 1em;
-        }
-        #root {
-          grid-gap: 0 !important;
-        }
-      $hui-markdown-card:
-        $ha-markdown$: |
-          ha-markdown-element {
-            cursor: default;
-          }
-          ha-markdown-element > p > span {
-            font-family: SF Text;
-            font-size: 1.5em;
-            font-weight: 500;
-            vertical-align: 30%;
-          }
-          ha-markdown-element > p > span > ha-icon {
-            vertical-align: 10%;
-            opacity: 0.5;
-          }
-          ha-markdown-element > p > b {
-            font-family: SF Text;
-            font-size: 1.2em;
-            font-weight: 500;
-            line-height: 1.9em;
-            opacity: 0.5;
-          }
-          a {
-            font-family: SF Text;
-            font-size: 1.2em;
-            font-weight: 600;
-            line-height: 1.9em;
-            opacity: 0.8;
-            letter-spacing: 0px;
-          }
-          ha-markdown-element > ul {
-            font-family: SF Display;
-            font-size: 1.1em;
-            padding-left: 2.5em;
-          }
-          ha-markdown-element > ul > li {
-            margin-bottom: 0.4em;
-          }
-          ha-markdown-element > ul > li:last-child {
-            margin-bottom: 0px;
-          }
-
   card:
-    type: grid
-    columns: 1
-    square: false
-    cards:
+    type: custom:mod-card
+    style:
+      hui-grid-card:
+        $: |
+          button-card {
+            margin: 0.8em 0 2.5em 1em;
+          }
+          #root {
+            grid-gap: 0 !important;
+          }
+        $hui-markdown-card:
+          $ha-markdown$: |
+            ha-markdown-element {
+              cursor: default;
+            }
+            ha-markdown-element > p > span {
+              font-family: SF Text;
+              font-size: 1.5em;
+              font-weight: 500;
+              vertical-align: 30%;
+            }
+            ha-markdown-element > p > span > ha-icon {
+              vertical-align: 10%;
+              opacity: 0.5;
+            }
+            ha-markdown-element > p > b {
+              font-family: SF Text;
+              font-size: 1.2em;
+              font-weight: 500;
+              line-height: 1.9em;
+              opacity: 0.5;
+            }
+            a {
+              font-family: SF Text;
+              font-size: 1.2em;
+              font-weight: 600;
+              line-height: 1.9em;
+              opacity: 0.8;
+              letter-spacing: 0px;
+            }
+            ha-markdown-element > ul {
+              font-family: SF Display;
+              font-size: 1.1em;
+              padding-left: 2.5em;
+            }
+            ha-markdown-element > ul > li {
+              margin-bottom: 0.4em;
+            }
+            ha-markdown-element > ul > li:last-child {
+              margin-bottom: 0px;
+            }
+    card:
+      type: grid
+      columns: 1
+      square: false
+      cards:
 
-      ### hass
-      - type: markdown
-        content: >
-          {% if states('sensor.hass_version_installed') | regex_search('b') %}
-          <span><ha-icon icon="mdi:home-assistant"></ha-icon> Home Assistant {{ states('sensor.hass_version_installed') }}</span><br>
-          {% if states('sensor.hass_version_installed') == states('sensor.hass_version_latest_beta') %}
-          <b>Inga uppdateringar</b>
-          {% else %}
-          <b>{{ states('sensor.hass_version_latest_beta') }} tillgänglig</b> {{ '\U0001f389' }}
-      
-          {% if states('sensor.hass_version_latest_beta') == states('sensor.hass_release_notes_rc') %}
-          {{- state_attr('sensor.hass_release_notes_rc', 'body') }}
-          {% endif %}
-          {% endif %}
-          {% else %}
-          <span><ha-icon icon="mdi:home-assistant"></ha-icon> Home Assistant {{ states('sensor.hass_version_installed') }}</span><br>
-          {% if states('sensor.hass_version_installed') == states('sensor.hass_version_latest') %}
-          <b>Inga uppdateringar</b>
-          {% else %}
-          <b>{{ states('sensor.hass_version_latest') }} tillgänglig</b> {{ '\U0001f389' }}
-      
-          {% if states('sensor.hass_version_latest') == states('sensor.hass_release_notes') %}
-          {{- state_attr('sensor.hass_release_notes', 'body') }}
-          {% endif %}
-          {% endif %}
-          {% endif %}
+        ### hass
+        - type: markdown
+          content: >
+            {% if states('sensor.hass_version_installed') | regex_search('b') %}
+            <span><ha-icon icon="mdi:home-assistant"></ha-icon> Home Assistant {{ states('sensor.hass_version_installed') }}</span><br>
+            {% if states('sensor.hass_version_installed') == states('sensor.hass_release_notes_rc') %}
+            <b>Inga uppdateringar</b>
+            {% else %}
+            <b>{{ states('sensor.hass_release_notes_rc') }} tillgänglig</b> {{ '\U0001f389' }}
+        
+            {% if states('sensor.hass_version_installed') != states('sensor.hass_release_notes_rc') %}
+            {{- state_attr('sensor.hass_release_notes_rc', 'body') }}
+            {% endif %}
+            {% endif %}
+            {% else %}
+            <span><ha-icon icon="mdi:home-assistant"></ha-icon> Home Assistant {{ states('sensor.hass_version_installed') }}</span><br>
+            {% if states('sensor.hass_version_installed') == state_attr('binary_sensor.updater', 'newest_version') %}
+            <b>Inga uppdateringar</b>
+            {% else %}
+            <b>{{ state_attr('binary_sensor.updater', 'newest_version') }} tillgänglig</b> {{ '\U0001f389' }}
+        
+            {% if state_attr('binary_sensor.updater', 'newest_version') == states('sensor.hass_release_notes') %}
+            {{- state_attr('sensor.hass_release_notes', 'body') }}
+            {% endif %}
+            {% endif %}
+            {% endif %}
 
-      - type: custom:button-card
-        entity: sensor.hass_version_installed
-        triggers_update:
-          - sensor.hass_version_latest
-          - sensor.hass_version_latest_beta
-        name: Uppdatera HASS
-        icon: mdi:update
-        styles:
-          card:
-            - filter: >
-                [[[
-                  return entity.state === (states['sensor.hass_version_latest'].state || 
-                  states['sensor.hass_version_latest_beta'].state) ? 
-                    'opacity(30%)' : 
-                    'drop-shadow(3px 3px 5px #00000050)';
-                ]]]
-        tap_action:
-          services: |
-            [[[
-              hass.callService('browser_mod', 'toast', {
-                message: 'Startar watchtower...'
-              });
-              hass.callService('switch', 'turn_on', {
-                entity_id: 'switch.watchtower'
-              });
-            ]]]
-        template: icon_name
+        - type: custom:button-card
+          entity: binary_sensor.updater
+          triggers_update:
+            - sensor.hass_release_notes_rc
+          name: Uppdatera HASS
+          icon: mdi:update
+          styles:
+            card:
+              - filter: >
+                  [[[
+                    return entity.state === 'off' || 
+                    (states[entity.entity_id].attributes.newest_version == states['sensor.hass_release_notes_rc'].state) ? 
+                      'opacity(30%)' : 
+                      'drop-shadow(3px 3px 5px #00000050)';
+                  ]]]
+          tap_action:
+            services: |
+              [[[
+                hass.callService('browser_mod', 'toast', {
+                  message: 'Startar watchtower...'
+                });
+                hass.callService('switch', 'turn_on', {
+                  entity_id: 'switch.watchtower'
+                });
+              ]]]
+          template: icon_name
 
-      ### hacs
-      - type: markdown
-        content: >
-          <span><ha-icon icon="hacs:hacs"></ha-icon> Community Store {{ states('sensor.hacs_version') }}</span><br>
-          {% if is_state('sensor.hacs', '0') or is_state('sensor.hacs', 'unknown') %}
-          <b>Inga uppdateringar</b>
-          {% else %}
-          <b>{{ states('sensor.hacs') }} {{ 'uppdatering tillgänglig' if is_state('sensor.hacs', '1') 
-          else 'uppdateringar tillgängliga' }}</b> {{ '\U0001f389' }}
+        ### hacs
+        - type: markdown
+          content: >
+            <span><ha-icon icon="hacs:hacs"></ha-icon> Community Store {{ states('sensor.hacs_version') }}</span><br>
+            {% if is_state('sensor.hacs', '0') or is_state('sensor.hacs', 'unknown') %}
+            <b>Inga uppdateringar</b>
+            {% else %}
+            <b>{{ states('sensor.hacs') }} {{ 'uppdatering tillgänglig' if is_state('sensor.hacs', '1') 
+            else 'uppdateringar tillgängliga' }}</b> {{ '\U0001f389' }}
 
-          {% for repo in state_attr('sensor.hacs', 'repositories') %}
-          * {{ repo.display_name }} - Version {{ repo.available_version }} ([{{ repo.installed_version }}](https://github.com/{{ repo.name }}/releases))
+            {% for repo in state_attr('sensor.hacs', 'repositories') %}
+            * {{ repo.display_name }} - Version {{ repo.available_version }} ([{{ repo.installed_version }}](https://github.com/{{ repo.name }}/releases))
 
-          {% endfor %}
-          {% endif %}
+            {% endfor %}
+            {% endif %}
 
-      - type: custom:button-card
-        entity: sensor.hacs
-        name: Öppna HACS
-        icon: mdi:open-in-new
-        styles:
-          card:
-            - filter: >
-                [[[
-                  return entity.state === '0' ?
-                    'opacity(30%)' :
-                    'drop-shadow(3px 3px 5px #00000050)';
-                ]]]
-        tap_action:
-          action: url
-          url_path: /hacs
-        template: icon_name
+        - type: custom:button-card
+          entity: sensor.hacs
+          name: Öppna HACS
+          icon: mdi:open-in-new
+          styles:
+            card:
+              - filter: >
+                  [[[
+                    return entity.state === '0' ?
+                      'opacity(30%)' :
+                      'drop-shadow(3px 3px 5px #00000050)';
+                  ]]]
+          tap_action:
+            action: fire-dom-event
+            browser_mod:
+              command: popup
+              title: Home Assistant Community Store
+              style: >
+                :host .content {
+                  width: 75em;
+                }
+              card:
+                type: iframe
+                url: /hacs
+                aspect_ratio: 65%
+                style: |
+                  ha-card {
+                    border-radius: 0 0 1em 1em;
+                  }
+          template: icon_name
 
-      ### other
-      - type: markdown
-        content: >
-          {% set tasmota_installed = states('sensor.tasmota_version_installed') %}
-          {% set tasmota_latest = states('sensor.tasmota_version_latest') %}
-          {% set valetudo_installed = states('sensor.valetudo_version_installed') %}
-          {% set valetudo_latest = states('sensor.valetudo_version_latest') %}
-          <span><ha-icon icon="mdi:update"></ha-icon> Övrigt</span><br>
-          {% if tasmota_installed == tasmota_latest and valetudo_installed == valetudo_latest %}
-          <b>Inga uppdateringar</b>
-          {% else %}
-          {{- '[<b>Tasmota ' + tasmota_latest + '](https://github.com/arendst/Tasmota/releases/latest) tillgänglig</b> ' + '\U0001f389' if tasmota_installed != tasmota_latest }}
-
-          {{- '[<b>Valetudo ' + valetudo_latest + '](https://github.com/Hypfer/Valetudo/releases/latest) tillgänglig</b> ' + '\U0001f389' if valetudo_installed != valetudo_latest }}
-          {% endif %}
+        ### other
+        - type: markdown
+          content: >
+            {% set tasmota_installed = states('sensor.tasmota_version_installed') %}
+            {% set tasmota_latest = states('sensor.tasmota_version_latest') %}
+            {% set valetudo_installed = states('sensor.valetudo_version_installed') %}
+            {% set valetudo_latest = states('sensor.valetudo_version_latest') %}
+            <span><ha-icon icon="mdi:update"></ha-icon> Övrigt</span><br>
+            {% if tasmota_installed == tasmota_latest and valetudo_installed == valetudo_latest %}
+            <b>Inga uppdateringar</b>
+            {% else %}
+            {{ '[<b>Tasmota ' + tasmota_latest + '](https://github.com/arendst/Tasmota/releases/latest) tillgänglig</b> ' + '\U0001f389 <br>' if tasmota_installed != tasmota_latest }}
+            {{ '[<b>Valetudo ' + valetudo_latest + '](https://github.com/Hypfer/Valetudo/releases/latest) tillgänglig</b> ' + '\U0001f389 <br>' if valetudo_installed != valetudo_latest }}
+            {{ '[<b>playactor](https://github.com/dhleong/playactor/releases/latest) tillgänglig</b> ' + '\U0001f389 <br>' if is_state('binary_sensor.ps5_playactor_update', 'on') }}
+            {% endif %}

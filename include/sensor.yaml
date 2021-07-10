@@ -9,15 +9,6 @@ sensor:
   - platform: version
     name: hass_version_installed
 
-  - platform: version
-    name: hass_version_latest
-    source: docker
-
-  - platform: version
-    name: hass_version_latest_beta
-    beta: true
-    source: docker
-
   - platform: filesize
     file_paths:
       - /config/home-assistant.log
@@ -90,9 +81,6 @@ sensor:
     json_attributes_path: $.Trip[0].LegList.Leg[1].Origin
     json_attributes: [name, time, date]
     scan_interval: 268
-    # {% set monthly_api_calls = 10000 %}
-    # {% set seconds_in_a_month = 2678400 %}
-    # {{ (seconds_in_a_month / monthly_api_calls) | round }}
 
   - platform: rest
     name: hass_release_notes
@@ -139,6 +127,19 @@ sensor:
     max: 1
     img_dir: /
     image_resolution: 500
+
+  - platform: command_line
+    name: Playstation
+    scan_interval: 300
+    command: !secret playstation_5_state
+    value_template: >
+      {% if value == 'AWAKE' %}
+        ON
+      {% elif value == 'STANDBY' %}
+        OFF
+      {% else %}
+        Okänd
+      {% endif %}
 
   - platform: command_line
     name: imac_ip

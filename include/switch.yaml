@@ -117,11 +117,11 @@ switch:
       playstation_5:
         friendly_name: Playstation
         icon_template: mdi:sony-playstation
-        value_template: "{{ states('binary_sensor.playstation') }}"
+        value_template: "{{ states('sensor.playstation') }}"
         turn_on:
           - service: shell_command.playstation_5_wake
           - service: media_player.turn_on
-            entity_id: media_player.sony_bravia_tv
+            entity_id: media_player.samsung_tv
           - repeat:
               count: 10
               # report state
@@ -129,14 +129,26 @@ switch:
                 - condition: not
                   conditions:
                     - condition: state
-                      entity_id: binary_sensor.playstation
+                      entity_id: sensor.playstation
                       state: 'on'
                 - delay:
                     seconds: 2
                 - service: homeassistant.update_entity
-                  entity_id: binary_sensor.playstation
+                  entity_id: sensor.playstation
         turn_off:
+          - service: shell_command.playstation_5_sleep
           - service: media_player.turn_off
-            entity_id: media_player.sony_bravia_tv
-          - service: homeassistant.update_entity
-            entity_id: binary_sensor.playstation
+            entity_id: media_player.samsung_tv
+          - repeat:
+              count: 10
+              # report state
+              sequence:
+                - condition: not
+                  conditions:
+                    - condition: state
+                      entity_id: sensor.playstation
+                      state: 'off'
+                - delay:
+                    seconds: 2
+                - service: homeassistant.update_entity
+                  entity_id: sensor.playstation
