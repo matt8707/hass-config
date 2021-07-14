@@ -46,7 +46,9 @@ def create_entity(hass, platform, deviceID, connection):
         or CONFIG_DISABLE_ALL in hass.data[DOMAIN][DATA_CONFIG].get(CONFIG_DISABLE, [])
     ):
         return None
-    adder = hass.data[DOMAIN][DATA_ADDERS][platform]
+    adder = hass.data[DOMAIN][DATA_ADDERS].get(platform)
+    if not adder:
+        return None
     entity = adder(hass, deviceID, connection, get_alias(hass, deviceID))
     return entity
 

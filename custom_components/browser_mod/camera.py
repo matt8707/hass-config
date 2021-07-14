@@ -5,7 +5,11 @@ from homeassistant.components.camera import Camera
 
 from .helpers import setup_platform, BrowserModEntity
 
+import logging
+
 PLATFORM = "camera"
+
+LOGGER = logging.Logger(__name__)
 
 
 async def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
@@ -30,7 +34,7 @@ class BrowserModCamera(Camera, BrowserModEntity):
         self.schedule_update_ha_state()
 
     def camera_image(self):
-        return base64.b64decode(self.data.split(",")[1])
+        return base64.b64decode(self.data.split(",")[-1])
 
     @property
     def device_state_attributes(self):

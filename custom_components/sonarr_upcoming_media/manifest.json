@@ -1,0 +1,9 @@
+{
+    "domain": "sonarr_upcoming_media",
+    "name": "Sonarr Upcoming Media",
+    "version": "0.2.6",
+    "documentation": "https://github.com/custom-components/sensor.sonarr_upcoming_media",
+    "dependencies": [],
+    "codeowners": ["@maykar"],
+    "requirements": []
+  }
