@@ -123,7 +123,9 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: binary_sensor.updater
+        entity_id:
+          - sensor.hass_version_latest
+          - sensor.hass_version_latest_beta
     action:
       - service: homeassistant.update_entity
         entity_id:
@@ -189,7 +191,7 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: sensor.hass_release_notes_rc
+        entity_id: sensor.hass_version_latest_beta
     condition:
       - condition: state
         entity_id: sensor.hass_dev_release

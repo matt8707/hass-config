@@ -52,14 +52,14 @@ binary_sensor:
       sidebar_update_color:
         value_template: >
           {% if states('sensor.hass_version_installed') | regex_search('b') %}
-            {% if states('sensor.hass_version_installed') != states('sensor.hass_release_notes_rc') and 
-            not is_state('sensor.hass_release_notes_rc', 'unknown') or 
+            {% if states('sensor.hass_version_installed') != states('sensor.hass_version_latest_beta') and 
+            not is_state('sensor.hass_version_latest_beta', 'unknown') or 
             not is_state('sensor.hacs', '0') and 
             not is_state('sensor.hacs', 'unknown') %}
               True {% else %} False {% endif %}
           {% else %}
-            {% if states('sensor.hass_version_installed') != state_attr('binary_sensor.updater', 'newest_version') and 
-            not is_state_attr('binary_sensor.updater', 'newest_version', 'unknown') or 
+            {% if states('sensor.hass_version_installed') != states('sensor.hass_version_latest') and 
+            not is_state('sensor.hass_version_latest', 'unknown') or 
             not is_state('sensor.hacs', '0') and 
             not is_state('sensor.hacs', 'unknown') %}
               True {% else %} False {% endif %}

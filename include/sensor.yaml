@@ -8,6 +8,16 @@ sensor:
 
   - platform: version
     name: hass_version_installed
+    source: local
+
+  - platform: version
+    name: hass_version_latest
+    source: docker
+
+  - platform: version
+    name: hass_version_latest_beta
+    beta: true
+    source: docker
 
   - platform: filesize
     file_paths:

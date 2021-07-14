@@ -72,23 +72,23 @@ browser_mod:
           content: >
             {% if states('sensor.hass_version_installed') | regex_search('b') %}
             <span><ha-icon icon="mdi:home-assistant"></ha-icon> Home Assistant {{ states('sensor.hass_version_installed') }}</span><br>
-            {% if states('sensor.hass_version_installed') == states('sensor.hass_release_notes_rc') %}
+            {% if states('sensor.hass_version_installed') == states('sensor.hass_version_latest_beta') %}
             <b>Inga uppdateringar</b>
             {% else %}
-            <b>{{ states('sensor.hass_release_notes_rc') }} tillgänglig</b> {{ '\U0001f389' }}
+            <b>{{ states('sensor.hass_version_latest_beta') }} tillgänglig</b> {{ '\U0001f389' }}
         
-            {% if states('sensor.hass_version_installed') != states('sensor.hass_release_notes_rc') %}
+            {% if states('sensor.hass_version_latest_beta') == states('sensor.hass_release_notes_rc') %}
             {{- state_attr('sensor.hass_release_notes_rc', 'body') }}
             {% endif %}
             {% endif %}
             {% else %}
             <span><ha-icon icon="mdi:home-assistant"></ha-icon> Home Assistant {{ states('sensor.hass_version_installed') }}</span><br>
-            {% if states('sensor.hass_version_installed') == state_attr('binary_sensor.updater', 'newest_version') %}
+            {% if states('sensor.hass_version_installed') == states('sensor.hass_version_latest') %}
             <b>Inga uppdateringar</b>
             {% else %}
-            <b>{{ state_attr('binary_sensor.updater', 'newest_version') }} tillgänglig</b> {{ '\U0001f389' }}
-        
-            {% if state_attr('binary_sensor.updater', 'newest_version') == states('sensor.hass_release_notes') %}
+            <b>{{ states('sensor.hass_version_latest') }} tillgänglig</b> {{ '\U0001f389' }}
+
+            {% if states('sensor.hass_version_latest') == states('sensor.hass_release_notes') %}
             {{- state_attr('sensor.hass_release_notes', 'body') }}
             {% endif %}
             {% endif %}
@@ -104,8 +104,8 @@ browser_mod:
             card:
               - filter: >
                   [[[
-                    return entity.state === 'off' || 
-                    (states[entity.entity_id].attributes.newest_version == states['sensor.hass_release_notes_rc'].state) ? 
+                    return entity.state === (states['sensor.hass_version_latest'].state || 
+                    states['sensor.hass_version_latest_beta'].state) ? 
                       'opacity(30%)' : 
                       'drop-shadow(3px 3px 5px #00000050)';
                   ]]]

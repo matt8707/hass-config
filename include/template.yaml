@@ -328,7 +328,7 @@ sensor:
           Installerad {{ states('sensor.hass_version_installed') }}
         value_template: >
           {{ 'Senaste' if states('sensor.hass_version_installed') == 
-          state_attr('binary_sensor.updater', 'newest_version') else state_attr('binary_sensor.updater', 'newest_version') }}
+          states('sensor.hass_version_latest') else states('sensor.hass_version_latest') }}
 
       hass_dev_release:
         icon_template: mdi:dev-to
