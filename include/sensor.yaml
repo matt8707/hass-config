@@ -12,12 +12,12 @@ sensor:
 
   - platform: version
     name: hass_version_latest
-    source: docker
+    source: container
 
   - platform: version
     name: hass_version_latest_beta
+    source: container
     beta: true
-    source: docker
 
   - platform: filesize
     file_paths:
