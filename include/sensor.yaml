@@ -75,6 +75,21 @@ sensor:
     scan_interval: 86400
 
   - platform: rest
+    name: kemper_latest
+    resource: 'https://www.kemper-amps.com/api/update?type=RIGMANAGER'
+    value_template: >
+      {{ value_json.updates.item[0]['@version'] }}
+    authentication: basic
+    username: !secret kemper_username
+    password: !secret kemper_password
+    scan_interval: 86400
+
+  - platform: command_line
+    name: kemper_installed
+    command: !secret kemper_installed
+    scan_interval: 86400
+
+  - platform: rest
     name: covid_19_folkhalsomyndigheten
     resource: https://www.arcgis.com/sharing/rest/content/items/2dc63e26f509468f896ec69476b0dab3/data
     value_template: >

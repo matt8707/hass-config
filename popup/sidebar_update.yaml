@@ -95,9 +95,10 @@ browser_mod:
             {% endif %}
 
         - type: custom:button-card
-          entity: binary_sensor.updater
+          entity: sensor.hass_version_installed
           triggers_update:
-            - sensor.hass_release_notes_rc
+            - sensor.hass_version_latest
+            - sensor.hass_version_latest_beta
           name: Uppdatera HASS
           icon: mdi:update
           styles:
@@ -182,4 +183,5 @@ browser_mod:
             {{ '[<b>Tasmota ' + tasmota_latest + '](https://github.com/arendst/Tasmota/releases/latest) tillgänglig</b> ' + '\U0001f389 <br>' if tasmota_installed != tasmota_latest }}
             {{ '[<b>Valetudo ' + valetudo_latest + '](https://github.com/Hypfer/Valetudo/releases/latest) tillgänglig</b> ' + '\U0001f389 <br>' if valetudo_installed != valetudo_latest }}
             {{ '[<b>playactor](https://github.com/dhleong/playactor/releases/latest) tillgänglig</b> ' + '\U0001f389 <br>' if is_state('binary_sensor.ps5_playactor_update', 'on') }}
+            {{ '<b>Rig Manager ' + states("sensor.kemper_latest") + ' tillgänglig</b> ' + '\U0001f389 <br>' if states("sensor.kemper_latest") != states("sensor.kemper_installed") }}
             {% endif %}
