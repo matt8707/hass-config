@@ -31,21 +31,19 @@ browser_mod:
     columns: 1
     square: false
     cards:
-      - type: custom:more-info-card
-        entity: fan.sovrum_anslut
+
+      - type: thermostat
+        entity: climate.luftkylare
+
 
       - type: entities
         state_color: true
         entities:
-          # - entity: fan.sovrum_anslut
-          #   secondary_info: last-changed
-          # - entity: input_boolean.sovrum_anslut_oscillate
-          # - entity: input_number.sovrum_anslut_speed
-          - type: custom:slider-entity-row
-            entity: input_number.sovrum_anslut_timer
-            hide_state: false
-          - entity: switch.strombrytare
-          - entity: automation.sovrum_anslut_turn_on_temp
+          - climate.luftkylare
+          - entity: sensor.broadlink_rm4_pro_temperature
+            name: Rumstemperatur
+          - entity: sensor.broadlink_rm4_pro_humidity
+            name: Luftfuktighet
 
       - type: custom:mini-graph-card
         entities:

@@ -223,21 +223,21 @@ views:
               - icon_lamp
 
           - type: custom:button-card
-            entity: fan.air_purifier
-            name: Luftrenare
+            entity: climate.luftkylare
+            name: Klimat
             hold_action:
-              !include popup/sovrum_luftrenare.yaml
+              !include popup/sovrum_klimat.yaml
             template:
               - base
               - icon_air_purifier
-              - circle
+              - climate
               - loader
             variables:
               circle_input: >
                 [[[
                   return entity === undefined ?
                     null :
-                    parseInt(entity.attributes.percentage_step);
+                    entity.attributes.temperature;
                 ]]]
 
           - type: custom:button-card

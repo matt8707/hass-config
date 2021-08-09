@@ -21,6 +21,7 @@ homekit:
         - script.home_arrive
         - script.samsung_tv_energy_saving
         - vacuum.valetudo_robot
+        - climate.luftkylare
     entity_config:
       switch.playstation_5:
         name: Playstation

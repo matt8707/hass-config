@@ -75,19 +75,19 @@
         - padding: 10%
         - --mdc-ripple-color: >
             [[[
-              return (variables.state === 'on' || variables.state === 'home') ?
+              return (variables.state === 'on' || variables.state === 'home' || variables.state === 'cool') ?
                 'rgb(0, 0, 0)' :
                 'rgba(255, 255, 255, 0.3)';
             ]]]
         - color: >
             [[[
-              return (variables.state === 'on' || variables.state === 'home') ?
+              return (variables.state === 'on' || variables.state === 'home' || variables.state === 'cool') ?
                 'rgba(0, 0, 0, 0.6)' :
                 'rgba(255, 255, 255, 0.3)';
             ]]]
         - background-color: >
             [[[
-              return (variables.state === 'on' || variables.state === 'home') ?
+              return (variables.state === 'on' || variables.state === 'home' || variables.state === 'cool') ?
                 'rgba(255, 255, 255, 0.8)' :
                 'rgba(115, 115, 115, 0.2)';
             ]]]
@@ -209,6 +209,40 @@
           - opacity: 0.5
           - filter: >
               [[[ return variables.state === 'off' ? 'invert(1)' : 'none'; ]]]
+
+  climate:
+    state_display: >
+      [[[ return variables.state === 'cool' ? 'På' : 'Av'; ]]]
+    custom_fields:
+      circle: >
+        [[[
+          const input = variables.circle_input;
+          const stroke_color = variables.state === 'cool' ? '#b2b2b2' : '#313638';
+          const fill_color = variables.state === 'cool' ? 'none' : '#FFFFFF08';
+          return `
+            <svg viewBox="0 0 50 50">
+              <style>
+                circle {
+                  transform: none;
+                  transform-origin: none;
+                  stroke-dasharray: none;
+                  stroke-dashoffset: none;
+                }
+              </style>
+              <circle cx="25" cy="25" r="20.5" stroke="${stroke_color}" stroke-width="1.5" fill="${fill_color}" />
+              <text x="50%" y="54%" fill="#8d8e90" font-size="14" text-anchor="middle" alignment-baseline="middle" dominant-baseline="middle">${input}<tspan font-size="10">°C</tspan></text>
+            </svg>
+          `;
+        ]]]
+    styles:
+      custom_fields:
+        circle:
+          - display: initial
+          - width: 90%
+          - letter-spacing: 0.03vw
+          - margin: -6% -6% 0 0
+          - justify-self: end
+          - opacity: 1
 
   #################################################
   #                                               #
@@ -1324,7 +1358,7 @@
           - width: 78%
           - margin-left: -10%
           - fill: >
-              [[[ return variables.state === 'on' ? '#5daeea' : '#9da0a2'; ]]]
+              [[[ return variables.state === 'cool' ? '#5daeea' : '#9da0a2'; ]]]
     custom_fields:
       icon: >
         <svg viewBox="0 0 50 50">

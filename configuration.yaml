@@ -6,6 +6,7 @@ homeassistant:
   unit_system: metric
   temperature_unit: C
   time_zone: Europe/Stockholm
+  currency: SEK
   packages: !include_dir_named include
   allowlist_external_dirs: [/config/]
 
@@ -22,6 +23,7 @@ lovelace:
       { url: /hacsfiles/lovelace-card-mod/card-mod.js,                      type: module },
       { url: /hacsfiles/lovelace-hui-element/hui-element.js,                type: module },
       { url: /hacsfiles/lovelace-layout-card/layout-card.js,                type: module },
+      { url: /hacsfiles/lovelace-more-info-card/more-info-card.js,          type: module },
       { url: /hacsfiles/lovelace-slider-entity-row/slider-entity-row.js,    type: module },
       { url: /hacsfiles/lovelace-valetudo-map-card/valetudo-map-card.js,    type: module },
       { url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js,          type: module },
@@ -57,9 +59,9 @@ person:
       - device_tracker.sanja_bluetooth
 
 device_tracker:
-  - platform: bluetooth_tracker
-    new_device_defaults:
-      track_new_devices: false
+  # - platform: bluetooth_tracker
+  #   new_device_defaults:
+  #     track_new_devices: false
 
   - platform: iphonedetect
     consider_home: 60
@@ -69,6 +71,44 @@ device_tracker:
     hosts:
       mattias_iphonedetect: !secret iphonedetect_matte
       sanja_iphonedetect: !secret iphonedetect_sanja
+
+smartir:
+  check_updates: false
+
+climate:
+  - platform: smartir
+    name: Klimat
+    unique_id: EXP26U758CW
+    device_code: 1703
+    controller_data: remote.broadlink_remote
+    temperature_sensor: sensor.broadlink_rm4_pro_temperature
+    humidity_sensor: sensor.broadlink_rm4_pro_humidity
+    power_sensor: binary_sensor.gosund_ac
+    power_sensor_restore_state: true
+
+influxdb:
+  api_version: 2
+  ssl: false
+  host: !secret influxdb_host
+  port: !secret influxdb_port
+  organization: !secret influxdb_org
+  token: !secret influxdb_token
+  bucket: weight
+  tags:
+    source: HA
+  tags_attributes:
+    - friendly_name
+  default_measurement: units
+  include:
+    entities:
+      - sensor.mattias_weight
+      - sensor.sanja_weight
+
+waste_collection_schedule:
+  sources:
+    - name: ics
+      args:
+        url: !secret waste_collection_schedule_url
 
 wemo:
   discovery: false

@@ -27,10 +27,17 @@ binary_sensor:
     name: nas_internet_access
     host: 8.8.8.8
 
+  # - platform: mqtt
+  #   name: gosund_fan
+  #   state_topic: stat/gosund1/STATUS8
+  #   #https://tasmota.github.io/docs/Commands/#rules
+  #   #Backlog Rule1 ON ENERGY#Power>10 DO Status 8 ENDON ON ENERGY#Power<10 DO Status 8 ENDON; Rule1 1; Rule1 5
+  #   value_template: >
+  #     {{ 'ON' if value_json.StatusSNS.ENERGY.Power | int > 10 else 'OFF' }}
+
   - platform: mqtt
-    name: gosund_fan
+    name: gosund_ac
     state_topic: stat/gosund1/STATUS8
-    #https://tasmota.github.io/docs/Commands/#rules
     #Backlog Rule1 ON ENERGY#Power>10 DO Status 8 ENDON ON ENERGY#Power<10 DO Status 8 ENDON; Rule1 1; Rule1 5
     value_template: >
       {{ 'ON' if value_json.StatusSNS.ENERGY.Power | int > 10 else 'OFF' }}
