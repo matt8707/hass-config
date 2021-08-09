@@ -48,11 +48,15 @@ sensor:
       - time
       - date
 
-  - platform: mqtt
-    name: valetudo_version_installed
-    state_topic: homeassistant/vacuum/robot/robot_vacuum/config
-    value_template: >
-      {{ value_json.device.sw_version.split(' ')[0] }}
+  - platform: unifigateway
+    username: !secret unifi_username
+    password: !secret unifi_password
+    host: !secret unifi_host
+    version: UDMP-unifiOS
+    monitored_conditions:
+      - www
+      - wan
+      - firmware
 
   - platform: rest
     name: valetudo_version_latest
@@ -61,17 +65,20 @@ sensor:
       {{ value_json.tag_name }}
     scan_interval: 86400
 
-  - platform: mqtt
-    name: tasmota_version_installed
-    state_topic: tasmota/discovery/C44F33B95EBA/config
-    value_template: >
-      {{ value_json.sw }}
-
   - platform: rest
     name: tasmota_version_latest
     resource: https://api.github.com/repos/arendst/Tasmota/releases/latest
     value_template: >
-      {{ value_json.tag_name.split("v")[1] }}
+      {{ value_json.tag_name.split('v')[1] }}
+    scan_interval: 86400
+
+  - platform: scrape
+    name: synology_dsm_latest
+    resource: https://www.synology.com/en-global/releaseNote/DSM
+    select: >
+      #release_notes_content > div:first-child > h3
+    value_template: >
+      {{ value.split(' ')[1] }}
     scan_interval: 86400
 
   - platform: rest
@@ -153,6 +160,39 @@ sensor:
     img_dir: /
     image_resolution: 500
 
+  - platform: waste_collection_schedule
+    name: Sophämtning
+    value_template: >
+      {{ value.types | join(', ') + ' ' }}
+      {% if value.daysTo == 0 %}
+        idag
+      {% elif value.daysTo == 1 %}
+        imorgon
+      {% elif value.daysTo == 2 %}
+        i övermorgon
+      {% else %}
+        om {{ value.daysTo }} dagar
+      {% endif %}
+
+  - platform: influxdb
+    api_version: 2
+    ssl: false
+    host: !secret influxdb_host
+    port: !secret influxdb_port
+    organization: !secret influxdb_org
+    token: !secret influxdb_token
+    queries_flux:
+      - name: Mattias vikt
+        unit_of_measurement: kg
+        bucket: weight
+        range_start: "-30d"
+        group_function: last
+        query: >
+          filter(fn: (r) =>
+            r.domain == "sensor" and
+            r.entity_id == "mattias_weight" and
+            r._field == "weight")
+
   - platform: command_line
     name: Playstation
     scan_interval: 300
@@ -165,6 +205,12 @@ sensor:
       {% else %}
         Okänd
       {% endif %}
+
+  - platform: command_line
+    name: switchbot_battery
+    scan_interval: 259200
+    command: !secret switchbot_battery
+    unit_of_measurement: '%'
 
   - platform: command_line
     name: imac_ip
@@ -206,9 +252,3 @@ sensor:
     command: !secret imac_uptime
     value_template: >
       {{ value | int | timestamp_custom('%Y-%m-%dT%H:%M:%S') }}
-
-  - platform: command_line
-    name: hacs_version
-    scan_interval: 86400
-    command: >
-      grep -oP 'INTEGRATION_VERSION = "\K[^"]+' custom_components/hacs/const.py

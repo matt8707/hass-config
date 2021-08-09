@@ -42,14 +42,6 @@ browser_mod:
               line-height: 1.9em;
               opacity: 0.5;
             }
-            a {
-              font-family: SF Text;
-              font-size: 1.2em;
-              font-weight: 600;
-              line-height: 1.9em;
-              opacity: 0.8;
-              letter-spacing: 0px;
-            }
             ha-markdown-element > ul {
               font-family: SF Display;
               font-size: 1.1em;
@@ -60,6 +52,9 @@ browser_mod:
             }
             ha-markdown-element > ul > li:last-child {
               margin-bottom: 0px;
+            }
+            ha-markdown-element > ul > li > code {
+              background-color: var(--secondary-background-color);
             }
     card:
       type: grid
@@ -125,7 +120,7 @@ browser_mod:
         ### hacs
         - type: markdown
           content: >
-            <span><ha-icon icon="hacs:hacs"></ha-icon> Community Store {{ states('sensor.hacs_version') }}</span><br>
+            <span><ha-icon icon="hacs:hacs"></ha-icon> Community Store {{ device_attr(device_id('sensor.hacs'), 'sw_version') }}</span><br>
             {% if is_state('sensor.hacs', '0') or is_state('sensor.hacs', 'unknown') %}
             <b>Inga uppdateringar</b>
             {% else %}
@@ -172,16 +167,10 @@ browser_mod:
         ### other
         - type: markdown
           content: >
-            {% set tasmota_installed = states('sensor.tasmota_version_installed') %}
-            {% set tasmota_latest = states('sensor.tasmota_version_latest') %}
-            {% set valetudo_installed = states('sensor.valetudo_version_installed') %}
-            {% set valetudo_latest = states('sensor.valetudo_version_latest') %}
             <span><ha-icon icon="mdi:update"></ha-icon> Övrigt</span><br>
-            {% if tasmota_installed == tasmota_latest and valetudo_installed == valetudo_latest %}
-            <b>Inga uppdateringar</b>
+            {% set attributes = states.sensor.template_updates.attributes | default %}
+            {% for template in attributes if state_attr('sensor.template_updates', template) != 'false' %}
+              {{- state_attr('sensor.template_updates', template) }}
             {% else %}
-            {{ '[<b>Tasmota ' + tasmota_latest + '](https://github.com/arendst/Tasmota/releases/latest) tillgänglig</b> ' + '\U0001f389 <br>' if tasmota_installed != tasmota_latest }}
-            {{ '[<b>Valetudo ' + valetudo_latest + '](https://github.com/Hypfer/Valetudo/releases/latest) tillgänglig</b> ' + '\U0001f389 <br>' if valetudo_installed != valetudo_latest }}
-            {{ '[<b>playactor](https://github.com/dhleong/playactor/releases/latest) tillgänglig</b> ' + '\U0001f389 <br>' if is_state('binary_sensor.ps5_playactor_update', 'on') }}
-            {{ '<b>Rig Manager ' + states("sensor.kemper_latest") + ' tillgänglig</b> ' + '\U0001f389 <br>' if states("sensor.kemper_latest") != states("sensor.kemper_installed") }}
-            {% endif %}
+              **Inga uppdateringar**
+            {% endfor %}

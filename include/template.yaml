@@ -156,6 +156,18 @@ template:
               Tvätt om {{ (count + hours) | round }} dagar på {{ day }} kl {{ time }}
             {%- endif %}
           {%- endif %}
+        battery: |
+          {% set entities = [
+            'sensor.dimmer_badrum_battery_level',
+            'sensor.dimmer_sovrum_battery_level',
+            'sensor.template_hue_motion_battery_badrum',
+            'sensor.template_hue_motion_battery_garderob',
+            'sensor.template_hue_motion_battery_hall',
+            'sensor.switchbot_battery' ] %}
+          {%- for sensor in entities if states(sensor) | int <= 5 and states(sensor) != 'unknown' %}
+            {%- if loop.first %} {{-'\u26A0\uFE0F'}} Batteri {% else %}, {% endif -%}
+            {{ state_attr(sensor, 'friendly_name') + ' ' +  states(sensor) + '%' }}
+          {%- endfor %}
         mathem: |
           {%- set start_time = state_attr('calendar.mathem', 'start_time') %}
           {%- set end_time = state_attr('calendar.mathem', 'end_time') %}
@@ -190,6 +202,59 @@ template:
           {% if is_state('binary_sensor.nas_internet_access', 'off') -%}
             {{-'\u26A0\uFE0F'}} Kontrollera NAS internetåtkomst
           {%- endif %}
+
+    - unique_id: updates
+      state: template
+      attributes:
+        tasmota: >
+          {% macro f(e) %}{{- device_attr(device_id('switch.' + e), 'sw_version') -}}{% endmacro %}
+          {% set installed = [f('gosund1'), f('gosund2'), f('gosund2')] | min %}
+          {% set latest = states('sensor.tasmota_version_latest') %}
+          {% set url = 'https://github.com/arendst/Tasmota/releases/latest' %}
+          {% if installed != latest %}
+            **[Tasmota]({{ url }}) {{ installed + ' \u279e ' + latest }} tillgänglig** {{ '\U0001f389' }}
+          {% else %}
+            false
+          {% endif %}
+        valetudo: >
+          {% set installed = device_attr(device_id('vacuum.valetudo_robot'), 'sw_version').split(' ')[0] %}
+          {% set latest = states('sensor.valetudo_version_latest') %}
+          {% set url = 'https://github.com/Hypfer/Valetudo/releases/latest' %}
+          {% if installed != latest %}
+            **[Valetudo]({{ url }}) {{ installed + ' \u279e ' + latest }} tillgänglig** {{ '\U0001f389' }}
+          {% else %}
+            false
+          {% endif %}
+        playactor: >
+          {% set url = 'https://github.com/dhleong/playactor/releases/latest' %}
+          {% if is_state('binary_sensor.ps5_playactor_update', 'on') %}
+            **[playactor]({{ url }}) uppdatering tillgänglig** {{ '\U0001f389' }}
+          {% else %}
+            false
+          {% endif %}
+        kemper: >
+          {% set installed = states('sensor.kemper_installed') %}
+          {% set latest = states('sensor.kemper_latest') %}
+          {% if installed != latest and installed != '0' %}
+            **Rig Manager {{ installed + ' \u279e ' + latest }} tillgänglig** {{ '\U0001f389' }}
+          {% else %}
+            false
+          {% endif %}
+        unifi: >
+          {% set url = 'https://192.168.1.1/settings/updates' %}
+          {% if states('sensor.unifi_gateway_firmware_upgradable') | int > 0 %}
+            **[UniFi Dream Machine]({{ url }}) uppdatering tillgänglig** {{ '\U0001f389' }}
+          {% else %}
+            false
+          {% endif %}
+        synology: >
+          {% set installed = device_attr(device_id('sensor.nas_volume_1_status'), 'sw_version').split(' ')[1] %}
+          {% set latest = states('sensor.synology_dsm_latest') %}
+          {% if is_state('binary_sensor.nas_update_available', 'on') %}
+            **Synology DSM {{ installed + ' \u279e ' + latest }} tillgänglig** {{ '\U0001f389' }}
+          {% else %}
+            false
+          {% endif %}
 
     - unique_id: coronavirus
       icon: mdi:virus
@@ -316,6 +381,24 @@ template:
         {{ 'Ej Ansluten' if states('sensor.myip') == states('sensor.template_public_ip') else 'Ansluten' }}
       icon: >
         mdi:shield-{{ 'alert' if states('sensor.myip') == states('sensor.template_public_ip') else 'check' }}
+
+    - unique_id: hue_motion_battery_badrum
+      device_class: battery
+      unit_of_measurement: '%'
+      state: >
+        {{ state_attr('binary_sensor.sensor_badrum_motion', 'battery_level') }}
+
+    - unique_id: hue_motion_battery_hall
+      device_class: battery
+      unit_of_measurement: '%'
+      state: >
+        {{ state_attr('binary_sensor.sensor_hall_motion', 'battery_level') }}
+
+    - unique_id: hue_motion_battery_garderob
+      device_class: battery
+      unit_of_measurement: '%'
+      state: >
+        {{ state_attr('binary_sensor.sensor_garderob_motion', 'battery_level') }}
 
 #legacy
 sensor:

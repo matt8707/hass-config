@@ -108,30 +108,6 @@ automation:
       - service: light.turn_on
         entity_id: light.tv
 
-  - alias: hacs_version_grep
-    id: '4283610675891'
-    initial_state: true
-    trigger:
-      - platform: state
-        entity_id: sensor.hacs
-    action:
-      - service: homeassistant.update_entity
-        entity_id: sensor.hacs_version
-
-  - alias: update_hass_release_notes
-    id: '4289040658246'
-    initial_state: true
-    trigger:
-      - platform: state
-        entity_id:
-          - sensor.hass_version_latest
-          - sensor.hass_version_latest_beta
-    action:
-      - service: homeassistant.update_entity
-        entity_id:
-          - sensor.hass_release_notes
-          - sensor.hass_release_notes_rc
-
   - alias: no_motion_bathroom
     id: '9936892396917'
     initial_state: true
@@ -264,13 +240,28 @@ automation:
           name: Transmission
           id: >
             {{ trigger.event.data.id | int }}
-      - delay:
-          minutes: 15
-      - service: transmission.remove_torrent
+      # - delay:
+      #     minutes: 15
+      # - service: transmission.remove_torrent
+      #   data:
+      #     name: Transmission
+      #     id: >
+      #       {{ trigger.event.data.id | int }}
+
+  - alias: ios_notify_tablet_unplugged
+    id: '3972668118831'
+    initial_state: true
+    trigger:
+      - platform: numeric_state
+        entity_id: sensor.galaxy_tab_a_battery_level
+        below: 50
+    action:
+      - service: notify.mobile_app_mattias_iphone_ios
         data:
-          name: Transmission
-          id: >
-            {{ trigger.event.data.id | int }}
+          title: >
+            Ladda väggplattan...
+          message: >
+            Batteri {{ states(trigger.entity_id) }}%
 
     ####################################################
     #                                                  #
@@ -311,6 +302,34 @@ automation:
         data:
           topic: cmnd/tasmotas/status
           payload: 8
+
+  - alias: update_hass_release_notes
+    id: '4289040658246'
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id:
+          - sensor.hass_version_latest
+          - sensor.hass_version_latest_beta
+    action:
+      - service: homeassistant.update_entity
+        entity_id:
+          - sensor.hass_release_notes
+          - sensor.hass_release_notes_rc
+
+  - alias: update_synology_latest_version_tag
+    id: '3362185698381'
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id:
+          - binary_sensor.nas_update_available
+        from: 'off'
+        to: 'on'
+    action:
+      - service: homeassistant.update_entity
+        entity_id:
+          - sensor.synology_dsm_latest
 
     ####################################################
     #                                                  #
