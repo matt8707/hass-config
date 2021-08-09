@@ -429,7 +429,11 @@ class SamsungTVWS:
             on_message=self._on_message_control,
         )
         _LOGGING.debug("Thread SamsungControl started")
-        self._ws_control.run_forever(sslopt=sslopt)
+        # we set ping interval (1 hour) only to enable multi-threading mode
+        # on socket. TV do not answer to ping but send ping to client
+        self._ws_control.run_forever(
+            sslopt=sslopt, ping_interval=3600
+        )
         self._ws_control.close()
         self._ws_control = None
         _LOGGING.debug("Thread SamsungControl terminated")
@@ -537,7 +541,11 @@ class SamsungTVWS:
             on_message=self._on_message_art,
         )
         _LOGGING.debug("Thread SamsungArt started")
-        self._ws_art.run_forever(sslopt=sslopt)
+        # we set ping interval (1 hour) only to enable multi-threading mode
+        # on socket. TV do not answer to ping but send ping to client
+        self._ws_art.run_forever(
+            sslopt=sslopt, ping_interval=3600
+        )
         self._ws_art.close()
         self._ws_art = None
         _LOGGING.debug("Thread SamsungArt terminated")

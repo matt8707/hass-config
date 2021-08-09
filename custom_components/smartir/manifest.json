@@ -1,0 +1,23 @@
+{
+  "domain": "smartir",
+  "name": "SmartIR",
+  "documentation": "https://github.com/smartHomeHub/SmartIR",
+  "dependencies": [],
+  "codeowners": ["@smartHomeHub"],
+  "requirements": ["aiofiles==0.6.0"],
+  "homeassistant": "0.115.0",
+  "version": "1.17.0",
+  "updater": {
+    "version": "1.17.0",
+    "releaseNotes": "-- Add play_media service",
+    "files": [
+      "__init__.py",
+      "climate.py",
+      "media_player.py",
+      "fan.py",
+      "controller.py",
+      "manifest.json",
+      "services.yaml"
+    ]
+  }
+}
