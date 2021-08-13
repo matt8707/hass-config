@@ -534,6 +534,9 @@ class ValetudoMapCard extends HTMLElement {
     if (this._config.virtual_wall_width === undefined) this._config.virtual_wall_width = 1;
     if (this._config.path_width === undefined) this._config.path_width = 1;
 
+    // Padding settings
+    if (this._config.left_padding === undefined) this._config.left_padding = 0;
+    
     // Scale settings
     if (this._config.map_scale === undefined) this._config.map_scale = 1;
     if (this._config.icon_scale === undefined) this._config.icon_scale = 1;
@@ -632,7 +635,7 @@ class ValetudoMapCard extends HTMLElement {
     if(this.isPollingMap === false ) {
       this.isPollingMap = true;
 
-      const response = await fetch(url);
+      const response = await this._hass.fetchWithAuth(url);
       let mapData;
 
       if(!response.ok) {
@@ -748,6 +751,7 @@ class ValetudoMapCard extends HTMLElement {
           height: ${containerHeight}px;
           padding-top: ${containerMinHeightPadding}px;
           padding-bottom: ${containerMinHeightPadding}px;
+          padding-left: ${this._config.left_padding}px;
           overflow: hidden;
         }
         #lovelaceValetudoCard {
