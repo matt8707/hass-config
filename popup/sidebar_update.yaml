@@ -128,7 +128,7 @@ browser_mod:
             else 'uppdateringar tillgängliga' }}** {{ '\U0001f389' }}
 
             {% for repo in state_attr('sensor.hacs', 'repositories') %}
-            * {{ repo.display_name }} - Version {{ repo.available_version }} ([{{ repo.installed_version }}](https://github.com/{{ repo.name }}/releases))
+            * **[{{ repo.display_name }}](https://github.com/{{ repo.name }}/releases)** {{ repo.installed_version + ' \u279e ' + repo.available_version }}
 
             {% endfor %}
             {% endif %}
@@ -170,7 +170,11 @@ browser_mod:
             <span><ha-icon icon="mdi:update"></ha-icon> Övrigt</span><br>
             {% set attributes = states.sensor.template_updates.attributes | default %}
             {% for template in attributes if state_attr('sensor.template_updates', template) != 'false' %}
-              {{- state_attr('sensor.template_updates', template) }}
-            {% else %}
+              {%- if loop.first > 0 -%}
+                **{{ loop.length }} {{ 'uppdatering tillgänglig' if loop.length == 1 
+                else 'uppdateringar tillgängliga' }}** {{ '\U0001f389' }}
+              {% endif %}
+              * {{ state_attr('sensor.template_updates', template) }}
+            {%- else -%}
               **Inga uppdateringar**
             {% endfor %}

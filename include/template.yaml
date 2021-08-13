@@ -212,7 +212,7 @@ template:
           {% set latest = states('sensor.tasmota_version_latest') %}
           {% set url = 'https://github.com/arendst/Tasmota/releases/latest' %}
           {% if installed != latest %}
-            **[Tasmota]({{ url }}) {{ installed + ' \u279e ' + latest }} tillgänglig** {{ '\U0001f389' }}
+            **[Tasmota]({{ url }})** {{ installed + ' \u279e ' + latest }}
           {% else %}
             false
           {% endif %}
@@ -221,7 +221,7 @@ template:
           {% set latest = states('sensor.valetudo_version_latest') %}
           {% set url = 'https://github.com/Hypfer/Valetudo/releases/latest' %}
           {% if installed != latest %}
-            **[Valetudo]({{ url }}) {{ installed + ' \u279e ' + latest }} tillgänglig** {{ '\U0001f389' }}
+            **[Valetudo]({{ url }})** {{ installed + ' \u279e ' + latest }}
           {% else %}
             false
           {% endif %}
@@ -230,7 +230,7 @@ template:
           {% set latest = states('sensor.playactor_version_latest') %}
           {% set url = 'https://github.com/dhleong/playactor/releases/latest' %}
           {% if installed != latest %}
-            **[playactor]({{ url }}) {{ installed + ' \u279e ' + latest }} tillgänglig** {{ '\U0001f389' }}
+            **[playactor]({{ url }})** {{ installed + ' \u279e ' + latest }}
           {% else %}
             false
           {% endif %}
@@ -238,7 +238,7 @@ template:
           {% set installed = state_attr('sensor.kemper_version', 'profiler_installed') %}
           {% set latest = state_attr('sensor.kemper_version', 'profiler_latest') %}
           {% if installed != latest %}
-            **Kemper Profiler OS {{ installed + ' \u279e ' + latest }} tillgänglig** {{ '\U0001f389' }}
+            **Kemper Profiler OS** {{ installed + ' \u279e ' + latest }}
           {% else %}
             false
           {% endif %}
@@ -246,14 +246,14 @@ template:
           {% set installed = state_attr('sensor.kemper_version', 'rigmanager_installed') %}
           {% set latest = state_attr('sensor.kemper_version', 'rigmanager_latest') %}
           {% if installed != latest %}
-            **Rig Manager {{ installed + ' \u279e ' + latest }} tillgänglig** {{ '\U0001f389' }}
+            **Rig Manager** {{ installed + ' \u279e ' + latest }}
           {% else %}
             false
           {% endif %}
         unifi: >
           {% set url = 'https://192.168.1.1/settings/updates' %}
           {% if states('sensor.unifi_gateway_firmware_upgradable') | int > 0 %}
-            **[UniFi Dream Machine]({{ url }}) uppdatering tillgänglig** {{ '\U0001f389' }}
+            **[UniFi Dream Machine]({{ url }})** uppdatering tillgänglig
           {% else %}
             false
           {% endif %}
@@ -261,7 +261,7 @@ template:
           {% set installed = device_attr(device_id('sensor.nas_volume_1_status'), 'sw_version').split(' ')[1] %}
           {% set latest = states('sensor.synology_dsm_latest') %}
           {% if is_state('binary_sensor.nas_update_available', 'on') %}
-            **Synology DSM {{ installed + ' \u279e ' + latest }} tillgänglig** {{ '\U0001f389' }}
+            **Synology DSM** {{ installed + ' \u279e ' + latest }}
           {% else %}
             false
           {% endif %}
