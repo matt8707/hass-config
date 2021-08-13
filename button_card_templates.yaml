@@ -13,7 +13,7 @@
       timeout: >
         [[[ return entity === undefined || Date.now() - Date.parse(entity.last_changed); ]]]
       light_color: >
-        [[[ return entity === undefined ? 'var(--state-icon-color)' : 'var(--button-card-light-color-no-temperature)'; ]]]
+        [[[ return entity === undefined || entity.state === 'unavailable' ? 'var(--state-icon-color)' : 'var(--button-card-light-color-no-temperature)'; ]]]
     aspect_ratio: 1/1
     show_state: true
     show_icon: false
