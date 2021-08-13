@@ -81,20 +81,50 @@ sensor:
       {{ value.split(' ')[1] }}
     scan_interval: 86400
 
-  - platform: rest
-    name: kemper_latest
-    resource: 'https://www.kemper-amps.com/api/update?type=RIGMANAGER'
+  - platform: command_line
+    name: kemper_version
+    command: !secret kemper_version
     value_template: >
-      {{ value_json.updates.item[0]['@version'] }}
-    authentication: basic
-    username: !secret kemper_username
-    password: !secret kemper_password
+      {{ value_json.profiler_installed == value_json.profiler_latest and 
+      value_json.rigmanager_latest == value_json.rigmanager_installed }}
+    json_attributes:
+      - profiler_latest
+      - profiler_installed
+      - rigmanager_latest
+      - rigmanager_installed
+    scan_interval: 86400
+
+  - platform: rest
+    name: playactor_version_latest
+    resource: https://api.github.com/repos/dhleong/playactor/releases/latest
+    value_template: >
+      {{ value_json.tag_name }}
     scan_interval: 86400
 
   - platform: command_line
-    name: kemper_installed
-    command: !secret kemper_installed
+    name: playactor_version_installed
     scan_interval: 86400
+    command: !secret playactor_version_installed
+    value_template: >
+      {{ value.split(' ')[1].split('v')[1] }}
+
+  - platform: rest
+    name: tibber_daily_consumption
+    resource: https://api.tibber.com/v1-beta/gql
+    headers:
+      Authorization: !secret tibber_token
+      Content-Type: application/json
+    method: POST
+    payload: >
+      {"query": "{viewer {homes {consumption(resolution: DAILY, last: 5, filterEmptyNodes: true) {nodes {from to cost consumption }}}}}"}
+    value_template: >
+      {{ value_json.data.viewer.homes[0].consumption.nodes[-1].consumption }}
+    json_attributes_path: $.data.viewer.homes[0].consumption.nodes[-1:]
+    json_attributes:
+      - from
+      - to
+      - cost
+    unit_of_measurement: kWh
 
   - platform: rest
     name: covid_19_folkhalsomyndigheten
@@ -172,38 +202,6 @@ sensor:
         i övermorgon
       {% else %}
         om {{ value.daysTo }} dagar
-      {% endif %}
-
-  - platform: influxdb
-    api_version: 2
-    ssl: false
-    host: !secret influxdb_host
-    port: !secret influxdb_port
-    organization: !secret influxdb_org
-    token: !secret influxdb_token
-    queries_flux:
-      - name: Mattias vikt
-        unit_of_measurement: kg
-        bucket: weight
-        range_start: "-30d"
-        group_function: last
-        query: >
-          filter(fn: (r) =>
-            r.domain == "sensor" and
-            r.entity_id == "mattias_weight" and
-            r._field == "weight")
-
-  - platform: command_line
-    name: Playstation
-    scan_interval: 300
-    command: !secret playstation_5_state
-    value_template: >
-      {% if value == 'AWAKE' %}
-        ON
-      {% elif value == 'STANDBY' %}
-        OFF
-      {% else %}
-        Okänd
       {% endif %}
 
   - platform: command_line

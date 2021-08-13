@@ -19,9 +19,9 @@ binary_sensor:
     payload_off: 'false'
 
   - platform: command_line
-    name: ps5_playactor_update
-    scan_interval: 86400
-    command: !secret ps5_playactor_update
+    name: playstation
+    command: !secret playstation_5_state
+    scan_interval: 300
 
   - platform: ping
     name: nas_internet_access

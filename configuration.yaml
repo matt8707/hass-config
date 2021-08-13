@@ -93,14 +93,10 @@ influxdb:
   port: !secret influxdb_port
   organization: !secret influxdb_org
   token: !secret influxdb_token
-  bucket: weight
-  tags:
-    source: HA
-  tags_attributes:
-    - friendly_name
-  default_measurement: units
+  bucket: retention
   include:
     entities:
+      - sensor.tibber_daily_consumption
       - sensor.mattias_weight
       - sensor.sanja_weight
 

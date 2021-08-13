@@ -226,16 +226,26 @@ template:
             false
           {% endif %}
         playactor: >
+          {% set installed = states('sensor.playactor_version_installed') %}
+          {% set latest = states('sensor.playactor_version_latest') %}
           {% set url = 'https://github.com/dhleong/playactor/releases/latest' %}
-          {% if is_state('binary_sensor.ps5_playactor_update', 'on') %}
-            **[playactor]({{ url }}) uppdatering tillgänglig** {{ '\U0001f389' }}
+          {% if installed != latest %}
+            **[playactor]({{ url }}) {{ installed + ' \u279e ' + latest }} tillgänglig** {{ '\U0001f389' }}
           {% else %}
             false
           {% endif %}
-        kemper: >
-          {% set installed = states('sensor.kemper_installed') %}
-          {% set latest = states('sensor.kemper_latest') %}
-          {% if installed != latest and installed != '0' %}
+        kemperprofiler: >
+          {% set installed = state_attr('sensor.kemper_version', 'profiler_installed') %}
+          {% set latest = state_attr('sensor.kemper_version', 'profiler_latest') %}
+          {% if installed != latest %}
+            **Kemper Profiler OS {{ installed + ' \u279e ' + latest }} tillgänglig** {{ '\U0001f389' }}
+          {% else %}
+            false
+          {% endif %}
+        rigmanager: >
+          {% set installed = state_attr('sensor.kemper_version', 'rigmanager_installed') %}
+          {% set latest = state_attr('sensor.kemper_version', 'rigmanager_latest') %}
+          {% if installed != latest %}
             **Rig Manager {{ installed + ' \u279e ' + latest }} tillgänglig** {{ '\U0001f389' }}
           {% else %}
             false
