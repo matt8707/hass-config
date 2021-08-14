@@ -284,10 +284,6 @@ template:
             </font>
           {% endif %}
 
-    - unique_id: public_ip
-      icon: mdi:ip
-      state: !secret public_ip
-
     - unique_id: dockermon_mem
       icon: mdi:memory
       state: >
@@ -298,10 +294,10 @@ template:
     - unique_id: imac_vpn
       state: >
         {{ 'Ej Ansluten' if is_state('switch.computer_imac', 'on') and 
-        states('sensor.imac_ip') == states('sensor.template_public_ip') else 'Ansluten' }}
+        states('sensor.imac_ip') == states('sensor.myip') else 'Ansluten' }}
       icon: >
         mdi:shield-{{ 'alert' if is_state('switch.computer_imac', 'on') and 
-        states('sensor.imac_ip') == states('sensor.template_public_ip') else 'check' }}
+        states('sensor.imac_ip') == states('sensor.myip') else 'check' }}
 
     - unique_id: printer_status
       icon: mdi:printer-wireless
@@ -385,12 +381,6 @@ template:
         {% else %}
           {{ states(entity_id) }}
         {% endif %}
-
-    - unique_id: nas_vpn
-      state: >
-        {{ 'Ej Ansluten' if states('sensor.myip') == states('sensor.template_public_ip') else 'Ansluten' }}
-      icon: >
-        mdi:shield-{{ 'alert' if states('sensor.myip') == states('sensor.template_public_ip') else 'check' }}
 
     - unique_id: hue_motion_battery_badrum
       device_class: battery

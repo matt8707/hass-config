@@ -259,16 +259,13 @@ browser_mod:
         entities:
           - entity: sensor.template_nas_status
 
+          - entity: binary_sensor.nas_security_status
+            name: Säkerhetsstatus
+
           - entity: sensor.nas_volume_1_average_disk_temp
 
           - entity: sensor.last_boot
             name: Senast omstart
-
-          - entity: sensor.template_nas_vpn
-            style: |
-              :host {
-                --paper-item-icon-color: {{ '#9e9e9e' if is_state(config.entity, 'Ansluten') else '#9c2525' }};
-                }
 
           - type: custom:bar-card
             width: 55%

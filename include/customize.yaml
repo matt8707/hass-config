@@ -65,8 +65,6 @@ homeassistant:
     # template
     sensor.template_coronavirus:
       friendly_name: Coronavirus
-    sensor.template_public_ip:
-      friendly_name: Publik IP-adress
     sensor.template_dockermon_mem:
       friendly_name: Minne
     sensor.template_imac_vpn:
