@@ -124,6 +124,7 @@ sensor:
       - from
       - to
       - cost
+    device_class: energy
     unit_of_measurement: kWh
 
   - platform: rest
@@ -141,7 +142,10 @@ sensor:
     value_template: >
       {{ value_json.Trip[0].LegList.Leg[1].Product.num }}
     json_attributes_path: $.Trip[0].LegList.Leg[1].Origin
-    json_attributes: [name, time, date]
+    json_attributes:
+      - name
+      - time
+      - date
     scan_interval: 268
 
   - platform: rest
@@ -149,7 +153,8 @@ sensor:
     resource: https://api.github.com/repos/home-assistant/core/releases/latest
     value_template: >
       {{ value_json.name }}
-    json_attributes: [body]
+    json_attributes:
+      - body
     scan_interval: 21600
 
   - platform: rest
@@ -157,7 +162,8 @@ sensor:
     resource: https://api.github.com/repos/home-assistant/core/releases?per_page=1
     value_template: >
       {{ value_json[0].name }}
-    json_attributes: [body]
+    json_attributes:
+      - body
     scan_interval: 21600
 
   - platform: dnsip
@@ -206,47 +212,47 @@ sensor:
 
   - platform: command_line
     name: switchbot_battery
-    scan_interval: 259200
     command: !secret switchbot_battery
     unit_of_measurement: '%'
+    scan_interval: 259200
 
   - platform: command_line
     name: imac_ip
-    scan_interval: 86400
     command: !secret imac_ip
+    scan_interval: 86400
 
   - platform: command_line
     name: imac_system_ssd
-    scan_interval: 86400
-    unit_of_measurement: '%'
     command: !secret imac_system_ssd
+    unit_of_measurement: '%'
+    scan_interval: 86400
 
   - platform: command_line
     name: imac_macintosh_hd
-    scan_interval: 86400
-    unit_of_measurement: '%'
     command: !secret imac_macintosh_hd
+    unit_of_measurement: '%'
+    scan_interval: 86400
 
   - platform: command_line
     name: imac_cpu
-    scan_interval: 86400
-    unit_of_measurement: '%'
     command: !secret imac_cpu
+    unit_of_measurement: '%'
+    scan_interval: 86400
 
   - platform: command_line
     name: imac_mem
-    scan_interval: 86400
-    unit_of_measurement: '%'
     command: !secret imac_mem
+    unit_of_measurement: '%'
+    scan_interval: 86400
 
   - platform: command_line
     name: monitors_volume
-    scan_interval: 86400
     command: !secret monitors_update_volume
+    scan_interval: 86400
 
   - platform: command_line
     name: imac_uptime
-    scan_interval: 86400
     command: !secret imac_uptime
     value_template: >
       {{ value | int | timestamp_custom('%Y-%m-%dT%H:%M:%S') }}
+    scan_interval: 86400

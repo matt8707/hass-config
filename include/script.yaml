@@ -6,22 +6,6 @@ script:
   #                                                  #
   ####################################################
 
-  monitors_mute:
-    sequence:
-      - choose:
-        - conditions:
-            - condition: state
-              entity_id: binary_sensor.monitors_mute_check
-              state: 'off'
-          sequence:
-            - service: shell_command.monitors_mute_on
-        default:
-          - service: shell_command.monitors_mute_off
-      - delay:
-          milliseconds: 300
-      - service: homeassistant.update_entity
-        entity_id: binary_sensor.monitors_mute_check
-
   homeassistant_restart:
     sequence:
       - service: browser_mod.toast

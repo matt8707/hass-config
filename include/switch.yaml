@@ -114,6 +114,17 @@ switch:
           - service: media_player.turn_off
             entity_id: media_player.samsung_tv
 
+      monitors_mute:
+        value_template: "{{ is_state('binary_sensor.monitors_mute_state', 'on') }}"
+        turn_on:
+          - service: shell_command.monitors_mute_on
+          - service: homeassistant.update_entity
+            entity_id: binary_sensor.monitors_mute_state
+        turn_off:
+          - service: shell_command.monitors_mute_off
+          - service: homeassistant.update_entity
+            entity_id: binary_sensor.monitors_mute_state
+
       playstation_5:
         friendly_name: Playstation
         icon_template: mdi:sony-playstation

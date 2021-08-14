@@ -93,7 +93,7 @@ automation:
           - sensor.imac_system_ssd
           - sensor.imac_macintosh_hd
           - sensor.monitors_volume
-          - binary_sensor.monitors_mute_check
+          - binary_sensor.monitors_mute_state
           - sensor.imac_uptime
 
   - alias: tv_on_lights
@@ -288,7 +288,7 @@ automation:
           - sensor.imac_system_ssd
           - sensor.imac_macintosh_hd
           - sensor.monitors_volume
-          - binary_sensor.monitors_mute_check
+          - binary_sensor.monitors_mute_state
           - sensor.imac_uptime
 
   - alias: tasmota_scan_interval
@@ -350,7 +350,7 @@ automation:
     action:
       - service: shell_command.monitors_volume_slider
       - service: homeassistant.update_entity
-        entity_id: binary_sensor.monitors_mute_check
+        entity_id: binary_sensor.monitors_mute_state
       - service: homeassistant.update_entity
         entity_id: sensor.monitors_volume
 
@@ -366,7 +366,7 @@ automation:
         state: 'on'
     action:
       - service: homeassistant.update_entity
-        entity_id: binary_sensor.monitors_mute_check
+        entity_id: binary_sensor.monitors_mute_state
       - service: input_number.set_value
         data:
           entity_id: input_number.monitors_volume
