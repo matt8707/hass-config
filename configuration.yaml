@@ -8,7 +8,8 @@ homeassistant:
   time_zone: Europe/Stockholm
   currency: SEK
   packages: !include_dir_named include
-  allowlist_external_dirs: [/config/]
+  allowlist_external_dirs:
+    - /config
 
 default_config:
 
@@ -59,10 +60,6 @@ person:
       - device_tracker.sanja_bluetooth
 
 device_tracker:
-  # - platform: bluetooth_tracker
-  #   new_device_defaults:
-  #     track_new_devices: false
-
   - platform: iphonedetect
     consider_home: 60
     scan_interval: 12
@@ -133,7 +130,8 @@ timer:
 lock:
   - platform: template
     name: Dator
-    value_template: "{{ states('input_boolean.computer_lock') }}"
+    value_template: >
+      {{ states('input_boolean.computer_lock') }}
     lock:
       service: input_boolean.turn_on
       entity_id: input_boolean.computer_lock
@@ -149,3 +147,14 @@ ios:
         actions:
           - identifier: start_watchtower
             title: Uppdatera
+
+localtuya:
+  - host: !secret localtuya_host
+    device_id: !secret localtuya_device_id
+    local_key: !secret localtuya_local_key
+    friendly_name: localtuya
+    protocol_version: '3.3'
+    entities:
+      - platform: switch
+        friendly_name: Deltaco SH-P01
+        id: 1
