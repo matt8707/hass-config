@@ -113,10 +113,10 @@ template:
             <b>Morty är färdig</b>
           {%- endif %}
         weather: |
-          {%- set temperature = states('sensor.dark_sky_temperature') %}
-          {%- set apparent = states('sensor.dark_sky_apparent_temperature') | round %}
-          {%- set precip = states('sensor.dark_sky_precip_probability') | round %}
-          {% if not is_state('sensor.dark_sky_temperature', 'unknown') %}
+          {%- set temperature = states('sensor.pirateweather_temperature') %}
+          {%- set apparent = states('sensor.pirateweather_apparent_temperature') | round %}
+          {%- set precip = states('sensor.pirateweather_precip_probability') | round %}
+          {% if not is_state('sensor.pirateweather_temperature', 'unknown') %}
             {%- if temperature | float <= 0.0 -%}
               Känns som {{ apparent }}° med {{ precip }}% risk för snö {{'\u2744\uFE0F'}}
             {%- elif temperature | float > 0.0 -%} 
