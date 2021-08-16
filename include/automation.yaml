@@ -13,6 +13,9 @@ automation:
       - platform: homeassistant
         event: start
     action:
+      - service: homeassistant.reload_config_entry
+        target:
+          entity_id: switch.deltaco_sh_p01
       - service: mqtt.publish
         data:
           topic: cmnd/tasmotas/status
@@ -920,7 +923,8 @@ automation:
             {% elif is_state_attr(entity_id, 'fan_speed', 'medium') %} Standard
             {% elif is_state_attr(entity_id, 'fan_speed', 'high') %} Medium
             {% elif is_state_attr(entity_id, 'fan_speed', 'max') %} Turbo
-            {% elif is_state_attr(entity_id, 'fan_speed', 'off') %} Av
+            {% elif is_state_attr(entity_id, 'fan_speed', 'off') 
+              or state_attr(entity_id, 'fan_speed') == None %} Av
             {% endif %}
 
       ####################################################
