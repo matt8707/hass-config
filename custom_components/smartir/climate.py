@@ -401,7 +401,7 @@ class SmartIRClimate(ClimateEntity, RestoreEntity):
         if new_state is None:
             return
 
-        if new_state.state == old_state.state:
+        if old_state is not None and new_state.state == old_state.state:
             return
 
         if new_state.state == STATE_ON and self._hvac_mode == HVAC_MODE_OFF:
