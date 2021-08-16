@@ -54,13 +54,15 @@ sensor:
     host: !secret unifi_host
     version: UDMP-unifiOS
     monitored_conditions:
-      - www
-      - wan
       - firmware
+      - wan
 
   - platform: rest
     name: valetudo_version_latest
     resource: https://api.github.com/repos/Hypfer/Valetudo/releases/latest
+    authentication: basic
+    username: !secret github_username
+    password: !secret github_access_token
     value_template: >
       {{ value_json.tag_name }}
     scan_interval: 86400
@@ -168,9 +170,11 @@ sensor:
 
   - platform: dnsip
 
-  - platform: darksky
-    api_key: !secret darksky_api_key
+  - platform: pirateweather
+    api_key: !secret pirateweather_api_key
     language: sv
+    scan_interval:
+      minutes: 15
     monitored_conditions:
       - temperature
       - apparent_temperature
