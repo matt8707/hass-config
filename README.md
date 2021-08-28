@@ -14,13 +14,9 @@ If you like anything here be sure to :star2: my repo!
 * Optimization of styles and cross-browser compatibility
 * Workaround for known issues:
 
-  * ~~card-mod randomly not applying markdown styling on 2021.6.0 [#130](https://github.com/thomasloven/lovelace-card-mod/issues/130)~~
-  `markdown` → `custom:button-card`
-  [ui-lovelace#L52](https://github.com/matt8707/hass-config/blob/c5ef7a9130cc347d5785773fda7437c05dc4bdb2/ui-lovelace.yaml#L52), [themes#L123](https://github.com/matt8707/hass-config/blob/c5ef7a9130cc347d5785773fda7437c05dc4bdb2/include/themes.yaml#L123), [button_card_templates#L137](https://github.com/matt8707/hass-config/blob/c5ef7a9130cc347d5785773fda7437c05dc4bdb2/button_card_templates.yaml#L137)
+  * ~~card-mod randomly not applying markdown styling on 2021.6.0 [#130](https://github.com/thomasloven/lovelace-card-mod/issues/130)~~ <br>`markdown` → `custom:button-card`<br>[ui-lovelace#L52](https://github.com/matt8707/hass-config/blob/c5ef7a9130cc347d5785773fda7437c05dc4bdb2/ui-lovelace.yaml#L52), [themes#L123](https://github.com/matt8707/hass-config/blob/c5ef7a9130cc347d5785773fda7437c05dc4bdb2/include/themes.yaml#L123), [button_card_templates#L137](https://github.com/matt8707/hass-config/blob/c5ef7a9130cc347d5785773fda7437c05dc4bdb2/button_card_templates.yaml#L137)
 
-  * ~~swipe-card not updating size unless resizing window [#32](https://github.com/bramkragten/swipe-card/issues/32) [#147](https://github.com/thomasloven/lovelace-layout-card/issues/147)~~
-  `horizontal-stack` and `margin: 0`
-  [ui-lovelace#L284](https://github.com/matt8707/hass-config/blob/c5ef7a9130cc347d5785773fda7437c05dc4bdb2/ui-lovelace.yaml#L284), [themes#L110](https://github.com/matt8707/hass-config/blob/c5ef7a9130cc347d5785773fda7437c05dc4bdb2/include/themes.yaml#L110), [button_card_templates#L769](https://github.com/matt8707/hass-config/blob/c5ef7a9130cc347d5785773fda7437c05dc4bdb2/button_card_templates.yaml#L769)
+  * ~~swipe-card not updating size unless resizing window [#32](https://github.com/bramkragten/swipe-card/issues/32) [#147](https://github.com/thomasloven/lovelace-layout-card/issues/147)~~ <br>`horizontal-stack` and `margin: 0` <br>[ui-lovelace#L284](https://github.com/matt8707/hass-config/blob/c5ef7a9130cc347d5785773fda7437c05dc4bdb2/ui-lovelace.yaml#L284), [themes#L110](https://github.com/matt8707/hass-config/blob/c5ef7a9130cc347d5785773fda7437c05dc4bdb2/include/themes.yaml#L110), [button_card_templates#L769](https://github.com/matt8707/hass-config/blob/c5ef7a9130cc347d5785773fda7437c05dc4bdb2/button_card_templates.yaml#L769)
 
 *If you want, you can [buy me a beer](https://www.buymeacoffee.com/matt8707)* :blush:
 
@@ -85,7 +81,7 @@ The three icons at the bottom in order:
 * Monitor [Home Assistant](https://home-assistant.io/), [tablet](https://www.samsung.com/us/mobile/tablets/galaxy-tab-a/galaxy-tab-a-10-1-2019-32gb-black-wi-fi-sm-t510nzkaxar/) and [Network Attached Storage](https://www.synology.com/products/DS918+)
 * Lists available HACS updates and release notes for Home Assistant
 
-![info](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/info.png)
+![info](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/info_2.png)
 
 ### Media
 
@@ -107,7 +103,7 @@ All [Philips Hue](https://www2.meethue.com) lights with [sensors](https://www2.m
 * Control a pedestal fan, using [Belkin WeMo Switch](https://www.belkin.com/) and hue motion sensor temperature data to automate on summer nights
 * [Broadlink](https://www.ibroadlink.com/products/ir+rf) to control fan and air purifier with IR and [Gosund Smart Wi-Fi Plug](https://www.gosund.com/download/smart_plug/127.html) for power/state
 
-![info_light](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/info_light.png)
+![info_light](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/info_light_2.png)
 
 
 ### Custom icons
@@ -119,11 +115,11 @@ I made some custom icons located in `www/custom_icons.js`. If you want to make y
 
 ### Misc
 
-![vacuum](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/vacuum.png)
+![vacuum](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/vacuum_2.png)
 
-![misc](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/misc.png)
+![misc](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/misc_2.png)
 
-![tracker](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/tracker.png)
+![tracker](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/tracker_updates.png)
 
 ***
 
