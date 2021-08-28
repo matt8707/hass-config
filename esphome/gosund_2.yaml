@@ -1,0 +1,9 @@
+substitutions:
+  name: gosund-2
+
+wifi:
+  manual_ip:
+    static_ip: !secret static_ip_gosund_2
+
+packages:
+  device_base: !include .config.gosund_sp112.yaml
