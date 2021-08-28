@@ -20,9 +20,6 @@ frontend:
       ha-card-background: none
       grid-card-gap: 5%
       masonry-view-card-margin: 0px
-      ha-card-header-color: 'rgba(255, 255, 255, 0.8)'
-      ha-card-header-font-family: SF Text
-      ha-card-header-font-size: 2.4vw
       state-icon-color: '#9da0a2'
       state-icon-active-color: '#3182b7'
       switch-checked-color: '#7a7d7f'
@@ -43,10 +40,11 @@ frontend:
       ha-card-header-background-color: rgba(48,52,52,0.8)
       custom-layout-card-padding: 3.3vw
       custom-button-card-border-radius: 8%
-      markdown-sidebar-clock-font-size: 5vw
-      markdown-sidebar-clock-line-height: 4vw
-      markdown-sidebar-font-size: 1.5vw
-      markdown-sidebar-line-height: 2.1vw
+      sidebar-time-font-size: 5vw
+      sidebar-time-line-height: 4vw
+      sidebar-font-size: 1.5vw
+      sidebar-line-height: 2.1vw
+      card-content-padding: 1.8em 2.2em 1.8em 2em
 
     ####################################################
     #                                                  #
@@ -69,27 +67,24 @@ frontend:
             min-height: 100vh;
           }
 
-        grid-layout:
-          $: |
-            #root {
-              margin: 0 !important;
-            }
-
         #################################################
         #                                               #
-        #               GRID CARD HEADER                #
+        #              GRID CARD HEADINGS               #
         #                                               #
         #################################################
 
-        "grid-layout$":
+        grid-layout$:
           hui-grid-card:
             $: |
+              /* default */
               h1 {
+                font-size: 2.4vw !important;
                 line-height: 0 !important;
-                padding: 1vw 0 2vw 0 !important;
+                font-family: SF Text !important;
                 font-weight: 500 !important;
+                color: rgba(255, 255, 255, 0.8) !important;
+                padding: 1vw 0 2vw 0 !important;
               }
-
               /* portrait */
               @media screen and (max-width: 1200px) {
                 h1 {
@@ -97,7 +92,6 @@ frontend:
                   line-height: 1.1vw !important;
                 }
               }
-
               /* phone */
               @media screen and (max-width: 800px) {
                 h1 {
@@ -109,102 +103,38 @@ frontend:
 
         #################################################
         #                                               #
-        #             SIDEBAR MARKDOWN CARD             #
+        #               SWIPE CARD MARGIN               #
         #                                               #
         #################################################
 
-        "grid-layout$hui-markdown-card:first-of-type":
-          $: |
-            ha-card {
-              background-color: #00000010;
-              border-radius: 0;
-              min-height: 100vh;
-              animation: ha-card 1s forwards;
+            $swipe-card$:
+              hui-horizontal-stack-card$:
+                .: |
+                  hui-conditional-card {
+                    margin: 0 !important;
+                  }
+
+        #################################################
+        #                                               #
+        #            SIDEBAR VERTICAL-STACK             #
+        #                                               #
+        #################################################
+
+        grid-layout$hui-vertical-stack-card$: |
+          #root {
+            background-color: rgba(0, 0, 0, 0.06);
+            border-radius: 0;
+            border-right: 0.1vw solid rgba(58, 69, 73, 0.2);
+            min-height: 100vh;
+          }
+          /* phone */
+          @media screen and (max-width: 800px) {
+            #root {
+              background-color: rgba(0,0,0,0);
+              border-right: none;
+              min-height: 100%;
             }
-
-            @keyframes ha-card {
-              0%, 100% {
-                border-right: 0.1vw solid rgba(58, 69, 73, 0.2);
-              }
-            }
-
-            /* phone */
-            @media screen and (max-width: 800px) {
-              ha-card {
-                background: none;
-                min-height: 100%;
-                animation: none;
-              }
-
-          "$ha-card>ha-markdown":
-            .: |
-              ha-markdown {
-                padding: var(--custom-layout-card-padding) 2vw 0 var(--custom-layout-card-padding) !important;
-                pointer-events: none;
-              }
-
-              /* phone */
-              @media screen and (max-width: 800px) {
-                ha-markdown {
-                  padding: 0 !important;
-                }
-
-            $: |
-              /* clock */
-              p > span {
-                font-family: SF Text;
-                font-size: var(--markdown-sidebar-clock-font-size);
-                font-weight: 200;
-                line-height: var(--markdown-sidebar-clock-line-height);
-                letter-spacing: -0.05vw;
-                margin-left: -0.3vw;
-                color: var(--ha-card-header-color);
-              }
-
-              /* colon */
-              p > span > span {
-                position: relative;
-                top: -.09em;
-              }
-
-              /* text */
-              p {
-                font-family: SF Display;
-                font-size: var(--markdown-sidebar-font-size);
-                line-height: var(--markdown-sidebar-line-height);
-                font-weight: 300;
-                letter-spacing: 0.06vw;
-                color: #6a7377;
-              }
-              
-              p > b {
-                color: var(--ha-card-header-color);
-              }
-
-              /* portrait */
-              @media screen and (max-width: 1200px) {
-                p > span {
-                  font-size: calc(var(--markdown-sidebar-clock-font-size) * 1.4 );
-                  line-height: calc(var(--markdown-sidebar-clock-line-height) * 1.4 );
-                }
-                p {
-                  font-size: calc(var(--markdown-sidebar-font-size) * 1.4 );
-                  line-height: calc(var(--markdown-sidebar-line-height) * 1.4 );
-                }
-              }
-
-              /* phone */
-              @media screen and (max-width: 800px) {
-                p > span {
-                  font-size: calc(var(--markdown-sidebar-clock-font-size) * 2.6 );
-                  line-height: calc(var(--markdown-sidebar-clock-line-height) * 2.6 );
-                }
-                p {
-                  font-size: calc(var(--markdown-sidebar-font-size) * 2.6 );
-                  line-height: calc(var(--markdown-sidebar-line-height) * 2.6 );
-                  letter-spacing: 0.16vw;
-                }
-              }
+          }
 
         #################################################
         #                                               #
@@ -212,27 +142,25 @@ frontend:
         #                                               #
         #################################################
 
-        "grid-layout$hui-conditional-card":
+        grid-layout$hui-vertical-stack-card$hui-conditional-card:
           .: |
             hui-conditional-card {
               display: flex;
-              align-items: flex-end;
               justify-content: center;
-              padding: 0 0 45% 0;
             }
-            button-card {
+            hui-conditional-card > button-card {
               width: 65%;
             }
-
             /* phone */
             @media screen and (max-width: 800px) {
               hui-conditional-card {
-                align-items: flex-start;
-                justify-content: flex-end;
-                padding: 15vw 0 0 0;
+                position: absolute;
+                top: 3vw;
+                right: 5.5vw;
+                padding: 19vw 0 0 0;
               }
-              button-card {
-                width: 40%;
+              hui-conditional-card > button-card {
+                width: 100%;
                 zoom: 250%;
                 filter: contrast(75%)
               }
@@ -240,44 +168,35 @@ frontend:
 
         #################################################
         #                                               #
-        #             SIDEBAR BUTTON CARDS              #
+        #             SIDEBAR BOTTOM ICONS              #
         #                                               #
         #################################################
 
-        "grid-layout$hui-grid-card:first-of-type":
+        "grid-layout$hui-vertical-stack-card$hui-grid-card":
           .: |
-            hui-grid-card:first-of-type {
+            hui-grid-card {
               display: flex;
+              flex: auto;
               align-items: flex-end;
-              animation: fade 0.3s ease-out;
-            }
-
-            @keyframes fade {
-              0%, 30% {
-                opacity: 0;
-              }
-              100% {
-                opacity: 1;
-              }
             }
 
             /* phone */
             @media screen and (max-width: 800px) {
-              hui-grid-card:first-of-type {
-                align-items: flex-start;
+              hui-grid-card {
+                position: absolute;
+                right: 4vw;
               }
             }
 
           $: |
             #root {
-              padding: 0 13% 13% 13%;
-              gap: 8% !important;
+              padding: 0 13% 25% 13%;
             }
 
             /* phone */
             @media screen and (max-width: 800px) {
               #root {
-                padding: 0 0 0 60%;
+                padding: 0 0 0 55%;
               }
             }
 
@@ -319,62 +238,19 @@ frontend:
                 }
               }
 
-        #################################################
-        #                                               #
-        #           CORONAVIRUS MARKDOWN CARD           #
-        #                                               #
-        #################################################
-
-        "grid-layout$hui-markdown-card:last-of-type$":
-          .: |
-            ha-card, ha-markdown {
-              background: none;
-              padding: 0 !important;
-              pointer-events: none;
-              margin-top: -1vw;
-            }
-
-            ha-markdown {
-              overflow: hidden;
-            }
-
-          ha-card>ha-markdown$: |
-            ha-markdown-element {
-              opacity: 0.6;
-              font-size: 1.26vw;
-              font-weight: 400;
-              --mdc-icon-size: 1.2vw;
-              font-family: SF Display;
-              letter-spacing: 0.05vw;
-              line-height: 0px;
-              white-space: nowrap;
-            }
-
-            ha-icon {
-              vertical-align: 3%;
-              opacity: 0.4;
-            }
-
-            /* phone */
-            @media screen and (max-width: 800px) {
-              ha-markdown-element {
-                display: none;
-              }
-            }
-
       card-mod-card: |
-        .card-content {
-          padding: 1.8em 2em 1.8em 2em;
-        }
-
-        .card-header {
+        .header .card-header {
           font-family: SF Text;
           letter-spacing: 0.005em;
           font-size: 1.6em;
           font-weight: 500;
-          padding: 1.25em 0 0 1.68em;
+          padding: 1em 0 0 1.68em;
           line-height: initial;
           cursor: default;
+        }
+
+        .content .card-content {
+          padding: var(--card-content-padding);
         }
 
         /* * * * * * * * * * * * * * * * * *
@@ -385,7 +261,7 @@ frontend:
 
         .type-button {
           display: block;
-          color: rgb(255, 255, 255);
+          --paper-item-icon-color: var(--state-icon-color);
           opacity: 0.2;
           transition: 0.4s;
         }
@@ -398,22 +274,6 @@ frontend:
         .type-button:active {
           opacity: 0.7;
           transition: none;
-        }
-
-        /* * * * * * * * * * * * * * * * * *
-          *                                 *
-          *            MAP CARD             *
-          *                                 *
-          * * * * * * * * * * * * * * * * * */
-
-        .type-map {
-          animation: type-map 1s forwards;
-        }
-
-        @keyframes type-map {
-          0%, 100% {
-            border-top: 2px solid #1e1e1e;
-          }
         }
 
         /* * * * * * * * * * * * * * * * * *
@@ -456,23 +316,6 @@ frontend:
           *      CUSTOM CALENDAR CARD       *
           *                                 *
           * * * * * * * * * * * * * * * * * */
-
-        .type-custom-calendar-card > table > tbody > tr > td > div {
-          opacity: 0.5;
-          cursor: default;
-        }
-
-        .type-custom-calendar-card > table > tbody > tr > td {
-          cursor: default;
-        }
-
-        .type-custom-calendar-card > table > tbody > tr > td.overview.no-pointer > div {
-          opacity: 1;
-        }
-
-        .type-custom-calendar-card .day-wrapper.day-wrapper-last > td {
-          border-color: rgba(225, 225, 225, 0.1);
-        }
 
       card-mod-more-info-yaml: |
         .: |
@@ -526,40 +369,6 @@ frontend:
           .mdc-dialog--closing {
             display: none !important;
           }
-
-        #################################################
-        #                                               #
-        #                MAP CARD POPUP                 #
-        #                                               #
-        #################################################
-
-        "hui-grid-card$hui-map-card$":
-          .: |
-            mwc-icon-button {
-              color: var(--primary-color);
-            }
-
-          "ha-map$#map": |
-            .leaflet-control-attribution {
-              display: none;
-            }
-
-            .leaflet-bar a {
-              background-color: rgba(47, 51, 51, 0.8) !important;
-              color: #9da0a2 !important;
-            }
-
-            a.leaflet-control-zoom-in {
-              border-bottom: 1px solid #000000 !important;
-            }
-
-            .leaflet-pane.leaflet-tile-pane {
-              filter: contrast(85%);
-            }
-
-            ha-entity-marker {
-              opacity: 0.5 !important;
-            }
 
         #################################################
         #                                               #
