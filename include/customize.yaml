@@ -8,7 +8,7 @@ homeassistant:
     ####################################################
 
     #light
-    light.vardagsrum:
+    light.vardagsrum_group:
       friendly_name: Belysning
       icon: mdi:lamp
     light.dator:
@@ -16,6 +16,14 @@ homeassistant:
     light.sovrum:
       friendly_name: Sänglampor
       icon: mdi:floor-lamp
+
+    #esphome
+    sensor.gosund_1_daily_energy:
+      friendly_name: gosund_1_da
+    sensor.gosund_2_daily_energy:
+      friendly_name: Electrolux ChillFlex Pro Gold
+    sensor.gosund_3_daily_energy:
+      friendly_name: gosund_3_da
 
     #media_player
     media_player.sony_bravia_tv:
@@ -71,16 +79,6 @@ homeassistant:
       friendly_name: VPN
     sensor.template_printer_status:
       friendly_name: Skrivare
-    sensor.template_roborock_filter:
-      friendly_name: Filter
-    sensor.template_roborock_mainbrush:
-      friendly_name: Huvudborste
-    sensor.template_roborock_sensors:
-      friendly_name: Sensorer
-    sensor.template_roborock_sidebrush:
-      friendly_name: Sidoborste
-    sensor.template_roborock_last_clean:
-      friendly_name: Senast städat
     sensor.template_fullykiosk_storage:
       friendly_name: Lagring
     sensor.template_fullykiosk_memory:
@@ -91,6 +89,23 @@ homeassistant:
       friendly_name: Systemhälsa
     sensor.template_nas_vpn:
       friendly_name: VPN
+
+    #sidebar_vacuum.yaml
+    vacuum.valetudo_robot:
+      friendly_name: Roborock S5
+      icon: custom:roborock-vacuum
+    sensor.vacuum_last_cleaned:
+      friendly_name: Senast städat
+      icon: mdi:calendar-clock
+      device_class: timestamp
+    sensor.template_roborock_filter:
+      friendly_name: Filter
+    sensor.template_roborock_mainbrush:
+      friendly_name: Huvudborste
+    sensor.template_roborock_sidebrush:
+      friendly_name: Sidoborste
+    sensor.template_roborock_sensors:
+      friendly_name: Sensorer
 
     #sidebar_information.yaml
     switch.watchtower:
@@ -128,23 +143,23 @@ homeassistant:
       friendly_name: Tänd Tv-lampa
 
     # studio_dator.yaml
-    sensor.imac_cpu:
+    sensor.template_imac_cpu:
       friendly_name: Processor
       icon: mdi:chip
-    sensor.imac_mem:
+    sensor.template_imac_mem:
       friendly_name: Minne
       icon: mdi:memory
     automation.macos_notification_motion_hall:
       friendly_name: Mottag notiser
       icon: mdi:bell
-    sensor.imac_uptime:
+    sensor.template_imac_uptime:
       friendly_name: Senaste omstart
       icon: mdi:update
       device_class: timestamp
-    sensor.imac_system_ssd:
+    sensor.template_imac_system_ssd:
       friendly_name: System SSD
       icon: custom:imac-ssd
-    sensor.imac_macintosh_hd:
+    sensor.template_imac_macintosh_hd:
       friendly_name: Macintosh HD
       icon: mdi:harddisk
 

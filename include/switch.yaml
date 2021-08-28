@@ -17,46 +17,8 @@ switch:
     resource: !secret ha_dockermon_watchtower
     body_on: '{"state": "start"}'
     body_off: '{"state": "stop"}'
-    is_on_template: '{{ value_json is not none and value_json.state == "running" }}'
-
-  - platform: mqtt
-    name: Strömbrytare
-    icon: mdi:power-socket-de
-    command_topic: cmnd/gosund1/POWER1
-    payload_on: 'ON'
-    payload_off: 'OFF'
-    availability_topic: tele/gosund1/LWT
-    payload_available: Online
-    payload_not_available: Offline
-    state_topic: stat/gosund1/POWER1
-    qos: 1
-    retain: false
-
-  - platform: mqtt
-    name: Strömbrytare
-    icon: mdi:power-socket-de
-    command_topic: cmnd/gosund2/POWER1
-    payload_on: 'ON'
-    payload_off: 'OFF'
-    availability_topic: tele/gosund2/LWT
-    payload_available: Online
-    payload_not_available: Offline
-    state_topic: stat/gosund2/POWER1
-    qos: 1
-    retain: false
-
-  - platform: mqtt
-    name: Balkong
-    icon: mdi:power-socket-de
-    command_topic: cmnd/gosund3/POWER1
-    payload_on: 'ON'
-    payload_off: 'OFF'
-    availability_topic: tele/gosund3/LWT
-    payload_available: Online
-    payload_not_available: Offline
-    state_topic: stat/gosund3/POWER1
-    qos: 1
-    retain: false
+    is_on_template: >
+      {{ value_json is not none and value_json.state == "running" }}
 
     ####################################################
     #                                                  #
@@ -69,7 +31,8 @@ switch:
       computer_imac:
         friendly_name: Dator
         icon_template: custom:imac-alternative
-        value_template: "{{ is_state('switch.wol_imac', 'on') }}"
+        value_template: >
+          {{ is_state('switch.wol_imac', 'on') }}
         turn_on:
           - service: shell_command.imac_switchbot
           - service: light.turn_on
@@ -91,7 +54,8 @@ switch:
       tv_sony:
         friendly_name: Tv
         icon_template: custom:tv
-        value_template: "{{ is_state('media_player.sony_bravia_tv', 'on') }}"
+        value_template: >
+          {{ is_state('media_player.sony_bravia_tv', 'on') }}
         turn_on:
           - service: remote.send_command
             data:
@@ -104,7 +68,8 @@ switch:
       tv_samsung:
         friendly_name: "Tv\u00B2"
         icon_template: custom:tv
-        value_template: "{{ is_state('media_player.samsung_tv', 'on') }}"
+        value_template: >
+          {{ is_state('media_player.samsung_tv', 'on') }}
         turn_on:
           - service: remote.send_command
             data:
@@ -115,7 +80,8 @@ switch:
             entity_id: media_player.samsung_tv
 
       monitors_mute:
-        value_template: "{{ is_state('binary_sensor.monitors_mute_state', 'on') }}"
+        value_template: >
+          {{ is_state('binary_sensor.monitors_mute_state', 'on') }}
         turn_on:
           - service: shell_command.monitors_mute_on
           - service: homeassistant.update_entity
@@ -128,7 +94,8 @@ switch:
       playstation_5:
         friendly_name: Playstation
         icon_template: mdi:sony-playstation
-        value_template: "{{ states('sensor.playstation') }}"
+        value_template: >
+          {{ states('sensor.playstation') }}
         turn_on:
           - service: shell_command.playstation_5_wake
           - service: media_player.turn_on

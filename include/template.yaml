@@ -10,10 +10,12 @@ template:
     - unique_id: sidebar
       state: template
       attributes:
-        time: |
-          {%- set hours = '<span>' + now().strftime('%H') + '<span>' %}
-          {%- set minutes = '</span>' + now().strftime('%M') + '</span>' %}
-          {{ hours }}:{{ minutes }}
+        time: >
+          {% set hours = now().strftime('%H') %}
+          {% set minutes = now().strftime('%M') %}
+          <span class="time">
+            {{ hours }}<span class="time-colon">:</span>{{ minutes }}
+          </span>
         date: |
           <font color='#6a7377'><b>
           {%- if strptime(states('sensor.date'), '%Y-%m-%d').day != null %}
@@ -113,10 +115,10 @@ template:
             <b>Morty är färdig</b>
           {%- endif %}
         weather: |
-          {%- set temperature = states('sensor.pirateweather_temperature') %}
-          {%- set apparent = states('sensor.pirateweather_apparent_temperature') | round %}
-          {%- set precip = states('sensor.pirateweather_precip_probability') | round %}
-          {% if not is_state('sensor.pirateweather_temperature', 'unknown') %}
+          {%- set temperature = states('sensor.dark_sky_temperature') %}
+          {%- set apparent = states('sensor.dark_sky_apparent_temperature') | round %}
+          {%- set precip = states('sensor.dark_sky_precip_probability') | round %}
+          {% if not is_state('sensor.dark_sky_temperature', 'unknown') %}
             {%- if temperature | float <= 0.0 -%}
               Känns som {{ apparent }}° med {{ precip }}% risk för snö {{'\u2744\uFE0F'}}
             {%- elif temperature | float > 0.0 -%} 
@@ -206,83 +208,94 @@ template:
     - unique_id: updates
       state: template
       attributes:
-        tasmota: >
-          {% macro f(e) %}{{- device_attr(device_id('switch.' + e), 'sw_version') -}}{% endmacro %}
-          {% set installed = [f('gosund1'), f('gosund2'), f('gosund2')] | min %}
-          {% set latest = states('sensor.tasmota_version_latest') %}
-          {% set url = 'https://github.com/arendst/Tasmota/releases/latest' %}
+        esphome: >
+          {% macro f(e) %}
+            {{- device_attr(device_id('switch.' + e), 'sw_version') -}}
+          {% endmacro %}
+          {% set group = [f('gosund_1_switch'), f('gosund_2_switch'), f('gosund_3_switch')] | min %}
+          {% set installed = group.split()[0] %}
+          {% set latest = states('sensor.esphome_version_latest') %}
+          {% set url = 'https://github.com/esphome/esphome/releases/latest' %}
           {% if installed != latest %}
-            **[Tasmota]({{ url }})** {{ installed + ' \u279e ' + latest }}
-          {% else %}
-            false
+            <b><a href="#" onclick="window.open('{{ url }}');">ESPHome</a></b> {{ installed + ' \u279e ' + latest }}
           {% endif %}
         valetudo: >
           {% set installed = device_attr(device_id('vacuum.valetudo_robot'), 'sw_version').split(' ')[0] %}
           {% set latest = states('sensor.valetudo_version_latest') %}
           {% set url = 'https://github.com/Hypfer/Valetudo/releases/latest' %}
           {% if installed != latest %}
-            **[Valetudo]({{ url }})** {{ installed + ' \u279e ' + latest }}
-          {% else %}
-            false
+            <b><a href="#" onclick="window.open('{{ url }}');">Valetudo</a></b> {{ installed + ' \u279e ' + latest }}
           {% endif %}
         playactor: >
           {% set installed = states('sensor.playactor_version_installed') %}
           {% set latest = states('sensor.playactor_version_latest') %}
           {% set url = 'https://github.com/dhleong/playactor/releases/latest' %}
           {% if installed != latest %}
-            **[playactor]({{ url }})** {{ installed + ' \u279e ' + latest }}
-          {% else %}
-            false
+            <b><a href="#" onclick="window.open('{{ url }}');">playactor</a></b> {{ installed + ' \u279e ' + latest }}
           {% endif %}
         kemperprofiler: >
           {% set installed = state_attr('sensor.kemper_version', 'profiler_installed') %}
           {% set latest = state_attr('sensor.kemper_version', 'profiler_latest') %}
           {% if installed != latest %}
-            **Kemper Profiler OS** {{ installed + ' \u279e ' + latest }}
-          {% else %}
-            false
+            <b>Kemper Profiler OS</b> {{ installed + ' \u279e ' + latest }}
           {% endif %}
         rigmanager: >
           {% set installed = state_attr('sensor.kemper_version', 'rigmanager_installed') %}
           {% set latest = state_attr('sensor.kemper_version', 'rigmanager_latest') %}
           {% if installed != latest %}
-            **Rig Manager** {{ installed + ' \u279e ' + latest }}
-          {% else %}
-            false
+            <b>Rig Manager</b> {{ installed + ' \u279e ' + latest }}
           {% endif %}
         unifi: >
           {% set url = 'https://192.168.1.1/settings/updates' %}
           {% if states('sensor.unifi_gateway_firmware_upgradable') | int > 0 %}
-            **[UniFi Dream Machine]({{ url }})** uppdatering tillgänglig
-          {% else %}
-            false
+            <b><a href="#" onclick="window.open('{{ url }}');">UniFi Dream Machine</a></b> uppdatering tillgänglig
           {% endif %}
         synology: >
           {% set installed = device_attr(device_id('sensor.nas_volume_1_status'), 'sw_version').split(' ')[1] %}
           {% set latest = states('sensor.synology_dsm_latest') %}
           {% if is_state('binary_sensor.nas_update_available', 'on') %}
-            **Synology DSM** {{ installed + ' \u279e ' + latest }}
-          {% else %}
-            false
+            <b>Synology DSM</b> {{ installed + ' \u279e ' + latest }}
           {% endif %}
 
-    - unique_id: coronavirus
-      icon: mdi:virus
-      state: template
-      attributes:
-        template: >
-          {% if is_state('sensor.covid_19_folkhalsomyndigheten', 'Tillgänglig') %}
-            {% set data = state_attr('sensor.covid_19_folkhalsomyndigheten', 'embedCode') %}
-            {% set total = data | regex_findall_index('Totalt[^,]*?(\d+)[^,]*?(\d+)[^,]*?(\d+)') | list %}
-            {% set break = '‍ ‍ ‍ ‍ ‍ ‍<font color="#2f3436">|</font> ‍ ‍ ‍ ‍ ' %}
-            <font color='#6a7377'>
-            <ha-icon icon="mdi:virus"></ha-icon> <b>Coronavirus</b>{{ break -}}
-            <ha-icon icon="mdi:chart-bar"></ha-icon> <b>{{ ((total[0] | int / 10327589) * 100) | round(2) }}%</b> av Sverige{{ break -}}
-            <ha-icon icon="mdi:emoticon-sad"></ha-icon> <b>{{ total[0] }}</b> fall{{ break -}}
-            <ha-icon icon="mdi:grave-stone"></ha-icon> <b>{{ total[2] }}</b> avlidna{{ break -}}
-            <ha-icon icon="mdi:map-marker-radius"></ha-icon> <b>{{ data | regex_findall_index('Skåne[^,]*?(\d+)') }}</b> fall i Skåne
-            </font>
-          {% endif %}
+    - unique_id: imac_cpu
+      icon: mdi:chip
+      unit_of_measurement: '%'
+      state: >
+        {{ ((states('sensor.netdata_imac_cpu_system') | float
+        + states('sensor.netdata_imac_cpu_user') | float)) | round(1) }}
+
+    - unique_id: imac_mem
+      icon: mdi:memory
+      unit_of_measurement: '%'
+      state: >
+        {% set entity_id = states('sensor.netdata_imac_ram_free') | float %}
+        {% set capacity = 32000 %}
+        {{ (100 - (entity_id / capacity * 100)) | round(1) }}
+
+    - unique_id: imac_system_ssd
+      icon: custom:imac-ssd
+      unit_of_measurement: '%'
+      state: >
+        {% set entity_id = states('sensor.netdata_imac_disk_system') | float %}
+        {% set convert_gb = 1.07374182 %}
+        {% set capacity = 255.85 %}
+        {{ 100 - (entity_id * convert_gb / capacity * 100) | round }}
+
+    - unique_id: imac_macintosh_hd
+      icon: mdi:harddisk
+      unit_of_measurement: '%'
+      state: >
+        {% set entity_id = states('sensor.netdata_imac_disk_macintosh_hd') | float %}
+        {% set convert_gb = 1.07374182 %}
+        {% set capacity = 999.86 %}
+        {{ 100 - (entity_id * convert_gb / capacity * 100) | round }}
+
+    - unique_id: imac_uptime
+      icon: mdi:update
+      device_class: timestamp
+      state: >
+        {% set seconds = states('sensor.netdata_imac_uptime') | int %}
+        {{ (as_timestamp(now()) - seconds) | timestamp_custom('%Y-%m-%dT%H:%M:%S') }}
 
     - unique_id: dockermon_mem
       icon: mdi:memory
@@ -337,12 +350,6 @@ template:
       unit_of_measurement: '%'
       state: >
         {{ (states('sensor.right_brush') | float / 60 / 200 * 100) | round }}
-
-    - unique_id: roborock_last_clean
-      icon: mdi:calendar-clock
-      device_class: timestamp
-      state: >
-        {{ state_attr('vacuum.roborock_vacuum_s5', 'clean_stop') | replace(' ','T') }}
 
     - unique_id: fullykiosk_storage
       icon: mdi:sd
@@ -399,6 +406,10 @@ template:
       unit_of_measurement: '%'
       state: >
         {{ state_attr('binary_sensor.sensor_garderob_motion', 'battery_level') }}
+
+    - unique_id: hacs_version
+      state: >
+        {{ device_attr(device_id('sensor.hacs'), 'sw_version') }}
 
 #legacy
 sensor:

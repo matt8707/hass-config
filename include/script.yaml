@@ -14,19 +14,33 @@ script:
           message: Startar om Home Assistant container...
       - service: shell_command.ha_dockermon_restart_container
 
-  zoned_cleanup:
+  zone_cleaning:
     sequence:
       - condition: not
         conditions:
           - condition: state
             entity_id: input_select.roborock_zone
             state: Ingen vald
-      - service: vacuum.send_command
+      - service: vacuum.stop
+        entity_id: vacuum.valetudo_robot
+      - delay:
+          seconds: 2
+      - service: mqtt.publish
         data:
-          entity_id: vacuum.rockrobo
-          command: zoned_cleanup
-          params:
-            zone_ids: ["{{ states('input_select.roborock_zone') }}"]
+          topic: valetudo/robot/ZoneCleaningCapability/start/set
+          payload_template: >
+            {% set input = states('input_select.roborock_zone') %}
+            {% if input == 'Hall' %}
+              ["c1d8cb12-a5c0-4c9d-9706-32d6a5c68e11"]
+            {% elif input == 'Kök' %}
+              ["3d568085-1b0f-44b6-8423-66abf77ea005"]
+            {% elif input == 'Vardagsrum' %}
+              ["7a87e3b2-73be-4b7d-8313-5b51f24cde0c"]
+            {% elif input == 'Studio' %}
+              ["e75f6ab1-5d8b-4f72-b922-9fc47d5f5d02"]
+            {% elif input == 'Sovrum' %}
+              ["1c586206-b624-4804-86a4-baa02f2c04bb"]
+            {% endif %}
 
   samsung_tv_energy_saving:
     alias: Eko-läge
@@ -42,42 +56,6 @@ script:
           media_content_type: send_key
           media_content_id: >
             KEY_MENU+1500+KEY_DOWN+500+KEY_DOWN+500+KEY_DOWN+500+KEY_ENTER+1000+KEY_DOWN+500+KEY_DOWN+500+KEY_DOWN+500+KEY_DOWN+500+KEY_ENTER+1000+KEY_ENTER+1000+KEY_DOWN+500+KEY_DOWN+500+KEY_ENTER+1000+KEY_HOME+500+KEY_HOME+500
-
-  mattias_find_my_iphone:
-    sequence:
-      - repeat:
-          count: 3
-          sequence:
-            - service: notify.mobile_app_mattias_iphone_ios
-              data:
-                title: Hitta min iPhone
-                message: Här är jag
-                data:
-                  push:
-                    sound:
-                      name: Ringtone_UK_Haptic.caf
-                      critical: 1
-                      volume: 1.0
-            - delay:
-                seconds: 4
-
-  sanja_find_my_iphone:
-    sequence:
-      - repeat:
-          count: 3
-          sequence:
-            - service: notify.mobile_app_sanja_iphone
-              data:
-                title: Hitta min iPhone
-                message: Här är jag
-                data:
-                  push:
-                    sound:
-                      name: Ringtone_UK_Haptic.caf
-                      critical: 1
-                      volume: 1.0
-            - delay:
-                seconds: 4
 
   ####################################################
   #                                                  #
@@ -99,7 +77,7 @@ script:
           sequence:
             - service: tts.cloud_say
               data:
-                entity_id: media_player.galaxy_tab_a
+                entity_id: media_player.c2080cea_6627150a
                 message: >
                   {{ ['Hej', 'Startar', 'Värmer upp', 'Välkommen hem'] | random }}
                 language: sv-SE
@@ -130,7 +108,7 @@ script:
           sequence:
             - service: tts.cloud_say
               data:
-                entity_id: media_player.galaxy_tab_a
+                entity_id: media_player.c2080cea_6627150a
                 message: >
                   {{ ['Ha det bra', 'Saknar dig redan', 'Hej då', 'Stänger ner allt'] | random }}
       - service: homeassistant.turn_off

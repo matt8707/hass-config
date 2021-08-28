@@ -13,13 +13,6 @@ automation:
       - platform: homeassistant
         event: start
     action:
-      - service: homeassistant.reload_config_entry
-        target:
-          entity_id: switch.deltaco_sh_p01
-      - service: mqtt.publish
-        data:
-          topic: cmnd/tasmotas/status
-          payload: 8
       - service: browser_mod.close_popup
       - delay:
           seconds: 1
@@ -44,7 +37,7 @@ automation:
           seconds: 10
       - service: fullykiosk.load_start_url
         data:
-          entity_id: media_player.galaxy_tab_a
+          entity_id: media_player.galaxy_tab_a_media_player
       - choose:
         - conditions:
             - condition: state
@@ -53,6 +46,36 @@ automation:
           sequence:
             - service: switch.turn_on
               entity_id: switch.galaxy_tab_a_screensaver
+
+  - alias: balcony_on
+    id: '6204571795721'
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.wemo_motion
+        from: 'off'
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: sun.sun
+        state: below_horizon
+    action:
+      - service: switch.turn_on
+        entity_id: switch.deltaco_sh_p01
+
+  - alias: balcony_off
+    id: '0946556295386'
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.wemo_motion
+        from: 'on'
+        to: 'off'
+        for:
+          minutes: 30
+    action:
+      - service: switch.turn_off
+        entity_id: switch.deltaco_sh_p01
 
   - alias: lovelace_updated_ignore
     id: '9381519720051'
@@ -76,28 +99,6 @@ automation:
         above: 50
     action:
       - service: shell_command.ha_purge_logs
-
-  - alias: imac_update
-    id: '3673314240807'
-    initial_state: true
-    trigger:
-      - platform: state
-        entity_id: switch.computer_imac
-        from: 'off'
-        to: 'on'
-    action:
-      - delay:
-          seconds: 10
-      - service: homeassistant.update_entity
-        entity_id:
-          - sensor.imac_ip
-          - sensor.imac_cpu
-          - sensor.imac_mem
-          - sensor.imac_system_ssd
-          - sensor.imac_macintosh_hd
-          - sensor.monitors_volume
-          - binary_sensor.monitors_mute_state
-          - sensor.imac_uptime
 
   - alias: tv_on_lights
     id: '6657050215613'
@@ -165,46 +166,18 @@ automation:
     action:
       - service: shell_command.imac_notify_motion_hall
 
-  - alias: ios_notify_hass_rc
-    id: '3984233949106'
-    initial_state: true
-    trigger:
-      - platform: state
-        entity_id: sensor.hass_version_latest_beta
-    condition:
-      - condition: state
-        entity_id: sensor.hass_dev_release
-        state:
-          - Idag
-          - Släppt
-    action:
-      - service: notify.mobile_app_mattias_iphone_ios
-        data:
-          title: >
-            RC {{ states(trigger.entity_id) }} tillgänglig
-          message: Tryck för att läsa versionsinformation
-          data:
-            url: https://rc.home-assistant.io/latest-release-notes/
-
   - alias: ios_notify_hass_update
     id: '7958228563778'
-    initial_state: true
     trigger:
       - platform: state
-        entity_id: sensor.template_hass_version
-    condition:
-      condition: not
-      conditions:
-        - condition: state
-          entity_id: sensor.template_hass_version
-          state:
-            - Senaste
-            - unknown
+        entity_id: binary_sensor.updater
+        from: 'off'
+        to: 'on'
     action:
       - service: notify.mobile_app_mattias_iphone_ios
         data:
           title: >
-            {{ states(trigger.entity_id) }} tillgänglig {{ '\U0001F389' }}
+            {{ state_attr('binary_sensor.updater', 'newest_version') }} tillgänglig {{ '\U0001F389' }}
           message: Håll in för att uppdatera
           data:
             data:
@@ -242,14 +215,14 @@ automation:
         data:
           name: Transmission
           id: >
-            {{ trigger.event.data.id | int }}
-      # - delay:
-      #     minutes: 15
-      # - service: transmission.remove_torrent
-      #   data:
-      #     name: Transmission
-      #     id: >
-      #       {{ trigger.event.data.id | int }}
+            {{ trigger.event.data.id }}
+      - delay:
+          minutes: 15
+      - service: transmission.remove_torrent
+        data:
+          name: Transmission
+          id: >
+            {{ trigger.event.data.id }}
 
   - alias: ios_notify_tablet_unplugged
     id: '3972668118831'
@@ -278,6 +251,10 @@ automation:
     trigger:
       - platform: time_pattern
         minutes: /5
+      - platform: state
+        entity_id: switch.computer_imac
+        from: 'off'
+        to: 'on'
     condition:
       - condition: state
         entity_id: switch.computer_imac
@@ -285,26 +262,15 @@ automation:
     action:
       - service: homeassistant.update_entity
         entity_id:
+          - sensor.netdata_imac_cpu_system
+          - sensor.netdata_imac_cpu_user
+          - sensor.netdata_imac_ram_free
+          - sensor.netdata_imac_disk_system
+          - sensor.netdata_imac_disk_macintosh_hd
+          - sensor.netdata_imac_uptime
           - sensor.imac_ip
-          - sensor.imac_cpu
-          - sensor.imac_mem
-          - sensor.imac_system_ssd
-          - sensor.imac_macintosh_hd
           - sensor.monitors_volume
           - binary_sensor.monitors_mute_state
-          - sensor.imac_uptime
-
-  - alias: tasmota_scan_interval
-    id: '2405277038357'
-    initial_state: true
-    trigger:
-      - platform: time_pattern
-        minutes: /5
-    action:
-      - service: mqtt.publish
-        data:
-          topic: cmnd/tasmotas/status
-          payload: 8
 
   - alias: update_hass_release_notes
     id: '4289040658246'
@@ -443,6 +409,12 @@ automation:
         to: 'on'
         for:
           hours: "{{ states('input_number.wemo_fan_timer') | int }}"
+      - platform: state
+        entity_id: switch.computer_imac
+        from: 'on'
+        to: 'off'
+        for:
+          minutes: 15
     action:
       - service: switch.turn_off
         entity_id: switch.wemo_fan
@@ -453,87 +425,87 @@ automation:
     #                                                  #
     ####################################################
 
-  - alias: sovrum_anslut_turn_off
-    id: '1050805589188'
-    initial_state: true
-    trigger:
-      - platform: state
-        entity_id: fan.sovrum_anslut
-        from: 'off'
-        to: 'on'
-        for:
-          hours: "{{ states('input_number.sovrum_anslut_timer') | int }}"
-    action:
-      - service: switch.turn_off
-        entity_id: fan.sovrum_anslut
+  # - alias: sovrum_anslut_turn_off
+  #   id: '1050805589188'
+  #   initial_state: true
+  #   trigger:
+  #     - platform: state
+  #       entity_id: fan.sovrum_anslut
+  #       from: 'off'
+  #       to: 'on'
+  #       for:
+  #         hours: "{{ states('input_number.sovrum_anslut_timer') | int }}"
+  #   action:
+  #     - service: switch.turn_off
+  #       entity_id: fan.sovrum_anslut
 
-  - alias: sovrum_anslut_turn_on_temp
-    id: '0099808622760'
-    initial_state: true
-    trigger:
-      - platform: numeric_state
-        entity_id: sensor.sensor_hall_temperature
-        above: 24
-    condition:
-      condition: and
-      conditions:
-        - condition: time
-          after: '20:00:00'
-          before: '07:00:00'
-        - condition: state
-          entity_id:
-            - person.matte
-            - person.sanja
-          state: home
-    action:
-      - condition: state
-        entity_id: fan.sovrum_anslut
-        state: 'off'
-      - service: fan.turn_on
-        entity_id: fan.sovrum_anslut
+  # - alias: sovrum_anslut_turn_on_temp
+  #   id: '0099808622760'
+  #   initial_state: true
+  #   trigger:
+  #     - platform: numeric_state
+  #       entity_id: sensor.sensor_hall_temperature
+  #       above: 24
+  #   condition:
+  #     condition: and
+  #     conditions:
+  #       - condition: time
+  #         after: '20:00:00'
+  #         before: '07:00:00'
+  #       - condition: state
+  #         entity_id:
+  #           - person.matte
+  #           - person.sanja
+  #         state: home
+  #   action:
+  #     - condition: state
+  #       entity_id: fan.sovrum_anslut
+  #       state: 'off'
+  #     - service: fan.turn_on
+  #       entity_id: fan.sovrum_anslut
 
-  - alias: sovrum_anslut_oscillate
-    id: '9897303821028'
-    initial_state: true
-    trigger:
-      - platform: state
-        entity_id: input_boolean.sovrum_anslut_oscillate
-    action:
-      - service: remote.send_command
-        data:
-          entity_id: remote.broadlink_remote
-          command: !secret ir_fan_swing
+  # - alias: sovrum_anslut_oscillate
+  #   id: '9897303821028'
+  #   initial_state: true
+  #   trigger:
+  #     - platform: state
+  #       entity_id: input_boolean.sovrum_anslut_oscillate
+  #   action:
+  #     - service: remote.send_command
+  #       data:
+  #         entity_id: remote.broadlink_remote
+  #         command: !secret ir_fan_swing
 
-  - alias: sovrum_anslut_speed
-    id: '9292376382008'
-    mode: queued
-    initial_state: true
-    trigger:
-      - platform: state
-        entity_id: fan.sovrum_anslut
-    action:
-      - choose:
-        - conditions: >
-            {{ trigger.from_state.attributes.speed == 'high' and trigger.to_state.attributes.speed == 'medium' or 
-            trigger.from_state.attributes.speed == 'medium' and trigger.to_state.attributes.speed == 'low' or 
-            trigger.from_state.attributes.speed == 'low' and trigger.to_state.attributes.speed == 'high' }}
-          sequence:
-            - repeat:
-                count: 2
-                sequence:
-                  - service: remote.send_command
-                    data:
-                      entity_id: remote.broadlink_remote
-                      command: !secret ir_fan_speed
-        - conditions: >
-            {{ trigger.from_state.attributes.speed == 'high' and trigger.to_state.attributes.speed == 'low' or 
-            trigger.from_state.attributes.speed == 'medium' and trigger.to_state.attributes.speed == 'high' or 
-            trigger.from_state.attributes.speed == 'low' and trigger.to_state.attributes.speed == 'medium' }}
-          sequence:
-            - service: remote.send_command
-              data:
-                entity_id: remote.broadlink_remote
-                command: !secret ir_fan_speed
+  # - alias: sovrum_anslut_speed
+  #   id: '9292376382008'
+  #   mode: queued
+  #   initial_state: true
+  #   trigger:
+  #     - platform: state
+  #       entity_id: fan.sovrum_anslut
+  #   action:
+  #     - choose:
+  #       - conditions: >
+  #           {{ trigger.from_state.attributes.speed == 'high' and trigger.to_state.attributes.speed == 'medium' or 
+  #           trigger.from_state.attributes.speed == 'medium' and trigger.to_state.attributes.speed == 'low' or 
+  #           trigger.from_state.attributes.speed == 'low' and trigger.to_state.attributes.speed == 'high' }}
+  #         sequence:
+  #           - repeat:
+  #               count: 2
+  #               sequence:
+  #                 - service: remote.send_command
+  #                   data:
+  #                     entity_id: remote.broadlink_remote
+  #                     command: !secret ir_fan_speed
+  #       - conditions: >
+  #           {{ trigger.from_state.attributes.speed == 'high' and trigger.to_state.attributes.speed == 'low' or 
+  #           trigger.from_state.attributes.speed == 'medium' and trigger.to_state.attributes.speed == 'high' or 
+  #           trigger.from_state.attributes.speed == 'low' and trigger.to_state.attributes.speed == 'medium' }}
+  #         sequence:
+  #           - service: remote.send_command
+  #             data:
+  #               entity_id: remote.broadlink_remote
+  #               command: !secret ir_fan_speed
 
   # ###temp
   # - alias: sovrum_anslut_speed_fix1_sync
@@ -580,105 +552,105 @@ automation:
     #                                                  #
     ####################################################
 
-  - alias: air_purifier_speed
-    id: '3692857919366'
-    mode: queued
-    initial_state: true
-    trigger:
-      - platform: state
-        entity_id: input_number.air_purifier_speed
-    action:
-      - choose:
-        - conditions:
-            - condition: template
-              value_template: >
-                {% set from_1 = ( trigger.from_state.state  | int > 0    and   trigger.from_state.state  | int <= 25  ) %}
-                {% set to_2   = ( trigger.to_state.state    | int > 25   and   trigger.to_state.state    | int <= 50  ) %}
-                {% set from_2 = ( trigger.from_state.state  | int > 25   and   trigger.from_state.state  | int <= 50  ) %}
-                {% set to_3   = ( trigger.to_state.state    | int > 50   and   trigger.to_state.state    | int <= 75  ) %}
-                {% set from_3 = ( trigger.from_state.state  | int > 50   and   trigger.from_state.state  | int <= 75  ) %}
-                {% set to_4   = ( trigger.to_state.state    | int > 75   and   trigger.to_state.state    | int <= 100 ) %}
+  # - alias: air_purifier_speed
+  #   id: '3692857919366'
+  #   mode: queued
+  #   initial_state: true
+  #   trigger:
+  #     - platform: state
+  #       entity_id: input_number.air_purifier_speed
+  #   action:
+  #     - choose:
+  #       - conditions:
+  #           - condition: template
+  #             value_template: >
+  #               {% set from_1 = ( trigger.from_state.state  | int > 0    and   trigger.from_state.state  | int <= 25  ) %}
+  #               {% set to_2   = ( trigger.to_state.state    | int > 25   and   trigger.to_state.state    | int <= 50  ) %}
+  #               {% set from_2 = ( trigger.from_state.state  | int > 25   and   trigger.from_state.state  | int <= 50  ) %}
+  #               {% set to_3   = ( trigger.to_state.state    | int > 50   and   trigger.to_state.state    | int <= 75  ) %}
+  #               {% set from_3 = ( trigger.from_state.state  | int > 50   and   trigger.from_state.state  | int <= 75  ) %}
+  #               {% set to_4   = ( trigger.to_state.state    | int > 75   and   trigger.to_state.state    | int <= 100 ) %}
 
-                {{ from_1 and to_2 or from_2 and to_3 or from_3 and to_4 }}
-          sequence:
-            - service: remote.send_command
-              data:
-                entity_id: remote.broadlink_remote
-                command: !secret ir_purifier_speed_up
-        - conditions:
-            - condition: template
-              value_template: >
-                {% set from_1 = ( trigger.from_state.state  | int > 0    and   trigger.from_state.state  | int <= 25  ) %}
-                {% set to_3   = ( trigger.to_state.state    | int > 50   and   trigger.to_state.state    | int <= 75  ) %}
+  #               {{ from_1 and to_2 or from_2 and to_3 or from_3 and to_4 }}
+  #         sequence:
+  #           - service: remote.send_command
+  #             data:
+  #               entity_id: remote.broadlink_remote
+  #               command: !secret ir_purifier_speed_up
+  #       - conditions:
+  #           - condition: template
+  #             value_template: >
+  #               {% set from_1 = ( trigger.from_state.state  | int > 0    and   trigger.from_state.state  | int <= 25  ) %}
+  #               {% set to_3   = ( trigger.to_state.state    | int > 50   and   trigger.to_state.state    | int <= 75  ) %}
 
-                {{ from_1 and to_3 }}
-          sequence:
-            - repeat:
-                count: 2
-                sequence:
-                  - service: remote.send_command
-                    data:
-                      entity_id: remote.broadlink_remote
-                      command: !secret ir_purifier_speed_up
-        - conditions:
-            - condition: template
-              value_template: >
-                {% set from_2 = ( trigger.from_state.state  | int > 25   and   trigger.from_state.state  | int <= 50  ) %}
-                {% set to_1   = ( trigger.to_state.state    | int > 0    and   trigger.to_state.state    | int <= 25  ) %}
-                {% set from_3 = ( trigger.from_state.state  | int > 50   and   trigger.from_state.state  | int <= 75  ) %}
-                {% set to_2   = ( trigger.to_state.state    | int > 25   and   trigger.to_state.state    | int <= 50  ) %}
-                {% set from_4 = ( trigger.from_state.state  | int > 75   and   trigger.from_state.state  | int <= 100 ) %}
-                {% set to_3   = ( trigger.to_state.state    | int > 50   and   trigger.to_state.state    | int <= 75  ) %}
+  #               {{ from_1 and to_3 }}
+  #         sequence:
+  #           - repeat:
+  #               count: 2
+  #               sequence:
+  #                 - service: remote.send_command
+  #                   data:
+  #                     entity_id: remote.broadlink_remote
+  #                     command: !secret ir_purifier_speed_up
+  #       - conditions:
+  #           - condition: template
+  #             value_template: >
+  #               {% set from_2 = ( trigger.from_state.state  | int > 25   and   trigger.from_state.state  | int <= 50  ) %}
+  #               {% set to_1   = ( trigger.to_state.state    | int > 0    and   trigger.to_state.state    | int <= 25  ) %}
+  #               {% set from_3 = ( trigger.from_state.state  | int > 50   and   trigger.from_state.state  | int <= 75  ) %}
+  #               {% set to_2   = ( trigger.to_state.state    | int > 25   and   trigger.to_state.state    | int <= 50  ) %}
+  #               {% set from_4 = ( trigger.from_state.state  | int > 75   and   trigger.from_state.state  | int <= 100 ) %}
+  #               {% set to_3   = ( trigger.to_state.state    | int > 50   and   trigger.to_state.state    | int <= 75  ) %}
 
-                {{ from_2 and to_1 or from_3 and to_2 or from_4 and to_3 }}
-          sequence:
-            - service: remote.send_command
-              data:
-                entity_id: remote.broadlink_remote
-                command: !secret ir_purifier_speed_down
-        - conditions:
-            - condition: template
-              value_template: >
-                {% set from_3 = ( trigger.from_state.state  | int > 50   and   trigger.from_state.state  | int <= 75  ) %}
-                {% set to_1   = ( trigger.to_state.state    | int > 0    and   trigger.to_state.state    | int <= 25  ) %}
-                {% set from_4 = ( trigger.from_state.state  | int > 75   and   trigger.from_state.state  | int <= 100 ) %}
-                {% set to_2   = ( trigger.to_state.state    | int > 25   and   trigger.to_state.state    | int <= 50  ) %}
+  #               {{ from_2 and to_1 or from_3 and to_2 or from_4 and to_3 }}
+  #         sequence:
+  #           - service: remote.send_command
+  #             data:
+  #               entity_id: remote.broadlink_remote
+  #               command: !secret ir_purifier_speed_down
+  #       - conditions:
+  #           - condition: template
+  #             value_template: >
+  #               {% set from_3 = ( trigger.from_state.state  | int > 50   and   trigger.from_state.state  | int <= 75  ) %}
+  #               {% set to_1   = ( trigger.to_state.state    | int > 0    and   trigger.to_state.state    | int <= 25  ) %}
+  #               {% set from_4 = ( trigger.from_state.state  | int > 75   and   trigger.from_state.state  | int <= 100 ) %}
+  #               {% set to_2   = ( trigger.to_state.state    | int > 25   and   trigger.to_state.state    | int <= 50  ) %}
 
-                {{ from_3 and to_1 or from_4 and to_2 }}
-          sequence:
-            - repeat:
-                count: 2
-                sequence:
-                  - service: remote.send_command
-                    data:
-                      entity_id: remote.broadlink_remote
-                      command: !secret ir_purifier_speed_down
-        - conditions:
-            - condition: template
-              value_template: >
-                {% set to_4   = ( trigger.to_state.state    | int > 75   and   trigger.to_state.state    | int <= 100 ) %}
+  #               {{ from_3 and to_1 or from_4 and to_2 }}
+  #         sequence:
+  #           - repeat:
+  #               count: 2
+  #               sequence:
+  #                 - service: remote.send_command
+  #                   data:
+  #                     entity_id: remote.broadlink_remote
+  #                     command: !secret ir_purifier_speed_down
+  #       - conditions:
+  #           - condition: template
+  #             value_template: >
+  #               {% set to_4   = ( trigger.to_state.state    | int > 75   and   trigger.to_state.state    | int <= 100 ) %}
 
-                {{ to_4 }}
-          sequence:
-            - service: remote.send_command
-              data:
-                entity_id: remote.broadlink_remote
-                command: !secret ir_purifier_turbo
-        - conditions:
-            - condition: template
-              value_template: >
-                {% set from_4 = ( trigger.from_state.state  | int > 75   and   trigger.from_state.state  | int <= 100 ) %}
-                {% set to_1   = ( trigger.to_state.state    | int > 0    and   trigger.to_state.state    | int <= 25  ) %}
+  #               {{ to_4 }}
+  #         sequence:
+  #           - service: remote.send_command
+  #             data:
+  #               entity_id: remote.broadlink_remote
+  #               command: !secret ir_purifier_turbo
+  #       - conditions:
+  #           - condition: template
+  #             value_template: >
+  #               {% set from_4 = ( trigger.from_state.state  | int > 75   and   trigger.from_state.state  | int <= 100 ) %}
+  #               {% set to_1   = ( trigger.to_state.state    | int > 0    and   trigger.to_state.state    | int <= 25  ) %}
 
-                {{ from_4 and to_1 }}
-          sequence:
-            - repeat:
-                count: 3
-                sequence:
-                  - service: remote.send_command
-                    data:
-                      entity_id: remote.broadlink_remote
-                      command: !secret ir_purifier_speed_down
+  #               {{ from_4 and to_1 }}
+  #         sequence:
+  #           - repeat:
+  #               count: 3
+  #               sequence:
+  #                 - service: remote.send_command
+  #                   data:
+  #                     entity_id: remote.broadlink_remote
+  #                     command: !secret ir_purifier_speed_down
 
   # ###temp
   # - alias: air_purifier_speed_fix1_sync
@@ -758,7 +730,7 @@ automation:
               minutes: 15
           - service: browser_mod.close_popup
             data:
-              deviceID: galaxy_tab_a
+              deviceID: c2080cea-6627150a
 
     ####################################################
     #                                                  #
@@ -816,8 +788,11 @@ automation:
             {% elif trigger == 'media_player.samsung_tv' %}
               media_player.sovrum
             {% endif %}
-      - delay:
-          seconds: 1
+      # - delay:
+      #     seconds: 1
+      # - repeat:
+      #     count: 2
+      #     sequence:
       - service: remote.send_command
         data:
           entity_id: >
@@ -827,7 +802,9 @@ automation:
             {% elif trigger == 'media_player.samsung_tv' %}
               remote.sovrum
             {% endif %}
-          command: menu
+          command:
+            - menu
+            - menu
 
     ####################################################
     #                                                  #
@@ -862,14 +839,14 @@ automation:
     action:
       - service: media_player.play_media
         data:
-          entity_id: media_player.galaxy_tab_a
+          entity_id: media_player.c2080cea_6627150a
           media_content_id: /local/sound/timer.mp3
           media_content_type: music
       - delay:
           seconds: 2
       - service: tts.cloud_say
         data:
-          entity_id: media_player.galaxy_tab_a
+          entity_id: media_player.c2080cea_6627150a
           message: >
             {{ ['Tvätten är färdig', 'Tvätten är klar', 'Dags att gå ner!'] | random }}
           language: sv-SE
@@ -886,6 +863,19 @@ automation:
     #                      VACUUM                      #
     #                                                  #
     ####################################################
+
+  - alias: vacuum_last_cleaned
+    id: '8482831137092'
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: vacuum.valetudo_robot
+        from: cleaning
+        to: returning
+    action:
+      - service: notify.vacuum_last_cleaned
+        data:
+          message: ''
 
   - alias: roborock_speed
     id: '0054872718027'
