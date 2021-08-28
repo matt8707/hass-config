@@ -6,7 +6,7 @@ If you like anything here be sure to :star2: my repo!
 
 ![screenshot](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/screenshot.png)
 
-# September 2021
+# August 2021
 
 * Changed sidebar to a `vertical-stack`, easier to add various cards
 * `markdown` → `custom:button-card`, faster and easier to style
