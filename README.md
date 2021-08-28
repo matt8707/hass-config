@@ -6,45 +6,62 @@ If you like anything here be sure to :star2: my repo!
 
 ![screenshot](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/screenshot.png)
 
+# September 2021
 
-# June 2021
+* Changed sidebar to a `vertical-stack`, easier to add various cards
+* `markdown` → `custom:button-card`, faster and easier to style
+* Theme now only applies to dashboard and not other sections
+* Optimization of styles and cross-browser compatibility
+* Workaround for known issues:
 
-While picture elements is still a valid card for layouts that doesn't follow a specific grid, this dashboard does. Instead of placing button cards using coordinates, it's now placed onto a grid that is responsive.
+  * ~~card-mod randomly not applying markdown styling on 2021.6.0 [#130](https://github.com/thomasloven/lovelace-card-mod/issues/130)~~
+  `markdown` → `custom:button-card`
+  [ui-lovelace#L52](https://github.com/matt8707/hass-config/blob/c5ef7a9130cc347d5785773fda7437c05dc4bdb2/ui-lovelace.yaml#L52), [themes#L123](https://github.com/matt8707/hass-config/blob/c5ef7a9130cc347d5785773fda7437c05dc4bdb2/include/themes.yaml#L123), [button_card_templates#L137](https://github.com/matt8707/hass-config/blob/c5ef7a9130cc347d5785773fda7437c05dc4bdb2/button_card_templates.yaml#L137)
 
-**Layout** `custom:layout-card`
-* CSS grid everything and as a bonus...
-* Mobile and portrait dashboards
+  * ~~swipe-card not updating size unless resizing window [#32](https://github.com/bramkragten/swipe-card/issues/32) [#147](https://github.com/thomasloven/lovelace-layout-card/issues/147)~~
+  `horizontal-stack` and `margin: 0`
+  [ui-lovelace#L284](https://github.com/matt8707/hass-config/blob/c5ef7a9130cc347d5785773fda7437c05dc4bdb2/ui-lovelace.yaml#L284), [themes#L110](https://github.com/matt8707/hass-config/blob/c5ef7a9130cc347d5785773fda7437c05dc4bdb2/include/themes.yaml#L110), [button_card_templates#L769](https://github.com/matt8707/hass-config/blob/c5ef7a9130cc347d5785773fda7437c05dc4bdb2/button_card_templates.yaml#L769)
 
-https://user-images.githubusercontent.com/36163594/120789256-ad825000-c531-11eb-97c2-18904c48efdd.mp4
+*If you want, you can [buy me a beer](https://www.buymeacoffee.com/matt8707)* :blush:
 
-**Buttons** `custom:button-card`
-* Loader template doesn't need any `input_boolean` helpers anymore 
-* Icons will only animate on state change to prevent all icons animating on dashboard refresh
-* Some entity checks for undefined entities, no errors on restarts
-* Added a bounce effect to the button when pressed
+<details>
 
-**Theme** `custom:card-mod`
-* Reworked themes with focus on performance
-* Wrote a tool to help with styling [card-mod-helper](https://matt8707.github.io/card-mod-helper/)
+  ---
 
-**Deprecated**
-*If you're looking for picture elements, browse this repository before March 2021 [https://github.com/matt8707/hass-config/tree/c9dd19e04bd4fde2322e610a42f4e246b58ee19a](https://github.com/matt8707/hass-config/tree/c9dd19e04bd4fde2322e610a42f4e246b58ee19a)*
+  <summary>June 2021</summary>
 
-**Includes**
-Since this configuration is split into several yaml files, I'm using [lovelace-gulp-watch](https://github.com/akmolina28/lovelace-gulp-watch), which auto updates lovelace if an included file is changed.
+  ### June 2021
 
-**Known issues**
-* card-mod randomly not applying markdown styling on 2021.6.0 [#130](https://github.com/thomasloven/lovelace-card-mod/issues/130)
-* swipe-card not updating size unless resizing window [#32](https://github.com/bramkragten/swipe-card/issues/32) [#147](https://github.com/thomasloven/lovelace-layout-card/issues/147)
+  While picture elements is still a valid card for layouts that doesn't follow a specific grid, this dashboard does. Instead of placing button cards using coordinates, it's now placed onto a grid that is responsive.
 
-**Support**
-If you want, you can [buy me a beer](https://www.buymeacoffee.com/matt8707) :blush:
+  **Layout** `custom:layout-card`
+  * CSS grid everything and as a bonus...
+  * Mobile and portrait dashboards
+
+  https://user-images.githubusercontent.com/36163594/120789256-ad825000-c531-11eb-97c2-18904c48efdd.mp4
+
+  **Buttons** `custom:button-card`
+  * Loader template doesn't need any `input_boolean` helpers anymore 
+  * Icons will only animate on state change to prevent all icons animating on dashboard refresh
+  * Some entity checks for undefined entities, no errors on restarts
+  * Added a bounce effect to the button when pressed
+
+  **Theme** `custom:card-mod`
+  * Reworked themes with focus on performance
+  * Wrote a tool to help with styling [card-mod-helper](https://matt8707.github.io/card-mod-helper/)
+
+  **Deprecated**
+  *If you're looking for picture elements, browse this repository before March 2021 [https://github.com/matt8707/hass-config/tree/c9dd19e04bd4fde2322e610a42f4e246b58ee19a](https://github.com/matt8707/hass-config/tree/c9dd19e04bd4fde2322e610a42f4e246b58ee19a)*
+
+  **Includes**
+  Since this configuration is split into several yaml files, I'm using [lovelace-gulp-watch](https://github.com/akmolina28/lovelace-gulp-watch), which auto updates lovelace if an included file is changed.
+</details>
 
 ---
 
 ## Features
 
-* A different take on designing a [Lovelace UI](https://www.home-assistant.io/lovelace/) using <s>picture elements card</s> [custom:layout-card](https://github.com/thomasloven/lovelace-layout-card)
+* A different take on designing a [Lovelace UI](https://www.home-assistant.io/lovelace/) using [custom:layout-card](https://github.com/thomasloven/lovelace-layout-card)
 * Achieving a less cluttered interface by displaying [more information](https://github.com/thomasloven/hass-browser_mod#popup) on a [long press](https://www.home-assistant.io/lovelace/picture-elements/#hold_action)
 * Loading wheel for slow responding entities such as booting a computer.
 * [Adding sounds](https://github.com/thomasloven/hass-browser_mod#media_player) to the UI using automations listening for events
@@ -53,8 +70,6 @@ If you want, you can [buy me a beer](https://www.buymeacoffee.com/matt8707) :blu
 ![animations](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/animations.gif)
 
 ### The sidebar
-
-[Markdown Card](https://www.home-assistant.io/lovelace/markdown/) to create dynamic [templates](https://www.home-assistant.io/docs/configuration/templating/).
 
 * Time and date with greeting based on time of day
 * Lights and switches that are on, using natural language
@@ -74,7 +89,7 @@ The three icons at the bottom in order:
 
 ### Media
 
-Conditionally displaying media player controls based on last active device such as [Apple TV](https://www.home-assistant.io/integrations/apple_tv/), [Playstation 4](https://www.home-assistant.io/integrations/ps4/), [Google Nest Mini](https://www.home-assistant.io/integrations/cast/). If nothing is active for 15 minutes then a poster of last downloaded movie/episode is shown ([Radarr](https://github.com/Radarr/Radarr)/[Sonarr](https://github.com/Sonarr/Sonarr)). Swipe to reveal other than last active media players.
+Conditionally displaying media player controls based on last active device such as [Apple TV](https://www.home-assistant.io/integrations/apple_tv/), Spotify, [Google Nest Mini](https://www.home-assistant.io/integrations/cast/). If nothing is active for 15 minutes then a poster of last downloaded movie/episode is shown ([Radarr](https://github.com/Radarr/Radarr)/[Sonarr](https://github.com/Sonarr/Sonarr)). Swipe to reveal other than last active media players.
 
 ![media](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/media.gif)
 
