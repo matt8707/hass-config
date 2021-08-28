@@ -22,16 +22,14 @@ lovelace:
       { url: /hacsfiles/light-entity-card/light-entity-card.js,             type: module },
       { url: /hacsfiles/light-popup-card/light-popup-card.js,               type: module },
       { url: /hacsfiles/lovelace-card-mod/card-mod.js,                      type: module },
-      { url: /hacsfiles/lovelace-hui-element/hui-element.js,                type: module },
       { url: /hacsfiles/lovelace-layout-card/layout-card.js,                type: module },
-      { url: /hacsfiles/lovelace-more-info-card/more-info-card.js,          type: module },
       { url: /hacsfiles/lovelace-slider-entity-row/slider-entity-row.js,    type: module },
       { url: /hacsfiles/lovelace-valetudo-map-card/valetudo-map-card.js,    type: module },
       { url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js,          type: module },
       { url: /hacsfiles/swipe-card/swipe-card.js,                           type: module },
 
-      { url: '/local/calendar-card.js?v=31091',                             type: module },
-      { url: '/local/custom_icons.js?v=25052001',                           type: module },
+      { url: '/local/calendar-card.js?v=3.109.1',                           type: module },
+      { url: '/local/custom_icons.js?v=28082021',                           type: module },
       { url: /local/font.css,                                               type: css    } ]
 
 logger:
@@ -42,6 +40,7 @@ logger:
 
 recorder:
   db_url: !secret recorder_db_url
+  purge_keep_days: 5
 
 person:
   - name: Matte
@@ -80,7 +79,7 @@ climate:
     controller_data: remote.broadlink_remote
     temperature_sensor: sensor.broadlink_rm4_pro_temperature
     humidity_sensor: sensor.broadlink_rm4_pro_humidity
-    power_sensor: binary_sensor.gosund_ac
+    power_sensor: binary_sensor.gosund_2_power_state
     power_sensor_restore_state: true
 
 influxdb:
@@ -116,16 +115,26 @@ google:
   client_secret: !secret google_client_secret
 
 browser_mod:
-  devices:
-    c2080cea-6627150a:
-      name: galaxy_tab_a
-  disable:
-    - all
 
 timer:
   laundry:
     duration: 01:00:00
     icon: mdi:washing-machine
+
+ios:
+  push:
+    categories:
+      - name: Home Assistant
+        identifier: ios_hass
+        actions:
+          - identifier: start_watchtower
+            title: Uppdatera
+
+notify:
+  - name: vacuum_last_cleaned
+    platform: file
+    filename: vacuum_last_cleaned.txt
+    timestamp: true
 
 lock:
   - platform: template
@@ -138,23 +147,3 @@ lock:
     unlock:
       service: input_boolean.turn_off
       entity_id: input_boolean.computer_lock
-
-ios:
-  push:
-    categories:
-      - name: Home Assistant
-        identifier: ios_hass
-        actions:
-          - identifier: start_watchtower
-            title: Uppdatera
-
-localtuya:
-  - host: !secret localtuya_host
-    device_id: !secret localtuya_device_id
-    local_key: !secret localtuya_local_key
-    friendly_name: localtuya
-    protocol_version: '3.3'
-    entities:
-      - platform: switch
-        friendly_name: Deltaco SH-P01
-        id: 1
