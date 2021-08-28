@@ -41,57 +41,53 @@ views:
             "sidebar  .           .       ."
     cards:
 
+      - type: custom:button-card #extra_styles fix
+
       #################################################
       #                                               #
       #                    SIDEBAR                    #
       #                                               #
       #################################################
 
-      - type: markdown
-        view_layout:
-          grid-area: sidebar
-        content: |
-          {% set attributes = states.sensor.template_sidebar.attributes | default %}
-          {% for template in attributes %}
-          {{ state_attr('sensor.template_sidebar', template) }}
-          {% endfor %}
-        style: #force style - duplicate of themes markdown
-          {.: "ha-card{background-color:#00000010;border-radius:0;min-height:100vh;animation:ha-card 1s forwards}@keyframes ha-card{0%,100%{border-right:.1vw solid rgba(58,69,73,.2)}}@media screen and (max-width:800px){ha-card{background:0 0;min-height:100%;animation:none}}\n", ha-markdown: {.: "ha-markdown{padding:var(--custom-layout-card-padding) 2vw 0 var(--custom-layout-card-padding)!important;pointer-events:none}@media screen and (max-width:800px){ha-markdown{padding:0!important}}\n", $: "p>span{font-family:SF Text;font-size:var(--markdown-sidebar-clock-font-size);font-weight:200;line-height:var(--markdown-sidebar-clock-line-height);letter-spacing:-.05vw;margin-left:-.3vw;color:var(--ha-card-header-color)}p>span>span{position:relative;top:-.09em}p{font-family:SF Display;font-size:var(--markdown-sidebar-font-size);line-height:var(--markdown-sidebar-line-height);font-weight:300;letter-spacing:.06vw;color:#6a7377}p>b{color:var(--ha-card-header-color)}@media screen and (max-width:1200px){p>span{font-size:calc(var(--markdown-sidebar-clock-font-size) * 1.4);line-height:calc(var(--markdown-sidebar-clock-line-height) * 1.4)}p{font-size:calc(var(--markdown-sidebar-font-size) * 1.4);line-height:calc(var(--markdown-sidebar-line-height) * 1.4)}}@media screen and (max-width:800px){p>span{font-size:calc(var(--markdown-sidebar-clock-font-size) * 2.6);line-height:calc(var(--markdown-sidebar-clock-line-height) * 2.6)}p{font-size:calc(var(--markdown-sidebar-font-size) * 2.6);line-height:calc(var(--markdown-sidebar-line-height) * 2.6);letter-spacing:.16vw}}\n"}}
-
-      - type: conditional
-        view_layout:
-          grid-area: sidebar
-        conditions:
-          - entity: input_boolean.laundry_display
-            state: 'on'
-        card:
-          type: custom:button-card
-          entity: timer.laundry
-          template: laundry
-
-      - type: grid
+      - type: vertical-stack
         view_layout:
           grid-area: sidebar
         cards:
-          - type: button
-            icon: mdi:robot-vacuum
-            tap_action:
-              !include popup/sidebar_vacuum.yaml
+          - type: custom:button-card
+            entity: sensor.template_sidebar
+            template: sidebar_template
 
-          - type: button
-            icon: mdi:information-outline
-            tap_action:
-              !include popup/sidebar_information.yaml
+          - type: conditional
+            conditions:
+              - entity: input_boolean.laundry_display
+                state: 'on'
+            card:
+              type: custom:button-card
+              entity: timer.laundry
+              template: laundry
 
-          - type: button
-            icon: mdi:arrow-up-bold-circle-outline
-            tap_action:
-              !include popup/sidebar_update.yaml
-            hold_action:
-              action: call-service
-              service: homeassistant.update_entity
-              service_data:
-                entity_id: sensor.hacs
+          - type: grid
+            cards:
+              - type: button
+                icon: custom:roborock-vacuum
+                tap_action:
+                  !include popup/sidebar_vacuum.yaml
+                hold_action:
+                  action: none
+
+              - type: button
+                icon: mdi:information-outline
+                tap_action:
+                  !include popup/sidebar_information.yaml
+                hold_action:
+                  action: none
+
+              - type: button
+                icon: mdi:arrow-up-bold-circle-outline
+                tap_action:
+                  !include popup/sidebar_update.yaml
+                hold_action:
+                  action: none
 
       #################################################
       #                                               #
@@ -107,21 +103,18 @@ views:
         cards:
 
           - type: custom:button-card
-            entity: light.vardagsrum #hue_group
+            entity: light.vardagsrum_group #hue_group
             name: Belysning
             template:
               - light
-              - icon_shade
+              - icon_hue
 
           - type: custom:button-card
-            entity: switch.balkong
-            name: Balkong
-            hold_action:
-              !include popup/vardagsrum_balkong.yaml
+            entity: light.horna
+            name: Hörnlampa
             template:
-              - base
-              - icon_hue
-              - loader
+              - light
+              - icon_shade
 
           - type: custom:button-card
             entity: media_player.sony_bravia_tv
@@ -134,13 +127,13 @@ views:
               - loader
 
           - type: custom:button-card
-            entity: switch.playstation_5
-            name: Playstation
+            entity: switch.deltaco_sh_p01
+            name: Balkong
             hold_action:
-              !include popup/vardagsrum_playstation.yaml
+              !include popup/vardagsrum_balkong.yaml
             template:
               - base
-              - icon_ps5
+              - icon_hue
               - loader
 
       #################################################
@@ -229,34 +222,28 @@ views:
               !include popup/sovrum_klimat.yaml
             template:
               - base
-              - icon_air_purifier
+              - icon_climate
               - climate
               - loader
             variables:
               circle_input: >
                 [[[
-                  return entity === undefined ?
-                    null :
-                    entity.attributes.temperature;
+                  if (entity) {
+                    return entity.state == 'on' ?
+                      entity.attributes.temperature :
+                      entity.attributes.current_temperature;
+                  }
                 ]]]
 
           - type: custom:button-card
-            entity: fan.sovrum_anslut
-            name: Fläkt
+            entity: switch.playstation_5
+            name: Playstation
             hold_action:
-              !include popup/sovrum_flakt.yaml
+              !include popup/vardagsrum_playstation.yaml
             template:
               - base
-              - icon_fan
-              - circle
+              - icon_ps5
               - loader
-            variables:
-              circle_input: >
-                [[[
-                  return entity === undefined ?
-                    null :
-                    parseInt(entity.attributes.percentage_step);
-                ]]]
 
           - type: custom:button-card
             entity: media_player.samsung_tv
@@ -294,7 +281,7 @@ views:
                 depth: 300
             cards:
 
-              - type: vertical-stack
+              - type: horizontal-stack
                 cards:
 
                   - type: conditional
@@ -486,10 +473,8 @@ views:
       #                                               #
       #################################################
 
-      - type: markdown
+      - type: custom:button-card
         view_layout:
           grid-area: footer
-        content: >
-          {{ state_attr('sensor.template_coronavirus', 'template') }}
-        style: #force style - duplicate of themes markdown
-          {.: "ha-card,ha-markdown{background:0 0;padding:0!important;pointer-events:none;margin-top:-1vw}ha-markdown{overflow:hidden}\n", ha-markdown$: "ha-markdown-element{opacity:.6;font-size:1.26vw;font-weight:400;--mdc-icon-size:1.2vw;font-family:SF Display;letter-spacing:.05vw;line-height:0;white-space:nowrap}ha-icon{vertical-align:3%;opacity:.4}@media screen and (max-width:800px){ha-markdown-element{display:none}}\n"}
+        entity: sensor.covid_19_folkhalsomyndigheten
+        template: coronavirus
