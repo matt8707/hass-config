@@ -1,45 +1,25 @@
 action: fire-dom-event
 browser_mod:
   command: popup
-  title: Fläkt
+  title: Klimat
   style:
-    hui-grid-card:
-      $more-info-card$:
-        .: |
-          ha-card>h1 {
-            display: none;
-          }
-          .card-content {
-            padding-bottom: 0em;
-          }
-        more-info-fan$: |
-          .more-info-fan {
-            padding: 0.4em 0.31em 0em 0.7em;
-          }
-          .container-percentage {
-            padding-top: 0.3em;
-          }
-          .container-oscillating {
-            padding-top: 1.3em;
-          }
-      $: |
-        #root {
-          grid-gap: 0 !important;
+    hui-vertical-stack-card:
+      $hui-entities-card$ : |
+        #states {
+          padding-top: 0.5em;
+          padding-bottom: 1.2em;
         }
   card:
-    type: grid
-    columns: 1
-    square: false
+    type: vertical-stack
     cards:
 
       - type: thermostat
         entity: climate.luftkylare
 
-
       - type: entities
-        state_color: true
+        card_mod:
+          class: content
         entities:
-          - climate.luftkylare
           - entity: sensor.broadlink_rm4_pro_temperature
             name: Rumstemperatur
           - entity: sensor.broadlink_rm4_pro_humidity
@@ -48,8 +28,8 @@ browser_mod:
       - type: custom:mini-graph-card
         entities:
           - color: '#385581'
-            entity: sensor.sensor_hall_temperature
-        line_width: 8
+            entity: sensor.broadlink_rm4_pro_temperature
+        line_width: 6
         hour24: true
         group: true
         align_icon: left

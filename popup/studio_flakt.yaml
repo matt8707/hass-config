@@ -2,38 +2,18 @@ action: fire-dom-event
 browser_mod:
   command: popup
   title: "Fläkt\u00B2"
-  style:
-    hui-grid-card$: |
-      #root {
-        grid-gap: 0 !important;
-      }
   card:
-    type: grid
-    columns: 1
-    square: false
+    type: vertical-stack
     cards:
       - type: entities
         state_color: true
+        card_mod:
+          class: content
         entities:
+
           - entity: fan.studio_wemo
             secondary_info: last-changed
+
           - type: custom:slider-entity-row
             entity: input_number.wemo_fan_timer
             hide_state: false
-
-      - type: custom:mini-graph-card
-        entities:
-          - color: '#385581'
-            entity: sensor.sensor_hall_temperature
-        line_width: 8
-        hour24: true
-        group: true
-        align_icon: left
-        align_state: right
-        align_header: left
-        hours_to_show: 24
-        show:
-          {fill: fade, icon: false, name: false, state: false, 
-          name_adaptive_color: false, labels: hover, legend: false}
-        tap_action:
-          action: none

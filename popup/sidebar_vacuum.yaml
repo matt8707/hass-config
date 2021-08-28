@@ -11,10 +11,9 @@ browser_mod:
     layout-card$grid-layout:
       $: |
         hui-vertical-stack-card {
-          border-radius: 0;
-          animation: hui-vertical-stack-card 1s forwards;
+          animation: border 1s forwards;
         }
-        @keyframes hui-vertical-stack-card {
+        @keyframes border {
           0%, 100% {
               border-right: 1.5px solid rgba(0, 0, 0, 0.2);
           }
@@ -28,14 +27,33 @@ browser_mod:
           }
         }
       $hui-vertical-stack-card:
-        $hui-horizontal-stack-card$: |
-          #root {
-            justify-content: space-evenly !important;
-          }
         $: |
           hui-horizontal-stack-card {
-            padding: 0em 2em 2em 2em !important;
+            padding: 0em 2em 2.3em 2em;
           }
+        $hui-entities-card$: |
+          .card-content {
+            padding: var(--card-content-padding);
+          }
+        $hui-horizontal-stack-card$: |
+          #root {
+            justify-content: space-evenly;
+          }
+      $hui-picture-elements-card$: |
+        #root {
+          animation: fadein 0.9s both;
+        }
+        @keyframes fadein {
+          0% {
+            opacity: 0;
+          }
+          75% {
+            opacity: 0;
+          }
+          100% {
+            opacity: 1;
+          }
+        }
   card:
     type: custom:layout-card
     layout_type: custom:grid-layout
@@ -66,12 +84,13 @@ browser_mod:
             view_layout:
               grid-area: info
             title: Inställningar
+            card_mod:
+              class: header
             entities:
-            - entity: vacuum.valetudo_robot
-              name: Roborock S5
-              icon: custom:roborock-vacuum
 
-            - entity: sensor.template_roborock_last_clean
+            - entity: vacuum.valetudo_robot
+
+            - entity: sensor.vacuum_last_cleaned
 
             - type: custom:bar-card
               width: 55%
@@ -110,43 +129,39 @@ browser_mod:
             cards:
 
               - type: custom:button-card
+                entity: vacuum.valetudo_robot
                 icon: mdi:play-pause
-                triggers_update:
-                  ['vacuum.valetudo_robot']
                 tap_action:
                   action: call-service
                   service: >
                     [[[
-                      if (states['vacuum.valetudo_robot'].state === 'docked' ||
-                        states['vacuum.valetudo_robot'].state === 'paused')
-                        return 'vacuum.start';
-                      else return 'vacuum.pause';
+                      return entity.state === 'docked' || entity.state === 'paused'
+                        ? 'vacuum.start'
+                        : 'vacuum.pause';
                     ]]]
-                  service_data:
-                    entity_id: vacuum.valetudo_robot
-                styles:
-                  icon:
-                    - width: 1.8em
-                  card:
-                    - width: 6em
+                  service_data: >
+                    [[[ return entity.entity_id; ]]]
                 template: icon_only
 
               - type: custom:button-card
-                icon: mdi:flash
+                entity: vacuum.valetudo_robot
+                icon: mdi:battery-charging
                 tap_action:
                   action: call-service
                   service: vacuum.return_to_base
                   service_data:
-                    entity_id: vacuum.valetudo_robot
+                    entity_id: >
+                      [[[ return entity.entity_id; ]]]
                 template: icon_only
 
               - type: custom:button-card
-                icon: mdi:map-marker-question
+                icon: mdi:delete-empty
                 tap_action:
                   action: call-service
-                  service: vacuum.locate
+                  service: mqtt.publish
                   service_data:
-                    entity_id: vacuum.valetudo_robot
+                    topic: valetudo/robot/GoToLocationCapability/go/set
+                    payload: "c520da4d-7656-4bd1-8d08-62564559d222"
                 template: icon_only
 
       #################################################
@@ -160,59 +175,49 @@ browser_mod:
         view_layout:
           grid-area: map
         image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 45' /%3E"
-        style: |
-          #root {
-            animation: fade 1s both;
-          }
-          @keyframes fade {
-            0% {
-              opacity: 0;
-            }
-            50% {
-              opacity: 0;
-            }
-            100% {
-              opacity: 1;
-            }
-          }
+        card_mod:
+          class: header
         elements:
 
           - type: custom:valetudo-map-card
+            entity: camera.map_data
             title: null
-            entity: camera.map
             rotate: 0
             crop:
-              top: 40
-              bottom: 60
-              left: 67
-              right: 20
+              top: 0
+              bottom: 15
+              left: 43
+              right: 0
             min_height: 0
             map_scale: 2
-            no_go_area_color: '#ff000015'
-            virtual_wall_color: '#ff000020'
-            virtual_wall_width: 5
-            path_color: '#1e5071'
-            path_width: 1.5
-            vacuum_icon: 'custom:roborock-vacuum-map'
-            vacuum_color: '#e0e0e0'
+            vacuum_icon: custom:roborock-vacuum-map
+            vacuum_color: rgb(224,224,224)
             icon_scale: 1.1
-            show_segments: false
-            floor_color: '#2e3233'
-            wall_color: '#191e1e90'
+            dock_icon: mdi:battery-charging
+            path_color: rgb(30,80,113)
+            path_width: 1.5
+            floor_color: rgb(46,50,51)
+            segment_colors: rgb(46,50,51)
+            wall_color: rgba(25,30,30,0.564)
+            virtual_wall_color: rgba(255,0,0,0.125)
+            virtual_wall_width: 5
+            no_go_area_color: rgba(255,0,0,0.082)
+            goto_target_icon: mdi:delete-empty
+            goto_target_color: rgb(30,80,113)
             style:
-              top: 46%
+              top: 57%
               left: 50%
               width: 100%
 
           - type: image
+            image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 45' /%3E"
+            title: null
             tap_action:
               action: call-service
               service: input_select.select_option
               service_data:
                 entity_id: input_select.roborock_zone
                 option: Ingen vald
-            image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50' /%3E"
-            title: null
             style:
               top: 50%
               left: 50%
@@ -220,90 +225,44 @@ browser_mod:
               cursor: default
 
           - type: custom:button-card
-            name: Vardagsrum
-            tap_action:
-              action: call-service
-              service: input_select.select_option
-              service_data:
-                entity_id: input_select.roborock_zone
-                option: Vardagsrum
-            show_label: false
-            show_icon: false
-            styles: &button-card-styles
-              card:
-                - padding: 3em
-                - background: none
-              name:
-                - font-size: 0.9em
-                - letter-spacing: 0.003em
-                - color: '#aeb0b0'
-                - background: '#191c1d80'
-                - padding: 0.48em 0.78em 0.48em 0.78em
-                - border-radius: 0.6em
-                - overflow: visible
+            variables:
+              area: Vardagsrum
+            template: vacuum_map
             style:
-              top: 18%
-              left: 77%
+              top: 12%
+              left: 74.5%
 
           - type: custom:button-card
-            name: Studio
-            tap_action:
-              action: call-service
-              service: input_select.select_option
-              service_data:
-                entity_id: input_select.roborock_zone
-                option: Studio
-            show_label: false
-            show_icon: false
-            styles: *button-card-styles
+            variables:
+              area: Studio
+            template: vacuum_map
             style:
-              top: 21%
-              left: 38%
+              top: 23.5%
+              left: 39.2%
 
           - type: custom:button-card
-            name: Hall
-            tap_action:
-              action: call-service
-              service: input_select.select_option
-              service_data:
-                entity_id: input_select.roborock_zone
-                option: Hall
-            show_label: false
-            show_icon: false
-            styles: *button-card-styles
+            variables:
+              area: Hall
+            template: vacuum_map
             style:
-              top: 48%
-              left: 58%
+              top: 51.5%
+              left: 56.7%
 
           - type: custom:button-card
-            name: Kök
-            tap_action:
-              action: call-service
-              service: input_select.select_option
-              service_data:
-                entity_id: input_select.roborock_zone
-                option: Kök
-            show_label: false
-            show_icon: false
-            styles: *button-card-styles
+            variables:
+              area: Kök
+            template: vacuum_map
             style:
-              top: 53%
-              left: 17%
+              top: 55.5%
+              left: 19%
 
           - type: custom:button-card
-            name: Sovrum
-            tap_action:
-              action: call-service
-              service: input_select.select_option
-              service_data:
-                entity_id: input_select.roborock_zone
-                option: Sovrum
-            show_label: false
-            show_icon: false
-            styles: *button-card-styles
+            variables:
+              area: Sovrum
+            template: vacuum_map
             style:
-              top: 76%
-              left: 22%
+              top: 81%
+              left: 24.5%
 
           - type: custom:button-card
             entity: input_select.roborock_zone
@@ -312,11 +271,6 @@ browser_mod:
               [[[ return entity.state; ]]]
             show_label: true
             show_icon: false
-            tap_action:
-              action: call-service
-              service: script.turn_on
-              service_data:
-                entity_id: script.zoned_cleanup
             styles:
               card:
                 - background: '#FFFFFF10'
@@ -329,12 +283,17 @@ browser_mod:
                 - font-size: 1.05em
                 - padding: 0 0.8em 0.65em 0.8em
                 - color: >
-                    [[[ 
-                      if (states['input_select.roborock_zone'].state == 'Ingen vald')
-                        return '#e0e1e170';
-                      else return '#e0e1e1';
+                    [[[
+                      return entity.state == 'Ingen vald'
+                        ? '#e0e1e170'
+                        : '#e0e1e1';
                     ]]]
+            tap_action:
+              action: call-service
+              service: script.turn_on
+              service_data:
+                entity_id: script.zone_cleaning
             style:
-              left: 80%
-              top: 87.4%
+              top: 89.2%
+              left: 82.1%
               width: 10.2em

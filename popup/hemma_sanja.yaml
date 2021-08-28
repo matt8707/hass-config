@@ -3,38 +3,22 @@ browser_mod:
   command: popup
   title: Sanja
   style:
-    hui-grid-card:
-      $hui-entities-card$: |
-        #states {
-          padding-bottom: 0 !important;
-        }
+    hui-vertical-stack-card:
       $hui-history-graph-card$ : |
         .content {
-          padding: 1.8em 2em 1.8em 2em !important;
-        }
-      $hui-glance-card$ : |
-        .entities.no-header {
-          padding-top: 0 !important;
+          padding: 0.2em 1em 1.2em 1.7em !important;
         }
       $: |
         button-card {
-          justify-self: center;
-          margin: 0.8em 0 2.5em 0;
-          width: 100%;
-        }
-        #root {
-          grid-gap: 0 !important;
-        }
-      $hui-entities-card:last-of-type$: |
-        #states {
-          padding-top: 0 !important;
+          align-self: center;
+          padding: 0.5em 0 0.5em 0;
         }
   card:
-    type: grid
-    columns: 1
-    square: false
+    type: vertical-stack
     cards:
       - type: entities
+        card_mod:
+          class: content
         entities:
           - entity: person.sanja
             secondary_info: last-changed
@@ -52,7 +36,7 @@ browser_mod:
           - entity: device_tracker.sanja_iphonedetect
             name: Router
             icon: mdi:wifi
-            style: &style |
+            style: &state |
               state-badge {
                 color: {{ '#3182b7' if is_state(config.entity, 'home') else '#3c3f3f' }};
               }
@@ -60,22 +44,33 @@ browser_mod:
           - entity: device_tracker.sanja_bluetooth
             name: Bluetooth
             icon: mdi:bluetooth
-            style: *style
+            style: *state
 
           - entity: device_tracker.sanjas_iphone_ios
             name: Position
             icon: custom:iphone-modern
-            style: *style
+            style: *state
 
       - type: custom:button-card
         name: Spela upp ljud på iPhone XR
         icon: mdi:volume-high
+        template: icon_name
         tap_action:
           action: call-service
-          service: script.sanja_find_my_iphone
-        template: icon_name
+          service: notify.mobile_app_sanja_iphone
+          service_data:
+            title: Hitta min iPhone
+            message: Här är jag
+            data:
+              push:
+                sound:
+                  name: findmy.wav
+                  critical: 1
+                  volume: 1
 
       - type: entities
+        card_mod:
+          class: content
         entities:
           - entity: sensor.template_printer_status
 

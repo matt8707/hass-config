@@ -8,6 +8,34 @@ browser_mod:
         width: calc(385px + 385px + 385px);
         max-width: 90vw;
       }
+    layout-card:
+      $grid-layout$:
+        hui-entities-card:
+          $: |
+            .card-content {
+              padding: 1.5em 2.7em 2.3em 2em;
+            }
+            ha-card {
+              animation: border 1s forwards;
+              border-radius: 0;
+            }
+            @keyframes border {
+              0%, 100% {
+                border-right: 1px solid rgba(0, 0, 0, 0.3);
+              }
+            }
+            /* phone */
+            @media screen and (max-width: 800px) {
+              ha-card {
+                animation: none;
+              }
+            }
+          $hui-horizontal-stack-card$: |
+            #root {
+              justify-content: space-evenly;
+              margin-top: 1.9em;
+              margin-left: 0.8em;
+            }
   card:
     type: custom:layout-card
     layout_type: custom:grid-layout
@@ -38,26 +66,12 @@ browser_mod:
           grid-area: hass
         title: Home Assistant
         show_header_toggle: false
-        style: &border |
-          ha-card {
-            border-radius: 0;
-            animation: ha-card 1s forwards;
-          }
-
-          @keyframes ha-card {
-            0%, 100% {
-                border-right: 1.5px solid rgba(0, 0, 0, 0.2);
-            }
-          }
-
-          /* phone */
-          @media screen and (max-width: 800px) {
+        card_mod:
+          class: header
+          style: |
             ha-card {
-                border-bottom: 1.5px solid rgba(0, 0, 0, 0.2);
-                padding-right: 0;
-                animation: none;
+              margin: 0px !important;
             }
-          }
         entities:
           - entity: sensor.hass_version
 
@@ -104,14 +118,7 @@ browser_mod:
                   service_data:
                     entity_id: sensor.template_dockermon_mem
 
-          - type: custom:hui-element
-            card_type: horizontal-stack
-            style: &horizontal-style |
-              #root {
-                justify-content: space-evenly;
-                margin-top: 2em;
-                margin-left: 1em;
-              }
+          - type: custom:hui-horizontal-stack-card
             cards:
               - type: custom:button-card
                 name: Home Assistant
@@ -147,7 +154,12 @@ browser_mod:
           grid-area: tablet
         title: Galaxy Tab A 10.1
         show_header_toggle: false
-        style: *border
+        card_mod:
+          class: header
+          style: |
+            ha-card {
+              margin: 0px !important;
+            }
         entities:
           - entity: switch.galaxy_tab_a_screensaver
 
@@ -210,11 +222,8 @@ browser_mod:
                   service_data:
                     entity_id: sensor.template_fullykiosk_storage
 
-          - type: custom:hui-element
-            card_type: horizontal-stack
-            style: *horizontal-style
+          - type: custom:hui-horizontal-stack-card
             cards:
-
               - type: custom:button-card
                 name: Startsidan
                 icon: mdi:reload
@@ -225,7 +234,7 @@ browser_mod:
                         message: 'Laddar om startsidan...'
                       });
                       hass.callService('fullykiosk', 'load_start_url', {
-                        entity_id: 'media_player.galaxy_tab_a'
+                        entity_id: 'media_player.galaxy_tab_a_media_player'
                       });
                     ]]]
                 template: icon_name
@@ -240,7 +249,7 @@ browser_mod:
                         message: 'Startar om Fully Kiosk Browser...'
                       });
                       hass.callService('fullykiosk', 'restart', {
-                        entity_id: 'media_player.galaxy_tab_a'
+                        entity_id: 'media_player.galaxy_tab_a_media_player'
                       });
                     ]]]
                 template: icon_name
@@ -256,6 +265,40 @@ browser_mod:
           grid-area: nas
         title: Synology DS918+
         show_header_toggle: false
+        card_mod:
+          class: header
+          style:
+            .: |
+              ha-card {
+                animation: none !important;
+                margin: 0px !important;
+              }
+            mini-graph-card:
+              $: |
+                ha-card {
+                  padding: 0px !important;
+                }
+            hui-horizontal-stack-card:
+              $:
+                .: |
+                  #root {
+                    margin-top: 1em;
+                    margin-right: 1.5em;
+                  }
+                  #root > * {
+                    flex: none !important;
+                  }
+                hui-entities-card:
+                  $:
+                    .: |
+                      #states {
+                        padding: 0;
+                      }
+                    hui-sensor-entity-row:
+                      $hui-generic-entity-row$: |
+                        .info {
+                          margin: 0 8px 0 8px !important;
+                        }
         entities:
           - entity: sensor.template_nas_status
 
@@ -301,23 +344,9 @@ browser_mod:
                   service_data:
                     entity_id: sensor.disk_use_percent
 
-          - type: custom:hui-element
-            card_type: horizontal-stack
-            style: |
-              #root {
-                justify-content: space-evenly;
-                margin-top: 1em;
-                width: 95% !important;
-              }
-              #root > * {
-                flex: none !important;
-              }
+          - type: custom:hui-horizontal-stack-card
             cards:
               - type: entities
-                style: |
-                  #states {
-                    padding: 0;
-                  }
                 entities:
                   - entity: sensor.nas_net_down
                     style: |
@@ -326,10 +355,6 @@ browser_mod:
                       }
 
               - type: entities
-                style: |
-                  #states {
-                    padding: 0;
-                  }
                 entities:
                   - entity: sensor.nas_net_up
                     style: |

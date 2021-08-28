@@ -3,33 +3,31 @@ browser_mod:
   command: popup
   title: Vardagsrum Tv
   style:
-    hui-grid-card:
-      $hui-horizontal-stack-card$: |
-        #root {
-          justify-content: space-evenly !important;
-        }
+    hui-vertical-stack-card:
       $: |
         hui-horizontal-stack-card {
-          padding: 0em 2em 0 2em !important;
-          height: 7em !important;
+          padding: 0em 2em 2.3em 2em;
         }
+      $hui-horizontal-stack-card$: |
         #root {
-          grid-gap: 0 !important;
+          justify-content: space-evenly;
         }
   card:
-    type: grid
-    columns: 1
-    square: false
+    type: vertical-stack
     cards:
       - type: entities
         state_color: true
         show_header_toggle: false
+        card_mod:
+          class: content
         entities:
 
           - entity: switch.tv_sony
             name: Sony Bravia
             secondary_info: last-changed
+
           - entity: automation.tv_on_lights
+
           - entity: input_select.hdmi
 
       - type: horizontal-stack
@@ -38,7 +36,6 @@ browser_mod:
           - type: custom:button-card
             entity: media_player.sony_bravia_tv
             icon: mdi:volume-mute
-            show_name: false
             tap_action:
               action: call-service
               service: media_player.volume_mute
@@ -50,19 +47,23 @@ browser_mod:
             template: icon_only
 
           - type: custom:button-card
+            entity: media_player.sony_bravia_tv
             icon: mdi:volume-minus
             tap_action:
               action: call-service
               service: media_player.volume_down
               service_data:
-                entity_id: media_player.sony_bravia_tv
+                entity_id: >
+                  [[[ return entity.entity_id; ]]]
             template: icon_only
 
           - type: custom:button-card
+            entity: media_player.sony_bravia_tv
             icon: mdi:volume-plus
             tap_action:
               action: call-service
               service: media_player.volume_up
               service_data:
-                entity_id: media_player.sony_bravia_tv
+                entity_id: >
+                  [[[ return entity.entity_id; ]]]
             template: icon_only

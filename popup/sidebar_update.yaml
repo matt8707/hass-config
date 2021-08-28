@@ -7,174 +7,180 @@ browser_mod:
       :host .content {
         width: 60em;
         height: 100%;
-        padding: 1.1em 1.9em 1.9em 1.9em;
+        padding: 2.1em 1.9em 1.9em 2.7em;
       }
+    hui-grid-card:
+      $: |
+        button-card:nth-child(2), button-card:nth-child(4) {
+          margin: 0.5em 0 3em 0.4em;
+        }
+        #root {
+          grid-gap: 0 !important;
+        }
   card:
-    type: custom:mod-card
-    style:
-      hui-grid-card:
-        $: |
-          button-card {
-            margin: 0.8em 0 2.5em 1em;
-          }
-          #root {
-            grid-gap: 0 !important;
-          }
-        $hui-markdown-card:
-          $ha-markdown$: |
-            ha-markdown-element {
-              cursor: default;
-            }
-            ha-markdown-element > p > span {
-              font-family: SF Text;
-              font-size: 1.5em;
-              font-weight: 500;
-              vertical-align: 30%;
-            }
-            ha-markdown-element > p > span > ha-icon {
-              vertical-align: 10%;
-              opacity: 0.5;
-            }
-            ha-markdown-element > p > strong {
-              font-family: SF Text;
-              font-size: 1.2em;
-              font-weight: 500;
-              line-height: 1.9em;
-              opacity: 0.5;
-            }
-            ha-markdown-element > ul {
-              font-family: SF Display;
-              font-size: 1.1em;
-              padding-left: 2.5em;
-            }
-            ha-markdown-element > ul > li {
-              margin-bottom: 0.4em;
-            }
-            ha-markdown-element > ul > li:last-child {
-              margin-bottom: 0px;
-            }
-            ha-markdown-element > ul > li > code {
-              background-color: var(--secondary-background-color);
-            }
-    card:
-      type: grid
-      columns: 1
-      square: false
-      cards:
+    type: grid
+    columns: 1
+    square: false
+    cards:
 
-        ### hass
-        - type: markdown
-          content: >
-            {% if states('sensor.hass_version_installed') | regex_search('b') %}
-            <span><ha-icon icon="mdi:home-assistant"></ha-icon> Home Assistant {{ states('sensor.hass_version_installed') }}</span><br>
-            {% if states('sensor.hass_version_installed') == states('sensor.hass_version_latest_beta') %}
-            **Inga uppdateringar**
-            {% else %}
-            **{{ states('sensor.hass_version_latest_beta') }} tillgänglig** {{ '\U0001f389' }}
-        
-            {% if states('sensor.hass_version_latest_beta') == states('sensor.hass_release_notes_rc') %}
-            {{- state_attr('sensor.hass_release_notes_rc', 'body') }}
-            {% endif %}
-            {% endif %}
-            {% else %}
-            <span><ha-icon icon="mdi:home-assistant"></ha-icon> Home Assistant {{ states('sensor.hass_version_installed') }}</span><br>
-            {% if states('sensor.hass_version_installed') == states('sensor.hass_version_latest') %}
-            **Inga uppdateringar**
-            {% else %}
-            **{{ states('sensor.hass_version_latest') }} tillgänglig** {{ '\U0001f389' }}
+      ### hass
+      - type: custom:button-card
+        entity: sensor.hass_version_installed
+        triggers_update:
+          - sensor.hass_version_latest_beta
+          - sensor.hass_version_latest
+          - sensor.hass_release_notes_rc
+          - sensor.hass_release_notes
+        state_display: |
+          [[[
+            if (entity) {
+              // markdown parser
+              variables.markedjs;
+              let links = new RegExp('<a href="([^"]+)"', "g");
 
-            {% if states('sensor.hass_version_latest') == states('sensor.hass_release_notes') %}
-            {{- state_attr('sensor.hass_release_notes', 'body') }}
-            {% endif %}
-            {% endif %}
-            {% endif %}
+              // states
+              let installed = entity.state;
 
-        - type: custom:button-card
-          entity: sensor.hass_version_installed
-          triggers_update:
-            - sensor.hass_version_latest
-            - sensor.hass_version_latest_beta
-          name: Uppdatera HASS
-          icon: mdi:update
-          styles:
+              let latest = installed.includes('b') ?
+                states["sensor.hass_version_latest_beta"].state :
+                states["sensor.hass_version_latest"].state;
+
+              let release_notes = installed.includes('b') ?
+                marked(states["sensor.hass_release_notes_rc"].attributes.body) :
+                marked(states["sensor.hass_release_notes"].attributes.body);
+
+              // return
+              let subtitle = installed == latest ?
+                `Inga uppdateringar` :
+                `${latest} tillgänglig ${String.fromCodePoint("0x1f389")}`;
+
+              let output = installed == latest ?
+                `<ul></ul>` :
+                release_notes.replace(links, '<a href="#" onclick="window.open(\'$1\')"');
+
+              return `
+                <ha-icon icon="mdi:home-assistant"></ha-icon> <span class="title">Home Assistant ${installed}</span><br>
+                <p class="subtitle">${subtitle}</p>
+                ${output}
+              `;
+            }
+          ]]]
+        template:
+          - updater
+          - marked.js
+
+      - type: custom:button-card
+        entity: sensor.hass_version_installed
+        triggers_update:
+          - sensor.hass_version_latest
+          - sensor.hass_version_latest_beta
+        name: Uppdatera HASS
+        icon: mdi:update
+        styles:
+          card:
+            - width: max-content
+            - filter: >
+                [[[
+                  return entity.state === (states['sensor.hass_version_latest'].state || 
+                  states['sensor.hass_version_latest_beta'].state) ? 
+                    'opacity(30%)' : 
+                    'drop-shadow(3px 3px 5px #00000050)';
+                ]]]
+        tap_action:
+          services: |
+            [[[
+              hass.callService('browser_mod', 'toast', {
+                message: 'Startar watchtower...'
+              });
+              hass.callService('switch', 'turn_on', {
+                entity_id: 'switch.watchtower'
+              });
+            ]]]
+        template: icon_name
+
+      ### hacs
+      - type: custom:button-card
+        entity: sensor.hacs
+        state_display: |
+          [[[
+            if (entity) {
+              let output = '';
+              var arr = entity.attributes.repositories;
+              for (var i = 0; i < arr.length; i++) {
+                output += `<li><b><a href="#" onclick="window.open('https://github.com/${arr[i].name}/releases');">
+                  ${arr[i].display_name}</a></b> ${arr[i].installed_version} \u279e ${arr[i].available_version}</li>`
+              }
+              let count = arr.length;
+              let subtitle = count == 0
+                  ? `Inga uppdateringar`
+                  : `${count} ${count == 1 ? "uppdatering tillgänglig" : "uppdateringar tillgängliga"} 
+                    ${String.fromCodePoint("0x1f389")}`;
+              return `
+                <ha-icon icon="hacs:hacs"></ha-icon> <span class="title">Community Store ${states['sensor.template_hacs_version'].state}</span><br>
+                <p class="subtitle">${subtitle}</p>
+                <ul>${output}</ul>
+              `;
+            }
+          ]]]
+        template: updater
+
+      - type: custom:button-card
+        entity: sensor.hacs
+        name: Öppna HACS
+        icon: mdi:open-in-new
+        styles:
+          card:
+            - width: max-content
+            - filter: >
+                [[[
+                  return entity.state === '0' ?
+                    'opacity(30%)' :
+                    'drop-shadow(3px 3px 5px #00000050)';
+                ]]]
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            command: popup
+            title: Home Assistant Community Store
+            style: >
+              :host .content {
+                width: 75em;
+              }
             card:
-              - filter: >
-                  [[[
-                    return entity.state === (states['sensor.hass_version_latest'].state || 
-                    states['sensor.hass_version_latest_beta'].state) ? 
-                      'opacity(30%)' : 
-                      'drop-shadow(3px 3px 5px #00000050)';
-                  ]]]
-          tap_action:
-            services: |
-              [[[
-                hass.callService('browser_mod', 'toast', {
-                  message: 'Startar watchtower...'
-                });
-                hass.callService('switch', 'turn_on', {
-                  entity_id: 'switch.watchtower'
-                });
-              ]]]
-          template: icon_name
-
-        ### hacs
-        - type: markdown
-          content: >
-            <span><ha-icon icon="hacs:hacs"></ha-icon> Community Store {{ device_attr(device_id('sensor.hacs'), 'sw_version') }}</span><br>
-            {% if is_state('sensor.hacs', '0') or is_state('sensor.hacs', 'unknown') %}
-            **Inga uppdateringar**
-            {% else %}
-            **{{ states('sensor.hacs') }} {{ 'uppdatering tillgänglig' if is_state('sensor.hacs', '1') 
-            else 'uppdateringar tillgängliga' }}** {{ '\U0001f389' }}
-
-            {% for repo in state_attr('sensor.hacs', 'repositories') %}
-            * **[{{ repo.display_name }}](https://github.com/{{ repo.name }}/releases)** {{ repo.installed_version + ' \u279e ' + repo.available_version }}
-
-            {% endfor %}
-            {% endif %}
-
-        - type: custom:button-card
-          entity: sensor.hacs
-          name: Öppna HACS
-          icon: mdi:open-in-new
-          styles:
-            card:
-              - filter: >
-                  [[[
-                    return entity.state === '0' ?
-                      'opacity(30%)' :
-                      'drop-shadow(3px 3px 5px #00000050)';
-                  ]]]
-          tap_action:
-            action: fire-dom-event
-            browser_mod:
-              command: popup
-              title: Home Assistant Community Store
-              style: >
-                :host .content {
-                  width: 75em;
+              type: iframe
+              url: /hacs
+              aspect_ratio: 65%
+              style: |
+                ha-card {
+                  border-radius: 0 0 1em 1em;
                 }
-              card:
-                type: iframe
-                url: /hacs
-                aspect_ratio: 65%
-                style: |
-                  ha-card {
-                    border-radius: 0 0 1em 1em;
-                  }
-          template: icon_name
+        template: icon_name
 
-        ### other
-        - type: markdown
-          content: >
-            <span><ha-icon icon="mdi:update"></ha-icon> Övrigt</span><br>
-            {% set attributes = states.sensor.template_updates.attributes | default %}
-            {% for template in attributes if state_attr('sensor.template_updates', template) != 'false' %}
-              {%- if loop.first > 0 -%}
-                **{{ loop.length }} {{ 'uppdatering tillgänglig' if loop.length == 1 
-                else 'uppdateringar tillgängliga' }}** {{ '\U0001f389' }}
-              {% endif %}
-              * {{ state_attr('sensor.template_updates', template) }}
-            {%- else -%}
-              **Inga uppdateringar**
-            {% endfor %}
+      ### other
+      - type: custom:button-card
+        entity: sensor.template_updates
+        state_display: |
+          [[[
+            if (entity) {
+              let output = "";
+              let attr = Object.fromEntries(
+                Object.entries(entity.attributes).filter(([, value]) => {
+                  return value != false;
+                })
+              );
+              let count = Object.keys(attr).length;
+              for (const [, value] of Object.entries(attr)) {
+                output += `<li>${value}</li>`;
+              }
+              let subtitle = count == 0
+                  ? `Inga uppdateringar`
+                  : `${count} ${count == 1 ? "uppdatering tillgänglig" : "uppdateringar tillgängliga"} 
+                    ${String.fromCodePoint("0x1f389")}`;
+              return `
+                <ha-icon icon="mdi:update"></ha-icon> <span class="title">Övrigt</span><br>
+                <p class="subtitle">${subtitle}</p>
+                <ul>${output}</ul>
+              `;
+            }
+          ]]]
+        template: updater
