@@ -3,7 +3,7 @@ from aiogithubapi.common.const import ACCEPT_HEADERS
 
 NAME_LONG = "HACS (Home Assistant Community Store)"
 NAME_SHORT = "HACS"
-INTEGRATION_VERSION = "1.13.2"
+INTEGRATION_VERSION = "1.14.1"
 DOMAIN = "hacs"
 CLIENT_ID = "395a8e669c5de9f7c6e8"
 MINIMUM_HA_VERSION = "2021.2.0"

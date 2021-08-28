@@ -1,22 +1,22 @@
 """Data handler for HACS."""
-import os
 import asyncio
+import os
+
+from homeassistant.core import callback
 
 from custom_components.hacs.const import INTEGRATION_VERSION
 from custom_components.hacs.helpers.classes.manifest import HacsManifest
-from custom_components.hacs.helpers.functions.logger import getLogger
 from custom_components.hacs.helpers.functions.register_repository import (
     register_repository,
 )
 from custom_components.hacs.helpers.functions.store import (
     async_load_from_store,
-    async_save_to_store_default_encoder,
     async_save_to_store,
+    async_save_to_store_default_encoder,
     get_store_for_key,
 )
 from custom_components.hacs.share import get_hacs
-
-from homeassistant.core import callback
+from custom_components.hacs.utils.logger import getLogger
 
 
 def update_repository_from_storage(repository, storage_data):
@@ -56,6 +56,8 @@ class HacsData:
                 "view": self.hacs.configuration.frontend_mode,
                 "compact": self.hacs.configuration.frontend_compact,
                 "onboarding_done": self.hacs.configuration.onboarding_done,
+                "archived_repositories": self.hacs.common.archived_repositories,
+                "renamed_repositories": self.hacs.common.renamed_repositories,
             },
         )
         await self._async_store_content_and_repos()
@@ -132,6 +134,8 @@ class HacsData:
         self.hacs.configuration.frontend_mode = hacs.get("view", "Grid")
         self.hacs.configuration.frontend_compact = hacs.get("compact", False)
         self.hacs.configuration.onboarding_done = hacs.get("onboarding_done", False)
+        self.hacs.common.archived_repositories = hacs.get("archived_repositories", [])
+        self.hacs.common.renamed_repositories = hacs.get("renamed_repositories", {})
 
         # Repositories
         hass = self.hacs.hass

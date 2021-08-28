@@ -60,6 +60,8 @@ class HacsCommon:
     categories = []
     default = []
     installed = []
+    renamed_repositories = {}
+    archived_repositories = []
     skip = []
 
 
@@ -292,7 +294,7 @@ class Hacs(HacsBase, HacsHelpers):
             self.log.debug("Queue is already running")
             return
 
-        can_update = await get_fetch_updates_for(self.github)
+        can_update = await get_fetch_updates_for(self.githubapi)
         self.log.debug(
             "Can update %s repositories, items in queue %s",
             can_update,
@@ -388,7 +390,11 @@ class Hacs(HacsBase, HacsHelpers):
         """Get repositories from category."""
         repositories = await async_get_list_from_default(category)
         for repo in repositories:
+            if self.common.renamed_repositories.get(repo):
+                repo = self.common.renamed_repositories[repo]
             if is_removed(repo):
+                continue
+            if repo in self.common.archived_repositories:
                 continue
             repository = self.get_by_name(repo)
             if repository is not None:

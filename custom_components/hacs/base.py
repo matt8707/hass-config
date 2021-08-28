@@ -1,19 +1,19 @@
 """Base HACS class."""
 import logging
-from typing import List, Optional, TYPE_CHECKING
 import pathlib
+from typing import TYPE_CHECKING, List, Optional
 
 import attr
-from aiogithubapi.github import AIOGitHubAPI
+from aiogithubapi import GitHub, GitHubAPI
 from aiogithubapi.objects.repository import AIOGitHubAPIRepository
 from homeassistant.core import HomeAssistant
 
 from .enums import HacsDisabledReason, HacsStage
-from .helpers.functions.logger import getLogger
 from .hacsbase.configuration import Configuration
 from .models.core import HacsCore
 from .models.frontend import HacsFrontend
 from .models.system import HacsSystem
+from .utils.logger import getLogger
 
 if TYPE_CHECKING:
     from .helpers.classes.repository import HacsRepository
@@ -25,6 +25,8 @@ class HacsCommon:
     categories: List = []
     default: List = []
     installed: List = []
+    renamed_repositories = {}
+    archived_repositories = []
     skip: List = []
 
 
@@ -43,7 +45,8 @@ class HacsBaseAttributes:
     """Base HACS class."""
 
     _default: Optional[AIOGitHubAPIRepository]
-    _github: Optional[AIOGitHubAPI]
+    _github: Optional[GitHub]
+    _githubapi: Optional[GitHubAPI]
     _hass: Optional[HomeAssistant]
     _configuration: Optional[Configuration]
     _repository: Optional[AIOGitHubAPIRepository]
@@ -74,14 +77,24 @@ class HacsBase(HacsBaseAttributes):
         self._stage = value
 
     @property
-    def github(self) -> Optional[AIOGitHubAPI]:
+    def github(self) -> Optional[GitHub]:
         """Returns a AIOGitHubAPI object."""
         return self._github
 
     @github.setter
-    def github(self, value: AIOGitHubAPI) -> None:
+    def github(self, value: GitHub) -> None:
         """Set the value for the github property."""
         self._github = value
+
+    @property
+    def githubapi(self) -> Optional[GitHubAPI]:
+        """Returns a GitHubAPI object."""
+        return self._github_api
+
+    @githubapi.setter
+    def githubapi(self, value: GitHubAPI) -> None:
+        """Set the value for the githubapi property."""
+        self._github_api = value
 
     @property
     def repository(self) -> Optional[AIOGitHubAPIRepository]:
@@ -132,7 +145,8 @@ class HacsBase(HacsBaseAttributes):
         """Disable HACS."""
         self.system.disabled = True
         self.system.disabled_reason = reason
-        self.log.error("HACS is disabled - %s", reason)
+        if reason != HacsDisabledReason.REMOVED:
+            self.log.error("HACS is disabled - %s", reason)
 
     def enable(self) -> None:
         """Enable HACS."""
