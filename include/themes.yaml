@@ -190,6 +190,7 @@ frontend:
 
           $: |
             #root {
+              width: 100%;
               padding: 0 13% 25% 13%;
             }
 
@@ -264,6 +265,7 @@ frontend:
           --paper-item-icon-color: var(--state-icon-color);
           opacity: 0.2;
           transition: 0.4s;
+          height: initial;
         }
 
         .type-button:hover {
@@ -310,12 +312,6 @@ frontend:
           border-radius: 0.3em;
           overflow: hidden;
         }
-
-        /* * * * * * * * * * * * * * * * * *
-          *                                 *
-          *      CUSTOM CALENDAR CARD       *
-          *                                 *
-          * * * * * * * * * * * * * * * * * */
 
       card-mod-more-info-yaml: |
         .: |
