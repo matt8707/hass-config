@@ -2,7 +2,7 @@
 from aiogithubapi import AIOGitHubAPIException
 
 from custom_components.hacs.enums import HacsCategory
-from custom_components.hacs.helpers.classes.exceptions import HacsException
+from custom_components.hacs.exceptions import HacsException
 from custom_components.hacs.helpers.classes.repository import HacsRepository
 
 
@@ -61,9 +61,7 @@ class HacsAppdaemonRepository(HacsRepository):
                 self.content.path.remote = ""
 
         if self.content.path.remote == "apps":
-            addir = await self.repository_object.get_contents(
-                self.content.path.remote, self.ref
-            )
+            addir = await self.repository_object.get_contents(self.content.path.remote, self.ref)
             self.content.path.remote = addir[0].path
         self.content.objects = await self.repository_object.get_contents(
             self.content.path.remote, self.ref

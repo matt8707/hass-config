@@ -4,7 +4,6 @@ import os
 
 from homeassistant.core import callback
 
-from custom_components.hacs.const import INTEGRATION_VERSION
 from custom_components.hacs.helpers.classes.manifest import HacsManifest
 from custom_components.hacs.helpers.functions.register_repository import (
     register_repository,
@@ -26,9 +25,7 @@ def update_repository_from_storage(repository, storage_data):
     if repository.data.installed:
         return
 
-    repository.logger.debug(
-        "%s Should be installed but is not... Fixing that!", repository
-    )
+    repository.logger.debug("%s Should be installed but is not... Fixing that!", repository)
     repository.data.installed = True
 
 
@@ -58,6 +55,7 @@ class HacsData:
                 "onboarding_done": self.hacs.configuration.onboarding_done,
                 "archived_repositories": self.hacs.common.archived_repositories,
                 "renamed_repositories": self.hacs.common.renamed_repositories,
+                "etag_hacs_default": self.hacs._etag_hacs_default,  # pylint: disable=protected-access
             },
         )
         await self._async_store_content_and_repos()
@@ -136,6 +134,9 @@ class HacsData:
         self.hacs.configuration.onboarding_done = hacs.get("onboarding_done", False)
         self.hacs.common.archived_repositories = hacs.get("archived_repositories", [])
         self.hacs.common.renamed_repositories = hacs.get("renamed_repositories", {})
+        self.hacs._etag_hacs_default = hacs.get(  # pylint: disable=protected-access
+            "etag_hacs_default", {}
+        )
 
         # Repositories
         hass = self.hacs.hass
@@ -180,9 +181,7 @@ class HacsData:
         self.hacs.async_set_repository_id(repository, entry)
         repository.data.authors = repository_data.get("authors", [])
         repository.data.description = repository_data.get("description")
-        repository.releases.last_release_object_downloads = repository_data.get(
-            "downloads"
-        )
+        repository.releases.last_release_object_downloads = repository_data.get("downloads")
         repository.data.last_updated = repository_data.get("last_updated")
         repository.data.etag_repository = repository_data.get("etag_repository")
         repository.data.topics = repository_data.get("topics", [])
@@ -207,7 +206,7 @@ class HacsData:
             repository.status.first_install = False
 
         if repository_data["full_name"] == "hacs/integration":
-            repository.data.installed_version = INTEGRATION_VERSION
+            repository.data.installed_version = self.hacs.version
             repository.data.installed = True
 
         return True

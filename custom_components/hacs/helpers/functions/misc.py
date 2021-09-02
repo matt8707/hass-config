@@ -1,8 +1,7 @@
 """Helper functions: misc"""
 import re
-from functools import lru_cache
 
-from awesomeversion import AwesomeVersion
+from ...utils import version
 
 RE_REPOSITORY = re.compile(
     r"(?:(?:.*github.com.)|^)([A-Za-z0-9-]+\/[\w.-]+?)(?:(?:\.git)?|(?:[^\w.-].*)?)$"
@@ -20,18 +19,12 @@ def get_repository_name(repository) -> str:
             if "name" in repository.integration_manifest:
                 return repository.integration_manifest["name"]
 
-    return (
-        repository.data.full_name.split("/")[-1]
-        .replace("-", " ")
-        .replace("_", " ")
-        .title()
-    )
+    return repository.data.full_name.split("/")[-1].replace("-", " ").replace("_", " ").title()
 
 
-@lru_cache(maxsize=1024)
 def version_left_higher_then_right(left: str, right: str) -> bool:
     """Return a bool if source is newer than target, will also be true if identical."""
-    return AwesomeVersion(left) >= AwesomeVersion(right)
+    return version.version_left_higher_then_right(left, right)
 
 
 def extract_repository_from_url(url: str) -> str or None:

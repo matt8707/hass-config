@@ -2,12 +2,9 @@
 import json
 
 from aiogithubapi import AIOGitHubAPIException, AIOGitHubAPINotModifiedException, GitHub
+from aiogithubapi.const import ACCEPT_HEADERS
 
-from custom_components.hacs.const import HACS_GITHUB_API_HEADERS
-from custom_components.hacs.helpers.classes.exceptions import (
-    HacsException,
-    HacsNotModifiedException,
-)
+from custom_components.hacs.exceptions import HacsException, HacsNotModifiedException
 from custom_components.hacs.helpers.functions.template import render_template
 from custom_components.hacs.share import get_hacs
 
@@ -48,11 +45,15 @@ async def get_info_md_content(repository):
 
 async def get_repository(session, token, repository_full_name, etag=None):
     """Return a repository object or None."""
+    hacs = get_hacs()
     try:
         github = GitHub(
             token,
             session,
-            headers=HACS_GITHUB_API_HEADERS,
+            headers={
+                "User-Agent": f"HACS/{hacs.version}",
+                "Accept": ACCEPT_HEADERS["preview"],
+            },
         )
         repository = await github.get_repo(repository_full_name, etag)
         return repository, github.client.last_response.etag
@@ -95,9 +96,7 @@ def read_hacs_manifest():
     """Reads the HACS manifest file and returns the contents."""
     hacs = get_hacs()
     content = {}
-    with open(
-        f"{hacs.core.config_path}/custom_components/hacs/manifest.json"
-    ) as manifest:
+    with open(f"{hacs.core.config_path}/custom_components/hacs/manifest.json") as manifest:
         content = json.loads(manifest.read())
     return content
 
@@ -111,9 +110,7 @@ async def get_integration_manifest(repository):
     if not manifest_path in [x.full_path for x in repository.tree]:
         raise HacsException(f"No file found '{manifest_path}'")
     try:
-        manifest = await repository.repository_object.get_contents(
-            manifest_path, repository.ref
-        )
+        manifest = await repository.repository_object.get_contents(manifest_path, repository.ref)
         manifest = json.loads(manifest.content)
     except (Exception, BaseException) as exception:  # pylint: disable=broad-except
         raise HacsException(f"Could not read manifest.json [{exception}]")
@@ -197,9 +194,7 @@ def get_file_name_plugin(repository):
 
         else:
             for filename in valid_filenames:
-                if f"{location+'/' if location else ''}{filename}" in [
-                    x.full_path for x in tree
-                ]:
+                if f"{location+'/' if location else ''}{filename}" in [x.full_path for x in tree]:
                     repository.data.file_name = filename.split("/")[-1]
                     repository.content.path.remote = location
                     break
