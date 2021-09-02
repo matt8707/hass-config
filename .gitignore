@@ -13,6 +13,6 @@ www/Plex_Recently_Added/*
 www/fonts
 
 home-assistant.code-workspace
-home-assistant.log
+home-assistant.log*
 
 vacuum_last_cleaned.txt
