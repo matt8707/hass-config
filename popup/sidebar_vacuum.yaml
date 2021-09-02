@@ -139,8 +139,9 @@ browser_mod:
                         ? 'vacuum.start'
                         : 'vacuum.pause';
                     ]]]
-                  service_data: >
-                    [[[ return entity.entity_id; ]]]
+                  service_data:
+                    entity_id: >
+                      [[[ return entity.entity_id; ]]]
                 template: icon_only
 
               - type: custom:button-card
