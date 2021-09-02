@@ -9,11 +9,11 @@ homekit:
   - ip_address: !secret homekit_ip_address
     filter:
       include_entities:
-        - switch.playstation_5
+        - switch.deltaco_sh_p01
         - switch.computer_imac
         - switch.wemo_monitors
-        - fan.air_purifier
-        - fan.sovrum_anslut
+        - climate.ac
+        - switch.playstation_5
         - fan.studio_wemo
         - person.matte
         - person.sanja
@@ -21,20 +21,20 @@ homekit:
         - script.home_arrive
         - script.samsung_tv_energy_saving
         - vacuum.valetudo_robot
-        - climate.luftkylare
+        - fan.climate_fan_only
     entity_config:
-      switch.playstation_5:
-        name: Playstation
+      switch.deltaco_sh_p01:
+        name: Balkong
       switch.computer_imac:
         name: Dator
       switch.wemo_monitors:
         name: Monitorer
-      fan.air_purifier:
-        name: Luftrenare
-      fan.sovrum_anslut:
-        name: Fläkt
+      climate.ac:
+        name: Klimat
+      switch.playstation_5:
+        name: Playstation
       fan.studio_wemo:
-        name: Fläkt 2
+        name: Fläkt
       person.matte:
         name: Mattias
       person.sanja:
@@ -47,6 +47,8 @@ homekit:
         name: Eko
       vacuum.valetudo_robot:
         name: Morty
+      fan.climate_fan_only:
+        name: AC Fläkt
 
   - name: HASS Bridge Sony
     ip_address: !secret homekit_ip_address

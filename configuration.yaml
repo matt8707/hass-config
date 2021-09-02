@@ -73,7 +73,7 @@ smartir:
 
 climate:
   - platform: smartir
-    name: Klimat
+    name: AC
     unique_id: EXP26U758CW
     device_code: 1703
     controller_data: remote.broadlink_remote
@@ -131,8 +131,8 @@ ios:
             title: Uppdatera
 
 notify:
-  - name: vacuum_last_cleaned
-    platform: file
+  - platform: file
+    name: vacuum_last_cleaned
     filename: vacuum_last_cleaned.txt
     timestamp: true
 

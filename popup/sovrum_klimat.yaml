@@ -14,7 +14,7 @@ browser_mod:
     cards:
 
       - type: thermostat
-        entity: climate.luftkylare
+        entity: climate.ac
 
       - type: entities
         card_mod:

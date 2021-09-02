@@ -18,7 +18,7 @@
     show_state: true
     show_icon: false
     state_display: >
-      [[[ if (variables.state === true) return 'Okänd'; ]]]
+      [[[ if (variables.state === true) return 'Okänt'; ]]]
     tap_action:
       ui_sound_tablet: |
         [[[
@@ -75,19 +75,19 @@
         - padding: 10%
         - --mdc-ripple-color: >
             [[[
-              return (variables.state === 'on' || variables.state === 'home' || variables.state === 'cool') ?
+              return (variables.state === 'on' || variables.state === 'home' || variables.state === 'cool' || variables.state === 'fan_only') ?
                 'rgb(0, 0, 0)' :
                 'rgba(255, 255, 255, 0.3)';
             ]]]
         - color: >
             [[[
-              return (variables.state === 'on' || variables.state === 'home' || variables.state === 'cool') ?
+              return (variables.state === 'on' || variables.state === 'home' || variables.state === 'cool' || variables.state === 'fan_only') ?
                 'rgba(0, 0, 0, 0.6)' :
                 'rgba(255, 255, 255, 0.3)';
             ]]]
         - background-color: >
             [[[
-              return (variables.state === 'on' || variables.state === 'home' || variables.state === 'cool') ?
+              return (variables.state === 'on' || variables.state === 'home' || variables.state === 'cool' || variables.state === 'fan_only') ?
                 'rgba(255, 255, 255, 0.8)' :
                 'rgba(115, 115, 115, 0.2)';
             ]]]
@@ -368,7 +368,7 @@
       circle: >
         [[[
           const input = variables.circle_input == null ? ' ' : `${parseInt(variables.circle_input)}<tspan font-size="10">°C</tspan>`;
-          const stroke_color = variables.state === 'cool' ? '#b2b2b2' : 'none';
+          const stroke_color = variables.state === 'cool' || variables.state === 'fan_only' ? '#b2b2b2' : 'none';
           const fill_color = variables.state === 'off' ? 'rgba(255,255,255,0.04)' : 'none';
           return `
             <svg viewBox="0 0 50 50">
@@ -842,7 +842,7 @@
           const number = data[1].number == undefined ? '(' + data[1].aired.split('-')[0] + ')' : data[1].number;
           return `${data[1].title} ${number}`;
         }
-        return 'Okänd';
+        return 'Okänt';
       ]]]
     custom_fields:
       blur: >
@@ -1602,7 +1602,7 @@
           - width: 78%
           - margin-left: -10%
           - fill: >
-              [[[ return variables.state === 'cool' ? '#5daeea' : '#9da0a2'; ]]]
+              [[[ return variables.state === 'cool' || variables.state === 'fan_only' ? '#5daeea' : '#9da0a2'; ]]]
     custom_fields:
       icon: >
         <svg viewBox="0 0 50 50">

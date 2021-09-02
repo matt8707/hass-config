@@ -87,7 +87,10 @@ views:
                 tap_action:
                   !include popup/sidebar_update.yaml
                 hold_action:
-                  action: none
+                  action: call-service
+                  service: homeassistant.update_entity
+                  service_data:
+                    entity_id: sensor.hacs
 
       #################################################
       #                                               #
@@ -216,7 +219,7 @@ views:
               - icon_lamp
 
           - type: custom:button-card
-            entity: climate.luftkylare
+            entity: climate.ac
             name: Klimat
             hold_action:
               !include popup/sovrum_klimat.yaml
@@ -224,12 +227,11 @@ views:
               - base
               - icon_climate
               - climate
-              - loader
             variables:
               circle_input: >
                 [[[
                   if (entity) {
-                    return entity.state == 'on' ?
+                    return entity.state == 'cool' ?
                       entity.attributes.temperature :
                       entity.attributes.current_temperature;
                   }
