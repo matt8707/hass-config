@@ -9,7 +9,6 @@ wifi:
   fast_connect: true
 
   manual_ip:
-    static_ip: !secret static_ip_gosund_1
     gateway: !secret gateway
     subnet: !secret subnet
 
