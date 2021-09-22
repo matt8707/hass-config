@@ -12,8 +12,17 @@
         [[[ return entity === undefined || entity.state; ]]]
       timeout: >
         [[[ return entity === undefined || Date.now() - Date.parse(entity.last_changed); ]]]
-      light_color: >
-        [[[ return entity === undefined || entity.state === 'unavailable' ? 'var(--state-icon-color)' : 'var(--button-card-light-color-no-temperature)'; ]]]
+      consider_on: >
+        [[[
+          var state = entity === undefined || entity.state;
+          return (
+            state == 'on' ||
+            state == 'home' ||
+            state == 'cool' ||
+            state == 'fan_only' ||
+            state == 'playing'
+          );
+        ]]]
     aspect_ratio: 1/1
     show_state: true
     show_icon: false
@@ -75,58 +84,85 @@
         - padding: 10%
         - --mdc-ripple-color: >
             [[[
-              return (variables.state === 'on' || variables.state === 'home' || variables.state === 'cool' || variables.state === 'fan_only') ?
+              return variables.consider_on ?
                 'rgb(0, 0, 0)' :
                 'rgba(255, 255, 255, 0.3)';
             ]]]
         - color: >
             [[[
-              return (variables.state === 'on' || variables.state === 'home' || variables.state === 'cool' || variables.state === 'fan_only') ?
+              return variables.consider_on ?
                 'rgba(0, 0, 0, 0.6)' :
                 'rgba(255, 255, 255, 0.3)';
             ]]]
         - background-color: >
             [[[
-              return (variables.state === 'on' || variables.state === 'home' || variables.state === 'cool' || variables.state === 'fan_only') ?
+              return variables.consider_on ?
                 'rgba(255, 255, 255, 0.8)' :
                 'rgba(115, 115, 115, 0.2)';
             ]]]
     extra_styles: |
-      #name, #state {
-        font-size: 1.34vw;
-        letter-spacing: 0.05vw;
-      }
-      /* portrait */
-      @media screen and (max-width: 1200px) {
-        #name, #state {
-          font-size: 2vw;
-          letter-spacing: 0.05vw;
+      [[[
+        if (entity) {
+          let hs = entity.attributes.hs_color == undefined;
+          let h = hs || entity.attributes.hs_color[0];
+          let s = hs || entity.attributes.hs_color[1];
+          let l_min = 28;
+          let l_max = 48;
+          let l_calc =
+            ((entity.attributes.brightness / 2.54) * (l_max - l_min)) / 100 + l_min;
+          var light_color =
+            entity.attributes.color_mode === 'color_temp'
+              ? `hsl(204, 58%, ${l_calc}%);`
+              : `hsl(${h}, ${s}%, ${l_calc}%);`;
         }
-      }
-      /* phone */
-      @media screen and (max-width: 800px) {
-        #name, #state {
-          font-size: 3.1vw;
-          letter-spacing: 0.12vw;
-        }
-      }
-      @keyframes card_bounce {
-        0% {
-          transform: scale(1);
-        }
-        15% {
-          transform: scale(0.9);
-        }
-        25% {
-          transform: scale(1);
-        }
-        30% {
-          transform: scale(0.98);
-        }
-        100% {
-          transform: scale(1);
-        }
-      }
+        return `
+          svg {
+            --light-color:
+            ${ variables.state === 'on' && entity.attributes.brightness != undefined
+                ? light_color
+                : variables.state === 'on' && entity.attributes.brightness == undefined
+                ? 'var(--state-icon-active-color);'
+                : 'var(--state-icon-color);'
+            }
+          }
+
+          #name, #state {
+            font-size: 1.34vw;
+            letter-spacing: 0.05vw;
+          }
+          /* portrait */
+          @media screen and (max-width: 1200px) {
+            #name, #state {
+              font-size: 2vw;
+              letter-spacing: 0.05vw;
+            }
+          }
+          /* phone */
+          @media screen and (max-width: 800px) {
+            #name, #state {
+              font-size: 3.1vw;
+              letter-spacing: 0.12vw;
+            }
+          }
+          @keyframes card_bounce {
+            0% {
+              transform: scale(1);
+            }
+            15% {
+              transform: scale(0.9);
+            }
+            25% {
+              transform: scale(1);
+            }
+            30% {
+              transform: scale(0.98);
+            }
+            100% {
+              transform: scale(1);
+            }
+          }
+        `
+      ]]]
 
   #################################################
   #                                               #
@@ -1138,7 +1174,7 @@
                 }
               </style>
               <path fill="#9da0a2" d="M27.4 47.3h-4.9s-.7.1-.7.8.4.9.7.9h4.9c.3 0 .7-.1.7-.9s-.7-.8-.7-.8zm3.3-2.9H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9-.1-.8-.9-.8-.9-.8zm0-3H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9-.1-.8-.9-.8-.9-.8zm0-2.9H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9s-.9-.8-.9-.8zm5.2-23.2c-3.3-5.3-7-5.6-10.9-5.6-3.8 0-8.4.4-10.9 5.6-.1.1-.1.3.1.7.4.8 3.3 7.2 3.2 18.8 0 1.1-.1 1.6 0 1.7 0 .1 0 .7 1.1.7h13c1 0 1-.5 1.1-.7v-1.7c-.1-11.6 2.8-18 3.2-18.8.1-.4.1-.5.1-.7"/>
-              <path class="${state}" fill="${variables.light_color}" d="M14.1 15.3c3.4-.3 7-.4 10.9-.4 3.8 0 7.5.2 10.9.4.4-.4.7-.8.9-1.1C39 8.5 38.9 6.5 38.9 6c-.2-4.4-8.4-5-12.1-5h0-3.4c-3.7 0-12 .5-12.1 5 0 .5-.1 2.5 2.1 8.2 0 .3.3.8.7 1.1z"/>
+              <path class="${state}" fill="var(--light-color)" d="M14.1 15.3c3.4-.3 7-.4 10.9-.4 3.8 0 7.5.2 10.9.4.4-.4.7-.8.9-1.1C39 8.5 38.9 6.5 38.9 6c-.2-4.4-8.4-5-12.1-5h0-3.4c-3.7 0-12 .5-12.1 5 0 .5-.1 2.5 2.1 8.2 0 .3.3.8.7 1.1z"/>
             </svg>
           `;
         ]]]
@@ -1183,7 +1219,7 @@
                 }
               </style>
               <path fill="#9da0a2" d="M26.4 25.6c.6-.3 1.1-.7 1.1-1.3L25 17.9l-2.5 6.4c0 .7.6 1.1 1.1 1.3v20.8h-5.5v2.7h13.7v-2.7h-5.5V25.6z"/>
-              <path class="${state}" fill="${variables.light_color}" d="M24.6.9l-9.4.5c-.6.1-1.9 0-2.5 2.1s-2.4 9.1-4 16.9c-.2.7-.5 2-.5 2.3s-.4 1.6.9 1.6c.8.1 7.4.3 15.9.3 8.6 0 15.1-.3 15.9-.3 1.3-.1.9-1.3.9-1.6s-.3-1.6-.5-2.3c-1.6-7.8-3.4-14.8-4-16.9s-1.9-2-2.5-2.1c-1.6-.2-6.9-.4-9.4-.5"/>
+              <path class="${state}" fill="var(--light-color)" d="M24.6.9l-9.4.5c-.6.1-1.9 0-2.5 2.1s-2.4 9.1-4 16.9c-.2.7-.5 2-.5 2.3s-.4 1.6.9 1.6c.8.1 7.4.3 15.9.3 8.6 0 15.1-.3 15.9-.3 1.3-.1.9-1.3.9-1.6s-.3-1.6-.5-2.3c-1.6-7.8-3.4-14.8-4-16.9s-1.9-2-2.5-2.1c-1.6-.2-6.9-.4-9.4-.5"/>
             </svg>
           `;
         ]]]
@@ -1197,7 +1233,7 @@
           - margin-left: 1%
           - fill: >
               [[[
-                return variables.state === 'on' ? '#616161' : '#9da0a2';
+                return variables.state === 'playing' ? '#616161' : '#9da0a2';
               ]]]
     custom_fields:
       icon: >
@@ -1241,7 +1277,7 @@
               <stop offset="1" stop-color="#7fdbe9"/>
             </linearGradient>
           `;
-          if (variables.state === 'on' && variables.timeout < 2000) {
+          if (variables.state === 'playing' && variables.timeout < 2000) {
             return `
               <svg viewBox="0 0 50 50"> ${style} ${gradient} 
                 <path d="M2.9,8h44.3v29.9H2.9V8z" fill="#20262890"/>
@@ -1249,7 +1285,7 @@
               </svg>
             `;
           }
-          if (variables.state === 'on' && variables.timeout > 2000) {
+          if (variables.state === 'playing' && variables.timeout > 2000) {
             return `
               <svg viewBox="0 0 50 50"> ${gradient} 
                 <path d="M2.9,8h44.3v29.9H2.9V8z" fill="#20262890"/>
@@ -1423,7 +1459,7 @@
                   <path class="${state}" d="M0 9.1h24l8.3 8.8H50V-9H0z"/>
                 </clipPath>
               </defs>
-              <path class="${state}" fill="${variables.light_color}" d="M25.5 46.4s1.4.5 10.4-8.2c.5-.4 6.3-6.3 5.8-7.1-.7-.8-18.6-19.5-18.6-19.5s-.6-.9-8.6 6.4c-.6.5-8.7 8-7.7 9.1l18.7 19.3z"/>
+              <path class="${state}" fill="var(--light-color)" d="M25.5 46.4s1.4.5 10.4-8.2c.5-.4 6.3-6.3 5.8-7.1-.7-.8-18.6-19.5-18.6-19.5s-.6-.9-8.6 6.4c-.6.5-8.7 8-7.7 9.1l18.7 19.3z"/>
             </svg>
           `;
         ]]]
@@ -1590,7 +1626,7 @@
                 }
               </style>
               <path fill="#9da0a2" d="M26.5 21.8l3.8-6.1H19.7l3.8 6.1c-5 .7-6.3 5.8-5.7 10.2.7 5.1 3.2 10.1 5.7 14.4H19v2.5h11.8v-2.5h-4.5C29 42 31.4 37 32.1 32c.6-4.4-.6-9.4-5.6-10.2zm3.1 9.1c-.3 4.3-2.3 8.7-4.4 12.4l-.2.1v.1-.1c-1.8-3-3.3-6.4-4.1-9.7-.7-3.1-1-7.2 2.7-8.4 1.4-.5 3.1-.1 4.2.8 1.6 1 1.8 3 1.8 4.8z"/>
-              <path class="${state}" fill="${variables.light_color}" d="M38.1 20L35.7 3.8c-.3-1.9-.4-1.7-.6-2-.9-.6-2.3-.7-2.3-.7H17.4s-1.4 0-2.3.7c-.2.3-.3.1-.6 2C14 5.7 11.9 20 11.9 20s5.8.3 13.4.3h0c7.3 0 12.8-.3 12.8-.3z"/>
+              <path class="${state}" fill="var(--light-color)" d="M38.1 20L35.7 3.8c-.3-1.9-.4-1.7-.6-2-.9-.6-2.3-.7-2.3-.7H17.4s-1.4 0-2.3.7c-.2.3-.3.1-.6 2C14 5.7 11.9 20 11.9 20s5.8.3 13.4.3h0c7.3 0 12.8-.3 12.8-.3z"/>
             </svg>
           `;
         ]]]
@@ -1703,7 +1739,7 @@
             state = 'on_timeout';
           }
           return `
-            <svg viewBox="0 0 50 50" fill="${variables.light_color}">
+            <svg viewBox="0 0 50 50" fill="var(--light-color)">
               <style>
                 @keyframes on {
                   0% {
