@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 from html.parser import HTMLParser
 
@@ -88,6 +88,7 @@ def main():
     district_choices = [
         ("Böblingen", "8215c62763967916979e0e8566b6172e"),
         ("Kitzingen", "594f805eb33677ad5bc645aeeeaf2623"),
+        ("Freudenstadt", "595f903540a36fe8610ec39aa3a06f6a"),
         ("Göppingen", "365d791b58c7e39b20bb8f167bd33981"),
         ("Landsberg am Lech", "7df877d4f0e63decfb4d11686c54c5d6"),
         ("Landshut", "bd0c2d0177a0849a905cded5cb734a6f"),

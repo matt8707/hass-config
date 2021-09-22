@@ -31,6 +31,12 @@ TEST_CASES = {
         "f_id_strasse_hnr": "20417",
         # "f_abfallarten": [691,692,696,695,694,701,700,693,703,704,697,699],
     },
+    "Freudenstadt": {
+        "key": "595f903540a36fe8610ec39aa3a06f6a",
+        "f_id_kommune": 3447,
+        "f_id_bezirk": 22017,
+        "f_id_strasse": 22155,
+    },
 }
 
 MODUS_KEY = "d6c5855a62cf32a4dadbc2831f0f295f"

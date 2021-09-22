@@ -6,7 +6,7 @@ from waste_collection_schedule.service.ICS import ICS
 
 TITLE = "BSR"
 DESCRIPTION = "Source for Berliner Stadtreinigungsbetriebe waste collection."
-URL = "bsr.de"
+URL = "https://bsr.de"
 TEST_CASES = {
     "Bahnhofstr., 12159 Berlin (Tempelhof-Schöneberg)": {
         "abf_strasse": "Bahnhofstr., 12159 Berlin (Tempelhof-Schöneberg)",

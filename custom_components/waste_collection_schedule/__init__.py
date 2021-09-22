@@ -44,7 +44,7 @@ CUSTOMIZE_CONFIG = vol.Schema(
         vol.Optional(CONF_ALIAS): cv.string,
         vol.Optional(CONF_SHOW): cv.boolean,
         vol.Optional(CONF_ICON): cv.icon,
-        vol.Optional(CONF_PICTURE): cv.url,
+        vol.Optional(CONF_PICTURE): cv.string,
     }
 )
 

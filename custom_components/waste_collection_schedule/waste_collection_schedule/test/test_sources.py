@@ -1,10 +1,16 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 import argparse
 import importlib
+import re
 import site
 import traceback
 from pathlib import Path
+
+import yaml
+
+SECRET_FILENAME = "secrets.yaml"
+SECRET_REGEX = re.compile(r"!secret\s(\w+)")
 
 
 def main():
@@ -16,6 +22,18 @@ def main():
         "-l", "--list", action="store_true", help="List retrieved entries"
     )
     args = parser.parse_args()
+
+    # read secrets.yaml
+    secrets = {}
+    try:
+        with open(SECRET_FILENAME) as stream:
+            try:
+                secrets = yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                print(exc)
+    except FileNotFoundError:
+        # ignore missing secrets.yaml
+        pass
 
     package_dir = Path(__file__).resolve().parents[2]
     source_dir = package_dir / "waste_collection_schedule" / "source"
@@ -44,9 +62,12 @@ def main():
         assert "URL" in names
         assert "TEST_CASES" in names
 
-        # create source
+        # run through all test-cases
         for name, tc in module.TEST_CASES.items():
-            # run through all test-cases
+            # replace secrets in arguments
+            replace_secret(secrets, tc)
+
+            # create source
             source = module.Source(**tc)
             try:
                 result = source.fetch()
@@ -58,6 +79,21 @@ def main():
                 exit()
             except Exception:
                 print(traceback.format_exc())
+
+
+def replace_secret(secrets, d):
+    for key in d.keys():
+        value = d[key]
+        if isinstance(value, dict):
+            replace_secret(secrets, value)
+        elif isinstance(value, str):
+            match = SECRET_REGEX.fullmatch(value)
+            if match is not None:
+                id = match.group(1)
+                if id in secrets:
+                    d[key] = secrets[id]
+                else:
+                    print(f"identifier '{id}' not found in {SECRET_FILENAME}")
 
 
 if __name__ == "__main__":
