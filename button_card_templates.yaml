@@ -1233,7 +1233,7 @@
           - margin-left: 1%
           - fill: >
               [[[
-                return variables.state === 'playing' ? '#616161' : '#9da0a2';
+                return (variables.state === 'on' || variables.state === 'playing') ? '#616161' : '#9da0a2';
               ]]]
     custom_fields:
       icon: >
@@ -1277,7 +1277,7 @@
               <stop offset="1" stop-color="#7fdbe9"/>
             </linearGradient>
           `;
-          if (variables.state === 'playing' && variables.timeout < 2000) {
+          if (variables.state === 'on' || variables.state === 'playing' && variables.timeout < 2000) {
             return `
               <svg viewBox="0 0 50 50"> ${style} ${gradient} 
                 <path d="M2.9,8h44.3v29.9H2.9V8z" fill="#20262890"/>
@@ -1285,7 +1285,7 @@
               </svg>
             `;
           }
-          if (variables.state === 'playing' && variables.timeout > 2000) {
+          if (variables.state === 'on' || variables.state === 'playing' && variables.timeout > 2000) {
             return `
               <svg viewBox="0 0 50 50"> ${gradient} 
                 <path d="M2.9,8h44.3v29.9H2.9V8z" fill="#20262890"/>
