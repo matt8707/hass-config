@@ -799,6 +799,7 @@
       state:
         - z-index: 3
       card:
+        - background-color: rgba(115, 115, 115, 0.2)
         - padding: 5%
         - border-radius: calc(var(--custom-button-card-border-radius) / 2)
         - backdrop-filter: blur(0) #fix chrome bug
