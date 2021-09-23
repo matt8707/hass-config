@@ -210,20 +210,22 @@ browser_mod:
               left: 50%
               width: 100%
 
-          - type: image
-            image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 45' /%3E"
-            title: null
+          - type: custom:button-card
+            aspect_ratio: 1/1
             tap_action:
               action: call-service
               service: input_select.select_option
               service_data:
                 entity_id: input_select.roborock_zone
                 option: Ingen vald
+            styles:
+              card:
+                - --mdc-ripple-color: none
+                - cursor: default
             style:
               top: 50%
               left: 50%
               width: 100%
-              cursor: default
 
           - type: custom:button-card
             variables:
