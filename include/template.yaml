@@ -6,6 +6,56 @@ template:
   #                                                  #
   ####################################################
 
+  select:
+    - name: vacuum_speed
+      state: >
+        {{ state_attr('vacuum.morty', 'fan_speed') }}
+      options: >
+        {{ state_attr('vacuum.morty', 'fan_speed_list') }}
+      select_option:
+        service: vacuum.set_fan_speed
+        target:
+          entity_id: vacuum.morty
+        data:
+          fan_speed: >
+            {{ option }}
+
+    - name: hdmi_bravia
+      state: >
+        {% set entity_id = 'media_player.sony_bravia_tv' %}
+        {% if state_attr(entity_id, 'source') == None %}
+          {{ state_attr(entity_id, 'source_list')[1] }}
+        {% else %}
+          {{ state_attr(entity_id, 'source') }}
+        {% endif %}
+      options: >
+        {{ state_attr('media_player.sony_bravia_tv', 'source_list') }}
+      select_option:
+        service: media_player.select_source
+        target:
+          entity_id: media_player.sony_bravia_tv
+        data:
+          source: >
+            {{ option }}
+
+    - name: hdmi_samsung
+      state: >
+        {% set entity_id = 'media_player.samsung_tv' %}
+        {% if state_attr(entity_id, 'source') == None %}
+          {{ state_attr(entity_id, 'source_list')[1] }}
+        {% else %}
+          {{ state_attr(entity_id, 'source') }}
+        {% endif %}
+      options: >
+        {{ state_attr('media_player.samsung_tv', 'source_list') }}
+      select_option:
+        service: media_player.select_source
+        target:
+          entity_id: media_player.samsung_tv
+        data:
+          source: >
+            {{ option }}
+
   sensor:
     - unique_id: sidebar
       state: template
@@ -108,7 +158,7 @@ template:
           {%- endif -%}
           </b>
         vacuum: |
-          {% set entity_id = 'vacuum.valetudo_robot' %}
+          {% set entity_id = 'vacuum.morty' %}
           {%- if is_state(entity_id, 'cleaning') -%}
             <b>Morty dammsuger</b>
           {%- elif is_state(entity_id, 'returning') -%}
@@ -219,13 +269,6 @@ template:
           {% if installed != latest %}
             <b><a href="#" onclick="window.open('{{ url }}');">ESPHome</a></b> {{ installed + ' \u279e ' + latest }}
           {% endif %}
-        valetudo: >
-          {% set installed = device_attr(device_id('vacuum.valetudo_robot'), 'sw_version').split(' ')[0] %}
-          {% set latest = states('sensor.valetudo_version_latest') %}
-          {% set url = 'https://github.com/Hypfer/Valetudo/releases/latest' %}
-          {% if installed != latest %}
-            <b><a href="#" onclick="window.open('{{ url }}');">Valetudo</a></b> {{ installed + ' \u279e ' + latest }}
-          {% endif %}
         playactor: >
           {% set installed = states('sensor.playactor_version_installed') %}
           {% set latest = states('sensor.playactor_version_latest') %}
@@ -257,46 +300,6 @@ template:
             <b>Synology DSM</b> {{ installed + ' \u279e ' + latest }}
           {% endif %}
 
-    - unique_id: imac_cpu
-      icon: mdi:chip
-      unit_of_measurement: '%'
-      state: >
-        {{ ((states('sensor.netdata_imac_cpu_system') | float
-        + states('sensor.netdata_imac_cpu_user') | float)) | round(1) }}
-
-    - unique_id: imac_mem
-      icon: mdi:memory
-      unit_of_measurement: '%'
-      state: >
-        {% set entity_id = states('sensor.netdata_imac_ram_free') | float %}
-        {% set capacity = 32000 %}
-        {{ (100 - (entity_id / capacity * 100)) | round(1) }}
-
-    - unique_id: imac_system_ssd
-      icon: custom:imac-ssd
-      unit_of_measurement: '%'
-      state: >
-        {% set entity_id = states('sensor.netdata_imac_disk_system') | float %}
-        {% set convert_gb = 1.07374182 %}
-        {% set capacity = 255.85 %}
-        {{ 100 - (entity_id * convert_gb / capacity * 100) | round }}
-
-    - unique_id: imac_macintosh_hd
-      icon: mdi:harddisk
-      unit_of_measurement: '%'
-      state: >
-        {% set entity_id = states('sensor.netdata_imac_disk_macintosh_hd') | float %}
-        {% set convert_gb = 1.07374182 %}
-        {% set capacity = 999.86 %}
-        {{ 100 - (entity_id * convert_gb / capacity * 100) | round }}
-
-    - unique_id: imac_uptime
-      icon: mdi:update
-      device_class: timestamp
-      state: >
-        {% set seconds = states('sensor.netdata_imac_uptime') | int %}
-        {{ (as_timestamp(now()) - seconds) | timestamp_custom('%Y-%m-%dT%H:%M:%S') }}
-
     - unique_id: dockermon_mem
       icon: mdi:memory
       state: >
@@ -327,29 +330,35 @@ template:
         {{ prt('idle', 'Viloläge') }}
         {{ prt('Off', 'Av') }}
 
-    - unique_id: roborock_filter
+    - unique_id: vacuum_filter
       icon: custom:roborock-filter
       unit_of_measurement: '%'
       state: >
-        {{ (states('sensor.main_filter') | float / 60 / 150 * 100) | round }}
+        {{ (state_attr('vacuum.morty', 'filter_left') / 1.5) | round }}
 
-    - unique_id: roborock_mainbrush
+    - unique_id: vacuum_mainbrush
       icon: custom:roborock-mainbrush
       unit_of_measurement: '%'
       state: >
-        {{ (states('sensor.main_brush') | float / 60 / 300 * 100) | round }}
+        {{ (state_attr('vacuum.morty', 'main_brush_left') / 3) | round }}
 
-    - unique_id: roborock_sensors
+    - unique_id: vacuum_sensors
       icon: custom:roborock-sensor
       unit_of_measurement: '%'
       state: >
-        {{ (states('sensor.sensor_cleaning') | float / 60 / 30 * 100) | round }}
+        {{ (state_attr('vacuum.morty', 'sensor_dirty_left') / 0.3) | round }}
 
-    - unique_id: roborock_sidebrush
+    - unique_id: vacuum_sidebrush
       icon: custom:roborock-sidebrush
       unit_of_measurement: '%'
       state: >
-        {{ (states('sensor.right_brush') | float / 60 / 200 * 100) | round }}
+        {{ (state_attr('vacuum.morty', 'side_brush_left') / 2) | round }}
+
+    - unique_id: vacuum_lastclean
+      icon: mdi:calendar-clock
+      device_class: timestamp
+      state: >
+        {{ state_attr('vacuum.morty', 'clean_stop') | replace(' ','T') }}
 
     - unique_id: fullykiosk_storage
       icon: mdi:sd

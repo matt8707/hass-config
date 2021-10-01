@@ -53,22 +53,22 @@ browser_mod:
                   entity_row: true
                   entities:
 
-                    - entity: sensor.template_imac_cpu
+                    - entity: sensor.imac_cpu
                       tap_action:
                         action: call-service
                         service: homeassistant.update_entity
                         service_data:
-                          entity_id: sensor.template_imac_cpu
+                          entity_id: sensor.imac_cpu
 
-                    - entity: sensor.template_imac_mem
+                    - entity: sensor.imac_mem
                       tap_action:
                         action: call-service
                         service: homeassistant.update_entity
                         service_data:
-                          entity_id: sensor.template_imac_mem
+                          entity_id: sensor.imac_mem
 
                 - entity: automation.macos_notification_motion_hall
-                - entity: sensor.template_imac_uptime
+                - entity: sensor.imac_uptime
 
                 - entity: sensor.template_imac_vpn
                   tap_action:
@@ -94,19 +94,19 @@ browser_mod:
                   entity_row: true
                   entities:
 
-                    - entity: sensor.template_imac_system_ssd
+                    - entity: sensor.imac_system_ssd
                       tap_action:
                         action: call-service
                         service: homeassistant.update_entity
                         service_data:
-                          entity_id: sensor.template_imac_system_ssd
+                          entity_id: sensor.imac_system_ssd
 
-                    - entity: sensor.template_imac_macintosh_hd
+                    - entity: sensor.imac_macintosh_hd
                       tap_action:
                         action: call-service
                         service: homeassistant.update_entity
                         service_data:
-                          entity_id: sensor.template_imac_macintosh_hd
+                          entity_id: sensor.imac_macintosh_hd
 
             - type: horizontal-stack
               cards:

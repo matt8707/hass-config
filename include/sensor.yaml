@@ -19,10 +19,6 @@ sensor:
     source: container
     beta: true
 
-  - platform: file
-    file_path: vacuum_last_cleaned.txt
-    name: vacuum_last_cleaned
-
   - platform: filesize
     file_paths:
       - /config/home-assistant.log
@@ -52,34 +48,6 @@ sensor:
       - time
       - date
 
-  - platform: netdata
-    host: !secret netdata_host
-    port: !secret netdata_port
-    name: netdata_imac
-    resources:
-      cpu_user:
-        data_group: system.cpu
-        element: user
-      cpu_system:
-        data_group: system.cpu
-        element: system
-      ram_free:
-        data_group: system.ram
-        element: free
-      uptime:
-        data_group: system.uptime
-        element: uptime
-      disk_system:
-        data_group: disk_space./
-        element: avail
-      disk_macintosh_hd:
-        data_group: disk_space./Volumes/Macintosh HD
-        element: avail
-    scan_interval: 86400
-    # code /usr/local/etc/netdata/netdata.conf
-    # bind to = 0.0.0.0
-    # http://localhost:19999/api/v1/allmetrics?format=json
-
   - platform: unifigateway
     username: !secret unifi_username
     password: !secret unifi_password
@@ -90,18 +58,11 @@ sensor:
       - wan
 
   - platform: rest
-    name: valetudo_version_latest
-    resource: https://api.github.com/repos/Hypfer/Valetudo/releases/latest
+    name: esphome_version_latest
+    resource: https://api.github.com/repos/esphome/esphome/releases/latest
     authentication: basic
     username: !secret github_username
     password: !secret github_access_token
-    value_template: >
-      {{ value_json.tag_name }}
-    scan_interval: 86400
-
-  - platform: rest
-    name: esphome_version_latest
-    resource: https://api.github.com/repos/esphome/esphome/releases/latest
     value_template: >
       {{ value_json.tag_name }}
     scan_interval: 86400
@@ -259,4 +220,35 @@ sensor:
   - platform: command_line
     name: monitors_volume
     command: !secret monitors_update_volume
+    scan_interval: 86400
+
+  - platform: command_line
+    name: imac_system_ssd
+    command: !secret imac_system_ssd
+    unit_of_measurement: '%'
+    scan_interval: 86400
+
+  - platform: command_line
+    name: imac_macintosh_hd
+    command: !secret imac_macintosh_hd
+    unit_of_measurement: '%'
+    scan_interval: 86400
+
+  - platform: command_line
+    name: imac_cpu
+    command: !secret imac_cpu
+    unit_of_measurement: '%'
+    scan_interval: 86400
+
+  - platform: command_line
+    name: imac_mem
+    command: !secret imac_mem
+    unit_of_measurement: '%'
+    scan_interval: 86400
+
+  - platform: command_line
+    name: imac_uptime
+    command: !secret imac_uptime
+    value_template: >
+      {{ value | int | timestamp_custom('%Y-%m-%dT%H:%M:%S') }}
     scan_interval: 86400

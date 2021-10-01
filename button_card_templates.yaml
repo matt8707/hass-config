@@ -1067,41 +1067,6 @@
 
   #################################################
   #                                               #
-  #          VACUUM MAP OVERLAY BUTTONS           #
-  #                                               #
-  #################################################
-
-  vacuum_map:
-    show_label: false
-    show_icon: false
-    name: >
-      [[[ return variables.area; ]]]
-    tap_action:
-      action: call-service
-      service: input_select.select_option
-      service_data:
-        entity_id: input_select.roborock_zone
-        option: >
-          [[[ return variables.area; ]]]
-    styles:
-      card:
-        - padding: 3em
-        - background: none
-      name:
-        - font-size: 0.9em
-        - letter-spacing: 0.003em
-        - color: '#aeb0b0'
-        - background: '#191c1d80'
-        - padding: 0.48em 0.78em 0.48em 0.78em
-        - border-radius: 0.6em
-        - overflow: visible
-    extra_styles: |
-      #ripple {
-        display: none;
-      }
-
-  #################################################
-  #                                               #
   #                     ICONS                     #
   #                                               #
   #################################################

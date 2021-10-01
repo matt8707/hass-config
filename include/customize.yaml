@@ -89,23 +89,34 @@ homeassistant:
       friendly_name: Systemhälsa
     sensor.template_nas_vpn:
       friendly_name: VPN
+    select.hdmi_bravia:
+      friendly_name: Källa
+      icon: custom:hdmi-source
+    select.hdmi_samsung:
+      friendly_name: Källa
+      icon: custom:hdmi-source
 
     #sidebar_vacuum.yaml
-    vacuum.valetudo_robot:
+    vacuum.morty:
       friendly_name: Roborock S5
       icon: custom:roborock-vacuum
     sensor.vacuum_last_cleaned:
       friendly_name: Senast städat
       icon: mdi:calendar-clock
       device_class: timestamp
-    sensor.template_roborock_filter:
+    sensor.template_vacuum_filter:
       friendly_name: Filter
-    sensor.template_roborock_mainbrush:
+    sensor.template_vacuum_mainbrush:
       friendly_name: Huvudborste
-    sensor.template_roborock_sidebrush:
+    sensor.template_vacuum_sidebrush:
       friendly_name: Sidoborste
-    sensor.template_roborock_sensors:
+    sensor.template_vacuum_sensors:
       friendly_name: Sensorer
+    sensor.template_vacuum_lastclean:
+      friendly_name: Senast städat
+    select.vacuum_speed:
+      friendly_name: Rengöringsläge
+      icon: mdi:format-list-bulleted
 
     #sidebar_information.yaml
     switch.watchtower:
@@ -143,23 +154,23 @@ homeassistant:
       friendly_name: Tänd Tv-lampa
 
     # studio_dator.yaml
-    sensor.template_imac_cpu:
+    sensor.imac_cpu:
       friendly_name: Processor
       icon: mdi:chip
-    sensor.template_imac_mem:
+    sensor.imac_mem:
       friendly_name: Minne
       icon: mdi:memory
     automation.macos_notification_motion_hall:
       friendly_name: Mottag notiser
       icon: mdi:bell
-    sensor.template_imac_uptime:
+    sensor.imac_uptime:
       friendly_name: Senaste omstart
       icon: mdi:update
       device_class: timestamp
-    sensor.template_imac_system_ssd:
+    sensor.imac_system_ssd:
       friendly_name: System SSD
       icon: custom:imac-ssd
-    sensor.template_imac_macintosh_hd:
+    sensor.imac_macintosh_hd:
       friendly_name: Macintosh HD
       icon: mdi:harddisk
 

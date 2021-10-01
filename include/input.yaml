@@ -9,10 +9,6 @@ input_boolean:
 
   laundry_display:
 
-  sovrum_anslut_oscillate:
-    name: Oscillera
-    icon: mdi:arrow-left-right
-
   computer_lock:
     name: Avstängningslås
     icon: custom:lock
@@ -41,28 +37,6 @@ input_number:
     max: 12
     unit_of_measurement: h
 
-  sovrum_anslut_timer:
-    name: Stäng efter
-    icon: mdi:timer-outline
-    initial: 12
-    min: 1
-    max: 12
-    unit_of_measurement: h
-
-  sovrum_anslut_speed:
-    name: Fläkthastighet
-    initial: 0
-    min: 0
-    max: 100
-    unit_of_measurement: '%'
-
-  air_purifier_speed:
-    name: Hastighet
-    initial: 0
-    min: 0
-    max: 100
-    unit_of_measurement: '%'
-
 input_select:
 
   ####################################################
@@ -70,59 +44,6 @@ input_select:
   #                      SELECT                      #
   #                                                  #
   ####################################################
-
-  hdmi:
-    name: Källa
-    options:
-      - HDMI 1
-      - HDMI 2/MHL
-      - HDMI 3
-      - HDMI 4
-    initial: HDMI 1
-    icon: custom:hdmi-source
-
-  hdmi2:
-    name: Källa
-    options:
-      - TV
-      - HDMI
-    initial: HDMI
-    icon: custom:hdmi-source
-
-  roborock_speed:
-    name: Rengöringsläge
-    icon: mdi:format-list-bulleted
-    options:
-      - Tyst
-      - Standard
-      - Medium
-      - Turbo
-      - Av
-
-  sovrum_anslut_speed:
-    name: Fläkthastighet
-    options:
-      - Tyst
-      - Medium
-      - Max
-
-  air_purifier_speed:
-    name: Hastighet
-    options:
-      - Tyst
-      - Låg
-      - Hög
-      - Turbo
-
-  roborock_zone:
-    initial: Ingen vald
-    options:
-      - Ingen vald
-      - Hall
-      - Kök
-      - Vardagsrum
-      - Studio
-      - Sovrum
 
   conditional_media:
     initial: Senast nedladdat

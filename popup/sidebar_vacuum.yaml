@@ -5,7 +5,7 @@ browser_mod:
   style:
     .: |
       :host .content {
-        width: calc(385px + 300px + 300px);
+        width: calc(385px + 510px);
         max-width: 90vw;
       }
     layout-card$grid-layout:
@@ -39,26 +39,11 @@ browser_mod:
           #root {
             justify-content: space-evenly;
           }
-      $hui-picture-elements-card$: |
-        #root {
-          animation: fadein 0.9s both;
-        }
-        @keyframes fadein {
-          0% {
-            opacity: 0;
-          }
-          75% {
-            opacity: 0;
-          }
-          100% {
-            opacity: 1;
-          }
-        }
   card:
     type: custom:layout-card
     layout_type: custom:grid-layout
     layout:
-      grid-template-columns: 385px repeat(2, 300px)
+      grid-template-columns: 385px 510px
       grid-template-rows: 1fr
       grid-template-areas: |
         "info map map"
@@ -79,91 +64,93 @@ browser_mod:
       #################################################
 
       - type: vertical-stack
+        view_layout:
+          grid-area: info
         cards:
-          - type: entities
-            view_layout:
-              grid-area: info
-            title: Inställningar
-            card_mod:
-              class: header
+        - type: entities
+          title: Inställningar
+          card_mod:
+            class: header
+          entities:
+
+          - entity: vacuum.morty
+
+          - entity: sensor.template_vacuum_lastclean
+
+          - type: custom:bar-card
+            width: 55%
+            height: 2em
+            decimal: 0
+            unit_of_measurement: '%'
+            positions:
+              icon: outside
+              indicator: 'off'
+              name: outside
+            severity:
+              - color: '#303435'
+                from: 11
+                to: 100
+              - color: '#6d2525'
+                from: 0
+                to: 10
+            entity_row: true
             entities:
 
-            - entity: vacuum.valetudo_robot
+              - entity: vacuum.morty
+                attribute: battery_level
+                name: Batteri
+                icon: mdi:battery
 
-            - entity: sensor.vacuum_last_cleaned
+              - entity: sensor.template_vacuum_filter
 
-            - type: custom:bar-card
-              width: 55%
-              height: 2em
-              decimal: 0
-              unit_of_measurement: '%'
-              positions:
-                icon: outside
-                indicator: 'off'
-                name: outside
-              severity:
-                - color: '#303435'
-                  from: 11
-                  to: 100
-                - color: '#6d2525'
-                  from: 0
-                  to: 10
-              entity_row: true
-              entities:
-                - entity: vacuum.valetudo_robot
-                  attribute: battery_level
-                  name: Batteri
-                  icon: mdi:battery
+              - entity: sensor.template_vacuum_mainbrush
 
-                - entity: sensor.template_roborock_filter
+              - entity: sensor.template_vacuum_sidebrush
 
-                - entity: sensor.template_roborock_mainbrush
+              - entity: sensor.template_vacuum_sensors
 
-                - entity: sensor.template_roborock_sidebrush
+          - entity: select.vacuum_speed
 
-                - entity: sensor.template_roborock_sensors
+        - type: horizontal-stack
+          cards:
 
-            - entity: input_select.roborock_speed
+            - type: custom:button-card
+              entity: vacuum.morty
+              icon: mdi:play-pause
+              tap_action:
+                action: call-service
+                service: >
+                  [[[
+                    return entity.state === 'docked' || entity.state === 'paused'
+                      ? 'vacuum.start'
+                      : 'vacuum.pause';
+                  ]]]
+                service_data:
+                  entity_id: >
+                    [[[ return entity.entity_id; ]]]
+              template: icon_only
 
-          - type: horizontal-stack
-            cards:
+            - type: custom:button-card
+              entity: vacuum.morty
+              icon: mdi:battery-charging
+              tap_action:
+                action: call-service
+                service: vacuum.return_to_base
+                service_data:
+                  entity_id: >
+                    [[[ return entity.entity_id; ]]]
+              template: icon_only
 
-              - type: custom:button-card
-                entity: vacuum.valetudo_robot
-                icon: mdi:play-pause
-                tap_action:
-                  action: call-service
-                  service: >
-                    [[[
-                      return entity.state === 'docked' || entity.state === 'paused'
-                        ? 'vacuum.start'
-                        : 'vacuum.pause';
-                    ]]]
-                  service_data:
-                    entity_id: >
-                      [[[ return entity.entity_id; ]]]
-                template: icon_only
-
-              - type: custom:button-card
-                entity: vacuum.valetudo_robot
-                icon: mdi:battery-charging
-                tap_action:
-                  action: call-service
-                  service: vacuum.return_to_base
-                  service_data:
-                    entity_id: >
-                      [[[ return entity.entity_id; ]]]
-                template: icon_only
-
-              - type: custom:button-card
-                icon: mdi:delete-empty
-                tap_action:
-                  action: call-service
-                  service: mqtt.publish
-                  service_data:
-                    topic: valetudo/robot/GoToLocationCapability/go/set
-                    payload: "c520da4d-7656-4bd1-8d08-62564559d222"
-                template: icon_only
+            - type: custom:button-card
+              icon: mdi:delete-empty
+              tap_action:
+                action: call-service
+                service: vacuum.send_command
+                service_data:
+                  entity_id: vacuum.morty
+                  command: app_goto_target
+                  params: [16821,23105]
+              template: icon_only
 
       #################################################
       #                                               #
@@ -171,132 +158,30 @@ browser_mod:
       #                                               #
       #################################################
 
-      - type: picture-elements
-        title: Kartläggning
+      - type: vertical-stack
         view_layout:
           grid-area: map
-        image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 45' /%3E"
-        card_mod:
-          class: header
-        elements:
-
-          - type: custom:valetudo-map-card
-            entity: camera.map_data
-            title: null
-            rotate: 0
-            crop:
-              top: 0
-              bottom: 15
-              left: 43
-              right: 0
-            min_height: 0
-            map_scale: 2
-            vacuum_icon: custom:roborock-vacuum-map
-            vacuum_color: rgb(224,224,224)
-            icon_scale: 1.1
-            dock_icon: mdi:battery-charging
-            path_color: rgb(30,80,113)
-            path_width: 1.5
-            floor_color: rgb(46,50,51)
-            segment_colors: rgb(46,50,51)
-            wall_color: rgba(25,30,30,0.564)
-            virtual_wall_color: rgba(255,0,0,0.125)
-            virtual_wall_width: 5
-            no_go_area_color: rgba(255,0,0,0.082)
-            goto_target_icon: mdi:delete-empty
-            goto_target_color: rgb(30,80,113)
-            style:
-              top: 57%
-              left: 50%
-              width: 100%
-
-          - type: custom:button-card
-            aspect_ratio: 1/1
-            tap_action:
-              action: call-service
-              service: input_select.select_option
-              service_data:
-                entity_id: input_select.roborock_zone
-                option: Ingen vald
-            styles:
-              card:
-                - --mdc-ripple-color: none
-                - cursor: default
-            style:
-              top: 50%
-              left: 50%
-              width: 100%
-
-          - type: custom:button-card
-            variables:
-              area: Vardagsrum
-            template: vacuum_map
-            style:
-              top: 12%
-              left: 74.5%
-
-          - type: custom:button-card
-            variables:
-              area: Studio
-            template: vacuum_map
-            style:
-              top: 23.5%
-              left: 39.2%
-
-          - type: custom:button-card
-            variables:
-              area: Hall
-            template: vacuum_map
-            style:
-              top: 51.5%
-              left: 56.7%
-
-          - type: custom:button-card
-            variables:
-              area: Kök
-            template: vacuum_map
-            style:
-              top: 55.5%
-              left: 19%
-
-          - type: custom:button-card
-            variables:
-              area: Sovrum
-            template: vacuum_map
-            style:
-              top: 81%
-              left: 24.5%
-
-          - type: custom:button-card
-            entity: input_select.roborock_zone
-            name: Rengöringszon
-            label: >
-              [[[ return entity.state; ]]]
-            show_label: true
-            show_icon: false
-            styles:
-              card:
-                - background: '#FFFFFF10'
-                - border-radius: 0.6em
-              name:
-                - font-size: 0.75em
-                - color: '#FFFFFF40'
-                - margin-bottom: 0.2em
-              label:
-                - font-size: 1.05em
-                - padding: 0 0.8em 0.65em 0.8em
-                - color: >
-                    [[[
-                      return entity.state == 'Ingen vald'
-                        ? '#e0e1e170'
-                        : '#e0e1e1';
-                    ]]]
-            tap_action:
-              action: call-service
-              service: script.turn_on
-              service_data:
-                entity_id: script.zone_cleaning
-            style:
-              top: 89.2%
-              left: 82.1%
-              width: 10.2em
+        cards:
+        - type: entities
+          title: Kartläggning
+          card_mod:
+            class: header
+            style: |
+              #states {
+                padding-bottom: 0;
+              }
+          entities:
+            - type: custom:xiaomi-vacuum-map-card
+              title: Kartläggning
+              view_layout:
+                grid-area: map
+              entity: vacuum.morty
+              map_camera: camera.vacuum_map
+              camera_calibration: true
+              zones:
+                - [[15250, 17400, 20050, 21000]]
+                - [[15000, 20800, 19100, 23950]]
+                - [[19050, 21050, 23050, 24950]]
+                - [[17900, 24050, 21550, 28650]]
+                - [[21600, 25000, 27600, 28800]]
+              language: se

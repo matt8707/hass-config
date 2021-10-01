@@ -55,7 +55,8 @@ switch:
         friendly_name: Tv
         icon_template: custom:tv
         value_template: >
-          {{ is_state('media_player.sony_bravia_tv', 'on') }}
+          {{ is_state('media_player.sony_bravia_tv', 'on') or 
+          is_state('media_player.sony_bravia_tv', 'playing') }}
         turn_on:
           - service: remote.send_command
             data:

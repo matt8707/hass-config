@@ -28,7 +28,7 @@ browser_mod:
 
           - entity: automation.tv_on_lights
 
-          - entity: input_select.hdmi
+          - entity: select.hdmi_bravia
 
       - type: horizontal-stack
         cards:

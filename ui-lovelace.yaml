@@ -122,6 +122,12 @@ views:
           - type: custom:button-card
             entity: media_player.sony_bravia_tv
             name: Tv
+            state_display: >
+              [[[
+                if (variables.state == 'playing') {
+                  return 'På';
+                }
+              ]]]
             hold_action:
               !include popup/vardagsrum_tv.yaml
             template:
