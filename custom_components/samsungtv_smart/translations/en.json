@@ -57,19 +57,27 @@
     "options": {
         "step": {
             "init": {
+                "title": "Options",
                 "data": {
-                    "app_load_method": "Applications list load mode at startup",
-                    "app_launch_method": "Applications launch method used",
-                    "dump_apps": "Dump apps list on log file at startup (when possible)",
                     "use_st_status_info": "Use SmartThings TV Status information",
                     "use_st_channel_info": "Use SmartThings TV Channels information",
                     "show_channel_number": "Use SmartThings TV Channels number information",
-                    "power_on_method": "Method used to turn on TV",
-                    "wol_repeat": "Number of time WOL packet is sent to turn on TV",
-                    "power_on_delay": "Seconds to delay power ON status",
-                    "use_mute_check": "Use volume mute status to detect fake power ON",
+                    "power_on_method_opt": "Method used to turn on TV",
+                    "logo_option_opt": "Display a logo for known sources, apps and channels",
                     "sync_turn_off": "List of entity to Power OFF with TV (comma separated)",
-                    "sync_turn_on": "List of entity to power ON with TV (comma separated)"
+                    "sync_turn_on": "List of entity to power ON with TV (comma separated)",
+                    "show_adv_opt": "Show advanced options"
+                }
+            },
+            "adv_opt": {
+                "title": "Advanced options",
+                "data": {
+                    "app_load_method_opt": "Applications list load mode at startup",
+                    "app_launch_method_opt": "Applications launch method used",
+                    "dump_apps": "Dump apps list on log file at startup (when possible)",
+                    "use_mute_check": "Use volume mute status to detect fake power ON",
+                    "wol_repeat": "Number of time WOL packet is sent to turn on TV",
+                    "power_on_delay": "Seconds to delay power ON status"
                 }
             }
         }

@@ -40,6 +40,7 @@ from .const import (
     CONF_SYNC_TURN_ON,
     CONF_WOL_REPEAT,
     CONF_WS_NAME,
+    CONF_LOGO_OPTION,
     DEFAULT_POWER_ON_DELAY,
     MAX_WOL_REPEAT,
     RESULT_NOT_SUCCESSFUL,
@@ -51,6 +52,11 @@ from .const import (
     AppLaunchMethod,
     AppLoadMethod,
     PowerOnMethod,
+)
+
+from .logo import (
+    LogoOption,
+    LOGO_OPTION_DEFAULT,
 )
 
 APP_LAUNCH_METHODS = {
@@ -70,6 +76,16 @@ POWER_ON_METHODS = {
     PowerOnMethod.SmartThings.value: "SmartThings (better for wireless connection)",
 }
 
+LOGO_OPTIONS = {
+    LogoOption.Disabled.value: "Disabled",
+    LogoOption.WhiteColor.value: "White background, Color logo",
+    LogoOption.BlueColor.value: "Blue background, Color logo",
+    LogoOption.BlueWhite.value: "Blue background, White logo",
+    LogoOption.DarkWhite.value: "Dark background, White logo",
+    LogoOption.TransparentColor.value: "Transparent background, Color logo",
+    LogoOption.TransparentWhite.value: "Transparent background, White logo",
+}
+
 CONFIG_RESULTS = {
     RESULT_NOT_SUCCESSFUL: "Local connection to TV failed.",
     RESULT_ST_DEVICE_NOT_FOUND: "SmartThings TV deviceID not found.",
@@ -78,9 +94,23 @@ CONFIG_RESULTS = {
     RESULT_WRONG_APIKEY: "Wrong SmartThings token.",
 }
 
+CONF_SHOW_ADV_OPT = "show_adv_opt"
 CONF_ST_DEVICE = "st_devices"
 CONF_USE_HA_NAME = "use_ha_name_for_ws"
 DEFAULT_TV_NAME = "Samsung TV"
+
+ADVANCED_OPTIONS = [
+    CONF_APP_LOAD_METHOD,
+    CONF_APP_LAUNCH_METHOD,
+    CONF_DUMP_APPS,
+    CONF_WOL_REPEAT,
+    CONF_POWER_ON_DELAY,
+    CONF_USE_MUTE_CHECK,
+]
+OPT_LOGO_OPTION = f"{CONF_LOGO_OPTION}_opt"
+OPT_APP_LOAD_METHOD = f"{CONF_APP_LOAD_METHOD}_opt"
+OPT_APP_LAUNCH_METHOD = f"{CONF_APP_LAUNCH_METHOD}_opt"
+OPT_POWER_ON_METHOD = f"{CONF_POWER_ON_METHOD}_opt"
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -115,6 +145,7 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._mac = None
         self._ws_name = None
         self._use_default_name = False
+        self._logo_option = None
 
     def _stdev_already_used(self, devices_id):
         """Check if a device_id is in HA config."""
@@ -351,102 +382,165 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
     def __init__(self, config_entry: config_entries.ConfigEntry):
         """Initialize options flow."""
         self.config_entry = config_entry
+        self._adv_options = {
+            key: values
+            for key, values in config_entry.options.items()
+            if key in ADVANCED_OPTIONS
+        }
+        api_key = config_entry.data.get(CONF_API_KEY)
+        st_dev = config_entry.data.get(CONF_DEVICE_ID)
+        self._use_st = api_key and st_dev
 
-    async def async_step_init(self, user_input=None):
+    def _save_entry(self, data: dict):
+        """Save configuration options"""
+        data[CONF_POWER_ON_METHOD] = _get_key_from_value(
+            POWER_ON_METHODS, data.pop(OPT_POWER_ON_METHOD, None)
+        )
+        data[CONF_LOGO_OPTION] = _get_key_from_value(
+            LOGO_OPTIONS, data.pop(OPT_LOGO_OPTION, None)
+        )
+        data.update(self._adv_options)
+        return self.async_create_entry(title="", data=data)
+
+    async def async_step_init(self, user_input: dict = None):
         """Handle options flow."""
         if user_input is not None:
-            return self.async_create_entry(title="", data=user_input)
+            if user_input.pop(CONF_SHOW_ADV_OPT, False):
+                return await self.async_step_adv_opt()
+            return self._save_entry(data=user_input)
 
-        api_key = self.config_entry.data.get(CONF_API_KEY)
-        st_dev = self.config_entry.data.get(CONF_DEVICE_ID)
-        use_st = api_key and st_dev
+        options = self.config_entry.options
+        data_schema = vol.Schema({})
 
-        data_schema = vol.Schema(
-            {
-                vol.Optional(
-                    CONF_APP_LOAD_METHOD,
-                    default=self.config_entry.options.get(
-                        CONF_APP_LOAD_METHOD, AppLoadMethod.All.value
-                    ),
-                ): vol.In(APP_LOAD_METHODS),
-                vol.Optional(
-                    CONF_APP_LAUNCH_METHOD,
-                    default=self.config_entry.options.get(
-                        CONF_APP_LAUNCH_METHOD, AppLaunchMethod.Standard.value
-                    ),
-                ): vol.In(APP_LAUNCH_METHODS),
-                vol.Optional(
-                    CONF_DUMP_APPS,
-                    default=self.config_entry.options.get(
-                        CONF_DUMP_APPS, False
-                    ),
-                ): bool,
-            }
-        )
-
-        if use_st:
+        if self._use_st:
             data_schema = data_schema.extend(
                 {
                     vol.Optional(
                         CONF_USE_ST_STATUS_INFO,
-                        default=self.config_entry.options.get(
+                        default=options.get(
                             CONF_USE_ST_STATUS_INFO, True
                         ),
                     ): bool,
                     vol.Optional(
                         CONF_USE_ST_CHANNEL_INFO,
-                        default=self.config_entry.options.get(
+                        default=options.get(
                             CONF_USE_ST_CHANNEL_INFO, True
                         ),
                     ): bool,
                     vol.Optional(
                         CONF_SHOW_CHANNEL_NR,
-                        default=self.config_entry.options.get(
+                        default=options.get(
                             CONF_SHOW_CHANNEL_NR, False
                         ),
                     ): bool,
                     vol.Optional(
-                        CONF_POWER_ON_METHOD,
-                        default=self.config_entry.options.get(
-                            CONF_POWER_ON_METHOD, PowerOnMethod.WOL.value
+                        OPT_POWER_ON_METHOD,
+                        default=POWER_ON_METHODS.get(
+                            options.get(
+                                CONF_POWER_ON_METHOD, PowerOnMethod.WOL.value
+                            )
                         ),
-                    ): vol.In(POWER_ON_METHODS),
+                    ): vol.In(list(POWER_ON_METHODS.values())),
                 }
             )
 
         data_schema = data_schema.extend(
             {
                 vol.Optional(
+                    OPT_LOGO_OPTION,
+                    default=LOGO_OPTIONS.get(
+                        options.get(CONF_LOGO_OPTION, LOGO_OPTION_DEFAULT[0])
+                    ),
+                ): vol.In(list(LOGO_OPTIONS.values())),
+                vol.Optional(
+                    CONF_SYNC_TURN_OFF,
+                    description={
+                        "suggested_value": options.get(
+                            CONF_SYNC_TURN_OFF, ""
+                        )
+                    },
+                ): str,
+                vol.Optional(
+                    CONF_SYNC_TURN_ON,
+                    description={
+                        "suggested_value": options.get(
+                            CONF_SYNC_TURN_ON, ""
+                        )
+                    },
+                ): str,
+                vol.Optional(CONF_SHOW_ADV_OPT, default=False): bool,
+            }
+        )
+        return self.async_show_form(step_id="init", data_schema=data_schema)
+
+    async def async_step_adv_opt(self, user_input=None):
+        """Handle advanced options flow."""
+
+        if user_input is not None:
+            user_input[CONF_APP_LOAD_METHOD] = _get_key_from_value(
+                APP_LOAD_METHODS, user_input.pop(OPT_APP_LOAD_METHOD, None)
+            )
+            user_input[CONF_APP_LAUNCH_METHOD] = _get_key_from_value(
+                APP_LAUNCH_METHODS, user_input.pop(OPT_APP_LAUNCH_METHOD, None)
+            )
+            self._adv_options.update(user_input)
+            return await self.async_step_init()
+
+        return self._async_adv_opt_form()
+
+    @callback
+    def _async_adv_opt_form(self):
+        """Return configuration form for advanced options."""
+        options = self._adv_options
+        data_schema = vol.Schema(
+            {
+                vol.Optional(
+                    OPT_APP_LOAD_METHOD,
+                    default=APP_LOAD_METHODS.get(
+                        options.get(
+                            CONF_APP_LOAD_METHOD, AppLoadMethod.All.value
+                        )
+                    ),
+                ): vol.In(list(APP_LOAD_METHODS.values())),
+                vol.Optional(
+                    OPT_APP_LAUNCH_METHOD,
+                    default=APP_LAUNCH_METHODS.get(
+                        options.get(
+                            CONF_APP_LAUNCH_METHOD, AppLaunchMethod.Standard.value
+                        )
+                    ),
+                ): vol.In(list(APP_LAUNCH_METHODS.values())),
+                vol.Optional(
+                    CONF_DUMP_APPS,
+                    default=options.get(CONF_DUMP_APPS, False),
+                ): bool,
+                vol.Optional(
+                    CONF_USE_MUTE_CHECK,
+                    default=options.get(CONF_USE_MUTE_CHECK, True),
+                ): bool,
+                vol.Optional(
                     CONF_WOL_REPEAT,
                     default=min(
-                        self.config_entry.options.get(CONF_WOL_REPEAT, 1),
+                        options.get(CONF_WOL_REPEAT, 1),
                         MAX_WOL_REPEAT,
                     ),
                 ): vol.All(vol.Coerce(int), vol.Clamp(min=1, max=MAX_WOL_REPEAT)),
                 vol.Optional(
                     CONF_POWER_ON_DELAY,
-                    default=self.config_entry.options.get(
+                    default=options.get(
                         CONF_POWER_ON_DELAY, DEFAULT_POWER_ON_DELAY
                     ),
                 ): vol.All(vol.Coerce(int), vol.Clamp(min=0, max=60)),
-                vol.Optional(
-                    CONF_USE_MUTE_CHECK,
-                    default=self.config_entry.options.get(
-                        CONF_USE_MUTE_CHECK, True
-                    ),
-                ): bool,
-                vol.Optional(
-                    CONF_SYNC_TURN_OFF,
-                    default=self.config_entry.options.get(
-                        CONF_SYNC_TURN_OFF, ""
-                    ),
-                ): str,
-                vol.Optional(
-                    CONF_SYNC_TURN_ON,
-                    default=self.config_entry.options.get(
-                        CONF_SYNC_TURN_ON, ""
-                    ),
-                ): str
             }
         )
-        return self.async_show_form(step_id="init", data_schema=data_schema)
+
+        return self.async_show_form(step_id="adv_opt", data_schema=data_schema)
+
+
+def _get_key_from_value(source: dict, value: str):
+    """Get dict key from corresponding value."""
+    if value:
+        for src_key, src_value in source.items():
+            if src_value == value:
+                return src_key
+    return None
