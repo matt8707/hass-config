@@ -1,34 +1,34 @@
 """The samsungtv_smart integration."""
 
-import socket
+from aiohttp import ClientConnectionError, ClientSession, ClientResponseError
+from async_timeout import timeout
 import asyncio
 import logging
 import os
-from aiohttp import ClientConnectionError, ClientSession, ClientResponseError
-from async_timeout import timeout
 from shutil import copyfile
+import socket
+import voluptuous as vol
 from websocket import WebSocketException
+
 from .api.samsungws import SamsungTVWS
 from .api.exceptions import ConnectionFailure
 from .api.smartthings import SmartThingsTV
 
-import voluptuous as vol
-import homeassistant.helpers.config_validation as cv
-
 from homeassistant.components.media_player.const import DOMAIN as MP_DOMAIN
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.helpers.typing import HomeAssistantType
+import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.storage import STORAGE_DIR
+from homeassistant.helpers.typing import HomeAssistantType
 
 from homeassistant.const import (
-    CONF_HOST,
-    CONF_NAME,
-    CONF_MAC,
-    CONF_PORT,
-    CONF_DEVICE_ID,
-    CONF_TIMEOUT,
     CONF_API_KEY,
     CONF_BROADCAST_ADDRESS,
+    CONF_DEVICE_ID,
+    CONF_HOST,
+    CONF_MAC,
+    CONF_NAME,
+    CONF_PORT,
+    CONF_TIMEOUT,
 )
 
 from .const import (
@@ -45,6 +45,7 @@ from .const import (
     CONF_UPDATE_METHOD,
     CONF_UPDATE_CUSTOM_PING_URL,
     CONF_SCAN_APP_HTTP,
+    DATA_OPTIONS,
     DEFAULT_SOURCE_LIST,
     WS_PREFIX,
     RESULT_NOT_SUCCESSFUL,
@@ -351,7 +352,7 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry):
     hass.data[DOMAIN].setdefault(
         entry.entry_id,
         {
-            "options": entry.options.copy(),
+            DATA_OPTIONS: entry.options.copy(),
             DATA_LISTENER: [entry.add_update_listener(update_listener)],
         }
     )
@@ -381,4 +382,4 @@ async def async_unload_entry(hass, config_entry):
 async def update_listener(hass, config_entry):
     """Update when config_entry options update."""
     entry_id = config_entry.entry_id
-    hass.data[DOMAIN][entry_id]["options"] = config_entry.options.copy()
+    hass.data[DOMAIN][entry_id][DATA_OPTIONS] = config_entry.options.copy()

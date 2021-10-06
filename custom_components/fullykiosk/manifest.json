@@ -5,7 +5,7 @@
 	"documentation": "https://github.com/cgarwood/homeassistant-fullykiosk",
 	"issue_tracker": "https://github.com/cgarwood/homeassistant-fullykiosk/issues",
 	"requirements": [
-		"python-fullykiosk==0.0.8"
+		"python-fullykiosk==0.0.10"
 	],
 	"ssdp": [],
 	"zeroconf": [],

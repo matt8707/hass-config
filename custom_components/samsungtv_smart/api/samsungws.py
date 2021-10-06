@@ -265,6 +265,9 @@ class SamsungTVWS:
                 _LOGGING.info("_ws_send: try to restart communication threads")
                 self.start_client(start_all=use_control)
             return False
+        except websocket.WebSocketTimeoutException:
+            _LOGGING.warning("_ws_send: timeout error sending command %s", payload)
+            return False
 
         if using_remote:
             # we consider a message sent valid as a ping
@@ -334,6 +337,7 @@ class SamsungTVWS:
         )
         sslopt = {"cert_reqs": ssl.CERT_NONE} if is_ssl else {}
 
+        websocket.setdefaulttimeout(self.timeout)
         self._ws_remote = websocket.WebSocketApp(
             url,
             on_message=self._on_message_remote,
@@ -387,7 +391,6 @@ class SamsungTVWS:
         elif event == "ed.installedApp.get":
             _LOGGING.debug("Message remote: received installedApp")
             self._handle_installed_app(response)
-            # self.start_client(start_all=True)
         elif event == "ed.edenTV.update":
             _LOGGING.debug("Message remote: received edenTV")
             self.get_running_app(force_scan=True)
@@ -424,6 +427,7 @@ class SamsungTVWS:
         )
         sslopt = {"cert_reqs": ssl.CERT_NONE} if is_ssl else {}
 
+        websocket.setdefaulttimeout(self.timeout)
         self._ws_control = websocket.WebSocketApp(
             url,
             on_message=self._on_message_control,
@@ -458,6 +462,9 @@ class SamsungTVWS:
                 return
             _LOGGING.debug("Message control: received connect")
             self.get_running_app()
+        elif event == "ed.installedApp.get":
+            _LOGGING.debug("Message control: received installedApp")
+            self._handle_installed_app(response)
 
     def _set_running_app(self, response):
         app_id = response.get("id")
@@ -536,6 +543,7 @@ class SamsungTVWS:
         )
         sslopt = {"cert_reqs": ssl.CERT_NONE} if is_ssl else {}
 
+        websocket.setdefaulttimeout(self.timeout)
         self._ws_art = websocket.WebSocketApp(
             url,
             on_message=self._on_message_art,
