@@ -180,7 +180,7 @@ template:
         transport: |
           {% set entity_id = 'sensor.skanetrafiken' %}
           {% if states(entity_id) != 'unknown' %}
-          {%- set date = strptime(state_attr(entity_id, 'date') + ' ' + state_attr(entity_id, 'time'), "%X") %}
+          {%- set date = state_attr(entity_id, 'date') + ' ' + state_attr(entity_id, 'time') %}
           {%- set time = as_timestamp(date) | timestamp_custom('%H:%M') -%}
             Nästa buss går {{ time }} från {{ state_attr(entity_id, 'name').split()[1] }}
           {% endif %}
@@ -452,7 +452,7 @@ sensor:
         value_template: ' '
         icon_template: mdi:arrow-down-bold
         friendly_name_template: >
-          {% set down = states('sensor.nas_network_down') | float %}
+          {% set down = states('sensor.nas_network_down') | float(default=0) %}
           {% if down < 1000 %} {{ down | round(0) }} kb/s
           {% elif down >= 1000 %} {{ ((down / 1000) | round(2) | string).rstrip('.0') }} Mb/s
           {% endif %}
@@ -461,7 +461,7 @@ sensor:
         value_template: ' '
         icon_template: mdi:arrow-up-bold
         friendly_name_template: >
-          {% set up = states('sensor.nas_network_up') | float %}
+          {% set up = states('sensor.nas_network_up') | float(default=0) %}
           {% if up < 1000 %} {{ up | round(0) }} kb/s
           {% elif up >= 1000 %} {{ ((up / 1000) | round(2) | string).rstrip('.0') }} Mb/s
           {% endif %}
