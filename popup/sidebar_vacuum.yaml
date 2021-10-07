@@ -46,7 +46,7 @@ browser_mod:
       grid-template-columns: 385px 510px
       grid-template-rows: 1fr
       grid-template-areas: |
-        "info map map"
+        "info map"
       mediaquery:
         #phone
         "(max-width: 800px)":
@@ -173,8 +173,6 @@ browser_mod:
           entities:
             - type: custom:xiaomi-vacuum-map-card
               title: Kartläggning
-              view_layout:
-                grid-area: map
               entity: vacuum.morty
               map_camera: camera.vacuum_map
               camera_calibration: true
