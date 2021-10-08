@@ -47,7 +47,8 @@ template:
           {{ state_attr(entity_id, 'source') }}
         {% endif %}
       options: >
-        {{ state_attr('media_player.samsung_tv', 'source_list') }}
+        {% set entity_id = 'media_player.samsung_tv' %}
+        {{ (state_attr(entity_id, 'source_list')[0], state_attr(entity_id, 'source_list')[1], 'Apple', 'PS5') | list }}
       select_option:
         service: media_player.select_source
         target:
