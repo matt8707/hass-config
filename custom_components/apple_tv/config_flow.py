@@ -4,7 +4,6 @@ from ipaddress import ip_address
 import logging
 from random import randrange
 
-from pyatv import exceptions, pair, scan
 from pyatv.const import DeviceModel, PairingRequirement
 from pyatv.convert import model_str, protocol_str
 from pyatv.helpers import get_unique_id
@@ -14,9 +13,9 @@ from homeassistant import config_entries
 from homeassistant.components.zeroconf import async_get_instance
 from homeassistant.const import CONF_ADDRESS, CONF_NAME, CONF_PIN, CONF_TYPE
 from homeassistant.core import callback
-from homeassistant.data_entry_flow import AbortFlow
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from pyatv import exceptions, pair, scan
 
 from .const import (
     CONF_CREDENTIALS,
@@ -95,7 +94,7 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     def device_identifier(self):
         """Return a identifier for the config entry.
 
-        A device has multiple unique identifier, but Home Assistant only supports one
+        A device has multiple unique identifiers, but Home Assistant only supports one
         per config entry. Normally, a "main identifier" is determined by pyatv by
         first collecting all identifiers and then picking one in a pre-determine order.
         Under normal circumstances, this works fine but if a service is missing or
@@ -108,8 +107,9 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         re-used, otherwise the newly discovered identifier is used instead.
         """
         for entry in self._async_current_entries():
-            if self.atv.identifier in entry.data[CONF_IDENTIFIERS]:
-                return entry.unique_id
+            for identifier in self.atv.all_identifiers:
+                if identifier in entry.data[CONF_IDENTIFIERS]:
+                    return entry.unique_id
         return self.atv.identifier
 
     async def async_step_reauth(self, user_input=None):
@@ -228,11 +228,6 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 if identifier in self._async_current_ids():
                     raise DeviceAlreadyConfigured()
 
-        # If credentials were found, save them
-        for service in self.atv.services:
-            if service.credentials:
-                self.credentials[service.protocol.value] = service.credentials
-
     async def async_step_confirm(self, user_input=None):
         """Handle user-confirmation of discovered node."""
         if user_input is not None:
@@ -255,6 +250,10 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         self.protocol = self.protocols_to_pair.popleft()
         service = self.atv.get_service(self.protocol)
+
+        # Service requires a password
+        if service.requires_password:
+            return await self.async_step_password()
 
         # Figure out, depending on protocol, what kind of pairing is needed
         if service.pairing == PairingRequirement.Unsupported:
@@ -325,8 +324,6 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             except exceptions.PairingError:
                 _LOGGER.exception("Authentication problem")
                 errors["base"] = "invalid_auth"
-            except AbortFlow:
-                raise
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception")
                 errors["base"] = "unknown"
@@ -366,6 +363,16 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="service_problem",
+            description_placeholders={"protocol": protocol_str(self.protocol)},
+        )
+
+    async def async_step_password(self, user_input=None):
+        """Inform user that password is not supported."""
+        if user_input is not None:
+            return await self.async_pair_next_protocol()
+
+        return self.async_show_form(
+            step_id="password",
             description_placeholders={"protocol": protocol_str(self.protocol)},
         )
 

@@ -35,6 +35,10 @@
       "service_problem": {
         "title": "Failed to add service",
         "description": "A problem occurred while pairing protocol `{protocol}`. It will be ignored."
+      },
+      "password": {
+        "title": "Password required",
+        "description": "A password is required by `{protocol}`. This is not yet supported, please disable password to continue."
       }
     },
     "error": {

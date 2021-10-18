@@ -1,4 +1,6 @@
 """Config flow for Samsung TV."""
+from __future__ import annotations
+
 import socket
 from typing import Any, Dict
 import logging
@@ -7,9 +9,9 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.core import callback
-from homeassistant.config_entries import SOURCE_IMPORT
 
 from homeassistant.const import (
+    ATTR_DEVICE_ID,
     CONF_API_KEY,
     CONF_DEVICE_ID,
     CONF_HOST,
@@ -20,9 +22,12 @@ from homeassistant.const import (
 )
 
 # pylint:disable=unused-import
-from . import SamsungTVInfo
-
+from . import SamsungTVInfo, get_device_info
 from .const import (
+    ATTR_DEVICE_MAC,
+    ATTR_DEVICE_MODEL,
+    ATTR_DEVICE_NAME,
+    ATTR_DEVICE_OS,
     DOMAIN,
     CONF_APP_LAUNCH_METHOD,
     CONF_APP_LOAD_METHOD,
@@ -43,10 +48,8 @@ from .const import (
     CONF_LOGO_OPTION,
     DEFAULT_POWER_ON_DELAY,
     MAX_WOL_REPEAT,
-    RESULT_NOT_SUCCESSFUL,
     RESULT_ST_DEVICE_NOT_FOUND,
     RESULT_ST_DEVICE_USED,
-    RESULT_ST_MULTI_DEVICES,
     RESULT_SUCCESS,
     RESULT_WRONG_APIKEY,
     AppLaunchMethod,
@@ -86,18 +89,9 @@ LOGO_OPTIONS = {
     LogoOption.TransparentWhite.value: "Transparent background, White logo",
 }
 
-CONFIG_RESULTS = {
-    RESULT_NOT_SUCCESSFUL: "Local connection to TV failed.",
-    RESULT_ST_DEVICE_NOT_FOUND: "SmartThings TV deviceID not found.",
-    RESULT_ST_DEVICE_USED: "SmartThings TV deviceID already used.",
-    RESULT_ST_MULTI_DEVICES: "Multiple TVs found, unable to identify the SmartThings device to pair.",
-    RESULT_WRONG_APIKEY: "Wrong SmartThings token.",
-}
-
 CONF_SHOW_ADV_OPT = "show_adv_opt"
 CONF_ST_DEVICE = "st_devices"
 CONF_USE_HA_NAME = "use_ha_name_for_ws"
-DEFAULT_TV_NAME = "Samsung TV"
 
 ADVANCED_OPTIONS = [
     CONF_APP_LOAD_METHOD,
@@ -137,15 +131,15 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._user_data = None
         self._st_devices_schema = None
 
-        self._tvinfo = None
+        self._tv_info: SamsungTVInfo | None = None
         self._host = None
         self._api_key = None
         self._device_id = None
         self._name = None
         self._mac = None
         self._ws_name = None
-        self._use_default_name = False
         self._logo_option = None
+        self._device_info = {}
 
     def _stdev_already_used(self, devices_id):
         """Check if a device_id is in HA config."""
@@ -163,7 +157,8 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 res_dev_list.pop(dev_id)
         return res_dev_list
 
-    def _extract_dev_name(self, device):
+    @staticmethod
+    def _extract_dev_name(device):
         """Extract device neme from SmartThings Info"""
         name = device["name"]
         label = device.get("label", "")
@@ -199,18 +194,17 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def _try_connect(self):
         """Try to connect and check auth."""
-        self._tvinfo = SamsungTVInfo(self.hass, self._host, self._name, self._ws_name)
+        self._tv_info = SamsungTVInfo(self.hass, self._host, self._ws_name)
 
         session = self.hass.helpers.aiohttp_client.async_get_clientsession()
-        result = await self._tvinfo.get_device_info(
+        result = await self._tv_info.try_connect(
             session, self._api_key, self._device_id
         )
+        if result == RESULT_SUCCESS:
+            self._device_info = await get_device_info(self._host, session)
+            self._mac = self._device_info.get(ATTR_DEVICE_MAC)
 
         return result
-
-    async def async_step_import(self, user_input=None):
-        """Handle configuration by yaml file."""
-        return await self.async_step_user(user_input)
 
     async def async_step_user(self, user_input=None):
         """Handle a flow initialized by the user."""
@@ -228,14 +222,8 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._abort_if_unique_id_configured()
 
         self._host = ip_address
+        self._name = user_input[CONF_NAME]
         self._api_key = user_input.get(CONF_API_KEY)
-        self._name = user_input.get(CONF_NAME)
-        if not self._name:
-            self._name = DEFAULT_TV_NAME
-            self._use_default_name = True
-
-        self._device_id = user_input.get(CONF_DEVICE_ID) if self._api_key else None
-        self._mac = user_input.get(CONF_MAC, "")
 
         use_ha_name = user_input.get(CONF_USE_HA_NAME, False)
         if use_ha_name:
@@ -245,29 +233,20 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if not self._ws_name:
             self._ws_name = self._name
 
-        st_device_label = user_input.get(CONF_DEVICE_NAME, "")
-        is_import = user_input.get(SOURCE_IMPORT, False)
-
         result = RESULT_SUCCESS
-        if self._api_key and not self._device_id:
-            result = await self._get_st_deviceid(st_device_label)
+        if self._api_key:
+            result = await self._get_st_deviceid()
 
             if result == RESULT_SUCCESS and not self._device_id:
                 if self._st_devices_schema:
-                    if not is_import:
-                        return self._show_form(errors=None, step_id="stdevice")
-                    result = RESULT_ST_MULTI_DEVICES
+                    return self._show_form(errors=None, step_id="stdevice")
                 else:
-                    if not is_import:
-                        return self._show_form(errors=None, step_id="stdeviceid")
-                    result = RESULT_ST_DEVICE_NOT_FOUND
-        elif self._device_id and self._stdev_already_used(self._device_id):
-            result = RESULT_ST_DEVICE_USED
+                    return self._show_form(errors=None, step_id="stdeviceid")
 
         if result == RESULT_SUCCESS:
             result = await self._try_connect()
 
-        return self._manage_result(result, is_import)
+        return self._manage_result(result)
 
     async def async_step_stdevice(self, user_input=None):
         """Handle a flow to select ST device."""
@@ -290,22 +269,14 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self._manage_result(result)
 
     @callback
-    def _manage_result(self, result, is_import=False):
+    def _manage_result(self, result):
         """Manage the previous result."""
 
         if result != RESULT_SUCCESS:
-            if is_import:
-                _LOGGER.error(
-                    "Error during setup of host %s using configuration.yaml info. Reason: %s",
-                    self._host,
-                    CONFIG_RESULTS[result],
-                )
-                return self.async_abort(reason=result)
-            else:
-                step_id = (
-                    "stdeviceid" if result == RESULT_ST_DEVICE_NOT_FOUND else "user"
-                )
-                return self._show_form({"base": result}, step_id)
+            return self._show_form(
+                errors={"base": result},
+                step_id="stdeviceid" if result == RESULT_ST_DEVICE_NOT_FOUND else "user"
+            )
 
         return self._save_entry()
 
@@ -315,17 +286,22 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         data = {
             CONF_HOST: self._host,
             CONF_NAME: self._name,
-            CONF_ID: self._tvinfo._uuid,
-            CONF_MAC: self._tvinfo._macaddress or self._mac,
-            CONF_DEVICE_NAME: self._tvinfo._device_name,
-            CONF_DEVICE_MODEL: self._tvinfo._device_model,
-            CONF_PORT: self._tvinfo._port,
+            CONF_PORT: self._tv_info.ws_port,
+            CONF_WS_NAME: self._ws_name,
         }
+        if self._mac:
+            data[CONF_MAC] = self._mac
 
-        if self._ws_name:
-            data[CONF_WS_NAME] = self._ws_name
+        for key, attr in {
+            CONF_ID: ATTR_DEVICE_ID,
+            CONF_DEVICE_NAME: ATTR_DEVICE_NAME,
+            CONF_DEVICE_MODEL: ATTR_DEVICE_MODEL,
+            CONF_DEVICE_OS: ATTR_DEVICE_OS,
+        }.items():
+            if attr in self._device_info:
+                data[key] = self._device_info[attr]
 
-        title = self._name if not self._use_default_name else self._tvinfo._device_name
+        title = self._name
         if self._api_key and self._device_id:
             data[CONF_API_KEY] = self._api_key
             data[CONF_DEVICE_ID] = self._device_id
@@ -333,9 +309,6 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             self.CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
         else:
             self.CONNECTION_CLASS = config_entries.CONN_CLASS_LOCAL_POLL
-
-        if self._tvinfo._device_os:
-            data[CONF_DEVICE_OS] = self._tvinfo._device_os
 
         _LOGGER.info("Configured new entity %s with host %s", title, self._host)
         return self.async_create_entry(title=title, data=data)
@@ -349,7 +322,9 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Optional(
                     CONF_USE_HA_NAME, default=data.get(CONF_USE_HA_NAME, False)
                 ): bool,
-                vol.Optional(CONF_API_KEY, default=data.get(CONF_API_KEY, "")): str,
+                vol.Optional(
+                    CONF_API_KEY, description={"suggested_value": data.get(CONF_API_KEY, "")}
+                ): str,
             }
         )
 

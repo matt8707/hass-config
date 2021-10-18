@@ -2,20 +2,12 @@
     "config": {
         "abort": {
             "already_configured": "Questo Samsung TV \u00e8 gi\u00e0 configurato.",
-            "already_in_progress": "La configurazione di Samsung TV \u00e8 gi\u00e0 in corso.",
-            "not_found": "Nessun dispositivo Samsung TV supportato trovato sulla rete.",
-            "auth_missing": "Home Assistant non \u00e8 autorizzato a connettersi a questo Samsung TV. Controlla le impostazioni del tuo TV per autorizzare Home Assistant.",
-            "not_successful": "Impossibile connettersi a questo dispositivo Samsung TV.",
-            "not_supported": "Questo dispositivo Samsung TV non \u00e8 attualmente supportato.",
-            "wrong_api_key": "SmartThings token errato.",
-            "st_device_not_found": "SmartThings TV deviceID non trovato.",
-            "st_device_used": "SmartThings TV deviceID gi\u00e0 utilizzato.",
-            "st_multiple_device": "Trovati multipli TV, impossibile identificare il dispositivo SmartThings da associare."
+            "already_in_progress": "La configurazione di Samsung TV \u00e8 gi\u00e0 in corso."
         },
         "error": {
             "auth_missing": "Home Assistant non \u00e8 autorizzato a connettersi a questo Samsung TV. Controlla le impostazioni del tuo TV per autorizzare Home Assistant.",
             "invalid_host": "Nome host non valido.",
-            "not_successful": "Impossibile connettersi a questo dispositivo Samsung TV.",
+            "not_successful": "Impossibile aprire la connessione WebSocket con questo dispositivo Samsung TV.",
             "not_supported": "Questo dispositivo Samsung TV non \u00e8 attualmente supportato.",
             "wrong_api_key": "SmartThings token errato.",
             "st_device_not_found": "SmartThings TV deviceID non trovato.",

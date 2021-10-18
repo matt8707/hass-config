@@ -24,6 +24,11 @@ DOMAIN = "samsungtv_smart"
 DATA_OPTIONS = "options"
 WS_PREFIX = "[Home Assistant]"
 
+ATTR_DEVICE_MAC = "device_mac"
+ATTR_DEVICE_MODEL = "device_model"
+ATTR_DEVICE_NAME = "device_name"
+ATTR_DEVICE_OS = "device_os"
+
 CONF_APP_LAUNCH_METHOD = "app_launch_method"
 CONF_APP_LIST = "app_list"
 CONF_APP_LOAD_METHOD = "app_load_method"

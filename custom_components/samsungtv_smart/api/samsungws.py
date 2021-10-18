@@ -149,10 +149,10 @@ class SamsungTVWS:
         self.host = host
         self.token = token
         self.token_file = token_file
-        self.port = port
+        self.port = port or 8001
         self.timeout = None if timeout == 0 else timeout
         self.key_press_delay = key_press_delay
-        self.name = name
+        self.name = name or "SamsungTvRemote"
         self.connection = None
         self._app_list = app_list
         self._artmode_status = ArtModeStatus.Unsupported

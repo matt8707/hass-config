@@ -3,7 +3,6 @@ import asyncio
 import logging
 from random import randrange
 
-from pyatv import connect, exceptions, scan
 from pyatv.const import DeviceModel, Protocol
 from pyatv.convert import model_str
 
@@ -24,6 +23,7 @@ from homeassistant.helpers.dispatcher import (
     async_dispatcher_send,
 )
 from homeassistant.helpers.entity import Entity
+from pyatv import connect, exceptions, scan
 
 from .const import (
     CONF_CREDENTIALS,

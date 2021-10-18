@@ -1,0 +1,10 @@
+{
+  "domain": "icloud3",
+  "name": "iCloud3 Device Tracker",
+  "documentation": "https://gcobb321.github.io/icloud3/#/",
+  "issue_tracker": "https://github.com/gcobb321/icloud3/issues",
+  "dependencies": [],
+  "codeowners": ["@gcobb321"],
+  "requirements": [],
+  "version": "2.4.6"
+}

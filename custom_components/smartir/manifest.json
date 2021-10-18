@@ -6,10 +6,10 @@
   "codeowners": ["@smartHomeHub"],
   "requirements": ["aiofiles==0.6.0"],
   "homeassistant": "0.115.0",
-  "version": "1.17.0",
+  "version": "1.17.1",
   "updater": {
-    "version": "1.17.0",
-    "releaseNotes": "-- Add play_media service",
+    "version": "1.17.1",
+    "releaseNotes": "-- Fixes issue #585",
     "files": [
       "__init__.py",
       "climate.py",

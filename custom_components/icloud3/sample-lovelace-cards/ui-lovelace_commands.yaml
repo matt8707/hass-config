@@ -1,0 +1,56 @@
+# yamllint disable rule:document-start
+
+- title: iCloud Commands
+  icon: mdi:cloud-upload-outline
+  cards:
+    - type: entities
+      title: iCloud3 Device Tracker Commands
+      show_header_toggle: false
+      entities:
+        - script.icloud3_command_resume_polling
+        - script.icloud3_command_pause_polling
+        - script.icloud3_command_restart
+        - type: divider
+        - script.icloud3_set_interval_1_min
+        - script.icloud3_set_interval_5_min
+        - script.icloud3_set_interval_15_min
+        - script.icloud3_set_interval_30_min
+        - script.icloud3_set_interval_1_hrs
+        - script.icloud3_set_interval_5_hrs
+        - type: divider
+        - script.icloud3_command_toggle_waze
+        - script.icloud3_command_reset_waze_range
+        - script.icloud3_lost_iphone_invalid
+        - script.icloud3_update_location
+
+    - type: entities
+      title: iCloud3 Commands - Gary
+      show_header_toggle: false
+      entities:
+        - script.icloud3_command_resume_polling_gary
+        - script.icloud3_command_pause_polling_gary
+        - script.icloud3_set_interval_2_min_gary
+        - script.icloud3_set_interval_10_min_gary
+        - script.icloud3_set_interval_1_min_lillian
+        - script.icloud3_set_interval_10_min_lillian
+        - script.icloud3_command_gary_iphone_zone_home
+        - script.icloud3_update_location_gary
+        - script.icloud3_lost_iphone_gary
+
+    - type: entities
+      title: iCloud3 Service Calls, log_level Cmds
+      show_header_toggle: false
+      entities:
+        - script.icloud3_lost_iphone_lillian
+        - script.icloud3_lost_iwatch_lillian
+        - script.icloud3_gary_iphone_see_away
+        - script.icloud3_update_location_lillian
+
+    - type: entities
+      entities:
+        - script.icloud3_command_loglevel_debug
+        - script.icloud3_command_loglevel_intervalcalc
+        - script.icloud3_command_loglevel_eventlog
+        - script.icloud3_command_loglevel_info
+        - script.icloud3_command_loglevel_debug_eventlog
+        - script.icloud3_command_loglevel_intervalcalc_eventlog

@@ -178,14 +178,21 @@ class AppleTvMediaPlayer(AppleTVEntity, MediaPlayerEntity):
 
     async def async_play_media(self, media_type, media_id, **kwargs):
         """Send the play_media command to the media player."""
-        # TODO: Hack to make TTS work with streaming (how to do this properly?)
+        # TODO: When streaming audio, only local files are supported (by AirPlay). So
+        # this is a hack to wait for the media file to be written to cache when playing
+        # a TTS stream. Obviously this should not be here, a proper solution is needed.
+        # Maybe a support flag stating if playback of local files is supported?
         if "/api/tts_proxy/" in media_id:
-            # Construct local file path to TTS file
             media_id = path.join(
                 self.hass.config.config_dir, "tts", media_id.split("/")[-1]
             )
 
             try:
+                async def _wait_for_tts_file(self, tts_file):
+                    _LOGGER.debug("Waiting for TTS file %s to appear", tts_file)
+                    while not path.exists(tts_file):
+                        await asyncio.sleep(0.5)
+
                 await asyncio.wait_for(self._wait_for_tts_file(media_id), 5.0)
             except asyncio.TimeoutError:
                 _LOGGER.error("Timed out while waiting for TTS file")
@@ -203,11 +210,6 @@ class AppleTvMediaPlayer(AppleTVEntity, MediaPlayerEntity):
             await self.atv.stream.play_url(media_id)
         else:
             _LOGGER.error("Media streaming is not possible with current configuration")
-
-    async def _wait_for_tts_file(self, tts_file):
-        _LOGGER.debug("Waiting for TTS file %s to appear", tts_file)
-        while not path.exists(tts_file):
-            await asyncio.sleep(0.5)
 
     @property
     def media_image_hash(self):

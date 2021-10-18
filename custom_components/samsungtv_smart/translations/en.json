@@ -2,20 +2,12 @@
     "config": {
         "abort": {
             "already_configured": "This Samsung TV is already configured.",
-            "already_in_progress": "Samsung TV configuration is already in progress.",
-            "not_found": "No supported Samsung TV devices found on the network.",
-            "auth_missing": "Home Assistant is not authorized to connect to this Samsung TV. Please check your TV's settings to authorize Home Assistant.",
-            "not_successful": "Unable to connect to this Samsung TV device.",
-            "not_supported": "This Samsung TV device is currently not supported.",
-            "wrong_api_key": "Wrong SmartThings token.",
-            "st_device_not_found": "SmartThings TV deviceID not found.",
-            "st_device_used": "SmartThings TV deviceID already used.",
-            "st_multiple_device": "Multiple TVs found, unable to identify the SmartThings device to pair."
+            "already_in_progress": "Samsung TV configuration is already in progress."
         },
         "error": {
             "auth_missing": "Home Assistant is not authorized to connect to this Samsung TV. Please check your TV's settings to authorize Home Assistant.",
             "invalid_host": "Invalid host.",
-            "not_successful": "Unable to connect to this Samsung TV device.",
+            "not_successful": "Unable to create WebSocket connection with this Samsung TV device.",
             "not_supported": "This Samsung TV device is currently not supported.",
             "wrong_api_key": "Wrong SmartThings token.",
             "st_device_not_found": "SmartThings TV deviceID not found.",

@@ -258,8 +258,10 @@ class SmartThingsTV:
                 ):
                     label = k.get("label", "")
                     if device_label == "" or (label == device_label and label != ""):
-                        result.setdefault(device_id, {})["name"] = k.get("name", "")
-                        result.setdefault(device_id, {})["label"] = label
+                        result[device_id] = {
+                            "name": k.get("name", ""),
+                            "label": label,
+                        }
 
         _LOGGER.info("SmartThings discovered TV devices: %s", str(result))
 

@@ -1,0 +1,199 @@
+# yamllint disable rule:document-start
+
+resources:
+  - url: /local/custom_cards/icloud3-event-log-card.js?v=1.001
+    type: js
+
+title: Home
+views:
+
+  # ==========================================================
+  - title: Main
+    icon: mdi:star-outline
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: glance
+            title: Status
+            column_width: 25%
+            entities:
+              - entity: sensor.gary_iphone_badge
+                name: Gary
+              - entity: sensor.lillian_iphone_badge
+                name: Lillian
+              - entity: sensor.garage_door_badge
+                name: Garage
+
+      - type: map
+        entities:
+          - device_tracker.gary_iphone
+          - device_tracker.lillian_iphone
+          - zone.home
+          - zone.quail
+          - zone.whse
+
+  # ==========================================================
+  - title: Location (Gary)
+    icon: mdi:cellphone-iphone
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: glance
+            title: Location Info - Gary
+            column_width: 20%
+            entities:
+              - entity: device_tracker.gary_iphone
+                name: Gary
+              - entity: sensor.gary_iphone_interval
+                name: Interval
+                icon: mdi:clock-start
+              - entity: sensor.gary_iphone_travel_time
+                name: TravTime
+                icon: mdi:clock-outline
+              - entity: sensor.gary_iphone_zone_distance
+                name: HomeDist
+                icon: mdi:map-marker-distance
+              - entity: sensor.gary_iphone_next_update
+                name: NextUpdt
+                icon: mdi:update
+
+          - type: glance
+            column_width: 20%
+            entities:
+              - entity: sensor.gary_iphone_waze_distance
+                name: WazeDist
+                icon: mdi:map-marker-distance
+              - entity: sensor.gary_iphone_calc_distance
+                name: CalcDist
+                icon: mdi:map-marker-distance
+              - entity: sensor.gary_iphone_dir_of_travel
+                name: Direction
+                icon: mdi:compass-outline
+              - entity: sensor.gary_iphone_last_located
+                name: Located
+                icon: mdi:map-clock
+              - entity: sensor.gary_iphone_last_update
+                name: LastUpdt
+                icon: mdi:history
+
+          - type: horizontal-stack
+            cards:
+              - type: entities
+                entities:
+                  - entity: sensor.gary_iphone_info
+                    name: Info
+                    icon: mdi:information-outline
+
+          - type: entities
+            entities:
+              - script.icloud3_update_location_gary
+              - script.homeassistant_restart
+
+      # ------------------------------------------------------
+      - type: vertical-stack
+        cards:
+          - type: glance
+            title: Location Info - Lillian
+            column_width: 20%
+            entities:
+              - entity: device_tracker.lillian_iphone
+                name: Gary
+              - entity: sensor.lillian_iphone_interval
+                name: Interval
+                icon: mdi:clock-start
+              - entity: sensor.lillian_iphone_travel_time
+                name: TravTime
+                icon: mdi:clock-outline
+              - entity: sensor.lillian_iphone_zone_distance
+                name: HomeDist
+                icon: mdi:map-marker-distance
+              - entity: sensor.lillian_iphone_next_update
+                name: NextUpdt
+                icon: mdi:update
+
+          - type: glance
+            column_width: 20%
+            entities:
+              - entity: sensor.lillian_iphone_waze_distance
+                name: WazeDist
+                icon: mdi:map-marker-distance
+              - entity: sensor.lillian_iphone_calc_distance
+                name: CalcDist
+                icon: mdi:map-marker-distance
+              - entity: sensor.lillian_iphone_dir_of_travel
+                name: Direction
+                icon: mdi:compass-outline
+              - entity: sensor.lillian_iphone_last_located
+                name: Located
+                icon: mdi:map-clock
+              - entity: sensor.lillian_iphone_last_update
+                name: LastUpdt
+                icon: mdi:history
+          - type: entities
+            entities:
+              - entity: sensor.lillian_iphone_info
+                name: Info
+                icon: mdi:information-outline
+
+  # ==========================================================
+  - title: iCloud Event Log
+    icon: mdi:information-outline
+    cards:
+      - type: custom:icloud3-event-log-card
+        entity: sensor.icloud3_event_log
+
+  # ==========================================================
+  - title: iCloud Commands
+    icon: mdi:cloud-upload-outline
+    cards:
+      - type: entities
+        title: iCloud3 Device Tracker Commands
+        show_header_toggle: false
+        entities:
+          - script.icloud3_command_resume_polling
+          - script.icloud3_command_pause_polling
+          - script.icloud3_command_restart
+          - type: divider
+          - script.icloud3_set_interval_1_min
+          - script.icloud3_set_interval_5_min
+          - script.icloud3_set_interval_15_min
+          - script.icloud3_set_interval_30_min
+          - script.icloud3_set_interval_1_hrs
+          - script.icloud3_set_interval_5_hrs
+          - type: divider
+          - script.icloud3_command_toggle_waze
+          - script.icloud3_command_reset_waze_range
+          - script.icloud3_lost_iphone_invalid
+          - script.icloud3_update_location
+
+      - type: entities
+        title: iCloud3 Commands - Gary
+        show_header_toggle: false
+        entities:
+          - script.icloud3_command_resume_polling_gary
+          - script.icloud3_command_pause_polling_gary
+          - script.icloud3_set_interval_2_min_gary
+          - script.icloud3_set_interval_10_min_gary
+          - script.icloud3_set_interval_1_min_lillian
+          - script.icloud3_set_interval_10_min_lillian
+          - script.icloud3_command_gary_iphone_zone_home
+          - script.icloud3_update_location_gary
+          - script.icloud3_lost_iphone_gary
+
+      - type: entities
+        title: iCloud3 Service Calls
+        show_header_toggle: false
+        entities:
+          - script.icloud3_lost_iphone_lillian
+          - script.icloud3_lost_iwatch_lillian
+          - script.icloud3_gary_iphone_see_away
+          - script.icloud3_update_location_lillian
+
+      - type: entities
+        entities:
+          - script.icloud3_command_loglevel_debug
+          - script.icloud3_command_loglevel_intervalcalc
+          - script.icloud3_command_loglevel_eventlog
+          - script.icloud3_command_loglevel_info
+          - script.icloud3_command_loglevel_debug_eventlog
+          - script.icloud3_command_loglevel_intervalcalc_eventlog
