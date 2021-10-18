@@ -1,11 +1,4 @@
 automation:
-
-    ####################################################
-    #                                                  #
-    #                   AUTOMATIONS                    #
-    #                                                  #
-    ####################################################
-
   - alias: homeassistant_start
     id: '7426848686945'
     initial_state: true
@@ -30,13 +23,14 @@ automation:
               state: 'off'
           sequence:
             - service: input_select.select_option
-              data:
+              target:
                 entity_id: input_select.conditional_media
+              data:
                 option: Senast nedladdat
       - delay:
           seconds: 10
       - service: fullykiosk.load_start_url
-        data:
+        target:
           entity_id: media_player.galaxy_tab_a_media_player
       - choose:
         - conditions:
@@ -45,7 +39,8 @@ automation:
               state: 'off'
           sequence:
             - service: switch.turn_on
-              entity_id: switch.galaxy_tab_a_screensaver
+              target:
+                entity_id: switch.galaxy_tab_a_screensaver
 
   - alias: balcony_on
     id: '6204571795721'
@@ -61,7 +56,8 @@ automation:
         state: below_horizon
     action:
       - service: switch.turn_on
-        entity_id: switch.deltaco_sh_p01
+        target:
+          entity_id: switch.deltaco_sh_p01
 
   - alias: balcony_off
     id: '0946556295386'
@@ -75,7 +71,8 @@ automation:
           minutes: 30
     action:
       - service: switch.turn_off
-        entity_id: switch.deltaco_sh_p01
+        target:
+          entity_id: switch.deltaco_sh_p01
 
   - alias: lovelace_updated_ignore
     id: '9381519720051'
@@ -110,7 +107,8 @@ automation:
         to: 'on'
     action:
       - service: light.turn_on
-        entity_id: light.tv
+        target:
+          entity_id: light.tv
 
   - alias: no_motion_bathroom
     id: '9936892396917'
@@ -123,7 +121,7 @@ automation:
           minutes: 30
     action:
       - service: light.turn_off
-        data:
+        target:
           entity_id: light.badrum
 
   - alias: disable_vacuum_map
@@ -143,7 +141,8 @@ automation:
           {% else %}
             camera.turn_on
           {% endif %}
-        entity_id: camera.vacuum_map
+        target:
+          entity_id: camera.vacuum_map
 
     ####################################################
     #                                                  #
@@ -204,9 +203,10 @@ automation:
             push:
               category: ios_hass
       - service: homeassistant.update_entity
-        entity_id:
-          - sensor.hass_release_notes
-          - sensor.hass_release_notes_rc
+        target:
+          entity_id:
+            - sensor.hass_release_notes
+            - sensor.hass_release_notes_rc
 
   - alias: ios_notify_hass_update_action
     id: '0694774018396'
@@ -218,7 +218,8 @@ automation:
           actionName: START_WATCHTOWER
     action:
       - service: switch.turn_on
-        entity_id: switch.watchtower
+        target:
+          entity_id: switch.watchtower
 
   - alias: notify_and_remove_completed_torrent
     id: '7876919385611'
@@ -284,15 +285,16 @@ automation:
         state: 'on'
     action:
       - service: homeassistant.update_entity
-        entity_id:
-          - sensor.imac_cpu
-          - sensor.imac_mem
-          - sensor.imac_system_ssd
-          - sensor.imac_macintosh_hd
-          - sensor.imac_uptime
-          - sensor.imac_ip
-          - sensor.monitors_volume
-          - binary_sensor.monitors_mute_state
+        target:
+          entity_id:
+            - sensor.imac_cpu
+            - sensor.imac_mem
+            - sensor.imac_system_ssd
+            - sensor.imac_macintosh_hd
+            - sensor.imac_uptime
+            - sensor.imac_ip
+            - sensor.monitors_volume
+            - binary_sensor.monitors_mute_state
 
   - alias: update_synology_latest_version_tag
     id: '3362185698381'
@@ -305,8 +307,8 @@ automation:
         to: 'on'
     action:
       - service: homeassistant.update_entity
-        entity_id:
-          - sensor.synology_dsm_latest
+        target:
+          entity_id: sensor.synology_dsm_latest
 
     ####################################################
     #                                                  #
@@ -327,9 +329,11 @@ automation:
     action:
       - service: shell_command.monitors_volume_slider
       - service: homeassistant.update_entity
-        entity_id: binary_sensor.monitors_mute_state
+        target:
+          entity_id: binary_sensor.monitors_mute_state
       - service: homeassistant.update_entity
-        entity_id: sensor.monitors_volume
+        target:
+          entity_id: sensor.monitors_volume
 
   - alias: monitors_volume_update
     id: '1275485733091'
@@ -343,10 +347,12 @@ automation:
         state: 'on'
     action:
       - service: homeassistant.update_entity
-        entity_id: binary_sensor.monitors_mute_state
+        target:
+          entity_id: binary_sensor.monitors_mute_state
       - service: input_number.set_value
-        data:
+        target:
           entity_id: input_number.monitors_volume
+        data:
           value: >
             {% set max_volume = 75 %} {% set min_volume = 7 %}
             {% if states(trigger.entity_id) | int > max_volume %}
@@ -399,7 +405,8 @@ automation:
           minutes: 15
     action:
       - service: switch.turn_off
-        entity_id: switch.wemo_monitors
+        target:
+          entity_id: switch.wemo_monitors
 
     ####################################################
     #                                                  #
@@ -425,7 +432,9 @@ automation:
           minutes: 15
     action:
       - service: switch.turn_off
-        entity_id: switch.wemo_fan
+        target:
+          entity_id: switch.wemo_fan
+
 
     ####################################################
     #                                                  #
@@ -452,15 +461,18 @@ automation:
             {{ trigger.entity_id == 'binary_sensor.sensor_hall_motion' }}
           sequence:
             - service: switch.turn_off
-              entity_id: switch.galaxy_tab_a_screensaver
+              target:
+                entity_id: switch.galaxy_tab_a_screensaver
             - service: light.turn_on
-              data:
+              target:
                 entity_id: light.galaxy_tab_a_screen
+              data:
                 brightness_pct: >
                   {{ 90 if is_state('sun.sun', 'above_horizon') else 60 }}
         default:
           - service: switch.turn_on
-            entity_id: switch.galaxy_tab_a_screensaver
+            target:
+              entity_id: switch.galaxy_tab_a_screensaver
           - delay:
               minutes: 15
           - service: browser_mod.close_popup
@@ -473,7 +485,7 @@ automation:
     #                                                  #
     ####################################################
 
-  - alias: turn_on_tv_fail_safe
+  - alias: turn_on_tv_flow
     id: '0703991107325'
     mode: parallel
     initial_state: true
@@ -492,28 +504,46 @@ automation:
           service: turn_on
           service_data:
             entity_id: media_player.samsung_tv
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: switch
+          service: turn_on
+          service_data:
+            entity_id: switch.playstation_5
     action:
       - service: media_player.turn_on
-        data:
+        target:
           entity_id: >
             {% set trigger = trigger.event.data.service_data.entity_id %}
             {% if trigger == 'media_player.sony_bravia_tv' %}
               media_player.vardagsrum
             {% elif trigger == 'media_player.samsung_tv' %}
               media_player.sovrum
+            {% elif trigger == 'switch.playstation_5' %}
+              media_player.samsung_tv
             {% endif %}
-      - service: remote.send_command
-        data:
-          entity_id: >
-            {% set trigger = trigger.event.data.service_data.entity_id %}
-            {% if trigger == 'media_player.sony_bravia_tv' %}
-              remote.vardagsrum
-            {% elif trigger == 'media_player.samsung_tv' %}
-              remote.sovrum
-            {% endif %}
-          command:
-            - menu
-            - menu
+      - choose:
+        - conditions: >
+            {{ trigger.event.data.service_data.entity_id == 'switch.playstation_5' }}
+          sequence:
+            - service: media_player.select_source
+              target:
+                entity_id: media_player.samsung_tv
+              data:
+                source: PS5
+        default:
+          - service: remote.send_command
+            target:
+              entity_id: >
+                {% set trigger = trigger.event.data.service_data.entity_id %}
+                {% if trigger == 'media_player.sony_bravia_tv' %}
+                  remote.vardagsrum
+                {% elif trigger == 'media_player.samsung_tv' %}
+                  remote.sovrum
+                {% endif %}
+            data:
+              command: wakeup
 
     ####################################################
     #                                                  #
@@ -531,11 +561,13 @@ automation:
         to: 'on'
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.laundry_display
+        target:
+          entity_id: input_boolean.laundry_display
       - delay:
           hours: 4
       - service: input_boolean.turn_off
-        entity_id: input_boolean.laundry_display
+        target:
+          entity_id: input_boolean.laundry_display
 
   - alias: laundry_alert
     id: '3403466403120'
@@ -547,15 +579,17 @@ automation:
           entity_id: timer.laundry
     action:
       - service: media_player.play_media
-        data:
+        target:
           entity_id: media_player.c2080cea_6627150a
+        data:
           media_content_id: /local/sound/timer.mp3
           media_content_type: music
       - delay:
           seconds: 2
       - service: tts.cloud_say
-        data:
+        target:
           entity_id: media_player.c2080cea_6627150a
+        data:
           message: &laundry >
             {{'\U0001F9FA'}} {{ ['Tvätten är färdig', 'Tvätten är klar', 'Dags att gå ner'] | random }}
           language: sv-SE
@@ -599,8 +633,9 @@ automation:
         to: playing
     action:
       - service: input_select.select_option
-        data:
+        target:
           entity_id: input_select.conditional_media
+        data:
           option: >
             {{ trigger.to_state.name }}
 
@@ -628,8 +663,9 @@ automation:
           minutes: 10
     action:
       - service: input_select.select_option
-        data:
+        target:
           entity_id: input_select.conditional_media
+        data:
           option: >
             {% set media_players = 
               [states.media_player.vardagsrum, states.media_player.sovrum, 
@@ -660,8 +696,9 @@ automation:
           is_state('media_player.kok', 'off') }}
     action:
       - service: input_select.select_option
-        data:
+        target:
           entity_id: input_select.conditional_media
+        data:
           option: Senast nedladdat
 
   - alias: conditional_media_atv1_fix
@@ -676,8 +713,9 @@ automation:
           seconds: 5
     action:
       - service: input_select.select_option
-        data:
+        target:
           entity_id: input_select.conditional_media
+        data:
           option: >
             {% set media_players = 
               [states.media_player.vardagsrum, states.media_player.spotify, 
@@ -710,8 +748,9 @@ automation:
           seconds: 5
     action:
       - service: input_select.select_option
-        data:
+        target:
           entity_id: input_select.conditional_media
+        data:
           option: >
             {% set media_players = 
               [states.media_player.vardagsrum, states.media_player.spotify, 

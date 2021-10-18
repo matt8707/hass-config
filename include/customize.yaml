@@ -29,11 +29,9 @@ homeassistant:
     media_player.sony_bravia_tv:
       friendly_name: Tv
       device_class: tv
-      source_list: ['HDMI 1', 'HDMI 2/MHL', 'HDMI 3', 'HDMI 4']
     media_player.samsung_tv:
       friendly_name: "Tv\u00B2"
       device_class: tv
-      source_list: ['TV', 'HDMI']
     media_player.spotify:
       friendly_name: Spotify
     media_player.kok:

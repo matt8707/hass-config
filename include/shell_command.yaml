@@ -1,11 +1,4 @@
 shell_command:
-
-  ####################################################
-  #                                                  #
-  #                  SHELL COMMAND                   #
-  #                                                  #
-  ####################################################
-
   imac_switchbot: !secret imac_switchbot
   imac_off: !secret imac_off
   imac_sleep: !secret imac_sleep
@@ -24,6 +17,3 @@ shell_command:
 
   ha_dockermon_restart_container: !secret ha_dockermon_restart_container
   ha_purge_logs: truncate -s 0 /config/home-assistant.log
-
-  playstation_5_wake: !secret playstation_5_wake
-  playstation_5_sleep: !secret playstation_5_sleep

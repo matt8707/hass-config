@@ -1,11 +1,4 @@
 binary_sensor:
-
-    ####################################################
-    #                                                  #
-    #                  BINARY SENSOR                   #
-    #                                                  #
-    ####################################################
-
   - platform: command_line
     name: plex_availability
     command: !secret plex_availability
@@ -19,12 +12,6 @@ binary_sensor:
     payload_on: 'true'
     payload_off: 'false'
     device_class: sound
-
-  - platform: command_line
-    name: playstation
-    command: !secret playstation_5_state
-    scan_interval: 300
-    device_class: power
 
   - platform: ping
     name: nas_internet_access

@@ -1,11 +1,4 @@
 template:
-
-  ####################################################
-  #                                                  #
-  #                     TEMPLATE                     #
-  #                                                  #
-  ####################################################
-
   select:
     - name: vacuum_speed
       state: >
@@ -22,12 +15,7 @@ template:
 
     - name: hdmi_bravia
       state: >
-        {% set entity_id = 'media_player.sony_bravia_tv' %}
-        {% if state_attr(entity_id, 'source') == None %}
-          {{ state_attr(entity_id, 'source_list')[1] }}
-        {% else %}
-          {{ state_attr(entity_id, 'source') }}
-        {% endif %}
+        {{ state_attr('media_player.sony_bravia_tv', 'source') }}
       options: >
         {{ state_attr('media_player.sony_bravia_tv', 'source_list') }}
       select_option:
@@ -40,15 +28,9 @@ template:
 
     - name: hdmi_samsung
       state: >
-        {% set entity_id = 'media_player.samsung_tv' %}
-        {% if state_attr(entity_id, 'source') == None %}
-          {{ state_attr(entity_id, 'source_list')[1] }}
-        {% else %}
-          {{ state_attr(entity_id, 'source') }}
-        {% endif %}
+        {{ state_attr('media_player.samsung_tv', 'source') }}
       options: >
-        {% set entity_id = 'media_player.samsung_tv' %}
-        {{ (state_attr(entity_id, 'source_list')[0], state_attr(entity_id, 'source_list')[1], 'Apple', 'PS5') | list }}
+        {{ state_attr('media_player.samsung_tv', 'source_list') }}
       select_option:
         service: media_player.select_source
         target:
@@ -423,7 +405,6 @@ template:
 
 #legacy
 sensor:
-
   - platform: template
     sensors:
       hass_version:

@@ -1,11 +1,4 @@
 script:
-
-  ####################################################
-  #                                                  #
-  #                      SCRIPT                      #
-  #                                                  #
-  ####################################################
-
   homeassistant_restart:
     sequence:
       - service: browser_mod.toast
@@ -23,17 +16,12 @@ script:
           duration: 8000
           message: Ställer in eko-läge på Tv i sovrummet...
       - service: media_player.play_media
-        data:
+        target:
           entity_id: media_player.samsung_tv
+        data:
           media_content_type: send_key
           media_content_id: >
             KEY_MENU+1500+KEY_DOWN+500+KEY_DOWN+500+KEY_DOWN+500+KEY_ENTER+1000+KEY_DOWN+500+KEY_DOWN+500+KEY_DOWN+500+KEY_DOWN+500+KEY_ENTER+1000+KEY_ENTER+1000+KEY_DOWN+500+KEY_DOWN+500+KEY_ENTER+1000+KEY_HOME+500+KEY_HOME+500
-
-  ####################################################
-  #                                                  #
-  #               HOME ARRIVE / LEAVE                #
-  #                                                  #
-  ####################################################
 
   home_arrive:
     alias: Hemma
@@ -48,8 +36,9 @@ script:
               state: 'off'
           sequence:
             - service: tts.cloud_say
-              data:
+              target:
                 entity_id: media_player.c2080cea_6627150a
+              data:
                 message: >
                   {{ ['Hej', 'Startar', 'Värmer upp', 'Välkommen hem'] | random }}
                 language: sv-SE
@@ -60,11 +49,11 @@ script:
               state: below_horizon
           sequence:
             - service: scene.turn_on
-              data:
+              target:
                 entity_id: scene.hemma_below_horizon
         default:
           - service: scene.turn_on
-            data:
+            target:
               entity_id: scene.hemma_above_horizon
       - delay:
           seconds: 4
@@ -84,7 +73,7 @@ script:
                 message: >
                   {{ ['Ha det bra', 'Saknar dig redan', 'Hej då', 'Stänger ner allt'] | random }}
       - service: homeassistant.turn_off
-        data:
+        target:
           entity_id: >
             {% set states = [
               states.light.all_lights_exclude_hall,
@@ -99,6 +88,7 @@ script:
       - delay:
           seconds: 1
       - service: fan.turn_off
-        entity_id: fan.air_purifier
+        target:
+          entity_id: fan.air_purifier
       - delay:
           seconds: 4

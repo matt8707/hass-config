@@ -1,11 +1,4 @@
 homekit:
-
-    ####################################################
-    #                                                  #
-    #                     HOMEKIT                      #
-    #                                                  #
-    ####################################################
-
   - ip_address: !secret homekit_ip_address
     filter:
       include_entities:

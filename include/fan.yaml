@@ -1,11 +1,4 @@
 fan:
-
-    ####################################################
-    #                                                  #
-    #                       FAN                        #
-    #                                                  #
-    ####################################################
-
   - platform: template
     fans:
       studio_wemo:
@@ -15,10 +8,12 @@ fan:
           else states('switch.wemo_fan') }}
         turn_on:
           - service: switch.turn_on
-            entity_id: switch.wemo_fan
+            target:
+              entity_id: switch.wemo_fan
         turn_off:
           - service: switch.turn_off
-            entity_id: switch.wemo_fan
+            target:
+              entity_id: switch.wemo_fan
 
       climate_fan_only:
         speed_count: 3
@@ -30,12 +25,13 @@ fan:
           {% endif %}
         turn_on:
           - service: climate.set_hvac_mode
-            data:
+            target:
               entity_id: climate.ac
+            data:
               hvac_mode: fan_only
         turn_off:
           - service: climate.turn_off
-            data:
+            target:
               entity_id: climate.ac
         percentage_template: >
           {% set speed = state_attr('climate.ac', 'fan_mode') %}
@@ -50,8 +46,9 @@ fan:
           {% endif %}
         set_percentage:
           - service: climate.set_fan_mode
-            data:
+            target:
               entity_id: climate.ac
+            data:
               fan_mode: >
                 {% if percentage <= 33 %}
                   low
@@ -64,134 +61,20 @@ fan:
             entity_id: climate.ac
             state: 'off'
           - service: climate.set_hvac_mode
-            data:
+            target:
               entity_id: climate.ac
+            data:
               hvac_mode: fan_only
         oscillating_template: >
           {{ is_state_attr('climate.ac', 'swing_mode', 'on') }}
         set_oscillating:
           - service: climate.set_swing_mode
-            data:
+            target:
               entity_id: climate.ac
+            data:
               swing_mode: >
                 {% if is_state_attr('climate.ac', 'swing_mode', 'off') %}
                   on
                 {% else %}
                   off
                 {% endif %}
-
-    # # ####################################################
-    # # #                                                  #
-    # # #                      FAN 2                       #
-    # # #                                                  #
-    # # ####################################################
-
-    #   sovrum_anslut:
-    #     friendly_name: Fläkt
-    #     value_template: >
-    #       {{ states('binary_sensor.gosund_fan') }}
-    #     percentage_template: >
-    #       {{ states('input_number.sovrum_anslut_speed') }}
-    #     speed_count: 3
-    #     set_percentage:
-    #       - service: input_number.set_value
-    #         data:
-    #           entity_id: input_number.sovrum_anslut_speed
-    #           value: >
-    #             {{ percentage }}
-    #     oscillating_template: >
-    #       {{ is_state('input_boolean.sovrum_anslut_oscillate', 'on') }}
-    #     set_oscillating:
-    #       - service: input_boolean.toggle
-    #         entity_id: input_boolean.sovrum_anslut_oscillate
-    #     turn_on:
-    #       - condition: state
-    #         entity_id: binary_sensor.gosund_fan
-    #         state: 'off'
-    #       - service: input_number.set_value
-    #         data:
-    #           entity_id: input_number.sovrum_anslut_speed
-    #           value: 33
-    #       #wake?
-    #       - service: remote.send_command
-    #         data:
-    #           entity_id: remote.broadlink_remote
-    #           command: !secret ir_fan_speed
-    #       - service: remote.send_command
-    #         data:
-    #           entity_id: remote.broadlink_remote
-    #           command: !secret ir_fan_power
-    #       - choose:
-    #         # initial oscillation
-    #         - conditions:
-    #             - condition: state
-    #               entity_id: input_boolean.sovrum_anslut_oscillate
-    #               state: 'on'
-    #           sequence:
-    #             - service: remote.send_command
-    #               data:
-    #                 entity_id: remote.broadlink_remote
-    #                 command: !secret ir_fan_swing
-    #     turn_off:
-    #       - condition: state
-    #         entity_id: binary_sensor.gosund_fan
-    #         state: 'on'
-    #       - service: input_number.set_value
-    #         data:
-    #           entity_id: input_number.sovrum_anslut_speed
-    #           value: 0
-    #       #wake?
-    #       - service: remote.send_command
-    #         data:
-    #           entity_id: remote.broadlink_remote
-    #           command: !secret ir_fan_speed
-    #       - service: remote.send_command
-    #         data:
-    #           entity_id: remote.broadlink_remote
-    #           command: !secret ir_fan_power
-
-    # # ####################################################
-    # # #                                                  #
-    # # #                   AIR PURIFIER                   #
-    # # #                                                  #
-    # # ####################################################
-
-    #   air_purifier:
-    #     friendly_name: Luftrenare
-    #     value_template: >
-    #       {{ states('binary_sensor.gosund_air_purifier') }}
-    #     percentage_template: >
-    #       {{ states('input_number.air_purifier_speed') }}
-    #     speed_count: 4
-    #     set_percentage:
-    #       - service: input_number.set_value
-    #         data:
-    #           entity_id: input_number.air_purifier_speed
-    #           value: >
-    #             {{ percentage }}
-    #     turn_on:
-    #       - condition: state
-    #         entity_id: binary_sensor.gosund_air_purifier
-    #         state: 'off'
-    #       #wake?
-    #       - service: remote.send_command
-    #         data:
-    #           entity_id: remote.broadlink_remote
-    #           command: !secret ir_purifier_speed_down
-    #       - service: remote.send_command
-    #         data:
-    #           entity_id: remote.broadlink_remote
-    #           command: !secret ir_purifier_power
-    #     turn_off:
-    #       - condition: state
-    #         entity_id: binary_sensor.gosund_air_purifier
-    #         state: 'on'
-    #       #wake?
-    #       - service: remote.send_command
-    #         data:
-    #           entity_id: remote.broadlink_remote
-    #           command: !secret ir_purifier_auto
-    #       - service: remote.send_command
-    #         data:
-    #           entity_id: remote.broadlink_remote
-    #           command: !secret ir_purifier_power

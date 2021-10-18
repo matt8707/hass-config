@@ -1,12 +1,5 @@
 
 input_boolean:
-
-  ####################################################
-  #                                                  #
-  #                     BOOLEAN                      #
-  #                                                  #
-  ####################################################
-
   laundry_display:
 
   computer_lock:
@@ -14,13 +7,6 @@ input_boolean:
     icon: custom:lock
 
 input_number:
-
-  ####################################################
-  #                                                  #
-  #                      NUMBER                      #
-  #                                                  #
-  ####################################################
-
   monitors_volume:
     name: Volym
     icon: mdi:volume-high
@@ -38,13 +24,6 @@ input_number:
     unit_of_measurement: h
 
 input_select:
-
-  ####################################################
-  #                                                  #
-  #                      SELECT                      #
-  #                                                  #
-  ####################################################
-
   conditional_media:
     initial: Senast nedladdat
     options:
