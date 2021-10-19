@@ -52,9 +52,14 @@ _LOGGER = logging.getLogger(__name__)
 
 PARALLEL_UPDATES = 0
 
+# We always consider these to be supported
+SUPPORT_BASE = SUPPORT_TURN_ON | SUPPORT_TURN_OFF
+
+# This is the "optimistic" view of supported features and will be returned until the
+# actual set of supported feature have been determined (will always be all or a subset
+# of these).
 SUPPORT_APPLE_TV = (
-    SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
+    SUPPORT_BASE
     | SUPPORT_PLAY_MEDIA
     | SUPPORT_PAUSE
     | SUPPORT_PLAY
@@ -66,6 +71,23 @@ SUPPORT_APPLE_TV = (
     | SUPPORT_REPEAT_SET
     | SUPPORT_SHUFFLE_SET
 )
+
+
+# Map features in pyatv to Home Assistant
+SUPPORT_FEATURE_MAPPING = {
+    FeatureName.PlayUrl: SUPPORT_PLAY_MEDIA,
+    FeatureName.StreamFile: SUPPORT_PLAY_MEDIA,
+    FeatureName.Pause: SUPPORT_PAUSE,
+    FeatureName.Play: SUPPORT_PLAY,
+    FeatureName.SetPosition: SUPPORT_SEEK,
+    FeatureName.Stop: SUPPORT_STOP,
+    FeatureName.Next: SUPPORT_NEXT_TRACK,
+    FeatureName.Previous: SUPPORT_PREVIOUS_TRACK,
+    FeatureName.VolumeUp: SUPPORT_VOLUME_STEP,
+    FeatureName.VolumeDown: SUPPORT_VOLUME_STEP,
+    FeatureName.SetRepeat: SUPPORT_REPEAT_SET,
+    FeatureName.SetShuffle: SUPPORT_SHUFFLE_SET,
+}
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -93,11 +115,27 @@ class AppleTvMediaPlayer(AppleTVEntity, MediaPlayerEntity):
             self.atv.push_updater.listener = self
             self.atv.push_updater.start()
 
+        self._attr_supported_features = SUPPORT_BASE
+
+        # Determine the actual set of supported features. All features not reported as
+        # "Unsupported" are considered here as the state of such a feature can never
+        # change after a connection has been established, i.e. an unsupported feature
+        # can never change to be supported.
+        all_features = self.atv.features.all_features()
+        for feature_name, support_flag in SUPPORT_FEATURE_MAPPING.items():
+            feature_info = all_features.get(feature_name)
+            if feature_info and feature_info.state != FeatureState.Unsupported:
+                self._attr_supported_features |= support_flag
+
+        # No need to schedule state update here as that will happen when the first
+        # metadata update arrives (sometime very soon after this callback returns)
+
     @callback
     def async_device_disconnected(self):
         """Handle when connection was lost to device."""
         self.atv.push_updater.stop()
         self.atv.push_updater.listener = None
+        self._attr_supported_features = SUPPORT_APPLE_TV
 
     @property
     def state(self):
@@ -188,6 +226,7 @@ class AppleTvMediaPlayer(AppleTVEntity, MediaPlayerEntity):
             )
 
             try:
+
                 async def _wait_for_tts_file(self, tts_file):
                     _LOGGER.debug("Waiting for TTS file %s to appear", tts_file)
                     while not path.exists(tts_file):

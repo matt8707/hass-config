@@ -4,18 +4,18 @@ from ipaddress import ip_address
 import logging
 from random import randrange
 
+from pyatv import exceptions, pair, scan
 from pyatv.const import DeviceModel, PairingRequirement
 from pyatv.convert import model_str, protocol_str
 from pyatv.helpers import get_unique_id
 import voluptuous as vol
 
-from homeassistant import config_entries
+from homeassistant import config_entries, data_entry_flow
 from homeassistant.components.zeroconf import async_get_instance
 from homeassistant.const import CONF_ADDRESS, CONF_NAME, CONF_PIN, CONF_TYPE
 from homeassistant.core import callback
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from pyatv import exceptions, pair, scan
 
 from .const import (
     CONF_CREDENTIALS,
@@ -35,7 +35,7 @@ DEFAULT_START_OFF = False
 DEFAULT_RECONFIGURE = False
 
 
-async def device_scan(identifier, loop, cache=None):
+async def device_scan(identifier, loop):
     """Scan for a specific device using identifier as filter."""
 
     def _filter_device(dev):
@@ -53,19 +53,14 @@ async def device_scan(identifier, loop, cache=None):
         except ValueError:
             return None
 
-    if cache:
-        matches = [atv for atv in cache if _filter_device(atv)]
-        if matches:
-            return cache, matches[0], matches[0].all_identifiers
-
     for hosts in (_host_filter(), None):
         scan_result = await scan(loop, timeout=3, hosts=hosts)
         matches = [atv for atv in scan_result if _filter_device(atv)]
 
         if matches:
-            return scan_result, matches[0], matches[0].all_identifiers
+            return matches[0], matches[0].all_identifiers
 
-    return scan_result, None, None
+    return None, None
 
 
 class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -81,8 +76,7 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     def __init__(self):
         """Initialize a new AppleTVConfigFlow."""
-        self.target_device = None
-        self.scan_result = None
+        self.scan_filter = None
         self.atv = None
         self.atv_identifiers = None
         self.protocol = None
@@ -114,7 +108,7 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_reauth(self, user_input=None):
         """Handle initial step when updating invalid credentials."""
-        self.target_device = self.unique_id
+        self.scan_filter = self.unique_id
         self.context["identifier"] = self.unique_id
         return await self.async_step_reconfigure()
 
@@ -129,13 +123,9 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None):
         """Handle the initial step."""
-        # Be helpful to the user and look for devices
-        if self.scan_result is None:
-            self.scan_result, _, _ = await device_scan(None, self.hass.loop)
-
         errors = {}
         if user_input is not None:
-            self.target_device = user_input[DEVICE_INPUT]
+            self.scan_filter = user_input[DEVICE_INPUT]
             try:
                 await self.async_find_device()
             except DeviceNotFound:
@@ -149,15 +139,13 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 await self.async_set_unique_id(
                     self.device_identifier, raise_on_progress=False
                 )
+                self.context["all_identifiers"] = self.atv.all_identifiers
                 return await self.async_step_confirm()
 
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema(
-                {vol.Required(DEVICE_INPUT, default=self._prefill_identifier()): str}
-            ),
+            data_schema=vol.Schema({vol.Required(DEVICE_INPUT): str}),
             errors=errors,
-            description_placeholders={"devices": self._devices_str()},
         )
 
     async def async_step_zeroconf(self, discovery_info):
@@ -167,8 +155,8 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         properties = discovery_info["properties"]
 
         # Extract unique identifier from service
-        self.target_device = get_unique_id(service_type, name, properties)
-        if self.target_device is None:
+        self.scan_filter = get_unique_id(service_type, name, properties)
+        if self.scan_filter is None:
             return self.async_abort(reason="unknown")
 
         # Scan for the device in order to extract _all_ unique identifiers assigned to
@@ -178,6 +166,40 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_found_zeroconf_device(self, user_input=None):
         """Handle device found after Zeroconf discovery."""
+        # Suppose we have a device with three services: A, B and C. Let's assume
+        # service A is discovered by Zeroconf, triggering a device scan that also finds
+        # service B but *not* C. An identifier is picked from one of the services and
+        # used as unique_id. The select process is deterministic (let's say in order A,
+        # B and C) but in practice that doesn't matter. So, a flow is set up for the
+        # device with unique_id set to "A" for services A and B.
+        #
+        # Now, service C is found and the same thing happens again but only service B
+        # is found. In this case, unique_id will be set to "B" which is problematic
+        # since both flows really represent the same device. They will however end up
+        # as two separate flows.
+        #
+        # To solve this, all identifiers found during a device scan is stored as
+        # "all_identifiers" in the flow context. When a new service is discovered, the
+        # code below will check these identifiers for all active flows and abort if a
+        # match is found. Before aborting, the original flow is updated with any
+        # potentially new identifiers. In the example above, when service C is
+        # discovered, the identifier of service C will be inserted into
+        # "all_identifiers" of the original flow (making the device complete).
+        for flow in self._async_in_progress():
+            for identifier in self.atv.all_identifiers:
+                if identifier not in flow["context"].get("all_identifiers", []):
+                    continue
+
+                # Add potentially new identifiers from this device to the existing flow
+                identifiers = set(flow["context"]["all_identifiers"])
+                identifiers.update(self.atv.all_identifiers)
+                flow["context"]["all_identifiers"] = list(identifiers)
+
+                raise data_entry_flow.AbortFlow("already_in_progress")
+
+        self.context["all_identifiers"] = self.atv.all_identifiers
+
+        # Also abort if an integration with this identifier already exists
         await self.async_set_unique_id(self.device_identifier)
         self._abort_if_unique_id_configured()
 
@@ -204,14 +226,16 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_find_device(self, allow_exist=False):
         """Scan for the selected device to discover services."""
-        self.scan_result, self.atv, self.atv_identifiers = await device_scan(
-            self.target_device, self.hass.loop, cache=self.scan_result
+        self.atv, self.atv_identifiers = await device_scan(
+            self.scan_filter, self.hass.loop
         )
         if not self.atv:
             raise DeviceNotFound()
 
         # Protocols supported by the device are prospects for pairing
-        self.protocols_to_pair.extend(service.protocol for service in self.atv.services)
+        self.protocols_to_pair = deque(
+            service.protocol for service in self.atv.services
+        )
 
         dev_info = self.atv.device_info
         self.context["title_placeholders"] = {
@@ -231,7 +255,22 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_confirm(self, user_input=None):
         """Handle user-confirmation of discovered node."""
         if user_input is not None:
+            expected_identifier_count = len(self.context["all_identifiers"])
+            # If number of services found during device scan mismatch number of
+            # identifiers collected during Zeroconf discovery, then trigger a new scan
+            # with hopes of finding all services.
+            if len(self.atv.all_identifiers) != expected_identifier_count:
+                try:
+                    await self.async_find_device()
+                except DeviceNotFound:
+                    return self.async_abort(reason="device_not_found")
+
+            # If all services still were not found, bail out with an error
+            if len(self.atv.all_identifiers) != expected_identifier_count:
+                return self.async_abort(reason="inconsistent_device")
+
             return await self.async_pair_next_protocol()
+
         return self.async_show_form(
             step_id="confirm",
             description_placeholders={
@@ -412,22 +451,6 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_create_entry(
             title=self.atv.name, data=data, options={CONF_RECONFIGURE: False}
         )
-
-    def _devices_str(self):
-        return ", ".join(
-            [
-                f"`{atv.name} ({atv.address})`"
-                for atv in self.scan_result
-                if atv.identifier not in self._async_current_ids()
-            ]
-        )
-
-    def _prefill_identifier(self):
-        # Return identifier (address) of one device that has not been paired with
-        for atv in self.scan_result:
-            if atv.identifier not in self._async_current_ids():
-                return str(atv.address)
-        return ""
 
 
 class AppleTVOptionsFlow(config_entries.OptionsFlow):
