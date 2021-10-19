@@ -199,11 +199,10 @@ sensor:
         om {{ value.daysTo }} dagar
       {% endif %}
 
-  - platform: command_line
+  - platform: mqtt
     name: switchbot_battery
-    command: !secret switchbot_battery
+    state_topic: !secret switchbot_mqtt_battery
     unit_of_measurement: '%'
-    scan_interval: 259200
 
   - platform: command_line
     name: imac_ip

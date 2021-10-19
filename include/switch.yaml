@@ -15,6 +15,7 @@ switch:
       {{ value_json is not none and value_json.state == "running" }}
 
   - platform: command_line
+    scan_interval: 300
     switches:
       playstation_5:
         friendly_name: Playstation
@@ -24,6 +25,11 @@ switch:
         command_on: !secret playstation_5_wake
         command_off: !secret playstation_5_sleep
 
+  - platform: mqtt
+    name: switchbot_mqtt
+    command_topic: !secret switchbot_mqtt_command
+    state_topic: !secret switchbot_mqtt_state
+
   - platform: template
     switches:
       computer_imac:
@@ -32,7 +38,9 @@ switch:
         value_template: >
           {{ is_state('switch.wol_imac', 'on') }}
         turn_on:
-          - service: shell_command.imac_switchbot
+          - service: switch.toggle
+            target:
+              entity_id: switch.switchbot_mqtt
           - service: light.turn_on
             target:
               entity_id: light.dator

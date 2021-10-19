@@ -1,5 +1,4 @@
 shell_command:
-  imac_switchbot: !secret imac_switchbot
   imac_off: !secret imac_off
   imac_sleep: !secret imac_sleep
   imac_restart: !secret imac_restart
