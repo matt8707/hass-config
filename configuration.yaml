@@ -16,7 +16,8 @@ default_config:
 lovelace:
   mode: yaml
   resources:
-    [ { url: /hacsfiles/bar-card/bar-card.js,                                       type: module },
+    [ { url: /hacsfiles/apexcharts-card/apexcharts-card.js,                         type: module },
+      { url: /hacsfiles/bar-card/bar-card.js,                                       type: module },
       { url: /hacsfiles/button-card/button-card.js,                                 type: module },
       { url: /hacsfiles/kiosk-mode/kiosk-mode.js,                                   type: module },
       { url: /hacsfiles/light-entity-card/light-entity-card.js,                     type: module },
@@ -46,25 +47,14 @@ person:
   - name: Matte
     id: matte
     device_trackers:
-      - device_tracker.mattias_iphone_ios
-      - device_tracker.mattias_iphonedetect
       - device_tracker.mattias_iphone_unifi
+      - device_tracker.mattias_iphone_ios
 
   - name: Sanja
     id: sanja
     device_trackers:
-      - device_tracker.sanja_iphonedetect
       - device_tracker.sanjas_iphone_unifi
-
-device_tracker:
-  - platform: iphonedetect
-    consider_home: 60
-    scan_interval: 12
-    new_device_defaults:
-      track_new_devices: false
-    hosts:
-      mattias_iphonedetect: !secret iphonedetect_matte
-      sanja_iphonedetect: !secret iphonedetect_sanja
+      - device_tracker.sanjas_iphone_ios
 
 smartir:
   check_updates: false
@@ -81,13 +71,7 @@ climate:
     power_sensor_restore_state: true
 
 influxdb:
-  api_version: 2
-  ssl: false
   host: !secret influxdb_host
-  port: !secret influxdb_port
-  organization: !secret influxdb_org
-  token: !secret influxdb_token
-  bucket: retention
   include:
     entities:
       - sensor.tibber_daily_consumption
