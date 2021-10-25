@@ -19,6 +19,7 @@ from homeassistant.components.media_player import DEVICE_CLASS_TV, MediaPlayerEn
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import config_validation as cv, entity_platform
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
+from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.service import async_call_from_config, CONF_SERVICE_ENTITY_ID
 from homeassistant.helpers.storage import STORAGE_DIR
 from homeassistant.util import dt as dt_util, Throttle
@@ -44,11 +45,6 @@ from homeassistant.components.media_player.const import (
 )
 
 from homeassistant.const import (
-    ATTR_IDENTIFIERS,
-    ATTR_MANUFACTURER,
-    ATTR_MODEL,
-    ATTR_NAME,
-    ATTR_SW_VERSION,
     CONF_API_KEY,
     CONF_BROADCAST_ADDRESS,
     CONF_DEVICE_ID,
@@ -221,10 +217,10 @@ class SamsungTVDevice(MediaPlayerEntity):
         self._attr_media_title = None
         self._attr_media_image_url = None
 
-        self._attr_device_info = {
-            ATTR_IDENTIFIERS: {(DOMAIN, self._attr_unique_id)},
-            ATTR_NAME: self._attr_name,
-        }
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, self._attr_unique_id)},
+            name=self._attr_name,
+        )
         self._attr_device_info.update(
             self._get_add_dev_info(
                 config.get(CONF_DEVICE_MODEL),
@@ -323,17 +319,17 @@ class SamsungTVDevice(MediaPlayerEntity):
 
     @staticmethod
     def _get_add_dev_info(dev_model, dev_name, dev_os, dev_mac):
-        dev_info = {ATTR_MANUFACTURER: "Samsung Electronics"}
+        dev_info = DeviceInfo(manufacturer="Samsung Electronics")
         model = dev_model or "Samsung TV"
         if dev_name:
             model = f"{model} ({dev_name})"
-        dev_info[ATTR_MODEL] = model
+        dev_info["model"] = model
         if dev_os:
-            dev_info[ATTR_SW_VERSION] = dev_os
+            dev_info["sw_version"] = dev_os
         if dev_mac:
             dev_info["connections"] = {(CONNECTION_NETWORK_MAC, dev_mac)}
 
-        return dev_info
+        return dict(dev_info)
 
     @staticmethod
     def _load_param_list(src_list):

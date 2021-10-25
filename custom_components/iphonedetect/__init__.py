@@ -1,1 +1,0 @@
-""" iPhone Detect """

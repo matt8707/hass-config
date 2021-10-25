@@ -167,6 +167,7 @@ class SamsungTVWS:
         self._sync_lock = Lock()
         self._last_app_scan = datetime.min
         self._last_ping = datetime.min
+        self._last_art_ping = datetime.min
         self._is_connected = False
 
         self._ws_remote = None
@@ -187,10 +188,10 @@ class SamsungTVWS:
     def __exit__(self, type, value, traceback):
         self.close()
 
-    def _serialize_string(self, string):
+    @staticmethod
+    def _serialize_string(string):
         if isinstance(string, str):
             string = str.encode(string)
-
         return base64.b64encode(string).decode("utf-8")
 
     def _is_ssl_connection(self):
@@ -297,7 +298,8 @@ class SamsungTVWS:
                 "TV unreachable or feature not supported on this model."
             )
 
-    def _process_api_response(self, response):
+    @staticmethod
+    def _process_api_response(response):
         try:
             return json.loads(response)
         except json.JSONDecodeError:
@@ -359,13 +361,13 @@ class SamsungTVWS:
         _LOGGING.debug("Thread SamsungRemote terminated")
 
     def _on_ping_remote(self, _, payload):
-        _LOGGING.debug("Received ping %s, sending pong", payload)
+        _LOGGING.debug("Received WS remote ping %s, sending pong", payload)
         self._last_ping = datetime.now()
         if self._ws_remote.sock:
             try:
                 self._ws_remote.sock.pong(payload)
             except Exception as ex:
-                _LOGGING.warning("send_pong failed: {}".format(ex))
+                _LOGGING.warning("WS remote send_pong failed, %s", ex)
 
     def _on_message_remote(self, _, message):
         response = self._process_api_response(message)
@@ -547,6 +549,7 @@ class SamsungTVWS:
         self._ws_art = websocket.WebSocketApp(
             url,
             on_message=self._on_message_art,
+            on_ping=self._on_ping_art,
         )
         _LOGGING.debug("Thread SamsungArt started")
         # we set ping interval (1 hour) only to enable multi-threading mode
@@ -558,12 +561,25 @@ class SamsungTVWS:
         self._ws_art = None
         _LOGGING.debug("Thread SamsungArt terminated")
 
+    def _on_ping_art(self, _, payload):
+        _LOGGING.debug("Received WS art ping %s, sending pong", payload)
+        self._last_art_ping = datetime.now()
+        if self._ws_art.sock:
+            try:
+                self._ws_art.sock.pong(payload)
+            except Exception as ex:
+                _LOGGING.warning("WS art send_pong failed: %s", ex)
+
     def _on_message_art(self, _, message):
         response = self._process_api_response(message)
         _LOGGING.debug(response)
         event = response.get("event")
         if not event:
             return
+
+        # we consider a message valid as a ping
+        self._last_art_ping = datetime.now()
+
         if event == "ms.channel.connect":
             conn_data = response.get("data")
             if not self._check_conn_id(conn_data):
@@ -661,6 +677,8 @@ class SamsungTVWS:
             self.stop_client()
             if self._artmode_status != ArtModeStatus.Unsupported:
                 self._artmode_status = ArtModeStatus.Unavailable
+        elif self._ws_remote:
+            self._check_art_mode()
 
         if self._power_on_requested:
             difference = (call_time - self._power_on_requested_time).total_seconds()
@@ -668,6 +686,17 @@ class SamsungTVWS:
                 self._power_on_requested = False
 
         return result
+
+    def _check_art_mode(self):
+        if self._artmode_status == ArtModeStatus.Unsupported:
+            return
+        if self._ws_art:
+            difference = (datetime.now() - self._last_art_ping).total_seconds()
+            if difference >= MAX_WS_PING_INTERVAL:
+                self._artmode_status = ArtModeStatus.Unavailable
+                self._ws_art.close()
+        elif self._ws_remote:
+            self.start_client(start_all=True)
 
     def set_power_on_request(self, set_art_mode=False, power_on_delay=0):
         self._power_on_requested = True
@@ -726,10 +755,9 @@ class SamsungTVWS:
                 self._client_control.setDaemon(True)
                 self._client_control.start()
 
-            if (
-                    self._client_art_supported > 0 and
-                    (self._client_art is None or not self._client_art.is_alive())
-               ):
+            if self._client_art_supported > 0 and \
+               (self._client_art is None or not self._client_art.is_alive()):
+
                 if self._client_art_supported > 1:
                     self._client_art_supported = 0
                 self._client_art = Thread(target=self._client_art_thread)
