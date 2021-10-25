@@ -22,7 +22,7 @@ browser_mod:
           class: content
         entities:
 
-          - entity: switch.tv_sony
+          - entity: media_player.sony_bravia_tv
             name: Sony Bravia
             secondary_info: last-changed
 

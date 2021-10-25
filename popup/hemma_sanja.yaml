@@ -33,7 +33,7 @@ browser_mod:
         show_state: false
         entities:
 
-          - entity: device_tracker.sanja_iphonedetect
+          - entity: device_tracker.sanjas_iphone_unifi
             name: Router
             icon: mdi:wifi
             style: &state |
