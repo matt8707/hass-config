@@ -501,31 +501,33 @@ template:
       icon: custom:roborock-filter
       unit_of_measurement: '%'
       state: >
-        {{ (state_attr('vacuum.morty', 'filter_left') / 1.5) | round }}
+        {{ (states('sensor.morty_filter_left') | int / 5400) | int(default=0) }}
+      attributes:
+        friendly_name: Filter
 
     - unique_id: vacuum_mainbrush
       icon: custom:roborock-mainbrush
       unit_of_measurement: '%'
       state: >
-        {{ (state_attr('vacuum.morty', 'main_brush_left') / 3) | round }}
+        {{ (states('sensor.morty_main_brush_left') | int / 10800) | int(default=0) }}
+      attributes:
+        friendly_name: Huvudborste
 
     - unique_id: vacuum_sensors
       icon: custom:roborock-sensor
       unit_of_measurement: '%'
       state: >
-        {{ (state_attr('vacuum.morty', 'sensor_dirty_left') / 0.3) | round }}
+        {{ (states('sensor.morty_sensor_dirty_left') | int / 1080) | int(default=0) }}
+      attributes:
+        friendly_name: Sensorer
 
     - unique_id: vacuum_sidebrush
       icon: custom:roborock-sidebrush
       unit_of_measurement: '%'
       state: >
-        {{ (state_attr('vacuum.morty', 'side_brush_left') / 2) | round }}
-
-    - unique_id: vacuum_lastclean
-      icon: mdi:calendar-clock
-      device_class: timestamp
-      state: >
-        {{ state_attr('vacuum.morty', 'clean_stop') | replace(' ','T') }}
+        {{ (states('sensor.morty_side_brush_left') | int / 7200) | int(default=0) }}
+      attributes:
+        friendly_name: Sidoborste
 
     - unique_id: fullykiosk_storage
       icon: mdi:sd
