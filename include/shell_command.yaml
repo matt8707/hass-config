@@ -16,3 +16,6 @@ shell_command:
 
   ha_dockermon_restart_container: !secret ha_dockermon_restart_container
   ha_purge_logs: truncate -s 0 /config/home-assistant.log
+
+  unifi_poweroff: !secret unifi_poweroff
+  unifi_reboot: !secret unifi_reboot

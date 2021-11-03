@@ -316,14 +316,61 @@ template:
             <b>Rig Manager</b> {{ installed + ' \u279e ' + latest }}
           {% endif %}
         unifi: >
-          {% set url = 'https://192.168.1.1/settings/updates' %}
-          {% if states('sensor.unifi_gateway_firmware_upgradable') | int > 0 %}
-            <b><a href="#" onclick="window.open('{{ url }}');">UniFi Dream Machine</a></b> uppdatering tillgänglig
+          {% set installed = states('sensor.template_udm_version') %}
+          {% set url = 'https://community.ui.com/releases?q=dream+machine' %}
+          {% if is_state('binary_sensor.template_udm_upgradable', 'on') %}
+            <b><a href="#" onclick="window.open('{{ url }}');">UniFi Dream Machine ({{ installed }})</a></b> uppdatering tillgänglig
           {% endif %}
         synology: >
           {% set installed = device_attr(device_id('sensor.nas_volume_1_status'), 'sw_version').split(' ')[1] %}
           {% set latest = states('sensor.synology_dsm_latest') %}
           {% if is_state('binary_sensor.nas_update_available', 'on') %}
+    - unique_id: udm_cpu
+      icon: mdi:chip
+      unit_of_measurement: '%'
+      state: >
+        {{ states('sensor.udm_unifios').split('|\n')[0] | default }}
+      attributes:
+        friendly_name: Processor
+
+    - unique_id: udm_cpu_temp
+      icon: mdi:thermometer
+      unit_of_measurement: '°C'
+      state: >
+        {{ states('sensor.udm_unifios').split('|\n')[1] | default }}
+      attributes:
+        friendly_name: Processortemperatur
+
+    - unique_id: udm_mem
+      icon: mdi:memory
+      unit_of_measurement: '%'
+      state: >
+        {{ states('sensor.udm_unifios').split('|\n')[2] | default }}
+      attributes:
+        friendly_name: Minne
+
+    - unique_id: udm_disk
+      icon: mdi:harddisk
+      unit_of_measurement: '%'
+      state: >
+        {{ states('sensor.udm_unifios').split('|\n')[3] | default }}
+      attributes:
+        friendly_name: Lagring
+
+    - unique_id: udm_uptime
+      device_class: timestamp
+      state: >
+        {{ states('sensor.udm_unifios').split('|\n')[5] | default }}
+      attributes:
+        friendly_name: Senaste omstart
+
+    - unique_id: udm_version
+      icon: mdi:router-wireless
+      state: >
+        {{ states('sensor.udm_unifios').split('|\n')[6] | default }}
+      attributes:
+        friendly_name: Version
+
     - unique_id: nas_status
       icon: custom:synology-nas
       state: >

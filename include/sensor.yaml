@@ -41,14 +41,20 @@ sensor:
       - time
       - date
 
-  - platform: unifigateway
-    username: !secret unifi_username
-    password: !secret unifi_password
-    host: !secret unifi_host
-    version: UDMP-unifiOS
-    monitored_conditions:
-      - firmware
-      - wan
+  - platform: command_line
+    name: udm_unifios
+    command: !secret udm_unifios
+    value_template: |-
+      {% set json = value_json.data[0] %}
+      {{ json["system-stats"].cpu }}|
+      {{ json.temperatures[1].value | round(1) }}|
+      {{ json["system-stats"].mem }}|
+      {{ ((json.storage[1].used / json.storage[1].size) * 100) | round(1) }}|
+      {{ json.internet }}|
+      {{ json.startup_timestamp | timestamp_custom('%Y-%m-%dT%H:%M:%S') }}|
+      {{ json.displayable_version }}|
+      {{ json.upgradable }}
+    scan_interval: 60
 
   - platform: rest
     name: esphome_version_latest
@@ -244,3 +250,32 @@ sensor:
     value_template: >
       {{ value | int | timestamp_custom('%Y-%m-%dT%H:%M:%S') }}
     scan_interval: 86400
+
+  - platform: command_line
+    name: rpi_sd
+    command: !secret rpi_sd
+    unit_of_measurement: '%'
+    value_template: >
+      {{ value[:-1] }}
+    scan_interval: 300
+
+  - platform: command_line
+    name: rpi_cpu
+    command: !secret rpi_cpu
+    unit_of_measurement: '%'
+    scan_interval: 300
+
+  - platform: command_line
+    name: rpi_mem
+    command: !secret rpi_mem
+    unit_of_measurement: '%'
+    value_template: >
+      {{ value | round(1) }}
+    scan_interval: 300
+
+  - platform: command_line
+    name: rpi_uptime
+    command: !secret rpi_uptime
+    value_template: >
+      {{ value | replace(' ', 'T') }}
+    scan_interval: 300

@@ -153,18 +153,27 @@ homeassistant:
       friendly_name: Automatisk kalibrationsprofil
       icon: custom:eq-calibrate
 
-    # sovrum_flakt.yaml
-    automation.sovrum_anslut_turn_on_temp:
-      friendly_name: Slå på om 24 °C överskrids
-      icon: mdi:chart-bell-curve-cumulative
-
     #person
     person.matte:
       entity_picture: /local/mattias.png
-    person.sanja:
-      entity_picture: /local/sanja.png
-    device_tracker.mattias_iphone_ios:
-      entity_picture: /local/device_tracker.svg
-
     sensor.mattias_weight:
       unit_of_measurement: kg
+    device_tracker.mattias_iphone_ios:
+      entity_picture: /local/device_tracker.svg
+    person.sanja:
+      entity_picture: /local/sanja.png
+
+    #sort
+    sensor.rpi_cpu:
+      friendly_name: Processor
+      icon: mdi:chip
+    sensor.rpi_mem:
+      friendly_name: Minne
+      icon: mdi:memory
+    sensor.rpi_sd:
+      friendly_name: SD-kort
+      icon: mdi:micro-sd
+    sensor.rpi_uptime:
+      friendly_name: Senaste omstart
+      icon: mdi:update
+      device_class: timestamp
