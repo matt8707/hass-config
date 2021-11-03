@@ -46,8 +46,8 @@ browser_mod:
                 states["sensor.hass_version_latest"].state;
 
               let release_notes = installed.includes('b') ?
-                marked(states["sensor.hass_release_notes_rc"].attributes.body) :
-                marked(states["sensor.hass_release_notes"].attributes.body);
+                marked.parse(states["sensor.hass_release_notes_rc"].attributes.body) :
+                marked.parse(states["sensor.hass_release_notes"].attributes.body);
 
               // return
               let subtitle = installed == latest ?
