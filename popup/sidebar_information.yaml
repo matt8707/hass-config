@@ -344,39 +344,74 @@ browser_mod:
                   service_data:
                     entity_id: sensor.disk_use_percent
 
-          - type: custom:hui-horizontal-stack-card
-            cards:
-              - type: entities
-                entities:
-                  - entity: sensor.nas_net_down
-                    style: |
-                      :host {
-                        --paper-item-icon-color: green;
-                      }
-
-              - type: entities
-                entities:
-                  - entity: sensor.nas_net_up
-                    style: |
-                      :host {
-                        --paper-item-icon-color: #385581;
-                      }
-
         footer:
-          type: custom:mini-graph-card
-          entities:
-            - color: '#385581'
-              entity: sensor.nas_network_up
-            - color: green
-              entity: sensor.nas_network_down
-          align_state: left
-          group: false
-          points_per_hour: 15
-          line_width: 3
-          hour24: true
-          hours_to_show: 1.5
+          type: custom:apexcharts-card
+          layout: minimal
+          graph_span: 1h
+          locale: se
           show:
-            {fill: fade, icon: false, name: false, state: false, 
-            name_adaptive_color: true, labels: hover, legend: false}
-          tap_action:
-            action: none
+            loading: false
+          apex_config:
+            chart:
+              fontFamily: Roboto
+              height: 135px
+              offsetY: -20px
+            grid:
+              padding:
+                top: -20
+            tooltip:
+              style:
+                fontSize: 14px
+              x:
+                show: true
+                format: dddd HH:mm
+            xaxis:
+              crosshairs:
+                show: false
+            legend:
+              fontSize: 14px
+              fontWeight: 400
+              itemMargin:
+                horizontal: 25
+              formatter: |
+                EVAL:(seriesName, opts) => {
+                  var arr = opts.w.globals.series[opts.seriesIndex],
+                    value = arr[arr.length - 1],
+                    convert = (value / 1024).toFixed(2);
+                  if (value == null) {
+                    return seriesName;
+                  } else {
+                    return value < 1024 ? `${Math.round(value)} kB/s` : `${convert} MB/s`;
+                  }
+                }
+              markers:
+                width: 26
+                height: 23
+                customHTML:
+                  - 'EVAL:() => {return `<ha-icon icon="mdi:arrow-down-bold" style="--mdc-icon-size: 23px;"></ha-icon>`}'
+                  - 'EVAL:() => {return `<ha-icon icon="mdi:arrow-up-bold" style="--mdc-icon-size: 23px;"></ha-icon>`}'
+                fillColors:
+                  - none
+                  - none
+            fill:
+              type: gradient
+              gradient:
+                type: vertical
+                opacityFrom: 0.8
+                opacityTo: 0
+                stops:
+                  - 0
+                  - 99
+                  - 100
+            stroke:
+              width: 3
+          all_series_config:
+            type: area
+            fill_raw: last
+          series:
+            - entity: sensor.nas_network_down
+              name: Ned
+              color: green
+            - entity: sensor.nas_network_up
+              name: Upp
+              color: '#385581'

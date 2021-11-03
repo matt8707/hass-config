@@ -26,7 +26,6 @@ lovelace:
       { url: /hacsfiles/lovelace-layout-card/layout-card.js,                        type: module },
       { url: /hacsfiles/lovelace-slider-entity-row/slider-entity-row.js,            type: module },
       { url: /hacsfiles/lovelace-xiaomi-vacuum-map-card/xiaomi-vacuum-map-card.js,  type: module },
-      { url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js,                  type: module },
       { url: /hacsfiles/swipe-card/swipe-card.js,                                   type: module },
 
       { url: '/local/calendar-card.js?v=3.109.1',                                   type: module },
