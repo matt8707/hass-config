@@ -166,18 +166,19 @@ class SamsungTVWS:
         self._app_type = {}
         self._sync_lock = Lock()
         self._last_app_scan = datetime.min
-        self._last_ping = datetime.min
-        self._last_art_ping = datetime.min
         self._is_connected = False
 
         self._ws_remote = None
         self._client_remote = None
+        self._last_ping = datetime.min
 
         self._ws_control = None
         self._client_control = None
+        self._last_control_ping = datetime.min
 
         self._ws_art = None
         self._client_art = None
+        self._last_art_ping = datetime.min
         self._client_art_supported = 2
 
         self._ping = Ping(self.host, 1)
@@ -433,6 +434,7 @@ class SamsungTVWS:
         self._ws_control = websocket.WebSocketApp(
             url,
             on_message=self._on_message_control,
+            on_ping=self._on_ping_control,
         )
         _LOGGING.debug("Thread SamsungControl started")
         # we set ping interval (1 hour) only to enable multi-threading mode
@@ -443,6 +445,15 @@ class SamsungTVWS:
         self._ws_control.close()
         self._ws_control = None
         _LOGGING.debug("Thread SamsungControl terminated")
+
+    def _on_ping_control(self, _, payload):
+        _LOGGING.debug("Received WS control ping %s, sending pong", payload)
+        self._last_control_ping = datetime.now()
+        if self._ws_control.sock:
+            try:
+                self._ws_control.sock.pong(payload)
+            except Exception as ex:
+                _LOGGING.warning("WS control send_pong failed, %s", ex)
 
     def _on_message_control(self, _, message):
         response = self._process_api_response(message)

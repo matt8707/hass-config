@@ -56,8 +56,8 @@
                     "show_channel_number": "Use SmartThings TV Channels number information",
                     "power_on_method_opt": "Method used to turn on TV",
                     "logo_option_opt": "Display a logo for known sources, apps and channels",
-                    "sync_turn_off": "List of entity to Power OFF with TV (comma separated)",
-                    "sync_turn_on": "List of entity to power ON with TV (comma separated)",
+                    "sync_turn_off": "List of entity to Power OFF with TV",
+                    "sync_turn_on": "List of entity to power ON with TV",
                     "show_adv_opt": "Show advanced options"
                 }
             },
@@ -69,7 +69,8 @@
                     "dump_apps": "Dump apps list on log file at startup (when possible)",
                     "use_mute_check": "Use volume mute status to detect fake power ON",
                     "wol_repeat": "Number of time WOL packet is sent to turn on TV",
-                    "power_on_delay": "Seconds to delay power ON status"
+                    "power_on_delay": "Seconds to delay power ON status",
+                    "ext_power_entity": "Binary sensor to help detect power status"
                 }
             }
         }

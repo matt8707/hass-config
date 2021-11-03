@@ -2,7 +2,7 @@
   "domain": "waste_collection_schedule",
   "name": "waste_collection_schedule",
   "documentation": "https://github.com/mampfes/hacs_waste_collection_schedule#readme",
-  "requirements": ["icalendar", "recurring_ical_events"],
+  "requirements": ["icalendar", "recurring_ical_events", "bs4"],
   "dependencies": [],
   "codeowners": ["@mampfes"],
   "iot_class": "cloud_polling",

@@ -37,7 +37,9 @@ CONF_DEVICE_MODEL = "device_model"
 CONF_DEVICE_NAME = "device_name"
 CONF_DEVICE_OS = "device_os"
 CONF_DUMP_APPS = "dump_apps"
+CONF_EXT_POWER_ENTITY = "ext_power_entity"
 CONF_LOAD_ALL_APPS = "load_all_apps"
+CONF_LOGO_OPTION = "logo_option"
 CONF_POWER_ON_DELAY = "power_on_delay"
 CONF_POWER_ON_METHOD = "power_on_method"
 CONF_SHOW_CHANNEL_NR = "show_channel_number"
@@ -49,7 +51,6 @@ CONF_USE_ST_CHANNEL_INFO = "use_st_channel_info"
 CONF_USE_ST_STATUS_INFO = "use_st_status_info"
 CONF_WOL_REPEAT = "wol_repeat"
 CONF_WS_NAME = "ws_name"
-CONF_LOGO_OPTION = "logo_option"
 
 # obsolete
 CONF_UPDATE_METHOD = "update_method"
@@ -74,6 +75,9 @@ RESULT_WRONG_APIKEY = "wrong_api_key"
 
 SERVICE_SELECT_PICTURE_MODE = "select_picture_mode"
 SERVICE_SET_ART_MODE = "set_art_mode"
+
+SERVICE_TURN_OFF = "turn_off"
+SERVICE_TURN_ON = "turn_on"
 
 STD_APP_LIST = {
     # app_id: smartthings app id (if different and available)

@@ -8,6 +8,7 @@ from pyatv.const import (
     FeatureName,
     FeatureState,
     MediaType,
+    PowerState,
     RepeatState,
     ShuffleState,
 )
@@ -130,11 +131,15 @@ class AppleTvMediaPlayer(AppleTVEntity, MediaPlayerEntity):
         # No need to schedule state update here as that will happen when the first
         # metadata update arrives (sometime very soon after this callback returns)
 
+        # Listen to power updates
+        self.atv.power.listener = self
+
     @callback
     def async_device_disconnected(self):
         """Handle when connection was lost to device."""
         self.atv.push_updater.stop()
         self.atv.push_updater.listener = None
+        self.atv.power.listener = None
         self._attr_supported_features = SUPPORT_APPLE_TV
 
     @property
@@ -144,6 +149,11 @@ class AppleTvMediaPlayer(AppleTVEntity, MediaPlayerEntity):
             return None
         if self.atv is None:
             return STATE_OFF
+        if (
+            self._is_feature_available(FeatureName.PowerState)
+            and self.atv.power.power_state == PowerState.Off
+        ):
+            return STATE_STANDBY
         if self._playing:
             state = self._playing.device_state
             if state in (DeviceState.Idle, DeviceState.Loading):
@@ -166,6 +176,11 @@ class AppleTvMediaPlayer(AppleTVEntity, MediaPlayerEntity):
         """Inform about an error and restart push updates."""
         _LOGGER.warning("A %s error occurred: %s", exception.__class__, exception)
         self._playing = None
+        self.async_write_ha_state()
+
+    @callback
+    def powerstate_update(self, old_state: PowerState, new_state: PowerState):
+        """Update power state when it changes."""
         self.async_write_ha_state()
 
     @property
@@ -318,12 +333,16 @@ class AppleTvMediaPlayer(AppleTVEntity, MediaPlayerEntity):
 
     async def async_turn_on(self):
         """Turn the media player on."""
-        await self.manager.connect()
+        if self._is_feature_available(FeatureName.TurnOn):
+            await self.atv.power.turn_on()
 
     async def async_turn_off(self):
         """Turn the media player off."""
-        self._playing = None
-        await self.manager.disconnect()
+        if (self._is_feature_available(FeatureName.TurnOff)) and (
+            not self._is_feature_available(FeatureName.PowerState)
+            or self.atv.power.power_state == PowerState.On
+        ):
+            await self.atv.power.turn_off()
 
     async def async_media_play_pause(self):
         """Pause media on media player."""

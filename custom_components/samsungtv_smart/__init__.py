@@ -43,6 +43,8 @@ from .const import (
     CONF_LOAD_ALL_APPS,
     CONF_SOURCE_LIST,
     CONF_SHOW_CHANNEL_NR,
+    CONF_SYNC_TURN_OFF,
+    CONF_SYNC_TURN_ON,
     CONF_WS_NAME,
     CONF_UPDATE_METHOD,
     CONF_UPDATE_CUSTOM_PING_URL,
@@ -191,6 +193,23 @@ def _migrate_token_file(hass: HomeAssistant, hostname: str):
             _LOGGER.warning("Error while deleting old token file %s", old_token_file)
 
     return
+
+
+def _migrate_options_format(hass: HomeAssistant, entry: ConfigEntry):
+    """Migrate options to new format."""
+    opt_migrated = False
+    new_options = {}
+
+    for key, option in entry.options.items():
+        if key in [CONF_SYNC_TURN_OFF, CONF_SYNC_TURN_ON]:
+            if isinstance(option, str):
+                new_options[key] = option.split(",")
+                opt_migrated = True
+                continue
+        new_options[key] = option
+
+    if opt_migrated:
+        hass.config_entries.async_update_entry(entry, options=new_options)
 
 
 async def get_device_info(hostname: str, session: ClientSession) -> dict:
@@ -356,6 +375,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     # migrate old token file if required
     _migrate_token_file(hass, entry.unique_id)
+
+    # migrate options to new format if required
+    _migrate_options_format(hass, entry)
 
     # setup entry
     hass.data.setdefault(DOMAIN, {})

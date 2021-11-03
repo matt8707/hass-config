@@ -5,7 +5,7 @@ import logging
 from random import randrange
 
 from pyatv import exceptions, pair, scan
-from pyatv.const import DeviceModel, PairingRequirement
+from pyatv.const import DeviceModel, PairingRequirement, Protocol
 from pyatv.convert import model_str, protocol_str
 from pyatv.helpers import get_unique_id
 import voluptuous as vol
@@ -307,17 +307,17 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         else:
             _LOGGER.debug("%s requires pairing", self.protocol)
 
+        # Protocol specific arguments
+        pair_args = {}
+        if self.protocol == Protocol.DMAP:
+            pair_args["name"] = "Home Assistant"
+            pair_args["zeroconf"] = await async_get_instance(self.hass)
+
         # Initiate the pairing process
         abort_reason = None
         session = async_get_clientsession(self.hass)
-        zeroconf = await async_get_instance(self.hass)
         self.pairing = await pair(
-            self.atv,
-            self.protocol,
-            self.hass.loop,
-            session=session,
-            name="Home Assistant",
-            zeroconf=zeroconf,
+            self.atv, self.protocol, self.hass.loop, session=session, **pair_args
         )
         try:
             await self.pairing.begin()

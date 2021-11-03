@@ -1,9 +1,0 @@
-{
-        "domain": "unifigateway",
-        "name": "UniFi Gateway",
-        "documentation": "https://github.com/custom-components/sensor.unifigateway",
-        "requirements": ["pyunifi==2.21"],
-        "version": "0.3.3",
-        "dependencies": [],
-        "codeowners": ["@jchasey"]
-}

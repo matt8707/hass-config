@@ -56,8 +56,8 @@
                     "show_channel_number": "Usa informazioni Numero Canale TV da SmartThings",
                     "power_on_method_opt": "Metodo usato per accendere la TV",
                     "logo_option_opt": "Visualizza il logo per sorgenti, apps e canali conosciuti",
-                    "sync_turn_off": "Elenco entit\u00e0 da Spegnere con la TV (separate da virgola)",
-                    "sync_turn_on": "Elenco entit\u00e0 da Accendere con la TV (separate da virgola)",
+                    "sync_turn_off": "Elenco entit\u00e0 da Spegnere con la TV",
+                    "sync_turn_on": "Elenco entit\u00e0 da Accendere con la TV",
                     "show_adv_opt": "Mostra opzioni avanzate"
                 }
             },
@@ -69,7 +69,8 @@
                     "dump_apps": "Mostra lista apps nel file di log all'avvio (se possibile)",
                     "use_mute_check": "Utilizza lo stato di volume muto per identificare false accensioni",
                     "wol_repeat": "Numero di volte che il pacchetto WOL viene inviato per accendere la TV",
-                    "power_on_delay": "Secondi di ritardo per passaggio allo stato ON"
+                    "power_on_delay": "Secondi di ritardo per passaggio allo stato ON",
+                    "ext_power_entity": "Binary sensor usato per identificare lo stato corrente"
                 }
             }
         }
