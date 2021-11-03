@@ -137,6 +137,8 @@ frontend:
               background-color: rgba(0,0,0,0);
               border-right: none;
               min-height: 100%;
+              margin-left: -0.8%;
+              margin-bottom: -6%;
             }
           }
 
@@ -188,7 +190,7 @@ frontend:
             @media screen and (max-width: 800px) {
               hui-grid-card {
                 position: absolute;
-                right: 4vw;
+                right: 5.5vw;
               }
             }
 
@@ -207,9 +209,9 @@ frontend:
 
           #conditional color
           "$hui-button-card:last-of-type$": |
-            {% if is_state('binary_sensor.sidebar_update_color', 'on') %}
+            {% if is_state('binary_sensor.template_sidebar_update_color', 'on') %}
 
-              ha-card, ha-icon {
+              ha-card, ha-state-icon {
                 color: rgb(35, 78 ,106) !important;
                 opacity: 1 !important;
                 animation: update 1.5s ease-out infinite;
