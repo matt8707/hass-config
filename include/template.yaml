@@ -141,22 +141,25 @@ template:
 
           {%- set switches = [
             states.switch.computer_imac,
-            states.switch.tv_sony,
-            states.switch.tv_samsung,
             states.switch.playstation_5,
             states.switch.wemo_monitors,
             states.fan.studio_wemo,
-            states.fan.sovrum_anslut,
-            states.fan.air_purifier
+            states.media_player.samsung_tv
+          ] %}
+
+          {%- set media_players = [
+            states.media_player.sony_bravia_tv
           ] %}
 
           {%- set lights_on = lights | selectattr('state','eq','on') | list %}
           {%- set lights_name = lights | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
 
-          {%- set switches_on = switches | selectattr('state','eq','on') | list %} 
-          {%- set switches_name = switches | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
+          {%- set switches_on = switches | selectattr('state','eq','on') | list %}
+          {%- set media_players_playing = media_players | selectattr('state','eq','playing') | list %}
+          {%- set append = switches_on + media_players_playing %}
+          {%- set switches_name = append | map(attribute='name') | join(', ') %}
 
-          {%- if (lights_on | length == 0) and (switches_on | length > 0) -%} 
+          {%- if (lights_on | length == 0) and (switches_on | length > 0) -%}
             {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på
 
           {%- elif (lights_on | length == 1) and (switches_on | length == 1) -%}
