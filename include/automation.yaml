@@ -42,38 +42,6 @@ automation:
               target:
                 entity_id: switch.galaxy_tab_a_screensaver
 
-  - alias: balcony_on
-    id: '6204571795721'
-    initial_state: true
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.wemo_motion
-        from: 'off'
-        to: 'on'
-    condition:
-      - condition: state
-        entity_id: sun.sun
-        state: below_horizon
-    action:
-      - service: switch.turn_on
-        target:
-          entity_id: switch.deltaco_sh_p01
-
-  - alias: balcony_off
-    id: '0946556295386'
-    initial_state: true
-    trigger:
-      - platform: state
-        entity_id: binary_sensor.wemo_motion
-        from: 'on'
-        to: 'off'
-        for:
-          minutes: 30
-    action:
-      - service: switch.turn_off
-        target:
-          entity_id: switch.deltaco_sh_p01
-
   - alias: lovelace_updated_ignore
     id: '9381519720051'
     mode: restart
@@ -124,25 +92,34 @@ automation:
         target:
           entity_id: light.badrum
 
-  - alias: disable_vacuum_map
-    id: '9857945964478'
+  - alias: balcony
+    id: '1522208581249'
+    mode: restart
     initial_state: true
     trigger:
       - platform: state
-        entity_id: vacuum.morty
-    condition:
-      - condition: template
-        value_template: >
-          {{ trigger.to_state.state != trigger.from_state.state }}
+        entity_id: binary_sensor.wemo_motion
+        from:
+          - 'on'
+          - 'off'
+        to:
+          - 'on'
+          - 'off'
     action:
-      - service: >
-          {% if trigger.to_state.state in ['unavailable', 'unknown', 'docked'] %}
-            camera.turn_off
-          {% else %}
-            camera.turn_on
-          {% endif %}
-        target:
-          entity_id: camera.vacuum_map
+      - choose:
+        - conditions: >
+            {{ trigger.to_state.state == 'on' and 
+            is_state('sun.sun', 'below_horizon') }}
+          sequence:
+            - service: switch.turn_on
+              target:
+                entity_id: switch.deltaco_sh_p01
+        default:
+          - delay:
+              minutes: 25
+          - service: switch.turn_off
+            target:
+              entity_id: switch.deltaco_sh_p01
 
     ####################################################
     #                                                  #

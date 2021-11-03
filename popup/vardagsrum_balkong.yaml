@@ -23,4 +23,4 @@ browser_mod:
           - entity: switch.deltaco_sh_p01
             secondary_info: last-changed
 
-          - entity: automation.todo
+          - entity: automation.balcony

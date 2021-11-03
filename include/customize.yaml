@@ -94,6 +94,13 @@ homeassistant:
       friendly_name: Källa
       icon: custom:hdmi-source
 
+    #vardagsrum_balkong.yaml
+    switch.deltaco_sh_p01:
+      friendly_name: Balkong
+      icon: mdi:lightbulb-variant
+    automation.balcony:
+      friendly_name: Tänd ljusslinga med rörelsedetektor
+
     #sidebar_vacuum.yaml
     vacuum.morty:
       friendly_name: Roborock S5

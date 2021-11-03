@@ -95,7 +95,7 @@ template:
             states.light.sanja,
             states.light.spot_1,
             states.light.spot_2,
-            states.switch.balkong
+            states.switch.deltaco_sh_p01
           ] %}
 
           {%- set switches = [
