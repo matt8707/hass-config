@@ -534,7 +534,7 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: binary_sensor.laundry_time_trigger
+        entity_id: binary_sensor.template_laundry_time_trigger
         to: 'on'
     action:
       - service: input_boolean.turn_on

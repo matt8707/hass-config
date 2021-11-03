@@ -70,7 +70,7 @@ browser_mod:
                 - entity: automation.macos_notification_motion_hall
                 - entity: sensor.imac_uptime
 
-                - entity: sensor.template_imac_vpn
+                - entity: binary_sensor.template_imac_vpn
                   tap_action:
                     action: call-service
                     service: homeassistant.update_entity

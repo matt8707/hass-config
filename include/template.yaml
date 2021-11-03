@@ -2,9 +2,9 @@ template:
   select:
     - name: vacuum_speed
       state: >
-        {{ state_attr('vacuum.morty', 'fan_speed') }}
+        {{ state_attr('vacuum.morty', 'fan_speed') | default }}
       options: >
-        {{ state_attr('vacuum.morty', 'fan_speed_list') }}
+        {{ state_attr('vacuum.morty', 'fan_speed_list') | default }}
       select_option:
         service: vacuum.set_fan_speed
         target:
@@ -15,9 +15,9 @@ template:
 
     - name: hdmi_bravia
       state: >
-        {{ state_attr('media_player.sony_bravia_tv', 'source') }}
+        {{ state_attr('media_player.sony_bravia_tv', 'source') | default }}
       options: >
-        {{ state_attr('media_player.sony_bravia_tv', 'source_list') }}
+        {{ state_attr('media_player.sony_bravia_tv', 'source_list') | default }}
       select_option:
         service: media_player.select_source
         target:
@@ -28,9 +28,9 @@ template:
 
     - name: hdmi_samsung
       state: >
-        {{ state_attr('media_player.samsung_tv', 'source') }}
+        {{ state_attr('media_player.samsung_tv', 'source') | default }}
       options: >
-        {{ state_attr('media_player.samsung_tv', 'source_list') }}
+        {{ state_attr('media_player.samsung_tv', 'source_list') | default }}
       select_option:
         service: media_player.select_source
         target:
@@ -38,6 +38,47 @@ template:
         data:
           source: >
             {{ option }}
+
+  binary_sensor:
+    - unique_id: laundry_time_trigger
+      state: >
+        {% set start_time = state_attr('calendar.tvatta', 'start_time') %}
+        {{ as_timestamp(start_time) - as_timestamp(now()) < 10 * 60 if start_time != None }}
+
+    - unique_id: sidebar_update_color
+      state: >
+        {% set installed = states('sensor.hass_version_installed') %}
+        {% set latest = states('sensor.hass_version_latest') 
+        if not installed | regex_search('b') else states('sensor.hass_version_latest_beta') %}
+        {{ (installed != latest and installed != 'unknown' and latest != 'unknown')
+        or (states('sensor.hacs') != 'unknown' and states('sensor.hacs') | int(default=0) > 0) }}
+
+    - unique_id: imac_vpn
+      device_class: connectivity
+      icon: >
+        mdi:shield-{{ 'alert' if is_state('switch.computer_imac', 'on') and 
+        states('sensor.imac_ip') == states('sensor.myip') else 'check' }}
+      state: >
+        {{ is_state('switch.computer_imac', 'on') and 
+        states('sensor.imac_ip') != states('sensor.myip') }}
+      attributes:
+        friendly_name: VPN
+
+    - unique_id: udm_internet
+      icon: mdi:wan
+      device_class: connectivity
+      state: >
+        {{ states('sensor.udm_unifios').split('|\n')[4] | default }}
+      attributes:
+        friendly_name: Internet
+
+    - unique_id: udm_upgradable
+      icon: mdi:update
+      device_class: update
+      state: >
+        {{ states('sensor.udm_unifios').split('|\n')[7] | default }}
+      attributes:
+        friendly_name: Uppdatering
 
   sensor:
     - unique_id: sidebar
@@ -198,10 +239,13 @@ template:
             'sensor.template_hue_motion_battery_badrum',
             'sensor.template_hue_motion_battery_garderob',
             'sensor.template_hue_motion_battery_hall',
-            'sensor.switchbot_battery' ] %}
-          {%- for sensor in entities if states(sensor) | int <= 5 and states(sensor) != 'unknown' %}
+            'sensor.switchbot_battery',
+            'sensor.aqara_contact_count_battery',
+            'sensor.aqara_contact_reset_battery',
+            'sensor.aqara_contact_window_battery' ] %}
+          {%- for sensor in entities if states(sensor) != 'unknown' and states(sensor) != 'unavailable' and states(sensor) != 'None' and states(sensor) | int(default=0) <= 5 %}
             {%- if loop.first %} {{-'\u26A0\uFE0F'}} Batteri {% else %}, {% endif -%}
-            {{ state_attr(sensor, 'friendly_name') + ' ' +  states(sensor) + '%' }}
+            {{ state_attr(sensor, 'friendly_name') }} {{ states(sensor) }}%
           {%- endfor %}
         mathem: |
           {%- set start_time = state_attr('calendar.mathem', 'start_time') %}
@@ -280,8 +324,69 @@ template:
           {% set installed = device_attr(device_id('sensor.nas_volume_1_status'), 'sw_version').split(' ')[1] %}
           {% set latest = states('sensor.synology_dsm_latest') %}
           {% if is_state('binary_sensor.nas_update_available', 'on') %}
-            <b>Synology DSM</b> {{ installed + ' \u279e ' + latest }}
+    - unique_id: nas_status
+      icon: custom:synology-nas
+      state: >
+        {% set entity_id = 'sensor.nas_volume_1_status' %}
+        {% if is_state(entity_id, 'normal') %}
+          Bra
+        {% elif is_state(entity_id, 'background') %}
+          Verifierar
+        {% else %}
+          {{ states(entity_id) }}
+        {% endif %}
+      attributes:
+        friendly_name: Systemhälsa
+
+    - unique_id: nas_net_down
+      icon: mdi:arrow-down-bold
+      state: ' '
+      attributes:
+        friendly_name: >
+          {% set down = states('sensor.nas_network_down') | float(default=0) %}
+          {% if down < 1000 %} {{ down | round(0) }} kb/s
+          {% elif down >= 1000 %} {{ ((down / 1000) | round(2) | string).rstrip('.0') }} Mb/s
           {% endif %}
+
+    - unique_id: nas_net_up
+      icon: mdi:arrow-up-bold
+      state: ' '
+      attributes:
+        friendly_name: >
+          {% set up = states('sensor.nas_network_up') | float(default=0) %}
+          {% if up < 1000 %} {{ up | round(0) }} kb/s
+          {% elif up >= 1000 %} {{ ((up / 1000) | round(2) | string).rstrip('.0') }} Mb/s
+          {% endif %}
+
+    - unique_id: hass_version
+      icon: mdi:home-assistant
+      state: >
+        {{ 'Senaste' if states('sensor.hass_version_installed') == 
+        states('sensor.hass_version_latest') else states('sensor.hass_version_latest') }}
+      attributes:
+        friendly_name: >
+          Installerad {{ states('sensor.hass_version_installed') }}
+
+    - unique_id: hass_dev_release
+      icon: mdi:dev-to
+      device_class: timestamp
+      state: >
+        {{ (as_timestamp(state_attr('calendar.home_assistant_devs', 'start_time')) 
+        + 60*60*18) | timestamp_custom | replace(' ', 'T') }}
+      attributes:
+        friendly_name: >
+          {% set release = state_attr('calendar.home_assistant_devs','message') %}
+          {% if release == 'Home Assistant Core Beta Release' %}
+            Nästa beta
+          {% elif release == 'Home Assistant Core Release' %}
+            Nästa release
+          {% else %}
+            {{ release }}
+          {% endif %}
+
+    - unique_id: hacs_version
+      state: >
+        {{ device_attr(device_id('sensor.hacs'), 'sw_version') }}
 
     - unique_id: dockermon_mem
       icon: mdi:memory
@@ -289,14 +394,8 @@ template:
         {% set entity_id = 'sensor.docker_cpu' %}
         {{ (state_attr(entity_id, 'memory_stats')['usage'] / 
         state_attr(entity_id, 'memory_stats')['limit'] * 100) | round(1) | default(0) }}
-
-    - unique_id: imac_vpn
-      state: >
-        {{ 'Ej Ansluten' if is_state('switch.computer_imac', 'on') and 
-        states('sensor.imac_ip') == states('sensor.myip') else 'Ansluten' }}
-      icon: >
-        mdi:shield-{{ 'alert' if is_state('switch.computer_imac', 'on') and 
-        states('sensor.imac_ip') == states('sensor.myip') else 'check' }}
+      attributes:
+        friendly_name: Minne
 
     - unique_id: printer_status
       icon: mdi:printer-wireless
@@ -312,6 +411,46 @@ template:
         {{ prt('trayEmptyOrOpen', 'Inga papper') }}
         {{ prt('idle', 'Viloläge') }}
         {{ prt('Off', 'Av') }}
+      attributes:
+        friendly_name: Skrivare
+
+    - unique_id: domain_counter
+      state: >
+        {{ states | count }}
+      attributes:
+        automation: >
+          {{ states.automation | count }}
+        binary_sensor: >
+          {{ states.binary_sensor | count }}
+        device_tracker: >
+          {{ states.device_tracker | count }}
+        light: >
+          {{ states.light | count }}
+        media_player: >
+          {{ states.media_player | count }}
+        sensor: >
+          {{ states.sensor | count }}
+        switch: >
+          {{ states.switch | count }}
+        other: >
+          {{ states.calendar | count +
+          states.camera | count +
+          states.climate | count +
+          states.fan | count +
+          states.input_boolean | count +
+          states.input_number | count +
+          states.input_select | count +
+          states.lock | count +
+          states.person | count +
+          states.remote | count +
+          states.scene | count +
+          states.script | count +
+          states.select | count +
+          states.sun | count +
+          states.timer | count +
+          states.vacuum | count +
+          states.weather | count +
+          states.zone | count }}
 
     - unique_id: vacuum_filter
       icon: custom:roborock-filter
@@ -352,6 +491,8 @@ template:
         {% if not (FreeSpace == 0.0 or TotalSpace == 0.0) %}
           {{ 100 - (FreeSpace / TotalSpace * 100) | int }}
         {% endif %}
+      attributes:
+        friendly_name: Lagring
 
     - unique_id: fullykiosk_memory
       icon: mdi:memory
@@ -362,88 +503,37 @@ template:
         {% if not (FreeMemory == 0.0 or TotalMemory == 0.0) %}
           {{ 100 - (FreeMemory / TotalMemory * 100) | int }}
         {% endif %}
+      attributes:
+        friendly_name: Minne
 
     - unique_id: fullykiosk_last_app_start
       icon: mdi:update
       device_class: timestamp
       state: >
-        {{ states('sensor.galaxy_tab_a_last_app_start') | replace(' ','T') }}
-
-    - unique_id: nas_status
-      icon: custom:synology-nas
-      state: >
-        {% set entity_id = 'sensor.nas_volume_1_status' %}
-        {% if is_state(entity_id, 'normal') %}
-          Bra
-        {% elif is_state(entity_id, 'background') %}
-          Verifierar
-        {% else %}
-          {{ states(entity_id) }}
-        {% endif %}
+        {{ states('sensor.galaxy_tab_a_last_app_start') | replace(' ', 'T') }}
+      attributes:
+        friendly_name: Senast omstart
 
     - unique_id: hue_motion_battery_badrum
       device_class: battery
       unit_of_measurement: '%'
       state: >
         {{ state_attr('binary_sensor.sensor_badrum_motion', 'battery_level') }}
+      attributes:
+        friendly_name: Sensor Badrum
 
     - unique_id: hue_motion_battery_hall
       device_class: battery
       unit_of_measurement: '%'
       state: >
         {{ state_attr('binary_sensor.sensor_hall_motion', 'battery_level') }}
+      attributes:
+        friendly_name: Sensor Hall
 
     - unique_id: hue_motion_battery_garderob
       device_class: battery
       unit_of_measurement: '%'
       state: >
         {{ state_attr('binary_sensor.sensor_garderob_motion', 'battery_level') }}
-
-    - unique_id: hacs_version
-      state: >
-        {{ device_attr(device_id('sensor.hacs'), 'sw_version') }}
-
-#legacy
-sensor:
-  - platform: template
-    sensors:
-      hass_version:
-        icon_template: mdi:home-assistant
-        friendly_name_template: >
-          Installerad {{ states('sensor.hass_version_installed') }}
-        value_template: >
-          {{ 'Senaste' if states('sensor.hass_version_installed') == 
-          states('sensor.hass_version_latest') else states('sensor.hass_version_latest') }}
-
-      hass_dev_release:
-        icon_template: mdi:dev-to
-        device_class: timestamp
-        friendly_name_template: >
-          {% set release = state_attr('calendar.home_assistant_devs','message') %}
-          {% if release == 'Home Assistant Core Beta Release' %}
-            Nästa beta
-          {% elif release == 'Home Assistant Core Release' %}
-            Nästa release
-          {% else %}
-            {{ release }}
-          {% endif %}
-        value_template: >
-          {{ state_attr('calendar.home_assistant_devs', 'start_time') | replace(' ','T') }}
-
-      nas_net_down:
-        value_template: ' '
-        icon_template: mdi:arrow-down-bold
-        friendly_name_template: >
-          {% set down = states('sensor.nas_network_down') | float(default=0) %}
-          {% if down < 1000 %} {{ down | round(0) }} kb/s
-          {% elif down >= 1000 %} {{ ((down / 1000) | round(2) | string).rstrip('.0') }} Mb/s
-          {% endif %}
-
-      nas_net_up:
-        value_template: ' '
-        icon_template: mdi:arrow-up-bold
-        friendly_name_template: >
-          {% set up = states('sensor.nas_network_up') | float(default=0) %}
-          {% if up < 1000 %} {{ up | round(0) }} kb/s
-          {% elif up >= 1000 %} {{ ((up / 1000) | round(2) | string).rstrip('.0') }} Mb/s
-          {% endif %}
+      attributes:
+        friendly_name: Sensor Garderob

@@ -55,38 +55,15 @@ homeassistant:
       friendly_name: Dimmer Badrum
     sensor.dimmer_sovrum_battery_level:
       friendly_name: Dimmer Sovrum
-    sensor.template_hue_motion_battery_badrum:
-      friendly_name: Sensor Badrum
-    sensor.template_hue_motion_battery_garderob:
-      friendly_name: Sensor Garderob
-    sensor.template_hue_motion_battery_hall:
-      friendly_name: Sensor Hall
 
     #fan
     fan.studio_wemo:
       icon: custom:pedestal-fan
-    fan.sovrum_anslut:
-      icon: custom:pedestal-fan
 
-    # template
-    sensor.template_coronavirus:
-      friendly_name: Coronavirus
-    sensor.template_dockermon_mem:
-      friendly_name: Minne
-    sensor.template_imac_vpn:
-      friendly_name: VPN
-    sensor.template_printer_status:
-      friendly_name: Skrivare
-    sensor.template_fullykiosk_storage:
-      friendly_name: Lagring
-    sensor.template_fullykiosk_memory:
-      friendly_name: Minne
-    sensor.template_fullykiosk_last_app_start:
-      friendly_name: Senast omstart
-    sensor.template_nas_status:
-      friendly_name: Systemhälsa
-    sensor.template_nas_vpn:
-      friendly_name: VPN
+    # template.yaml
+    select.vacuum_speed:
+      friendly_name: Rengöringsläge
+      icon: mdi:format-list-bulleted
     select.hdmi_bravia:
       friendly_name: Källa
       icon: custom:hdmi-source
@@ -105,23 +82,9 @@ homeassistant:
     vacuum.morty:
       friendly_name: Roborock S5
       icon: custom:roborock-vacuum
-    sensor.vacuum_last_cleaned:
+    sensor.morty_last_clean_end:
       friendly_name: Senast städat
       icon: mdi:calendar-clock
-      device_class: timestamp
-    sensor.template_vacuum_filter:
-      friendly_name: Filter
-    sensor.template_vacuum_mainbrush:
-      friendly_name: Huvudborste
-    sensor.template_vacuum_sidebrush:
-      friendly_name: Sidoborste
-    sensor.template_vacuum_sensors:
-      friendly_name: Sensorer
-    sensor.template_vacuum_lastclean:
-      friendly_name: Senast städat
-    select.vacuum_speed:
-      friendly_name: Rengöringsläge
-      icon: mdi:format-list-bulleted
 
     #sidebar_information.yaml
     switch.watchtower:

@@ -73,11 +73,11 @@ browser_mod:
               margin: 0px !important;
             }
         entities:
-          - entity: sensor.hass_version
+          - entity: sensor.template_hass_version
 
           - entity: switch.watchtower
 
-          - entity: sensor.hass_dev_release
+          - entity: sensor.template_hass_dev_release
 
           - entity: sensor.databas
 

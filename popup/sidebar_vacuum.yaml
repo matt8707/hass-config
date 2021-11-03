@@ -75,7 +75,7 @@ browser_mod:
 
           - entity: vacuum.morty
 
-          - entity: sensor.template_vacuum_lastclean
+          - entity: sensor.morty_last_clean_end
 
           - type: custom:bar-card
             width: 55%
