@@ -287,6 +287,23 @@ automation:
         target:
           entity_id: sensor.synology_dsm_latest
 
+  - alias: skanetrafiken_scan_interval
+    id: '0745322571221'
+    initial_state: true
+    trigger:
+      - platform: time_pattern
+        minutes: /5
+    condition:
+      condition: not
+      conditions:
+        - condition: time
+          after: '01:00:00'
+          before: '04:00:00'
+    action:
+      - service: homeassistant.update_entity
+        target:
+          entity_id: sensor.skanetrafiken
+
     ####################################################
     #                                                  #
     #                     MONITORS                     #

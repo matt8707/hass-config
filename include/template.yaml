@@ -205,12 +205,7 @@ template:
             Kan inte läsa in väderinformation...
           {%- endif %}
         transport: |
-          {% set entity_id = 'sensor.skanetrafiken' %}
-          {% if states(entity_id) != 'unknown' %}
-          {%- set date = state_attr(entity_id, 'date') + ' ' + state_attr(entity_id, 'time') %}
-          {%- set time = as_timestamp(date) | timestamp_custom('%H:%M') -%}
-            Nästa buss går {{ time }} från {{ state_attr(entity_id, 'name').split()[1] }}
-          {% endif %}
+          {{ states('sensor.skanetrafiken') }}
         laundry: |
           {%- set start_time = state_attr('calendar.tvatta', 'start_time') %}
           {% if start_time != None %}

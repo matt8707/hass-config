@@ -135,13 +135,24 @@ sensor:
     name: skanetrafiken
     resource: !secret skanetrafiken
     value_template: >
-      {{ value_json.Trip[0].LegList.Leg[1].Product.num }}
-    json_attributes_path: $.Trip[0].LegList.Leg[1].Origin
-    json_attributes:
-      - name
-      - time
-      - date
-    scan_interval: 268
+      {% if value_json is defined %}
+        {% set ns = namespace(found=false) %}
+        {% for i in range(value_json.Trip | length) %}
+          {% set json = value_json.Trip[i].LegList.Leg[1].Origin %}
+          {% set name = json.name.split()[1] %}
+          {% set timestamp = json.date + 'T' + json.time %}
+          {% set offset = 60 * 15 %}
+          {% if (as_timestamp(timestamp) - as_timestamp(now())) > offset and not ns.found %}
+            {% set ns.found = true %}
+            {% set ns.timestamp = as_timestamp(timestamp) | timestamp_custom('%H:%M') %}
+            {% set ns.name = name %}
+          {% endif %}
+        {% endfor %}
+        {% if ns.timestamp != null and ns.name != null %}
+          Nästa buss går {{ ns.timestamp }} från {{ ns.name }}
+        {% endif %}
+      {% endif %}
+    scan_interval: 86400
 
   - platform: rest
     name: hass_release_notes
