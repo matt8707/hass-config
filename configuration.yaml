@@ -41,6 +41,7 @@ logger:
 recorder:
   db_url: !secret recorder_db_url
   purge_keep_days: 5
+  commit_interval: 30
 
 person:
   - name: Matte
@@ -71,6 +72,7 @@ climate:
 
 influxdb:
   host: !secret influxdb_host
+  precision: s
   include:
     entities:
       - sensor.tibber_daily_consumption
