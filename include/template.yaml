@@ -184,6 +184,11 @@ template:
             <font color='#6a7377'>Allt är avstängt</font>
           {%- endif -%}
           </b>
+        mailbox: |
+          {% set mailbox = states('sensor.mailbox') %}
+          {% if mailbox | int > 0 %}
+            {{ '\U0001F4EC' }} <font color='#6a7377'><b>Brevlåda ({{ mailbox }})</b></font>
+          {% endif %}
         vacuum: |
           {% set entity_id = 'vacuum.morty' %}
           {%- if is_state(entity_id, 'cleaning') -%}

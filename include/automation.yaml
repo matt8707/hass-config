@@ -764,3 +764,39 @@ automation:
             {% else %}
             {{ media_players | selectattr('state','eq','playing') | map(attribute='name') | max }}
             {% endif %}
+
+  - alias: mailbox_count
+    id: '2878459556162'
+    mode: restart
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.aqara_contact_count
+        from: 'off'
+        to: 'on'
+      - platform: state
+        entity_id: binary_sensor.aqara_contact_reset
+        from: 'off'
+        to: 'on'
+    condition:
+      - condition: template
+        value_template: >
+          {{ as_timestamp(now()) - as_timestamp(state_attr('automation.mailbox_count',
+          'last_triggered')) > 7 or trigger.entity_id == 'binary_sensor.aqara_contact_reset' }}
+    action:
+      - choose:
+        - conditions: >
+            {{ trigger.entity_id == 'binary_sensor.aqara_contact_reset' }}
+          sequence:
+            - service: mqtt.publish
+              data:
+                topic: homeassistant/persistence/mailbox
+                payload: 0
+                retain: true
+        default:
+          - service: mqtt.publish
+            data:
+              topic: homeassistant/persistence/mailbox
+              payload_template: >
+                {{ states('sensor.mailbox') | int + 1 }}
+              retain: true

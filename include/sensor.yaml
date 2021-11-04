@@ -221,6 +221,11 @@ sensor:
     state_topic: !secret switchbot_mqtt_battery
     unit_of_measurement: '%'
 
+
+  - platform: mqtt
+    name: mailbox
+    state_topic: homeassistant/persistence/mailbox
+
   - platform: command_line
     name: imac_ip
     command: !secret imac_ip
