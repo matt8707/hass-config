@@ -304,14 +304,16 @@ template:
         kemperprofiler: >
           {% set installed = state_attr('sensor.kemper_version', 'profiler_installed') %}
           {% set latest = state_attr('sensor.kemper_version', 'profiler_latest') %}
+          {% set url = 'https://www.kemper-amps.com/downloads' %}
           {% if installed != latest %}
-            <b>Kemper Profiler OS</b> {{ installed + ' \u279e ' + latest }}
+            <b><a href="#" onclick="window.open('{{ url }}');">Kemper Profiler OS</a></b> {{ installed + ' \u279e ' + latest }}
           {% endif %}
         rigmanager: >
           {% set installed = state_attr('sensor.kemper_version', 'rigmanager_installed') %}
           {% set latest = state_attr('sensor.kemper_version', 'rigmanager_latest') %}
+          {% set url = 'https://www.kemper-amps.com/downloads' %}
           {% if installed != latest %}
-            <b>Rig Manager</b> {{ installed + ' \u279e ' + latest }}
+            <b><a href="#" onclick="window.open('{{ url }}');">Rig Manager</a></b> {{ installed + ' \u279e ' + latest }}
           {% endif %}
         unifi: >
           {% set installed = states('sensor.template_udm_version') %}
@@ -322,7 +324,11 @@ template:
         synology: >
           {% set installed = device_attr(device_id('sensor.nas_volume_1_status'), 'sw_version').split(' ')[1] %}
           {% set latest = states('sensor.synology_dsm_latest') %}
+          {% set url = 'https://www.synology.com/en-global/releaseNote/DSM' %}
           {% if is_state('binary_sensor.nas_update_available', 'on') %}
+            <b><a href="#" onclick="window.open('{{ url }}');">Synology DSM</a></b> {{ installed + ' \u279e ' + latest }}
+          {% endif %}
+
     - unique_id: udm_cpu
       icon: mdi:chip
       unit_of_measurement: '%'
