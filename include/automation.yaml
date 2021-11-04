@@ -483,7 +483,8 @@ automation:
         from: 'off'
         to: 'on'
         for:
-          hours: "{{ states('input_number.wemo_fan_timer') | int }}"
+          hours: >
+            {{ states('input_number.wemo_fan_timer') | int }}
       - platform: state
         entity_id: switch.computer_imac
         from: 'on'
@@ -494,7 +495,6 @@ automation:
       - service: switch.turn_off
         target:
           entity_id: switch.wemo_fan
-
 
     ####################################################
     #                                                  #
@@ -665,11 +665,11 @@ automation:
                 data:
                   message: *laundry
 
-      ####################################################
-      #                                                  #
-      #                CONDITIONAL MEDIA                 #
-      #                                                  #
-      ####################################################
+    ####################################################
+    #                                                  #
+    #                CONDITIONAL MEDIA                 #
+    #                                                  #
+    ####################################################
 
   - alias: conditional_media_playing
     id: '5557842567134'
@@ -703,7 +703,9 @@ automation:
           - media_player.spotify
           - media_player.kok
         to:
-          ['off', 'idle', 'standby']
+          - 'off'
+          - idle
+          - standby
       - platform: state
         entity_id:
           - media_player.vardagsrum

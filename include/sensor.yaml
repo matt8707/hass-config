@@ -110,7 +110,7 @@ sensor:
       Content-Type: application/json
     method: POST
     payload: >
-      {"query": "{viewer {homes {consumption(resolution: DAILY, last: 5, filterEmptyNodes: true) {nodes {from to cost consumption }}}}}"}
+      {"query": "{ viewer { homes { consumption(resolution: MONTHLY, last: 12) { nodes { from consumption cost } } } } }"}
     value_template: >
       {{ value_json.data.viewer.homes[0].consumption.nodes[-1].consumption }}
     json_attributes_path: $.data.viewer.homes[0].consumption.nodes[-1:]
@@ -128,7 +128,8 @@ sensor:
     value_template: >
       {{ 'Otillgänglig' if value_json.embedCode == '' else 'Tillgänglig' }}
     json_attributes_path: $.widgets.widget_1.config
-    json_attributes: [embedCode]
+    json_attributes:
+      - embedCode
     scan_interval: 21600
 
   - platform: rest
