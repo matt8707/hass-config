@@ -240,18 +240,24 @@ sensor:
     name: imac_system_ssd
     command: !secret imac_system_ssd
     unit_of_measurement: '%'
+    value_template: >
+      {{ value[:-1] }}
     scan_interval: 86400
 
   - platform: command_line
     name: imac_macintosh_hd
     command: !secret imac_macintosh_hd
     unit_of_measurement: '%'
+    value_template: >
+      {{ value[:-1] }}
     scan_interval: 86400
 
   - platform: command_line
     name: imac_cpu
     command: !secret imac_cpu
     unit_of_measurement: '%'
+    value_template: >
+      {{ (100 - value[:-1] | float) | round(1) }}
     scan_interval: 86400
 
   - platform: command_line
@@ -264,7 +270,7 @@ sensor:
     name: imac_uptime
     command: !secret imac_uptime
     value_template: >
-      {{ value | int | timestamp_custom('%Y-%m-%dT%H:%M:%S') }}
+      {{ value[:-1] | int | timestamp_custom('%Y-%m-%dT%H:%M:%S') }}
     scan_interval: 86400
 
   - platform: command_line
