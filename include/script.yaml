@@ -29,22 +29,6 @@ script:
       - choose:
         - conditions:
             - condition: state
-              entity_id: light.galaxy_tab_a_screen
-              state: 'on'
-            - condition: state
-              entity_id: switch.galaxy_tab_a_screensaver
-              state: 'off'
-          sequence:
-            - service: tts.cloud_say
-              target:
-                entity_id: media_player.c2080cea_6627150a
-              data:
-                message: >
-                  {{ ['Hej', 'Startar', 'Värmer upp', 'Välkommen hem'] | random }}
-                language: sv-SE
-      - choose:
-        - conditions:
-            - condition: state
               entity_id: sun.sun
               state: below_horizon
           sequence:
@@ -61,34 +45,16 @@ script:
   home_leave:
     alias: Stäng allt
     sequence:
-      - choose:
-        - conditions:
-            - condition: state
-              entity_id: switch.galaxy_tab_a_screensaver
-              state: 'off'
-          sequence:
-            - service: tts.cloud_say
-              data:
-                entity_id: media_player.c2080cea_6627150a
-                message: >
-                  {{ ['Ha det bra', 'Saknar dig redan', 'Hej då', 'Stänger ner allt'] | random }}
       - service: homeassistant.turn_off
         target:
-          entity_id: >
-            {% set states = [
-              states.light.all_lights_exclude_hall,
-              states.switch.wemo_fan,
-              states.switch.wemo_monitors,
-              states.switch.computer_imac,
-              states.switch.balkong,
-              states.switch.tv_sony,
-              states.switch.tv_samsung,
-              states.fan.sovrum_anslut ] %}
-            {{ states | selectattr('state','eq','on') | map(attribute='entity_id') | list }}
-      - delay:
-          seconds: 1
-      - service: fan.turn_off
-        target:
-          entity_id: fan.air_purifier
+          entity_id:
+            - light.all_lights_exclude_hall
+            - climate.ac
+            - media_player.sony_bravia_tv
+            - media_player.samsung_tv
+            - switch.wemo_fan
+            - switch.wemo_monitors
+            - switch.computer_imac
+            - switch.deltaco_sh_p01
       - delay:
           seconds: 4

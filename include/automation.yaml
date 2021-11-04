@@ -578,15 +578,6 @@ automation:
         data:
           media_content_id: /local/sound/timer.mp3
           media_content_type: music
-      - delay:
-          seconds: 2
-      - service: tts.cloud_say
-        target:
-          entity_id: media_player.c2080cea_6627150a
-        data:
-          message: &laundry >
-            {{'\U0001F9FA'}} {{ ['Tvätten är färdig', 'Tvätten är klar', 'Dags att gå ner'] | random }}
-          language: sv-SE
       - choose:
           - conditions: >
               {{ is_state('switch.computer_imac', 'on') }}
@@ -598,7 +589,8 @@ automation:
             sequence:
               - service: notify.mobile_app_mattias_iphone_ios
                 data:
-                  message: *laundry
+                  message: &laundry >
+                    {{'\U0001F9FA'}} {{ ['Tvätten är färdig', 'Tvätten är klar', 'Dags att gå ner'] | random }}
       - choose:
           - conditions: >
               {{ is_state('person.sanja', 'home') }}
