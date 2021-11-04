@@ -205,16 +205,7 @@ sensor:
   - platform: waste_collection_schedule
     name: Sophämtning
     value_template: >
-      {{ value.types | join(', ') + ' ' }}
-      {% if value.daysTo == 0 %}
-        idag
-      {% elif value.daysTo == 1 %}
-        imorgon
-      {% elif value.daysTo == 2 %}
-        i övermorgon
-      {% else %}
-        om {{ value.daysTo }} dagar
-      {% endif %}
+      {{ value.daysTo }}
 
   - platform: mqtt
     name: switchbot_battery

@@ -65,6 +65,72 @@ automation:
     action:
       - service: shell_command.ha_purge_logs
 
+  - alias: climate_safeguard
+    id: '0374158275864'
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id: climate.ac
+        to: cool
+    condition:
+      - condition: state
+        entity_id: binary_sensor.aqara_contact_window
+        state: 'off'
+    action:
+      - service: climate.set_hvac_mode
+        target:
+          entity_id: climate.ac
+        data:
+          hvac_mode: fan_only
+
+  - alias: waste_collection
+    id: '5611101897022'
+    initial_state: true
+    trigger:
+      - platform: time
+        at: '22:30'
+    condition:
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: sensor.sophamtning
+            state: '1'
+          - condition: state
+            entity_id: binary_sensor.aqara_contact_window
+            state: 'on'
+    action:
+      - service: notify.mobile_app_mattias_iphone_ios
+        data:
+          title: >
+            {{ '\u267B' }} Sophämtning imorgon
+          message: Stäng fönstret!
+
+  # - alias: disable_vacuum_map
+  #   id: '9857945964478'
+  #   initial_state: true
+  #   trigger:
+  #     - platform: state
+  #       entity_id: vacuum.morty
+  #   condition:
+  #     - condition: template
+  #       value_template: >
+  #         {{ trigger.to_state.state != trigger.from_state.state }}
+  #   action:
+  #     - service: >
+  #         {% if trigger.to_state.state in ['unavailable', 'unknown', 'docked'] %}
+  #           camera.turn_off
+  #         {% else %}
+  #           camera.turn_on
+  #         {% endif %}
+  #       target:
+  #         entity_id: camera.vacuum_map
+
+    ####################################################
+    #                                                  #
+    #                      LIGHTS                      #
+    #                                                  #
+    ####################################################
+
   - alias: tv_on_lights
     id: '6657050215613'
     initial_state: true
