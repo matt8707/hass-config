@@ -231,14 +231,21 @@ automation:
     id: '7958228563778'
     trigger:
       - platform: state
-        entity_id: binary_sensor.updater
-        from: 'off'
-        to: 'on'
+        entity_id: sensor.hass_version_installed
+      - platform: state
+        entity_id: sensor.hass_version_latest
+    condition:
+      - condition: template
+        value_template: >
+          {% set installed = states('sensor.hass_version_installed') %}
+          {% set latest = states('sensor.hass_version_latest') %}
+          {{ installed != 'unknown' and installed != 'unavailable' and installed != 'none' and 
+          latest != 'unknown' and latest != 'unavailable' and latest != 'none' and installed != latest }}
     action:
       - service: notify.mobile_app_mattias_iphone_ios
         data:
           title: >
-            {{ state_attr('binary_sensor.updater', 'newest_version') }} tillgänglig {{ '\U0001F389' }}
+            {{ states('sensor.hass_version_latest') }} tillgänglig {{ '\U0001F389' }}
           message: Håll in för att uppdatera
           data:
             data:
@@ -369,6 +376,21 @@ automation:
       - service: homeassistant.update_entity
         target:
           entity_id: sensor.skanetrafiken
+
+  - alias: hacs_sensor_refresh
+    id: '2001123854555'
+    initial_state: true
+    trigger:
+      - platform: event
+        event_type: hacs/repository
+        event_data:
+          action: install
+    action:
+      - delay:
+          seconds: 4
+      - service: homeassistant.update_entity
+        target:
+          entity_id: sensor.hacs
 
     ####################################################
     #                                                  #
