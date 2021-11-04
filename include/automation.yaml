@@ -823,6 +823,45 @@ automation:
             {{ media_players | selectattr('state','eq','playing') | map(attribute='name') | max }}
             {% endif %}
 
+    ####################################################
+    #                                                  #
+    #                   PERSISTENCE                    #
+    #                                                  #
+    ####################################################
+
+  - alias: person_home
+    id: '8423590985012'
+    initial_state: true
+    trigger:
+      - platform: state
+        entity_id:
+          - person.matte
+          - person.sanja
+        from:
+          - home
+          - not_home
+        to:
+          - home
+          - not_home
+    action:
+      - choose:
+        - conditions: >
+            {{ trigger.entity_id == 'person.matte' }}
+          sequence:
+            - service: mqtt.publish
+              data:
+                topic: homeassistant/persistence/matte
+                payload_template: >
+                  {{ now() }}
+                retain: true
+        default:
+          - service: mqtt.publish
+            data:
+              topic: homeassistant/persistence/sanja
+              payload_template: >
+                {{ now() }}
+              retain: true
+
   - alias: mailbox_count
     id: '2878459556162'
     mode: restart

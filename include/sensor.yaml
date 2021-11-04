@@ -212,6 +212,17 @@ sensor:
     state_topic: !secret switchbot_mqtt_battery
     unit_of_measurement: '%'
 
+  - platform: mqtt
+    name: matte_last_changed
+    state_topic: homeassistant/persistence/matte
+    value_template: >
+      {{ value | replace(' ', 'T') }}
+
+  - platform: mqtt
+    name: sanja_last_changed
+    state_topic: homeassistant/persistence/sanja
+    value_template: >
+      {{ value | replace(' ', 'T') }}
 
   - platform: mqtt
     name: mailbox

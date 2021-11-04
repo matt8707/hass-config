@@ -442,19 +442,27 @@ views:
           - type: custom:button-card
             entity: person.matte
             name: Mattias
+            triggers_update:
+              - sensor.matte_last_changed
             tap_action:
               !include popup/hemma_mattias.yaml
             hold_action:
               action: none
+            variables:
+              retain: sensor.matte_last_changed
             template: person
 
           - type: custom:button-card
             entity: person.sanja
             name: Sanja
+            triggers_update:
+              - sensor.sanja_last_changed
             tap_action:
               !include popup/hemma_sanja.yaml
             hold_action:
               action: none
+            variables:
+              retain: sensor.sanja_last_changed
             template: person
 
           - type: custom:button-card
