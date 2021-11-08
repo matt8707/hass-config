@@ -394,26 +394,6 @@ template:
       attributes:
         friendly_name: Systemhälsa
 
-    - unique_id: nas_net_down
-      icon: mdi:arrow-down-bold
-      state: ' '
-      attributes:
-        friendly_name: >
-          {% set down = states('sensor.nas_network_down') | float(default=0) %}
-          {% if down < 1000 %} {{ down | round(0) }} kb/s
-          {% elif down >= 1000 %} {{ ((down / 1000) | round(2) | string).rstrip('.0') }} Mb/s
-          {% endif %}
-
-    - unique_id: nas_net_up
-      icon: mdi:arrow-up-bold
-      state: ' '
-      attributes:
-        friendly_name: >
-          {% set up = states('sensor.nas_network_up') | float(default=0) %}
-          {% if up < 1000 %} {{ up | round(0) }} kb/s
-          {% elif up >= 1000 %} {{ ((up / 1000) | round(2) | string).rstrip('.0') }} Mb/s
-          {% endif %}
-
     - unique_id: hass_version
       icon: mdi:home-assistant
       state: >

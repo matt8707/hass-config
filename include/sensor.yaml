@@ -104,26 +104,6 @@ sensor:
       {{ value.split(' ')[1].split('v')[1] }}
 
   - platform: rest
-    name: tibber_daily_consumption
-    resource: https://api.tibber.com/v1-beta/gql
-    headers:
-      Authorization: !secret tibber_token
-      Content-Type: application/json
-    method: POST
-    payload: >
-      {"query": "{ viewer { homes { consumption(resolution: MONTHLY, last: 12) { nodes { from consumption cost } } } } }"}
-    value_template: >
-      {{ value_json.data.viewer.homes[0].consumption.nodes[-1].consumption }}
-    json_attributes_path: $.data.viewer.homes[0].consumption.nodes[-1:]
-    json_attributes:
-      - from
-      - to
-      - cost
-    device_class: energy
-    unit_of_measurement: kWh
-    scan_interval: 21600
-
-  - platform: rest
     name: covid_19_folkhalsomyndigheten
     resource: https://www.arcgis.com/sharing/rest/content/items/2dc63e26f509468f896ec69476b0dab3/data
     value_template: >

@@ -78,7 +78,6 @@ influxdb:
   precision: s
   include:
     entities:
-      - sensor.tibber_daily_consumption
       - sensor.mattias_weight
       - sensor.sanja_weight
 
