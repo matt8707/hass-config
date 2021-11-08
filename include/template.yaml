@@ -2,9 +2,11 @@ template:
   select:
     - name: vacuum_speed
       state: >
-        {{ state_attr('vacuum.morty', 'fan_speed') | default }}
+        {% set fan_speed = state_attr('vacuum.morty', 'fan_speed') %}
+        {{ 'Standard' if fan_speed == None else fan_speed }}
       options: >
-        {{ state_attr('vacuum.morty', 'fan_speed_list') | default }}
+        {% set fan_speed_list = state_attr('vacuum.morty', 'fan_speed_list') %}
+        {{ ['Standard'] if fan_speed_list == None else fan_speed_list }}
       select_option:
         service: vacuum.set_fan_speed
         target:
@@ -15,9 +17,11 @@ template:
 
     - name: hdmi_bravia
       state: >
-        {{ state_attr('media_player.sony_bravia_tv', 'source') | default }}
+        {% set source = state_attr('media_player.sony_bravia_tv', 'source') %}
+        {{ 'HDMI' if source == None else source }}
       options: >
-        {{ state_attr('media_player.sony_bravia_tv', 'source_list') | default }}
+        {% set source_list = state_attr('media_player.sony_bravia_tv', 'source_list') %}
+        {{ ['HDMI'] if source_list == None else source_list }}
       select_option:
         service: media_player.select_source
         target:
@@ -28,9 +32,11 @@ template:
 
     - name: hdmi_samsung
       state: >
-        {{ state_attr('media_player.samsung_tv', 'source') | default }}
+        {% set source = state_attr('media_player.samsung_tv', 'source') %}
+        {{ 'Apple' if source == None else source }}
       options: >
-        {{ state_attr('media_player.samsung_tv', 'source_list') | default }}
+        {% set source_list = state_attr('media_player.samsung_tv', 'source_list') %}
+        {{ ['Apple'] if source_list == None else source_list }}
       select_option:
         service: media_player.select_source
         target:
@@ -186,7 +192,7 @@ template:
           </b>
         mailbox: |
           {% set mailbox = states('sensor.mailbox') %}
-          {% if mailbox | int > 0 %}
+          {% if mailbox | int(default=0) > 0 %}
             {{ '\U0001F4EC' }} <font color='#6a7377'><b>Brevlåda ({{ mailbox }})</b></font>
           {% endif %}
         vacuum: |
@@ -201,9 +207,9 @@ template:
           {%- set apparent = states('sensor.dark_sky_apparent_temperature') | round %}
           {%- set precip = states('sensor.dark_sky_precip_probability') | round %}
           {% if not is_state('sensor.dark_sky_temperature', 'unknown') %}
-            {%- if temperature | float <= 0.0 -%}
+            {%- if temperature | float(default=0) <= 0.0 -%}
               Känns som {{ apparent }}° med {{ precip }}% risk för snö {{'\u2744\uFE0F'}}
-            {%- elif temperature | float > 0.0 -%} 
+            {%- elif temperature | float(default=0) > 0.0 -%} 
               Känns som {{ apparent}}° med {{ precip }}% risk för regn {{ '\u2614\uFE0F' if precip > 30 }}
             {%- endif %}
           {%- else %}
@@ -215,7 +221,7 @@ template:
           {%- set start_time = state_attr('calendar.tvatta', 'start_time') %}
           {% if start_time != None %}
             {%- set time = as_timestamp(start_time) | timestamp_custom('%H:%M') %}
-            {%- set hours = as_timestamp(start_time) | timestamp_custom('%H') | int / 24 %}
+            {%- set hours = as_timestamp(start_time) | timestamp_custom('%H') | int(default=0) / 24 %}
             {%- set count = (as_timestamp(start_time) - as_timestamp(now())) / 86400 - hours %}
             {%- set day = strptime(start_time, '%Y-%m-%d %H:%M:%S').strftime('%A') 
             | replace('Monday', 'Måndag')
@@ -256,7 +262,7 @@ template:
           {% if start_time != None %}
             {%- set time = as_timestamp(start_time) | timestamp_custom('%H:%M') %}
             {%- set time_end = as_timestamp(end_time) | timestamp_custom('%H:%M') %}
-            {%- set hours = as_timestamp(start_time) | timestamp_custom('%H') | int / 24 %}
+            {%- set hours = as_timestamp(start_time) | timestamp_custom('%H') | int(default=0) / 24 %}
             {%- set count = (as_timestamp(start_time) - as_timestamp(now())) / 86400 - hours %}
             {%- set day = strptime(start_time, '%Y-%m-%d %H:%M:%S').strftime('%A') 
             | replace('Monday', 'Måndag')
@@ -492,7 +498,7 @@ template:
       icon: custom:roborock-filter
       unit_of_measurement: '%'
       state: >
-        {{ (states('sensor.morty_filter_left') | int / 5400) | int(default=0) }}
+        {{ (states('sensor.morty_filter_left') | int(default=0) / 5400) | int(default=0) }}
       attributes:
         friendly_name: Filter
 
@@ -500,7 +506,7 @@ template:
       icon: custom:roborock-mainbrush
       unit_of_measurement: '%'
       state: >
-        {{ (states('sensor.morty_main_brush_left') | int / 10800) | int(default=0) }}
+        {{ (states('sensor.morty_main_brush_left') | int(default=0) / 10800) | int(default=0) }}
       attributes:
         friendly_name: Huvudborste
 
@@ -508,7 +514,7 @@ template:
       icon: custom:roborock-sensor
       unit_of_measurement: '%'
       state: >
-        {{ (states('sensor.morty_sensor_dirty_left') | int / 1080) | int(default=0) }}
+        {{ (states('sensor.morty_sensor_dirty_left') | int(default=0) / 1080) | int(default=0) }}
       attributes:
         friendly_name: Sensorer
 
@@ -516,7 +522,7 @@ template:
       icon: custom:roborock-sidebrush
       unit_of_measurement: '%'
       state: >
-        {{ (states('sensor.morty_side_brush_left') | int / 7200) | int(default=0) }}
+        {{ (states('sensor.morty_side_brush_left') | int(default=0) / 7200) | int(default=0) }}
       attributes:
         friendly_name: Sidoborste
 
@@ -524,10 +530,10 @@ template:
       icon: mdi:sd
       unit_of_measurement: '%'
       state: >
-        {% set FreeSpace = states('sensor.galaxy_tab_a_internal_storage_free_space') | float %}
-        {% set TotalSpace = states('sensor.galaxy_tab_a_internal_storage_total_space') | float %}
+        {% set FreeSpace = states('sensor.galaxy_tab_a_internal_storage_free_space') | float(default=0) %}
+        {% set TotalSpace = states('sensor.galaxy_tab_a_internal_storage_total_space') | float(default=0) %}
         {% if not (FreeSpace == 0.0 or TotalSpace == 0.0) %}
-          {{ 100 - (FreeSpace / TotalSpace * 100) | int }}
+          {{ 100 - (FreeSpace / TotalSpace * 100) | int(default=0) }}
         {% endif %}
       attributes:
         friendly_name: Lagring
@@ -536,10 +542,10 @@ template:
       icon: mdi:memory
       unit_of_measurement: '%'
       state: >
-        {% set FreeMemory = states('sensor.galaxy_tab_a_ram_free_memory') | float %}
-        {% set TotalMemory = states('sensor.galaxy_tab_a_ram_total_memory') | float %}
+        {% set FreeMemory = states('sensor.galaxy_tab_a_ram_free_memory') | float(default=0) %}
+        {% set TotalMemory = states('sensor.galaxy_tab_a_ram_total_memory') | float(default=0) %}
         {% if not (FreeMemory == 0.0 or TotalMemory == 0.0) %}
-          {{ 100 - (FreeMemory / TotalMemory * 100) | int }}
+          {{ 100 - (FreeMemory / TotalMemory * 100) | int(default=0) }}
         {% endif %}
       attributes:
         friendly_name: Minne
