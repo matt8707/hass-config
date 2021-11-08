@@ -42,6 +42,9 @@ recorder:
   db_url: !secret recorder_db_url
   purge_keep_days: 5
   commit_interval: 30
+  exclude:
+    entity_globs:
+      - sensor.browser_*
 
 person:
   - name: Matte
@@ -98,6 +101,7 @@ google:
   client_secret: !secret google_client_secret
 
 browser_mod:
+  prefix: browser_
 
 timer:
   laundry:

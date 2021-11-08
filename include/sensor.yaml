@@ -33,6 +33,7 @@ sensor:
       - type: memory_use_percent
       - type: processor_use
       - type: last_boot
+    scan_interval: 120
 
   - platform: uptime
 
@@ -54,7 +55,7 @@ sensor:
       {{ json.startup_timestamp | timestamp_custom('%Y-%m-%dT%H:%M:%S') }}|
       {{ json.displayable_version }}|
       {{ json.upgradable }}
-    scan_interval: 60
+    scan_interval: 120
 
   - platform: rest
     name: esphome_version_latest
@@ -194,6 +195,7 @@ sensor:
       - cpu_stats
       - precpu_stats
       - memory_stats
+    scan_interval: 120
 
   - platform: plex_recently_added
     token: !secret plex_token

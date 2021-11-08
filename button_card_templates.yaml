@@ -27,14 +27,14 @@
 
           if (variables.state === 'off' && screensaver === 'off') {
             hass.callService('media_player', 'play_media', {
-              entity_id: 'media_player.c2080cea_6627150a',
+              entity_id: 'media_player.browser_c2080cea_6627150a',
               media_content_id: '/local/sound/on.m4a',
               media_content_type: 'music'
             });
           }
           if (variables.state === 'on' && screensaver === 'off') {
             hass.callService('media_player', 'play_media', {
-              entity_id: 'media_player.c2080cea_6627150a',
+              entity_id: 'media_player.browser_c2080cea_6627150a',
               media_content_id: '/local/sound/off.m4a',
               media_content_type: 'music'
             });
@@ -819,7 +819,7 @@
           - overflow: visible
           - filter: >
               [[[
-                const entity_picture = entity === undefined || entity.attributes.entity_picture;
+                let entity_picture = entity === undefined || entity.attributes.entity_picture;
                 return entity_picture == null ? 'none' : 'drop-shadow(0 0 1.3vw rgba(0,0,0,0.7))';
               ]]]
         icon:
