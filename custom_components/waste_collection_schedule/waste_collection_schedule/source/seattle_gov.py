@@ -64,7 +64,7 @@ class Source:
         }
 
         r = requests.post(
-            "https://myutilities.seattle.gov/rest/auth/token", data=token_payload
+            "https://myutilities.seattle.gov/rest/auth/guest", data=token_payload
         )
 
         token_info = json.loads(r.text)
@@ -84,7 +84,7 @@ class Source:
         }
 
         r = requests.post(
-            "https://myutilities.seattle.gov/rest/account/swsummary",
+            "https://myutilities.seattle.gov/rest/guest/swsummary",
             json=swsummary_payload,
             headers=headers,
         )

@@ -99,6 +99,9 @@ TEST_CASES = {
         "url": "https://recollect.a.ssl.fastly.net/api/places/BCCDF30E-578B-11E4-AD38-5839C200407A/services/208/events.en.ics",
         "split_at": "\\, [and ]*",
     },
+    "Frankfurt am Main, Achenbachstrasse 3": {
+        "url": "https://www.fes-frankfurt.de/abfallkalender/QWNoZW5iYWNoc3RyLnwzfDYwNTk2.ics"
+    },
 }
 
 

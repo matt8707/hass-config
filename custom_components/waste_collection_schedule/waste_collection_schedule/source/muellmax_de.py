@@ -8,11 +8,6 @@ TITLE = "Müllmax"
 DESCRIPTION = "Source for Müllmax waste collection."
 URL = "https://www.muellmax.de"
 TEST_CASES = {
-    "Frankfurt, Achenbachstrasse 5": {
-        "service": "Fes",
-        "mm_frm_str_sel": "Achenbachstraße",
-        "mm_frm_hnr_sel": "60596;Sachsenhausen;5;",
-    },
     "Rhein-Sieg-Kreis, Alfter": {
         "service": "Rsa",
         "mm_frm_ort_sel": "Alfter",

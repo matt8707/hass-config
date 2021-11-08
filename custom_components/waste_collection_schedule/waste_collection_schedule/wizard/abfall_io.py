@@ -28,6 +28,7 @@ DISTRICT_CHOICES = [
     ("Unterallgäu", "c22b850ea4eff207a273e46847e417c5"),
     ("Westerwaldkreis", "248deacbb49b06e868d29cb53c8ef034"),
     ("Calw", "690a3ae4906c52b232c1322e2f88550c"),
+    ("Rhein-Neckar-Kreis", "914fb9d000a9a05af4fd54cfba478860"),
 ]
 
 
