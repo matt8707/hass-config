@@ -116,6 +116,9 @@
                 : 'var(--state-icon-color);'
             }
           }
+          #container {
+            text-align: left !important;
+          }
           #name, #state {
             font-size: 1.34vw;
             letter-spacing: 0.05vw;
