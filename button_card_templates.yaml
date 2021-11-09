@@ -945,9 +945,10 @@
         circle:
           - width: 45%
           - fill: var(--state-icon-color)
-          - margin: 0 2% 0 0
+          - margin: 1% 2% 0 0
           - justify-self: end
           - opacity: 1
+          - display: grid
 
   #################################################
   #                                               #
