@@ -242,17 +242,12 @@ template:
             {%- endif %}
           {%- endif %}
         battery: |
-          {% set entities = [
-            'sensor.dimmer_badrum_battery_level',
-            'sensor.dimmer_sovrum_battery_level',
-            'sensor.template_hue_motion_battery_badrum',
-            'sensor.template_hue_motion_battery_garderob',
-            'sensor.template_hue_motion_battery_hall',
-            'sensor.switchbot_battery',
-            'sensor.aqara_contact_count_battery',
-            'sensor.aqara_contact_reset_battery',
-            'sensor.aqara_contact_window_battery' ] %}
-          {%- for sensor in entities if states(sensor) != 'unknown' and states(sensor) != 'unavailable' and states(sensor) != 'None' and states(sensor) | int(default=0) <= 5 %}
+          {% set entities = states.sensor 
+            | selectattr('entity_id', 'search', 'battery')
+            | rejectattr('entity_id', 'search', 'iphone')
+            | map(attribute = 'entity_id') | list %}
+          {%- for sensor in entities if states(sensor) != 'unknown' and states(sensor) !=
+          'unavailable' and states(sensor) != 'None' and states(sensor) | int(default=0) <= 5 %}
             {%- if loop.first %} {{-'\u26A0\uFE0F'}} Batteri {% else %}, {% endif -%}
             {{ state_attr(sensor, 'friendly_name') }} {{ states(sensor) }}%
           {%- endfor %}
