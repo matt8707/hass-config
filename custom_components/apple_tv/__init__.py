@@ -19,11 +19,9 @@ from homeassistant.const import (
     ATTR_SW_VERSION,
     CONF_ADDRESS,
     CONF_NAME,
-    CONF_PROTOCOL,
     EVENT_HOMEASSISTANT_STOP,
 )
 from homeassistant.core import callback
-from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.dispatcher import (
@@ -32,13 +30,7 @@ from homeassistant.helpers.dispatcher import (
 )
 from homeassistant.helpers.entity import DeviceInfo, Entity
 
-from .const import (
-    CONF_CREDENTIALS,
-    CONF_IDENTIFIERS,
-    CONF_RECONFIGURE,
-    CONF_START_OFF,
-    DOMAIN,
-)
+from .const import CONF_CREDENTIALS, CONF_IDENTIFIERS, CONF_START_OFF, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -54,12 +46,6 @@ PLATFORMS = [MP_DOMAIN, REMOTE_DOMAIN]
 
 async def async_setup_entry(hass, entry):
     """Set up a config entry for Apple TV."""
-    if entry.options.get(CONF_RECONFIGURE, False):
-        hass.config_entries.async_update_entry(
-            entry, options={**entry.options, CONF_RECONFIGURE: False}
-        )
-        raise ConfigEntryAuthFailed("reconfiguration was requested")
-
     manager = AppleTVManager(hass, entry)
     hass.data.setdefault(DOMAIN, {})[entry.unique_id] = manager
 
@@ -83,8 +69,6 @@ async def async_setup_entry(hass, entry):
 
     hass.async_create_task(setup_platforms())
 
-    entry.async_on_unload(entry.add_update_listener(async_config_entry_changed))
-
     return True
 
 
@@ -97,31 +81,6 @@ async def async_unload_entry(hass, entry):
         await manager.disconnect()
 
     return unload_ok
-
-
-async def async_migrate_entry(hass, config_entry):
-    """Migrate old entry."""
-    _LOGGER.debug("Migrating from version %s", config_entry.version)
-
-    if config_entry.version in [1, 2]:
-        new = {**config_entry.data}
-
-        # Not used anymore
-        if CONF_PROTOCOL in new:
-            del new[CONF_PROTOCOL]
-
-        config_entry.data = {**new}
-        config_entry.version = 3
-
-    _LOGGER.info("Migration to version %s successful", config_entry.version)
-
-    return True
-
-
-async def async_config_entry_changed(hass, config_entry):
-    """Reload config entry if reconfiguration was requested."""
-    if config_entry.options[CONF_RECONFIGURE]:
-        await hass.config_entries.async_reload(config_entry.entry_id)
 
 
 class AppleTVEntity(Entity):
@@ -266,7 +225,7 @@ class AppleTVManager:
                 if conf:
                     await self._connect(conf)
             except exceptions.AuthenticationError:
-                # TODO: re-auth should be triggered here - how?
+                self.config_entry.async_start_reauth(self.hass)
                 asyncio.create_task(self.disconnect())
                 _LOGGER.exception(
                     "Authentication failed for %s, try reconfiguring device",
@@ -293,7 +252,9 @@ class AppleTVManager:
 
     async def _scan(self):
         """Try to find device by scanning for it."""
-        identifiers = set(self.config_entry.data[CONF_IDENTIFIERS])
+        identifiers = set(
+            self.config_entry.data.get(CONF_IDENTIFIERS, [self.config_entry.unique_id])
+        )
         address = self.config_entry.data[CONF_ADDRESS]
 
         # Only scan for and set up protocols that was successfully paired
@@ -346,7 +307,7 @@ class AppleTVManager:
         self._dispatch_send(SIGNAL_CONNECTED, self.atv)
         self._address_updated(str(conf.address))
 
-        await self._async_setup_device_registry()
+        self._async_setup_device_registry()
 
         self._connection_attempts = 0
         if self._connection_was_lost:
@@ -356,7 +317,8 @@ class AppleTVManager:
             )
             self._connection_was_lost = False
 
-    async def _async_setup_device_registry(self):
+    @callback
+    def _async_setup_device_registry(self):
         attrs = {
             ATTR_IDENTIFIERS: {(DOMAIN, self.config_entry.unique_id)},
             ATTR_MANUFACTURER: "Apple",
@@ -382,7 +344,7 @@ class AppleTVManager:
             if dev_info.mac:
                 attrs[ATTR_CONNECTIONS] = {(dr.CONNECTION_NETWORK_MAC, dev_info.mac)}
 
-        device_registry = await dr.async_get_registry(self.hass)
+        device_registry = dr.async_get(self.hass)
         device_registry.async_get_or_create(
             config_entry_id=self.config_entry.entry_id, **attrs
         )

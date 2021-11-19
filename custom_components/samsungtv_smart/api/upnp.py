@@ -1,9 +1,8 @@
 # Smartthings TV integration#
-# import requests
-import xml.etree.ElementTree as ET
 from aiohttp import ClientSession
-from async_timeout import timeout
+import async_timeout
 from typing import Optional
+import xml.etree.ElementTree as ET
 
 DEFAULT_TIMEOUT = 0.2
 
@@ -40,7 +39,7 @@ class upnp:
                 </s:Envelope>"""
         response = None
         try:
-            with timeout(DEFAULT_TIMEOUT):
+            async with async_timeout.timeout(DEFAULT_TIMEOUT):
                 async with self._session.post(
                     f"http://{self._host}:9197/upnp/control/{protocole}1",
                     headers=headers,

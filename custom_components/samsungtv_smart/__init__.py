@@ -1,8 +1,8 @@
 """The samsungtv_smart integration."""
 
 from aiohttp import ClientConnectionError, ClientSession, ClientResponseError
-from async_timeout import timeout
 import asyncio
+import async_timeout
 import logging
 import os
 from shutil import copyfile
@@ -215,7 +215,7 @@ def _migrate_options_format(hass: HomeAssistant, entry: ConfigEntry):
 async def get_device_info(hostname: str, session: ClientSession) -> dict:
     """Try retrieve device information"""
     try:
-        with timeout(2):
+        async with async_timeout.timeout(2):
             async with session.get(
                     tv_url(host=hostname),
                     raise_for_status=True
@@ -289,7 +289,7 @@ class SamsungTVInfo:
         """Try to connect to ST device"""
 
         try:
-            with timeout(10):
+            async with async_timeout.timeout(10):
                 _LOGGER.info(
                     "Try connection to SmartThings TV with id [%s]", device_id
                 )
@@ -317,7 +317,7 @@ class SamsungTVInfo:
         """Get list of available ST devices"""
 
         try:
-            with timeout(4):
+            async with async_timeout.timeout(4):
                 devices = await SmartThingsTV.get_devices_list(
                     api_key, session, st_device_label
                 )

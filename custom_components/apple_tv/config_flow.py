@@ -11,19 +11,14 @@ from pyatv.helpers import get_unique_id
 import voluptuous as vol
 
 from homeassistant import config_entries, data_entry_flow
-from homeassistant.components.zeroconf import async_get_instance
-from homeassistant.const import CONF_ADDRESS, CONF_NAME, CONF_PIN, CONF_TYPE
+from homeassistant.components import zeroconf
+from homeassistant.const import CONF_ADDRESS, CONF_NAME, CONF_PIN
 from homeassistant.core import callback
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.typing import DiscoveryInfoType
 
-from .const import (
-    CONF_CREDENTIALS,
-    CONF_IDENTIFIERS,
-    CONF_RECONFIGURE,
-    CONF_START_OFF,
-    DOMAIN,
-)
+from .const import CONF_CREDENTIALS, CONF_IDENTIFIERS, CONF_START_OFF, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -32,7 +27,6 @@ DEVICE_INPUT = "device_input"
 INPUT_PIN_SCHEMA = vol.Schema({vol.Required(CONF_PIN, default=None): int})
 
 DEFAULT_START_OFF = False
-DEFAULT_RECONFIGURE = False
 
 
 async def device_scan(identifier, loop):
@@ -66,7 +60,7 @@ async def device_scan(identifier, loop):
 class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Apple TV."""
 
-    VERSION = 3
+    VERSION = 1
 
     @staticmethod
     @callback
@@ -102,12 +96,16 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """
         for entry in self._async_current_entries():
             for identifier in self.atv.all_identifiers:
-                if identifier in entry.data[CONF_IDENTIFIERS]:
+                if identifier in entry.data.get(CONF_IDENTIFIERS, [entry.unique_id]):
                     return entry.unique_id
         return self.atv.identifier
 
     async def async_step_reauth(self, user_input=None):
         """Handle initial step when updating invalid credentials."""
+        self.context["title_placeholders"] = {
+            "name": user_input[CONF_NAME],
+            "type": "Apple TV",
+        }
         self.scan_filter = self.unique_id
         self.context["identifier"] = self.unique_id
         return await self.async_step_reconfigure()
@@ -131,7 +129,7 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             except DeviceNotFound:
                 errors["base"] = "no_devices_found"
             except DeviceAlreadyConfigured:
-                errors["base"] = "already_configured_device"
+                errors["base"] = "already_configured"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception")
                 errors["base"] = "unknown"
@@ -148,10 +146,12 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    async def async_step_zeroconf(self, discovery_info):
+    async def async_step_zeroconf(
+        self, discovery_info: DiscoveryInfoType
+    ) -> data_entry_flow.FlowResult:
         """Handle device found via zeroconf."""
-        service_type = discovery_info[CONF_TYPE][:-1]  # Remove leading .
-        name = discovery_info[CONF_NAME].replace(f".{service_type}.", "")
+        service_type = discovery_info["type"][:-1]  # Remove leading .
+        name = discovery_info["name"].replace(f".{service_type}.", "")
         properties = discovery_info["properties"]
 
         # Extract unique identifier from service
@@ -217,7 +217,7 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         except DeviceNotFound:
             return self.async_abort(reason="no_devices_found")
         except DeviceAlreadyConfigured:
-            return self.async_abort(reason="already_configured_device")
+            return self.async_abort(reason="already_configured")
         except Exception:  # pylint: disable=broad-except
             _LOGGER.exception("Unexpected exception")
             return self.async_abort(reason="unknown")
@@ -249,8 +249,11 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         if not allow_exist:
             for identifier in self.atv.all_identifiers:
-                if identifier in self._async_current_ids():
-                    raise DeviceAlreadyConfigured()
+                for entry in self._async_current_entries():
+                    if identifier in entry.data.get(
+                        CONF_IDENTIFIERS, [entry.unique_id]
+                    ):
+                        raise DeviceAlreadyConfigured()
 
     async def async_step_confirm(self, user_input=None):
         """Handle user-confirmation of discovered node."""
@@ -300,18 +303,18 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return await self.async_pair_next_protocol()
         if service.pairing == PairingRequirement.Disabled:
             return await self.async_step_protocol_disabled()
-        elif service.pairing == PairingRequirement.NotNeeded:
+        if service.pairing == PairingRequirement.NotNeeded:
             _LOGGER.debug("%s does not require pairing", self.protocol)
             self.credentials[self.protocol.value] = None
             return await self.async_pair_next_protocol()
-        else:
-            _LOGGER.debug("%s requires pairing", self.protocol)
+
+        _LOGGER.debug("%s requires pairing", self.protocol)
 
         # Protocol specific arguments
         pair_args = {}
         if self.protocol == Protocol.DMAP:
             pair_args["name"] = "Home Assistant"
-            pair_args["zeroconf"] = await async_get_instance(self.hass)
+            pair_args["zeroconf"] = await zeroconf.async_get_instance(self.hass)
 
         # Initiate the pairing process
         abort_reason = None
@@ -448,9 +451,7 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
             return self.async_abort(reason="reauth_successful")
 
-        return self.async_create_entry(
-            title=self.atv.name, data=data, options={CONF_RECONFIGURE: False}
-        )
+        return self.async_create_entry(title=self.atv.name, data=data)
 
 
 class AppleTVOptionsFlow(config_entries.OptionsFlow):
@@ -465,7 +466,6 @@ class AppleTVOptionsFlow(config_entries.OptionsFlow):
         """Manage the Apple TV options."""
         if user_input is not None:
             self.options[CONF_START_OFF] = user_input[CONF_START_OFF]
-            self.options[CONF_RECONFIGURE] = user_input[CONF_RECONFIGURE]
             return self.async_create_entry(title="", data=self.options)
 
         return self.async_show_form(
@@ -476,12 +476,6 @@ class AppleTVOptionsFlow(config_entries.OptionsFlow):
                         CONF_START_OFF,
                         default=self.config_entry.options.get(
                             CONF_START_OFF, DEFAULT_START_OFF
-                        ),
-                    ): bool,
-                    vol.Optional(
-                        CONF_RECONFIGURE,
-                        default=self.config_entry.options.get(
-                            CONF_RECONFIGURE, DEFAULT_RECONFIGURE
                         ),
                     ): bool,
                 }

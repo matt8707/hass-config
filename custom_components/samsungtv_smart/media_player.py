@@ -1,7 +1,7 @@
 """Support for interface with an Samsung TV."""
 from aiohttp import ClientConnectionError, ClientSession, ClientResponseError
-from async_timeout import timeout
 import asyncio
+import async_timeout
 from datetime import datetime, timedelta
 import json
 import logging
@@ -124,7 +124,6 @@ KEYPRESS_DEFAULT_DELAY = 0.5
 KEYPRESS_MAX_DELAY = 2.0
 KEYPRESS_MIN_DELAY = 0.2
 MAX_ST_ERROR_COUNT = 4
-MAX_ST_CONN_ERROR_COUNT = 3
 MEDIA_TYPE_BROWSER = "browser"
 MEDIA_TYPE_KEY = "send_key"
 MEDIA_TYPE_TEXT = "send_text"
@@ -282,7 +281,6 @@ class SamsungTVDevice(MediaPlayerEntity):
         self._fake_on = None
         self._delayed_set_source = None
         self._delayed_set_source_time = None
-        self._st_conn_error_count = 0
 
         ws_name = config.get(CONF_WS_NAME, self._attr_name)
         ws_port = config.get(CONF_PORT, DEFAULT_PORT)
@@ -665,6 +663,30 @@ class SamsungTVDevice(MediaPlayerEntity):
             return False
         return True
 
+    def _log_st_error(self, st_error):
+        """Log start or end problem in ST communication"""
+        if self._st_error_count == 0 and not st_error:
+            return
+
+        if st_error:
+            if self._st_error_count == MAX_ST_ERROR_COUNT:
+                return
+
+            self._st_error_count += 1
+            if self._st_error_count == MAX_ST_ERROR_COUNT:
+                _LOGGER.error(
+                    "%s - Error refreshing from SmartThings."
+                    " Check connection status with TV on the phone App",
+                    self.entity_id,
+                )
+            return
+
+        if self._st_error_count >= MAX_ST_ERROR_COUNT:
+            _LOGGER.warning(
+                "%s - Connection to SmartThings restored", self.entity_id
+            )
+        self._st_error_count = 0
+
     async def async_update(self):
         """Update state of device."""
 
@@ -672,23 +694,19 @@ class SamsungTVDevice(MediaPlayerEntity):
             return
 
         """Required to get source and media title"""
+        st_error = False
         if self._st:
             use_channel_info = self._get_option(CONF_USE_ST_CHANNEL_INFO, True)
             try:
-                with timeout(ST_UPDATE_TIMEOUT):
+                async with async_timeout.timeout(ST_UPDATE_TIMEOUT):
                     await self._st.async_device_update(use_channel_info)
-                self._st_error_count = 0
             except (
                 asyncio.TimeoutError,
                 ClientConnectionError,
                 ClientResponseError,
             ) as ex:
-                self._st_error_count += 1
-                _LOGGER.debug("SamsungTV Smart - Error: [%s]", ex)
-
-        if self._st_error_count >= MAX_ST_ERROR_COUNT:
-            _LOGGER.error("SamsungTV Smart - Error refreshing from SmartThings")
-            self._st_error_count = 0
+                st_error = True
+                _LOGGER.debug("%s - SmartThings error: [%s]", self.entity_id, ex)
 
         result = await self.hass.async_add_executor_job(self._ping_device)
 
@@ -702,7 +720,9 @@ class SamsungTVDevice(MediaPlayerEntity):
                 self._fake_on = is_muted or not self._upnp.connected
                 if self._fake_on:
                     if first_detect:
-                        _LOGGER.debug("SamsungTV Smart - Detected fake power on, status not updated")
+                        _LOGGER.debug(
+                            "%s - Detected fake power on, status not updated", self.entity_id
+                        )
                     result = False
 
         result = self._delay_power_on(result)
@@ -710,21 +730,12 @@ class SamsungTVDevice(MediaPlayerEntity):
 
         if result and self._st:
             if self._st.state != self._st.state.STATE_ON:
-                if self._st_conn_error_count < MAX_ST_CONN_ERROR_COUNT:
-                    self._st_conn_error_count += 1
-                    if self._st_conn_error_count == MAX_ST_CONN_ERROR_COUNT:
-                        _LOGGER.warning(
-                            "SamsungTV Smart - SmartThings connection is offline."
-                            " Check connection status on the phone App"
-                        )
-            else:
-                if self._st_conn_error_count >= MAX_ST_CONN_ERROR_COUNT:
-                    _LOGGER.warning("SamsungTV Smart - SmartThings connection now is online")
-                self._st_conn_error_count = 0
+                st_error = True
+        self._log_st_error(st_error)
 
         self._state = STATE_ON if result else STATE_OFF
 
-        if self.state == STATE_ON:
+        if self.state == STATE_ON:  # NB: We are checking properties, not attribute!
             if self._delayed_set_source:
                 difference = (datetime.now() - self._delayed_set_source_time).total_seconds()
                 if difference > DELAYED_SOURCE_TIMEOUT:
