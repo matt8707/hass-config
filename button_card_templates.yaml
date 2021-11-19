@@ -376,6 +376,12 @@
           - filter: >
               [[[ return variables.state === 'off' ? 'invert(1)' : 'none'; ]]]
 
+  #################################################
+  #                                               #
+  #                    CLIMATE                    #
+  #                                               #
+  #################################################
+
   climate:
     custom_fields:
       circle: >
