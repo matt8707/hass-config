@@ -133,6 +133,8 @@ sensor:
         {% if ns.timestamp != null and ns.name != null %}
           Nästa buss går {{ ns.timestamp }} från {{ ns.name }}
         {% endif %}
+      {% else %}
+        false
       {% endif %}
     scan_interval: 86400
 
