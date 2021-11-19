@@ -14,5 +14,3 @@ www/fonts
 
 home-assistant.code-workspace
 home-assistant.log*
-
-vacuum_last_cleaned.txt
