@@ -378,9 +378,9 @@ frontend:
         #                                               #
         #################################################
 
-        "hui-entities-card$light-popup-card$": |
+        light-popup-card$: |
           #popup {
-            margin: -2.4em 0 1.4em 0;
+            margin: -2em 0 2.5em 0;
             isolation: isolate;
           }
 
@@ -390,11 +390,11 @@ frontend:
 
           #brightnessValue {
             color: rgba(255, 255, 255, 0.8);
-            margin: 1.3vh 0 0 0;
+            margin: -10vh 0 0 0;
             font-size: 2em;
             font-weight: 400;
             position: absolute;
-            z-index: 100;
+            z-index: 1;
             font-family: SF Display;
             letter-spacing: 0.02em;
             pointer-events: none;

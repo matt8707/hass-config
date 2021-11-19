@@ -488,95 +488,64 @@
         title: >
           [[[ return entity.attributes.friendly_name; ]]]
         card:
-          type: entities
-          entities:
-            - type: custom:light-popup-card
-              entity: >
-                [[[ return entity.entity_id ]]]
-              icon: none
-              fullscreen: false
-              brightnessWidth: 130px
-              brightnessHeight: 360px
-              borderRadius: 1.7em
-              sliderColor: '#c7c7c7'
-              sliderTrackColor: rgba(25, 25, 25, 0.9)
-              displayType: slider
-            - type: custom:hui-horizontal-stack-card
-              style: >
-                #root {
-                  justify-content: center;
-                  margin-top: 2em;
-                }
-              cards:
-                - type: custom:button-card
-                  styles:
-                    card:
-                      - background: '#d8d9e1'
-                  tap_action:
-                    action: call-service
-                    service: light.turn_on
-                    service_data:
-                      entity_id: >
-                        [[[ return entity.entity_id ]]]
-                      color_temp: 153
-                  template: color_light
-                - type: custom:button-card
-                  styles:
-                    card:
-                      - background: '#d5b08d'
-                  tap_action:
-                    action: call-service
-                    service: light.turn_on
-                    service_data:
-                      entity_id: >
-                        [[[ return entity.entity_id ]]]
-                      color_temp: 326
-                  template: color_light
-            - type: custom:hui-horizontal-stack-card
-              style: >
-                #root {
-                  justify-content: center;
-                  margin-bottom: 1em;
-                }
-              cards:
-                - type: custom:button-card
-                  styles:
-                    card: 
-                      - background: '#ce944b'
-                  tap_action:
-                    action: call-service
-                    service: light.turn_on
-                    service_data:
-                      entity_id: >
-                        [[[ return entity.entity_id ]]]
-                      color_temp: 500
-                  template: color_light
-                - type: custom:button-card
-                  styles:
-                    card:
-                      [background: 'radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 80%), 
-                      conic-gradient(rgb(120, 39, 230), rgb(230, 34, 231), rgb(228, 5, 136), rgb(228, 25, 25), 
-                      rgb(229, 105, 30), rgb(232, 226, 46), rgb(125, 230, 41), rgb(52, 232, 40), rgb(51, 231, 92), 
-                      rgb(52, 232, 224), rgb(32, 125, 229), rgb(18, 39, 229), rgb(120, 39, 230))']
-                  tap_action:
-                    action: fire-dom-event
-                    browser_mod:
-                      command: popup
-                      title: >
-                        [[[ return entity.attributes.friendly_name ]]]
-                      card:
-                        type: custom:light-entity-card
-                        entity: >
-                          [[[ return entity.entity_id ]]]
-                        brightness: true
-                        color_temp: true
-                        full_width_sliders: false
-                        hide_header: true
-                        show_slider_percent: true
-                        smooth_color_wheel: true
-                        persist_features: true
-                        consolidate_entities: false
-                  template: color_light
+          type: custom:light-popup-card
+          entity: >
+            [[[ return entity.entity_id ]]]
+          icon: none
+          fullscreen: false
+          brightnessWidth: 130px
+          brightnessHeight: 360px
+          borderRadius: 1.7em
+          sliderColor: '#c7c7c7'
+          sliderTrackColor: rgba(25, 25, 25, 0.9)
+          displayType: slider
+          actionSize: 4.5em
+          actionsInARow: 2
+          actions:
+            - action: call-service
+              service: light.turn_on
+              color: '#d8d9e1'
+              service_data:
+                entity_id: >
+                  [[[ return entity.entity_id ]]]
+                color_temp: 153
+            - action: call-service
+              service: light.turn_on
+              color: '#d5b08d'
+              service_data:
+                entity_id: >
+                  [[[ return entity.entity_id ]]]
+                color_temp: 326
+            - action: call-service
+              service: light.turn_on
+              color: '#ce944b'
+              service_data:
+                entity_id: >
+                  [[[ return entity.entity_id ]]]
+                color_temp: 500
+            - action: fire-dom-event
+              image: >-
+                data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 
+                50 50"%3E%3Cstyle%3Esvg%7Bbackground:radial-gradient(circle,rgba(255,255,
+                255,1) 0%25,rgba(255,255,255,0) 80%25),conic-gradient(%237827e6,%23e622e7,
+                %23e40588,%23e41919,%23e5691e,%23e8e22e,%237de629,%2334e828,%2333e75c,
+                %2334e8e0,%23207de5,%231227e5,%237827e6)%7D%3C/style%3E%3C/svg%3E
+              browser_mod:
+                command: popup
+                title: >
+                  [[[ return entity.attributes.friendly_name ]]]
+                card:
+                  type: custom:light-entity-card
+                  entity: >
+                    [[[ return entity.entity_id ]]]
+                  brightness: true
+                  color_temp: true
+                  full_width_sliders: false
+                  hide_header: true
+                  show_slider_percent: true
+                  smooth_color_wheel: true
+                  persist_features: true
+                  consolidate_entities: false
 
   #################################################
   #                                               #
@@ -1033,14 +1002,6 @@
         - width: 4em
         - height: 3.7em
         - background: '#FFFFFF10'
-
-  color_light:
-    styles:
-      card:
-        - border-radius: 50%
-        - height: 4em
-        - width: 4em
-        - margin: 4px
 
   #################################################
   #                                               #
