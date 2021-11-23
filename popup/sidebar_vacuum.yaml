@@ -39,6 +39,36 @@ browser_mod:
           #root {
             justify-content: space-evenly;
           }
+      $xiaomi-vacuum-map-card:
+        $: |
+          div.map-wrapper, div.controls-wrapper {
+            padding: var(--card-content-padding);
+            padding-top: 0;
+            padding-bottom: 0;
+          }
+          div.tiles-wrapper, div.vacuum-controls, #map-zoomer-overlay {
+            display: none;
+          }
+          div.map-controls-wrapper {
+            padding-top: 18px;
+          }
+          paper-button {
+            --mdc-icon-size: 2em;
+            color: #9da0a2 !important;
+            padding: 0.42em;
+          }
+          ha-card {
+            --map-card-primary-color: #FFFFFF10;
+            --map-card-secondary-color: none;
+            --map-card-secondary-text-color: #9da0a2;
+            --map-card-zoomer-background: none;
+            --map-card-predefined-rectangle-fill-color: none;
+            --map-card-predefined-rectangle-line-color: none;
+            --map-card-predefined-rectangle-line-color-selected: rgba(255, 255, 255, 0.5);
+            --map-card-predefined-rectangle-fill-color-selected: rgba(42, 124, 194, 0.1);
+            --map-card-predefined-rectangle-icon-background-color-selected: rgb(42, 124, 194);
+            --map-card-internal-big-radius: 0.6em !important;
+          }
   card:
     type: custom:layout-card
     layout_type: custom:grid-layout
@@ -158,28 +188,46 @@ browser_mod:
       #                                               #
       #################################################
 
-      - type: vertical-stack
+      - type: custom:xiaomi-vacuum-map-card
+        title: Kartläggning
         view_layout:
           grid-area: map
-        cards:
-        - type: entities
-          title: Kartläggning
-          card_mod:
-            class: header
-            style: |
-              #states {
-                padding-bottom: 0;
-              }
-          entities:
-            - type: custom:xiaomi-vacuum-map-card
-              title: Kartläggning
-              entity: vacuum.morty
-              map_camera: camera.vacuum_map
-              camera_calibration: true
-              zones:
-                - [[15250, 17400, 20050, 21000]]
-                - [[15000, 20800, 19100, 23950]]
-                - [[19050, 21050, 23050, 24950]]
-                - [[17900, 24050, 21550, 28650]]
-                - [[21600, 25000, 27600, 28800]]
-              language: se
+        card_mod:
+          class: header
+        entity: vacuum.morty
+        map_source:
+          camera: camera.vacuum_map
+        calibration_source:
+          camera: true
+        map_locked: true
+        map_modes:
+          - template: vacuum_clean_zone_predefined
+            predefined_selections:
+              - zones: [[14895, 20640, 18409, 24058]]
+                icon:
+                  name: mdi:silverware-fork-knife
+                  x: 16708
+                  y: 22291
+              - zones: [[15208, 17278, 20204, 20980]]
+                icon:
+                  name: mdi:bed
+                  x: 17706
+                  y: 19043
+              - zones: [[18170, 20925, 23138, 25026]]
+                icon:
+                  name: mdi:door
+                  x: 22293
+                  y: 21864
+              - zones: [[21474, 24942, 27269, 28873]]
+                icon:
+                  name: mdi:sofa
+                  x: 24401
+                  y: 26736
+              - zones: [[17687, 24885, 21487, 28816]]
+                icon:
+                  name: mdi:speaker
+                  x: 19757
+                  y: 26622
+          - template: vacuum_goto
+          - template: vacuum_clean_zone
+          - template: vacuum_follow_path
