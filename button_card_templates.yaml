@@ -27,14 +27,14 @@
 
           if (variables.state === 'off' && screensaver === 'off') {
             hass.callService('media_player', 'play_media', {
-              entity_id: 'media_player.browser_c2080cea_6627150a',
+              entity_id: 'media_player.browser_9c06ce87_d1cf313c',
               media_content_id: '/local/sound/on.m4a',
               media_content_type: 'music'
             });
           }
           if (variables.state === 'on' && screensaver === 'off') {
             hass.callService('media_player', 'play_media', {
-              entity_id: 'media_player.browser_c2080cea_6627150a',
+              entity_id: 'media_player.browser_9c06ce87_d1cf313c',
               media_content_id: '/local/sound/off.m4a',
               media_content_type: 'music'
             });

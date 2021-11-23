@@ -662,7 +662,7 @@ automation:
     action:
       - service: media_player.play_media
         target:
-          entity_id: media_player.browser_c2080cea_6627150a
+          entity_id: media_player.browser_9c06ce87_d1cf313c
         data:
           media_content_id: /local/sound/timer.mp3
           media_content_type: music
