@@ -2,7 +2,8 @@
     "config": {
         "abort": {
             "already_configured": "Questo Samsung TV \u00e8 gi\u00e0 configurato.",
-            "already_in_progress": "La configurazione di Samsung TV \u00e8 gi\u00e0 in corso."
+            "already_in_progress": "La configurazione di Samsung TV \u00e8 gi\u00e0 in corso.",
+            "unsupported_version": "Questa integrazione richiede almeno la versione {req_ver} di HomeAssistant, tu stai usando la versione {run_ver}."
         },
         "error": {
             "auth_missing": "Home Assistant non \u00e8 autorizzato a connettersi a questo Samsung TV. Controlla le impostazioni del tuo TV per autorizzare Home Assistant.",

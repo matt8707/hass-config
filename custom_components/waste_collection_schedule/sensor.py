@@ -6,11 +6,10 @@ from enum import Enum
 
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_NAME, CONF_VALUE_TEMPLATE, STATE_UNKNOWN
+from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorEntity
+from homeassistant.const import CONF_NAME, CONF_VALUE_TEMPLATE
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.entity import Entity
 
 from .const import DOMAIN, UPDATE_SENSORS_SIGNAL
 
@@ -78,7 +77,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     async_add_entities(entities)
 
 
-class ScheduleSensor(Entity):
+class ScheduleSensor(SensorEntity):
     """Base for sensors."""
 
     def __init__(
@@ -97,7 +96,6 @@ class ScheduleSensor(Entity):
     ):
         """Initialize the entity."""
         self._api = api
-        self._name = name
         self._source_index = source_index
         self._details_format = details_format
         self._count = count
@@ -107,42 +105,19 @@ class ScheduleSensor(Entity):
         self._date_template = date_template
         self._add_days_to = add_days_to
 
-        self._state = STATE_UNKNOWN
-        self._icon = None
-        self._picture = None
-        self._attributes = []
+        self._value = None
+
+        # entity attributes
+        self._attr_name = name
+        self._attr_unique_id = name
+        self._attr_should_poll = False
 
         async_dispatcher_connect(hass, UPDATE_SENSORS_SIGNAL, self._update_sensor)
 
     @property
-    def name(self):
-        return self._name
-
-    @property
-    def unique_id(self):
-        return self._name
-
-    @property
-    def should_poll(self):
-        return False
-
-    @property
-    def icon(self):
-        return "mdi:trash-can" if self._icon is None else self._icon
-
-    @property
-    def entity_picture(self):
-        return self._picture
-
-    @property
-    def state(self):
+    def native_value(self):
         """Return the state of the entity."""
-        return self._state
-
-    @property
-    def device_state_attributes(self):
-        """Return attributes for the entity."""
-        return self._attributes
+        return self._value
 
     async def async_added_to_hass(self):
         """Entities have been added to hass."""
@@ -167,30 +142,30 @@ class ScheduleSensor(Entity):
         refreshtime = ""
         if self._scraper.refreshtime is not None:
             refreshtime = self._scraper.refreshtime.strftime("%x %X")
-        self._attributes["attribution"] = f"Last update: {refreshtime}"
+        self._attr_attribution = f"Last update: {refreshtime}"
 
     def _set_state(self, upcoming):
         """Set entity state with default format."""
         if len(upcoming) == 0:
-            self._state = ""
-            self._icon = None
-            self._picture = None
+            self._value = None
+            self._attr_icon = "mdi:trash-can"
+            self._attr_entity_picture = None
             return
 
         collection = upcoming[0]
         # collection::=CollectionGroup{date=2020-04-01, types=['Type1', 'Type2']}
 
         if self._value_template is not None:
-            self._state = self._value_template.async_render_with_possible_json_value(
+            self._value = self._value_template.async_render_with_possible_json_value(
                 collection, None
             )
         else:
-            self._state = (
+            self._value = (
                 f"{self._separator.join(collection.types)} in {collection.daysTo} days"
             )
 
-        self._icon = collection.icon
-        self._picture = collection.picture
+        self._attr_icon = collection.icon or "mdi:trash-can"
+        self._attr_entity_picture = collection.picture
 
     def _render_date(self, collection):
         if self._date_template is not None:
@@ -264,8 +239,8 @@ class ScheduleSensor(Entity):
             if self._add_days_to:
                 attributes["daysTo"] = upcoming1[0].daysTo
 
-        self._attributes = attributes
+        self._attr_extra_state_attributes = attributes
         self._add_refreshtime()
 
         if self.hass is not None:
-            self.async_schedule_update_ha_state()
+            self.async_write_ha_state()

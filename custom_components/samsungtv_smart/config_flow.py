@@ -21,11 +21,11 @@ from homeassistant.const import (
     CONF_MAC,
     CONF_NAME,
     CONF_PORT,
+    __version__,
 )
 from homeassistant.helpers import config_validation as cv, entity_registry as er
 
-# pylint:disable=unused-import
-from . import SamsungTVInfo, get_device_info
+from . import SamsungTVInfo, get_device_info, is_valid_ha_version
 from .const import (
     ATTR_DEVICE_MAC,
     ATTR_DEVICE_MODEL,
@@ -60,6 +60,7 @@ from .const import (
     AppLaunchMethod,
     AppLoadMethod,
     PowerOnMethod,
+    __min_ha_version__,
 )
 
 from .logo import (
@@ -214,6 +215,15 @@ class SamsungTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None):
         """Handle a flow initialized by the user."""
+
+        if not is_valid_ha_version():
+            return self.async_abort(
+                reason="unsupported_version",
+                description_placeholders={
+                    "req_ver": __min_ha_version__, "run_ver": __version__
+                },
+            )
+
         if user_input is None:
             return self._show_form()
 

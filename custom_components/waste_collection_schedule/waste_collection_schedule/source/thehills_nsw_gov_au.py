@@ -6,7 +6,7 @@ import requests
 from waste_collection_schedule import Collection  # type: ignore[attr-defined]
 
 TITLE = "The Hills Shire Council"
-DESCRIPTION = "Source for Hills Shire Council, Sidney, Australia waste collection."
+DESCRIPTION = "Source for Hills Shire Council, Sydney, Australia waste collection."
 URL = "https://www.thehills.nsw.gov.au/"
 TEST_CASES = {
     "Annangrove, Amanda Place 10": {

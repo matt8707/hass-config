@@ -102,6 +102,16 @@ TEST_CASES = {
     "Frankfurt am Main, Achenbachstrasse 3": {
         "url": "https://www.fes-frankfurt.de/abfallkalender/QWNoZW5iYWNoc3RyLnwzfDYwNTk2.ics"
     },
+    "Erlensee, Am Haspel": {
+        "url": "https://sperrmuell.erlensee.de/?type=reminder",
+        "method": "POST",
+        "params": {
+            "street": 8,
+            "eventType[]": [27, 23, 19, 20, 21, 24, 22, 25, 26],
+            "timeframe": 23,
+            "download": "ical",
+        },
+    },
 }
 
 
@@ -149,7 +159,8 @@ class Source:
                 if now.month == 12:
                     # also get data for next year if we are already in december
                     url = self._url.replace("{%Y}", str(now.year + 1))
-                    self._params[self._year_field] = str(now.year + 1)
+                    if self._year_field is not None:
+                        self._params[self._year_field] = str(now.year + 1)
 
                     try:
                         entries.extend(self.fetch_url(url), self._params)

@@ -26,6 +26,9 @@ from homeassistant.const import (
     CONF_NAME,
     CONF_PORT,
     CONF_TIMEOUT,
+    MAJOR_VERSION,
+    MINOR_VERSION,
+    __version__,
 )
 from homeassistant.core import HomeAssistant
 import homeassistant.helpers.config_validation as cv
@@ -54,6 +57,8 @@ from .const import (
     DEFAULT_TIMEOUT,
     DEFAULT_SOURCE_LIST,
     DOMAIN,
+    MIN_HA_MAJ_VER,
+    MIN_HA_MIN_VER,
     RESULT_NOT_SUCCESSFUL,
     RESULT_NOT_SUPPORTED,
     RESULT_ST_DEVICE_NOT_FOUND,
@@ -61,6 +66,7 @@ from .const import (
     RESULT_WRONG_APIKEY,
     WS_PREFIX,
     AppLoadMethod,
+    __min_ha_version__,
 )
 
 DEVICE_INFO = {
@@ -129,6 +135,26 @@ _LOGGER = logging.getLogger(__name__)
 
 def tv_url(host: str, address: str = "") -> str:
     return f"http://{host}:8001/api/v2/{address}"
+
+
+def is_valid_ha_version():
+    return (
+        MAJOR_VERSION > MIN_HA_MAJ_VER or
+        (MAJOR_VERSION == MIN_HA_MAJ_VER and MINOR_VERSION >= MIN_HA_MIN_VER)
+    )
+
+
+def _notify_error(hass, notification_id, title, message):
+    """Notify user with persistent notification"""
+    hass.async_create_task(
+        hass.services.async_call(
+            domain='persistent_notification', service='create', service_data={
+                'title': title,
+                'message': message,
+                'notification_id': f"{DOMAIN}.{notification_id}"
+            }
+        )
+    )
 
 
 def token_file_name(hostname: str) -> str:
@@ -344,6 +370,15 @@ class SamsungTVInfo:
 
 async def async_setup(hass: HomeAssistant, config: ConfigType):
     """Set up the Samsung TV integration."""
+
+    if not is_valid_ha_version():
+        msg = "This integration require at least HomeAssistant version" \
+              f" {__min_ha_version__}, you are running version {__version__}." \
+              " Please upgrade HomeAssistant to continue use this integration."
+        _notify_error(hass, "inv_ha_version", "SamsungTV Smart", msg)
+        _LOGGER.warning(msg)
+        return True
+
     if DOMAIN in config:
         hass.data[DOMAIN] = {}
         entries_list = hass.config_entries.async_entries(DOMAIN)
@@ -372,6 +407,8 @@ async def async_setup(hass: HomeAssistant, config: ConfigType):
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up the Samsung TV platform."""
+    if not is_valid_ha_version():
+        return False
 
     # migrate old token file if required
     _migrate_token_file(hass, entry.unique_id)
