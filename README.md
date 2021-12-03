@@ -21,38 +21,26 @@ This is now the **[top thread of all time](https://community.home-assistant.io/t
 **Buttons** `custom:button-card`
 
 * [hide "extra_styles fix"](https://github.com/matt8707/hass-config/commit/c560bded8288bcfbb15b1c019475efa8d81de3bf) - make the "catch-all" button non-clickable ([#injecting-css-with-extra_styles](https://github.com/custom-cards/button-card#injecting-css-with-extra_styles))
-
 * [bug fixes and improvements ™](https://github.com/matt8707/hass-config/commit/f9a16d2b5781873b2191d74e3c475447b9d00fe0) - shorten overall template code, fix loader on computer lock and tv icon animation
-
 * [person last_changed persistence with fallback](https://github.com/matt8707/hass-config/commit/9738395788e5ee66f40fc50b47a604713172171f) - if set up, the timestamp is retained with mqtt across restarts
-
 * [add person zone](https://github.com/matt8707/hass-config/commit/9e8e53a52d820a9b5af49a0a1eb72ef1848f71a5) - location is shown instead of "not home" when in a zone
-
 * [fix icon light color](https://github.com/matt8707/hass-config/commit/b0b5e624a213390ad889c7d2b89eae931e2218f5) - color temperature shown as blue, hs shown as actual color
-
 * [button-card → light-popup-card actions and theme](https://github.com/matt8707/hass-config/commit/b87f6d243bcf79cc069f254fb01fc4a2e1b35b1c) - revert button-card workaround, make use of actions
-
 * [fix text alignment when #name is truncated...](https://github.com/matt8707/hass-config/commit/661623655ac7ed4a1360c21e3181397ac684ba51) - on small screens, the text was centered when the name didn't fit
-
 * [align lock icon on ios](https://github.com/matt8707/hass-config/commit/ad72f73886c279ca25a54a9b1e187eb5333b2ca7) - on small screens the lock icon was not vertically aligned
 
 
 **Theme** `custom:card-mod`
 
 * [card-mod resource → module](https://github.com/matt8707/hass-config/commit/a14d5447a908b5f2098bad94dc8017b27466e9bb) - documentation [#performance-improvements](https://github.com/thomasloven/lovelace-card-mod#performance-improvements)
-
 * [fix brave icon height and firefox shrinking icons](https://github.com/matt8707/hass-config/commit/895ec555087dfc67b0671af391f8943c7ee38af2) - brave and firefox browser compatibility
-
 * [swipe-card height](https://github.com/matt8707/hass-config/commit/f9ad21c8b0314781ee3d5fabc9684f08fe978a08) - force 100% height when only using button cards in a grid
-
 * [themes sidebar_update_color fix 2021.11.0](https://github.com/matt8707/hass-config/commit/8be2e4ad321f578347377e5685697ee977ccfa70) - ha-icon is now called ha-state-icon
 
 
 **Sidebar**
 * [mailbox sensors and automation](https://github.com/matt8707/hass-config/commit/95b4797f681fb3768a629f8442dafe5645fc9f1c) - add mailbox counter (using two aqara contact sensors)
-
 * [sidebar battery map entities](https://github.com/matt8707/hass-config/commit/d9c8710fcd261475b91a2601f6ef66c9ab3d73e8) - list all batteries below the 5% threshold, thanks @Se7enair
-
 * [add time offset to skånetrafiken PT sensor](https://github.com/matt8707/hass-config/commit/af5284a08dfa8be7a448c593d82a3ce877dfc8f5) - "walking time" bus departure offset
 
 
@@ -74,19 +62,12 @@ docker exec -it mariadb \
 **Other**
 
 * @svalmorri [made a nice button for roller shutters](https://community.home-assistant.io/t/a-different-take-on-designing-a-lovelace-ui/162594/2062)
-
 * [remove valetudo](https://github.com/matt8707/hass-config/commit/2484e724f06b6e61b133c322dd0e7a14cfcd8e9b) - don't want to spend my time maintaining a vacuum cleaner...
-
 * [vacuum-map-card 1 → 2](https://github.com/matt8707/hass-config/commit/d58b510a570a8e878fb47a5c0f6d662f1602187a) - configuration changes and styling
-
 * [fix vacuum sensors for 2021.11.1, maybe?](https://github.com/matt8707/hass-config/commit/ac1c5c14e9db5ea00c9e88922cb10ca76e21d7da) - template seconds to percent left
-
 * [mini-graph-card → apexcharts](https://github.com/matt8707/hass-config/commit/37156817c59e181451114c2531730b6e0fac088c) - better graphs, I posted some [examples](https://community.home-assistant.io/t/apexcharts-card-a-highly-customizable-graph-card/272877/1240)
-
 * [update template sensors, remove legacy](https://github.com/matt8707/hass-config/commit/bdc4c9b135f51f6e4cad4916f3adb3a9f522709a) - convert all legacy template sensors
-
 * [template warnings](https://github.com/matt8707/hass-config/commit/8b14c9cb13d9d225380111d892795defbe87f207) and [stfu home-assistant.log](https://github.com/matt8707/hass-config/commit/d2653664937600a199fc001b5e65488d7ffde88a) - template "default" log warnings
-
 * [add unifi and rpi sensors](https://github.com/matt8707/hass-config/commit/fb76db22fa4dd03bb96f332a3e230c7e4841736a) - command_line sensors for router and raspberry pi
 
 
