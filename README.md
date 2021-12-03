@@ -96,13 +96,13 @@ docker exec -it mariadb \
 ## Installation
 
 > **How do I install this theme?**
-> There's no install button. I'm sharing my full configuration
+There's no install button. I'm sharing my full configuration
 
 > **Can you please add this to HACS?**
-> No, because this is not a custom card or integration
+No, because this is not a custom card or integration
 
 > **Where do I even start?**
-> [This post explains how to get started](https://community.home-assistant.io/t/a-different-take-on-designing-a-lovelace-ui/162594/1717) :tada:
+[This post explains how to get started](https://community.home-assistant.io/t/a-different-take-on-designing-a-lovelace-ui/162594/1717) :tada:
 
 
 ## Features
