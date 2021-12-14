@@ -163,7 +163,7 @@ class Source:
                         self._params[self._year_field] = str(now.year + 1)
 
                     try:
-                        entries.extend(self.fetch_url(url), self._params)
+                        entries.extend(self.fetch_url(url, self._params))
                     except Exception:
                         # ignore if fetch for next year fails
                         pass
@@ -180,11 +180,9 @@ class Source:
         elif self._method == "POST":
             r = requests.post(url, data=params, headers=HEADERS)
         else:
-            _LOGGER.error(
-                "Error: unknown method to fetch URL, use GET or POST; got %s"
-                % self._method
+            raise RuntimeError(
+                "Error: unknown method to fetch URL, use GET or POST; got {self._method}"
             )
-            return "error"
         r.encoding = "utf-8"  # requests doesn't guess the encoding correctly
 
         # check the return code
@@ -193,7 +191,7 @@ class Source:
                 "Error: the response is not ok; need code 200, but got code %s"
                 % r.status_code
             )
-            return "error"
+            return []
 
         return self._convert(r.text)
 

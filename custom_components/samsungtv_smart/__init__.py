@@ -128,8 +128,6 @@ CONFIG_SCHEMA = vol.Schema(
     extra=vol.ALLOW_EXTRA,
 )
 
-DATA_LISTENER = "listener"
-
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -417,11 +415,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     _migrate_options_format(hass, entry)
 
     # setup entry
+    entry.async_on_unload(entry.add_update_listener(_update_listener))
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN].setdefault(entry.unique_id, {})  # unique_id = host
     hass.data[DOMAIN][entry.entry_id] = {
         DATA_OPTIONS: entry.options.copy(),
-        DATA_LISTENER: entry.add_update_listener(update_listener),
     }
 
     hass.config_entries.async_setup_platforms(entry, [MP_DOMAIN])
@@ -431,13 +429,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
-    unload_ok = await hass.config_entries.async_unload_platforms(
+    if unload_ok := await hass.config_entries.async_unload_platforms(
         entry, [MP_DOMAIN]
-    )
-
-    if unload_ok:
-        hass.data[DOMAIN][entry.entry_id][DATA_LISTENER]()
-        remove_token_file(hass, entry.unique_id)
+    ):
         hass.data[DOMAIN].pop(entry.entry_id)
         hass.data[DOMAIN].pop(entry.unique_id)
         if not hass.data[DOMAIN]:
@@ -446,7 +440,11 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     return unload_ok
 
 
-async def update_listener(hass: HomeAssistant, entry: ConfigEntry):
+async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry):
+    """Remove a config entry."""
+    remove_token_file(hass, entry.unique_id)
+
+
+async def _update_listener(hass: HomeAssistant, entry: ConfigEntry):
     """Update when config_entry options update."""
-    entry_id = entry.entry_id
-    hass.data[DOMAIN][entry_id][DATA_OPTIONS] = entry.options.copy()
+    hass.data[DOMAIN][entry.entry_id][DATA_OPTIONS] = entry.options.copy()

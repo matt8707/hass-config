@@ -196,7 +196,7 @@ class SmartIRFan(FanEntity, RestoreEntity):
         return self._support_flags
 
     @property
-    def device_state_attributes(self) -> dict:
+    def extra_state_attributes(self):
         """Platform specific attributes."""
         return {
             'last_on_speed': self._last_on_speed,

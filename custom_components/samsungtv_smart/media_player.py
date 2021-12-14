@@ -16,7 +16,8 @@ from .api.smartthings import SmartThingsTV, STStatus
 from .api.upnp import upnp
 
 from homeassistant.components.media_player import DEVICE_CLASS_TV, MediaPlayerEntity
-from homeassistant.core import DOMAIN as HA_DOMAIN
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import DOMAIN as HA_DOMAIN, HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import config_validation as cv, entity_platform
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
@@ -156,15 +157,16 @@ SCAN_INTERVAL = timedelta(seconds=15)
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities
+) -> None:
     """Set up the Samsung TV from a config entry."""
 
     # session used by aiohttp
     session = hass.helpers.aiohttp_client.async_get_clientsession()
 
-    entry_id = config_entry.entry_id
-    config = config_entry.data.copy()
-    add_conf = hass.data[DOMAIN][config_entry.unique_id]
+    config = entry.data.copy()
+    add_conf = hass.data[DOMAIN][entry.unique_id]
     for attr, value in add_conf.items():
         if value:
             config[attr] = value
@@ -175,7 +177,17 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     logo_file = hass.config.path(STORAGE_DIR, f"{DOMAIN}_logo_paths")
 
     async_add_entities(
-        [SamsungTVDevice(config, entry_id, session, token_file, logo_file)], True
+        [
+            SamsungTVDevice(
+                config,
+                config.get(CONF_ID, entry.entry_id),
+                hass.data[DOMAIN][entry.entry_id],
+                session,
+                token_file,
+                logo_file,
+            )
+        ],
+        True,
     )
 
     # register services
@@ -202,17 +214,19 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class SamsungTVDevice(MediaPlayerEntity):
     """Representation of a Samsung TV."""
 
-    def __init__(self, config, entry_id, session: ClientSession, token_file, logo_file):
+    def __init__(
+            self, config, unique_id, entry_data, session: ClientSession, token_file, logo_file
+    ):
         """Initialize the Samsung device."""
 
-        self._entry_id = entry_id
+        self._entry_data = entry_data
         self._session = session
         self._host = config[CONF_HOST]
         self._mac = config.get(CONF_MAC)
 
         # Set entity attributes
         self._attr_name = config.get(CONF_NAME, self._host)
-        self._attr_unique_id = config.get(CONF_ID, entry_id)
+        self._attr_unique_id = unique_id
         self._attr_icon = "mdi:television"
         self._attr_device_class = DEVICE_CLASS_TV
         self._attr_supported_features = SUPPORT_SAMSUNGTV_SMART
@@ -369,10 +383,9 @@ class SamsungTVDevice(MediaPlayerEntity):
 
     def _get_option(self, param, default=None):
         """Get option from entity configuration."""
-        entry_id = self.hass.data.get(DOMAIN, {}).get(self._entry_id)
-        if not entry_id:
+        if not self._entry_data:
             return default
-        option = entry_id[DATA_OPTIONS].get(param)
+        option = self._entry_data[DATA_OPTIONS].get(param)
         return default if option is None else option
 
     def _power_off_in_progress(self):

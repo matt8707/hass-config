@@ -132,7 +132,7 @@ class PlexRecentlyAddedSensor(Entity):
         return self._state
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         if self.server_name:
             return
         import math

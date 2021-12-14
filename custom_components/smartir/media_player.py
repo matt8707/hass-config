@@ -208,7 +208,7 @@ class SmartIRMediaPlayer(MediaPlayerEntity, RestoreEntity):
         return self._support_flags
 
     @property
-    def device_state_attributes(self) -> dict:
+    def extra_state_attributes(self):
         """Platform specific attributes."""
         return {
             'device_code': self._device_code,

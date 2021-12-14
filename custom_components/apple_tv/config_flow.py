@@ -16,7 +16,6 @@ from homeassistant.const import CONF_ADDRESS, CONF_NAME, CONF_PIN
 from homeassistant.core import callback
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.typing import DiscoveryInfoType
 
 from .const import CONF_CREDENTIALS, CONF_IDENTIFIERS, CONF_START_OFF, DOMAIN
 
@@ -147,12 +146,12 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     async def async_step_zeroconf(
-        self, discovery_info: DiscoveryInfoType
+        self, discovery_info: zeroconf.ZeroconfServiceInfo
     ) -> data_entry_flow.FlowResult:
         """Handle device found via zeroconf."""
-        service_type = discovery_info["type"][:-1]  # Remove leading .
-        name = discovery_info["name"].replace(f".{service_type}.", "")
-        properties = discovery_info["properties"]
+        service_type = discovery_info.type[:-1]  # Remove leading .
+        name = discovery_info.name.replace(f".{service_type}.", "")
+        properties = discovery_info.properties
 
         # Extract unique identifier from service
         self.scan_filter = get_unique_id(service_type, name, properties)
@@ -234,7 +233,7 @@ class AppleTVConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         # Protocols supported by the device are prospects for pairing
         self.protocols_to_pair = deque(
-            service.protocol for service in self.atv.services
+            service.protocol for service in self.atv.services if service.enabled
         )
 
         dev_info = self.atv.device_info
