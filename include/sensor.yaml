@@ -52,7 +52,7 @@ sensor:
       {{ json["system-stats"].mem }}|
       {{ ((json.storage[1].used / json.storage[1].size) * 100) | round(1) }}|
       {{ json.internet }}|
-      {{ json.startup_timestamp | timestamp_custom('%Y-%m-%dT%H:%M:%S') }}|
+      {{ json.startup_timestamp | timestamp_local }}|
       {{ json.displayable_version }}|
       {{ json.upgradable }}
     scan_interval: 120

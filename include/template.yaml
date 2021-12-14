@@ -408,8 +408,7 @@ template:
       icon: mdi:dev-to
       device_class: timestamp
       state: >
-        {{ (as_timestamp(state_attr('calendar.home_assistant_devs', 'start_time')) 
-        + 60*60*18) | timestamp_custom | replace(' ', 'T') }}
+        {{ (as_timestamp(state_attr('calendar.home_assistant_devs', 'start_time'), default=0) + 60*60*18) | timestamp_local(default) }}
       attributes:
         friendly_name: >
           {% set release = state_attr('calendar.home_assistant_devs','message') %}
@@ -549,7 +548,7 @@ template:
       icon: mdi:update
       device_class: timestamp
       state: >
-        {{ states('sensor.galaxy_tab_a_last_app_start') | replace(' ', 'T') }}
+        {{ as_timestamp(states('sensor.galaxy_tab_a_last_app_start'), default=0) | timestamp_local(default=0) }}
       attributes:
         friendly_name: Senast omstart
 
