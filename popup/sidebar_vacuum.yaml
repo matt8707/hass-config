@@ -201,6 +201,7 @@ browser_mod:
           camera: true
         map_locked: true
         map_modes:
+          - template: vacuum_clean_zone
           - template: vacuum_clean_zone_predefined
             predefined_selections:
               - zones: [[14895, 20640, 18409, 24058]]
@@ -229,5 +230,4 @@ browser_mod:
                   x: 19757
                   y: 26622
           - template: vacuum_goto
-          - template: vacuum_clean_zone
           - template: vacuum_follow_path

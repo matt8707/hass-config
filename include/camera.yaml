@@ -32,9 +32,9 @@ camera:
     map_transformation:
       scale: 2
       trim:
-        top: 16
-        right: 22
-        bottom: 25
+        top: 19
+        right: 21
+        bottom: 24
         left: 21
     sizes:
       charger_radius: 10
