@@ -11,26 +11,20 @@ from homeassistant.components.media_player.const import (
 
 def build_app_list(app_list):
     """Create response payload for app list."""
-    title = None
-    media = None
-    children_media_class = None
-
-    title = "Apps"
-    media = [
+    app_list = [
         {"app_id": app_id, "title": app_name, "type": MEDIA_TYPE_APP}
         for app_name, app_id in app_list.items()
     ]
-    children_media_class = MEDIA_CLASS_APP
 
     return BrowseMedia(
         media_class=MEDIA_CLASS_DIRECTORY,
         media_content_id=None,
         media_content_type=MEDIA_TYPE_APPS,
-        title=title,
+        title="Apps",
         can_play=True,
         can_expand=False,
-        children=[item_payload(item) for item in media],
-        children_media_class=children_media_class,
+        children=[item_payload(item) for item in app_list],
+        children_media_class=MEDIA_CLASS_APP,
     )
 
 

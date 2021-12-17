@@ -1,6 +1,7 @@
 """Support for Apple TV media player."""
 import logging
 
+from pyatv import exceptions
 from pyatv.const import (
     DeviceState,
     FeatureName,
@@ -150,10 +151,13 @@ class AppleTvMediaPlayer(AppleTVEntity, MediaPlayerEntity):
         _LOGGER.debug("Updating app list")
         try:
             apps = await self.atv.apps.app_list()
+        except exceptions.NotSupportedError:
+            _LOGGER.error("Listing apps is not supported")
+        except exceptions.ProtocolError:
+            _LOGGER.exception("Failed to update app list")
+        else:
             self._app_list = {app.name: app.identifier for app in apps}
             self.async_write_ha_state()
-        except Exception:  # pylint: disable=broad-except
-            _LOGGER.exception("Failed to update app list")
 
     @callback
     def async_device_disconnected(self):
@@ -375,8 +379,8 @@ class AppleTvMediaPlayer(AppleTVEntity, MediaPlayerEntity):
 
     async def async_browse_media(
         self,
-        media_content_type=None,  # : str | None = None,
-        media_content_id=None  # : str | None = None,
+        media_content_type=None,
+        media_content_id=None,
     ) -> BrowseMedia:
         """Implement the websocket media browsing helper."""
         return build_app_list(self._app_list)
