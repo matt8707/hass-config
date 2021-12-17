@@ -551,27 +551,3 @@ template:
         {{ as_timestamp(states('sensor.galaxy_tab_a_last_app_start'), default=0) | timestamp_local(default=0) }}
       attributes:
         friendly_name: Senast omstart
-
-    - unique_id: hue_motion_battery_badrum
-      device_class: battery
-      unit_of_measurement: '%'
-      state: >
-        {{ state_attr('binary_sensor.sensor_badrum_motion', 'battery_level') }}
-      attributes:
-        friendly_name: Sensor Badrum
-
-    - unique_id: hue_motion_battery_hall
-      device_class: battery
-      unit_of_measurement: '%'
-      state: >
-        {{ state_attr('binary_sensor.sensor_hall_motion', 'battery_level') }}
-      attributes:
-        friendly_name: Sensor Hall
-
-    - unique_id: hue_motion_battery_garderob
-      device_class: battery
-      unit_of_measurement: '%'
-      state: >
-        {{ state_attr('binary_sensor.sensor_garderob_motion', 'battery_level') }}
-      attributes:
-        friendly_name: Sensor Garderob

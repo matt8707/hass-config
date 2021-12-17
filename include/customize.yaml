@@ -55,6 +55,12 @@ homeassistant:
       friendly_name: Dimmer Badrum
     sensor.dimmer_sovrum_battery_level:
       friendly_name: Dimmer Sovrum
+    sensor.sensor_hall_battery:
+      friendly_name: Sensor Hall
+    sensor.sensor_garderob_battery:
+      friendly_name: Sensor Garderob
+    sensor.sensor_badrum_battery:
+      friendly_name: Sensor Badrum
 
     #fan
     fan.studio_wemo:
