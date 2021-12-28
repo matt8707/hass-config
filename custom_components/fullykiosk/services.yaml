@@ -1,8 +1,8 @@
 # Describes the format for available fullykiosk services
 
 load_start_url:
-  name: Load Start URL
-  description: Load Fully Kiosk Browser start URL.
+  name: Load Start URL (deprecated)
+  description: Load Fully Kiosk Browser start URL. ***This service is deprecated and will be removed in a later update. Use the corresponding button entity instead***
   fields:
     entity_id:
       description: Name(s) of entities to load the start URL on.
@@ -66,8 +66,8 @@ play_audio:
           mode: box
 
 reboot_device:
-  name: Reboot Device
-  description: Reboot the device running the Fully Kiosk Browser app.
+  name: Reboot Device (deprecated)
+  description: Reboot the device running the Fully Kiosk Browser app. ***This service is deprecated and will be removed in a later update. Use the corresponding button entity instead***
   fields:
     entity_id:
       description: Name(s) of entities to reboot.
@@ -80,8 +80,8 @@ reboot_device:
           domain: media_player
 
 restart:
-  name: Restart
-  description: Restart the Fully Kiosk Browser app.
+  name: Restart (deprecated)
+  description: Restart the Fully Kiosk Browser app. ***This service is deprecated and will be removed in a later update. Use the corresponding button entity instead***
   fields:
     entity_id:
       description: Name(s) of entities to restart the app on.
@@ -146,11 +146,25 @@ start_application:
         text:
 
 to_foreground:
-  name: To Foreground
-  description: Bring the Fully Kiosk Browser app to the foreground.
+  name: To Foreground (deprecated)
+  description: Bring the Fully Kiosk Browser app to the foreground. ***This service is deprecated and will be removed in a later update. Use the corresponding button entity instead***
   fields:
     entity_id:
       description: Name(s) of entities on which to bring the app to the foreground.
+      example: "media_player.amazon_fire_media_player"
+      name: Entity
+      required: true
+      selector:
+        entity:
+          integration: fullykiosk
+          domain: media_player
+
+to_background:
+  name: To Background (deprecated)
+  description: Bring the Fully Kiosk Browser app to the background. ***This service is deprecated and will be removed in a later update. Use the corresponding button entity instead***
+  fields:
+    entity_id:
+      description: Name(s) of entities on which to bring the app to the background.
       example: "media_player.amazon_fire_media_player"
       name: Entity
       required: true

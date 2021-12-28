@@ -21,6 +21,9 @@ def main():
     parser.add_argument(
         "-l", "--list", action="store_true", help="List retrieved entries"
     )
+    parser.add_argument(
+        "-i", "--icon", action="store_true", help="Show waste type icon"
+    )
     args = parser.parse_args()
 
     # read secrets.yaml
@@ -74,7 +77,8 @@ def main():
                 print(f"  found {len(result)} entries for {name}")
                 if args.list:
                     for x in result:
-                        print(f"    {x.date.isoformat()}: {x.type}")
+                        icon_str = f" [{x.icon}]" if args.icon else ""
+                        print(f"    {x.date.isoformat()}: {x.type}{icon_str}")
             except KeyboardInterrupt:
                 exit()
             except Exception:

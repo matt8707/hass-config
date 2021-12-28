@@ -6,10 +6,10 @@
   "codeowners": ["@smartHomeHub"],
   "requirements": ["aiofiles==0.6.0"],
   "homeassistant": "0.115.0",
-  "version": "1.17.2",
+  "version": "1.17.4",
   "updater": {
-    "version": "1.17.2",
-    "releaseNotes": "-- Switch to extra_state_attributes #751",
+    "version": "1.17.4",
+    "releaseNotes": "-- Fixed typo #764",
     "files": [
       "__init__.py",
       "climate.py",

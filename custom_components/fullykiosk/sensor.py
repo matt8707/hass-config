@@ -1,26 +1,64 @@
 """Fully Kiosk Browser sensor."""
-import logging
-
-from homeassistant.const import DATA_MEGABYTES, DEVICE_CLASS_BATTERY, PERCENTAGE
-from homeassistant.helpers.entity import Entity
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorEntity,
+    SensorEntityDescription,
+)
+from homeassistant.const import DATA_MEGABYTES, PERCENTAGE
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 
-_LOGGER = logging.getLogger(__name__)
-
-SENSOR_TYPES = {
-    "batteryLevel": "Battery Level",
-    "screenOrientation": "Screen Orientation",
-    "foregroundApp": "Foreground App",
-    "lastAppStart": "Last App Start",
-    "wifiSignalLevel": "WiFi Signal Level",
-    "currentPage": "Current Page",
-    "internalStorageFreeSpace": "Internal Storage Free Space",
-    "internalStorageTotalSpace": "Internal Storage Total Space",
-    "ramFreeMemory": "RAM Free Memory",
-    "ramTotalMemory": "RAM Total Memory",
-}
+SENSOR_TYPES: tuple[SensorEntityDescription, ...] = (
+    SensorEntityDescription(
+        key="batteryLevel",
+        name="Battery Level",
+        device_class=SensorDeviceClass.BATTERY,
+        native_unit_of_measurement=PERCENTAGE,
+    ),
+    SensorEntityDescription(key="screenOrientation", name="Screen Orientation"),
+    SensorEntityDescription(
+        key="foregroundApp",
+        name="Foreground App",
+    ),
+    SensorEntityDescription(
+        key="lastAppStart",
+        name="Last App Start",
+        device_class=SensorDeviceClass.TIMESTAMP,
+    ),
+    SensorEntityDescription(key="currentPage", name="Current Page"),
+    SensorEntityDescription(
+        key="wifiSignalLevel",
+        name="WiFi Signal Level",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+    ),
+    SensorEntityDescription(
+        key="internalStorageFreeSpace",
+        name="Internal Storage Free Space",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        native_unit_of_measurement=DATA_MEGABYTES,
+    ),
+    SensorEntityDescription(
+        key="internalStorageTotalSpace",
+        name="Internal Storage Total Space",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        native_unit_of_measurement=DATA_MEGABYTES,
+    ),
+    SensorEntityDescription(
+        key="ramFreeMemory",
+        name="RAM Free Memory",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        native_unit_of_measurement=DATA_MEGABYTES,
+    ),
+    SensorEntityDescription(
+        key="ramTotalMemory",
+        name="RAM Total Memory",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        native_unit_of_measurement=DATA_MEGABYTES,
+    ),
+)
 
 STORAGE_SENSORS = [
     "internalStorageFreeSpace",
@@ -34,28 +72,34 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Fully Kiosk Browser sensor."""
     coordinator = hass.data[DOMAIN][config_entry.entry_id]
 
-    sensors = []
-
-    for sensor in SENSOR_TYPES:
-        sensors.append(FullySensor(coordinator, sensor))
+    sensors = [
+        FullySensor(coordinator, sensor)
+        for sensor in SENSOR_TYPES
+        if sensor.key in coordinator.data
+    ]
 
     async_add_entities(sensors, False)
 
 
-class FullySensor(CoordinatorEntity, Entity):
+class FullySensor(CoordinatorEntity, SensorEntity):
     """Representation of a Fully Kiosk Browser sensor."""
 
-    def __init__(self, coordinator, sensor):
+    def __init__(self, coordinator, sensor: SensorEntityDescription):
         """Initialize the sensor entity."""
-        self._name = f"{coordinator.data['deviceName']} {SENSOR_TYPES[sensor]}"
-        self._sensor = sensor
+        self.entity_description = sensor
+        self._sensor = sensor.key
         self.coordinator = coordinator
-        self._unique_id = f"{coordinator.data['deviceID']}-{sensor}"
 
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return self._name
+        self._attr_name = f"{coordinator.data['deviceName']} {sensor.name}"
+        self._attr_unique_id = f"{coordinator.data['deviceID']}-{sensor.key}"
+        self._attr_device_info = {
+            "identifiers": {(DOMAIN, self.coordinator.data["deviceID"])},
+            "name": self.coordinator.data["deviceName"],
+            "manufacturer": self.coordinator.data["deviceManufacturer"],
+            "model": self.coordinator.data["deviceModel"],
+            "sw_version": self.coordinator.data["appVersionName"],
+            "configuration_url": f"http://{self.coordinator.data['ip4']}:2323",
+        }
 
     @property
     def state(self):
@@ -66,42 +110,7 @@ class FullySensor(CoordinatorEntity, Entity):
         if self._sensor in STORAGE_SENSORS:
             return round(self.coordinator.data[self._sensor] * 0.000001, 1)
 
-        return self.coordinator.data[self._sensor]
-
-    @property
-    def device_class(self):
-        """Return the device class."""
-        if self._sensor == "batteryLevel":
-            return DEVICE_CLASS_BATTERY
-
-        return None
-
-    @property
-    def unit_of_measurement(self):
-        """Return the unit of measurement."""
-        if self._sensor == "batteryLevel":
-            return PERCENTAGE
-
-        if self._sensor in STORAGE_SENSORS:
-            return DATA_MEGABYTES
-
-        return None
-
-    @property
-    def device_info(self):
-        """Return the device info."""
-        return {
-            "identifiers": {(DOMAIN, self.coordinator.data["deviceID"])},
-            "name": self.coordinator.data["deviceName"],
-            "manufacturer": self.coordinator.data["deviceManufacturer"],
-            "model": self.coordinator.data["deviceModel"],
-            "sw_version": self.coordinator.data["appVersionName"],
-        }
-
-    @property
-    def unique_id(self):
-        """Return the unique id."""
-        return self._unique_id
+        return self.coordinator.data.get(self._sensor)
 
     async def async_added_to_hass(self):
         """Connect to dispatcher listening for entity data notifications."""

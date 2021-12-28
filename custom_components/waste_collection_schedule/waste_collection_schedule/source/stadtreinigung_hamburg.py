@@ -6,23 +6,22 @@ TITLE = "Stadtreinigung Hamburg"
 DESCRIPTION = "Source for Stadtreinigung Hamburg waste collection."
 URL = "https://www.stadtreinigung.hamburg"
 TEST_CASES = {
-    "Hamburg": {"asId": 5087, "hnId": 113084},
+    "Zabelweg 1B": {"hnId": 53814},
 }
 
 
 class Source:
-    def __init__(self, asId, hnId):
-        self._asId = asId
+    def __init__(self, hnId, asId=None):
         self._hnId = hnId
-        self._ics = ICS(offset=1, regex="Erinnerung: Abfuhr (.*) morgen")
+        self._ics = ICS()
 
     def fetch(self):
-        args = {"asId": self._asId, "hnId": self._hnId, "adresse": "MeineAdresse"}
+        args = {"hnIds": self._hnId, "adresse": "MeineAdresse"}
 
         # get ics file
-        r = requests.post(
-            "https://www.stadtreinigung.hamburg/privatkunden/abfuhrkalender/Abfuhrtermin.ics",
-            data=args,
+        r = requests.get(
+            "https://backend.stadtreinigung.hamburg/kalender/abholtermine.ics",
+            params=args,
         )
 
         dates = self._ics.convert(r.text)

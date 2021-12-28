@@ -34,28 +34,45 @@ class Source:
         data = json.loads(r.text)
 
         # create entries for trash, recycling, and yard waste
-        entries = [
-            Collection(
-                date=datetime.datetime.strptime(
-                    data[0]["next_pickup_date"], "%m-%d-%Y"
-                ).date(),
-                t="Trash",
-                icon="mdi:trash-can",
-            ),
-            Collection(
-                date=datetime.datetime.strptime(
-                    data[0]["next_recycling_date"], "%m-%d-%Y"
-                ).date(),
-                t="Recycling",
-                icon="mdi:recycle",
-            ),
-            Collection(
-                date=datetime.datetime.strptime(
-                    data[0]["next_yard_date"], "%m-%d-%Y"
-                ).date(),
-                t="Yard Waste",
-                icon="mdi:leaf",
-            ),
-        ]
+        entries = []
+
+        try:
+            entries.append(
+                Collection(
+                    date=datetime.datetime.strptime(
+                        data[0]["next_pickup_date"], "%m-%d-%Y"
+                    ).date(),
+                    t="Trash",
+                    icon="mdi:trash-can",
+                )
+            )
+        except ValueError:
+            pass  # ignore date conversion failure for not scheduled collections
+
+        try:
+            entries.append(
+                Collection(
+                    date=datetime.datetime.strptime(
+                        data[0]["next_recycling_date"], "%m-%d-%Y"
+                    ).date(),
+                    t="Recycling",
+                    icon="mdi:recycle",
+                )
+            )
+        except ValueError:
+            pass  # ignore date conversion failure for not scheduled collections
+
+        try:
+            entries.append(
+                Collection(
+                    date=datetime.datetime.strptime(
+                        data[0]["next_yard_date"], "%m-%d-%Y"
+                    ).date(),
+                    t="Yard Waste",
+                    icon="mdi:leaf",
+                )
+            )
+        except ValueError:
+            pass  # ignore date conversion failure for not scheduled collections
 
         return entries

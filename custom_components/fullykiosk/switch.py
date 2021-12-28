@@ -16,6 +16,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async_add_entities([FullyScreenSaverSwitch(hass, coordinator)], False)
     async_add_entities([FullyMaintenanceModeSwitch(hass, coordinator)], False)
     async_add_entities([FullyKioskLockSwitch(hass, coordinator)], False)
+    async_add_entities([FullyKioskMotionDetectionSwitch(hass, coordinator)], False)
 
 
 class FullySwitch(CoordinatorEntity, SwitchEntity):
@@ -43,6 +44,7 @@ class FullySwitch(CoordinatorEntity, SwitchEntity):
             "manufacturer": self.coordinator.data["deviceManufacturer"],
             "model": self.coordinator.data["deviceModel"],
             "sw_version": self.coordinator.data["appVersionName"],
+            "configuration_url": f"http://{self.coordinator.data['ip4']}:2323",
         }
 
     @property
@@ -136,4 +138,29 @@ class FullyKioskLockSwitch(FullySwitch):
     async def async_turn_off(self, **kwargs):
         """Turn off kiosk lock."""
         await self.coordinator.fully.unlockKiosk()
+        await self.coordinator.async_refresh()
+
+
+class FullyKioskMotionDetectionSwitch(FullySwitch):
+    """Representation of a Fully Kiosk Browser kiosk lock switch."""
+
+    def __init__(self, hass, coordinator):
+        """Intialize the kiosk lock switch."""
+        super().__init__(hass, coordinator)
+        self._name = f"{coordinator.data['deviceName']} Motion Detection"
+        self._unique_id = f"{coordinator.data['deviceID']}-motion-detection"
+
+    @property
+    def is_on(self):
+        """Return if motion detection is on."""
+        return self.coordinator.data["settings"]["motionDetection"]
+
+    async def async_turn_on(self, **kwargs):
+        """Turn on kiosk lock."""
+        await self.coordinator.fully.enableMotionDetection()
+        await self.coordinator.async_refresh()
+
+    async def async_turn_off(self, **kwargs):
+        """Turn off kiosk lock."""
+        await self.coordinator.fully.disableMotionDetection()
         await self.coordinator.async_refresh()

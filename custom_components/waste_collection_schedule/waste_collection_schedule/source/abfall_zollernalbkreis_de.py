@@ -49,6 +49,15 @@ class Source:
         self._street = street
         self._types = types
         self._ics = ICS()
+        self._iconMap  = {
+            "Restmüll": "mdi:trash-can",
+            "Grünabfall" : "mdi:leaf",
+            "Gelber Sack" : "mdi:sack",
+            "Papiertonne" : "mdi:package-variant",
+            "Bildschirm-/Kühlgeräte" : "mdi:television-classic",
+            "Schadstoffsammlung" : "mdi:biohazard",
+            "altmetalle" : "mdi:nail",
+        } 
 
     def fetch(self):
         now = datetime.now()
@@ -83,5 +92,9 @@ class Source:
 
         entries = []
         for d in dates:
-            entries.append(Collection(d[0], d[1]))
+            waste_type = d[1]
+            next_pickup_date = d[0]
+            
+            entries.append(Collection(date=next_pickup_date, t=waste_type, icon=self._iconMap.get(waste_type,"mdi:trash-can")))
+
         return entries

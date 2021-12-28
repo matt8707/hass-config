@@ -19,5 +19,6 @@ SERVICE_RESTART_APP = "restart"
 SERVICE_SET_CONFIG = "set_config"
 SERVICE_START_APPLICATION = "start_application"
 SERVICE_TO_FOREGROUND = "to_foreground"
+SERVICE_TO_BACKGROUND = "to_background"
 
 UPDATE_INTERVAL = 30
