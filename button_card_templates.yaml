@@ -686,10 +686,16 @@
       - base_media
     state_display: >
       [[[
-        if (entity.attributes.media_title === 'Nothing playing' || entity.attributes.media_title === 'No title' && variables.state === 'paused') {
-          return 'Inget spelas';
+        let media_artist = entity === undefined || entity.attributes.media_artist,
+          media_title = entity === undefined || entity.attributes.media_title;
+        if (media_title === "Nothing playing" || media_title === "No title" && variables.state === "paused") {
+          return "Inget spelas";
         }
-        return entity.attributes.media_title === 'No title' && variables.state === 'playing' ? 'Ingen titel' : entity.attributes.media_title;
+        return media_title === "No title" && variables.state === "playing"
+          ? "Ingen titel"
+          : media_artist === undefined
+          ? media_title
+          : `${media_artist} - ${media_title}`;
       ]]]
     custom_fields:
       blur: >
