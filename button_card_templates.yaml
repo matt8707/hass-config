@@ -322,7 +322,7 @@
     custom_fields:
       circle: >
         [[[
-          if (variables.state === 'on') {
+          if (variables.consider_on) {
             let input = variables.circle_input,
               radius = 20.5,
               circumference = radius * 2 * Math.PI;
