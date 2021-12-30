@@ -556,6 +556,7 @@
                     [[[ return entity.entity_id ]]]
                   brightness: true
                   color_temp: true
+                  white_value: true
                   full_width_sliders: false
                   hide_header: true
                   show_slider_percent: true
