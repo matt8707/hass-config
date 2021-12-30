@@ -495,5 +495,5 @@ views:
       - type: custom:button-card
         view_layout:
           grid-area: footer
-        entity: sensor.covid_19_folkhalsomyndigheten
-        template: coronavirus
+        entity: sensor.james_webb_space_telescope
+        template: footer_jwst

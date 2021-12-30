@@ -103,15 +103,23 @@ sensor:
     value_template: >
       {{ value.split(' ')[1].split('v')[1] }}
 
-  - platform: rest
-    name: covid_19_folkhalsomyndigheten
-    resource: https://www.arcgis.com/sharing/rest/content/items/2dc63e26f509468f896ec69476b0dab3/data
+  - platform: command_line
+    name: james_webb_space_telescope
+    command: !secret jwst_scrape
     value_template: >
-      {{ 'Otillgänglig' if value_json.embedCode == '' else 'Tillgänglig' }}
-    json_attributes_path: $.widgets.widget_1.config
+      {{ value_json.launchDateTimeString }}
     json_attributes:
-      - embedCode
-    scan_interval: 21600
+      - launch_elapsed
+      - from_earth
+      - to_l2_orbit
+      - distance_complete
+      - cruising_speed
+      - hot_side_a
+      - hot_side_b
+      - cold_side_c
+      - cold_side_d
+    scan_interval: 1200
+    # https://gist.github.com/matt8707/fbd53ab19bdd8b42385f60c4d388461d
 
   - platform: rest
     name: skanetrafiken

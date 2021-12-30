@@ -245,7 +245,7 @@
   #                                               #
   #################################################
 
-  coronavirus:
+  footer_jwst:
     show_state: true
     show_name: false
     show_icon: false
@@ -253,16 +253,24 @@
       action: none
     state_display: >
       [[[
-        if (entity && entity.attributes.embedCode != undefined) {
-          let data = entity.attributes.embedCode,
-            total = data.match(/Totalt[^,]*?(\d+)[^,]*?(\d+)[^,]*?(\d+)/),
-            spacer = '‍ ‍ ‍ ‍ ‍ ‍<font color="#2f3436">|</font> ‍ ‍ ‍ ‍ ';
+        if (entity) {
+          let deltadays = (Date.parse(entity.state) - Date.now()) / 864e5,
+            relative = new Intl.RelativeTimeFormat().format(Math.round(deltadays), 'days'),
+            spacer = '<div><span>|</span></div>';
           return `
-            <ha-icon icon="mdi:virus"></ha-icon> <b>Coronavirus</b>${spacer}
-            <ha-icon icon="mdi:chart-bar"></ha-icon> <b>${(parseFloat(total[1]) / 10327589 * 100).toFixed(2)}%</b> av Sverige${spacer}
-            <ha-icon icon="mdi:emoticon-sad"></ha-icon> <b>${total[1]}</b> fall${spacer}
-            <ha-icon icon="mdi:grave-stone"></ha-icon> <b>${total[3]}</b> avlidna${spacer}
-            <ha-icon icon="mdi:map-marker-radius"></ha-icon> <b>${data.match(/Skåne[^,]*?(\d+)/)[1]}</b> fall i Skåne
+            <div id="footer_container">
+              <div><ha-icon icon="mdi:rocket-launch"></ha-icon> ${relative.replace(/([1-9][0-9]*)/, '<b>$1</b>')}</div>
+              ${spacer}
+              <div><ha-icon icon="mdi:speedometer"></ha-icon> <b>${(parseFloat(entity.attributes.cruising_speed)).toFixed(2)}</b> km/s</div>
+              ${spacer}
+              <div><ha-icon icon="mdi:map-marker-radius"></ha-icon> <b>${parseFloat(entity.attributes.distance_complete).toFixed(2)}</b> %</div>
+              ${spacer}
+              <div><ha-icon icon="mdi:orbit"></ha-icon> <b>${parseInt(entity.attributes.to_l2_orbit)}</b> km till L2</div>
+              ${spacer}
+              <div><ha-icon icon="mdi:shield-sun"></ha-icon> <b>${entity.attributes.hot_side_a}</b> °C</div>
+              ${spacer}
+              <div><ha-icon icon="mdi:hexagon-multiple"></ha-icon> <b>${entity.attributes.cold_side_c}</b> °C</div>
+            </div>
           `;
         }
       ]]]
@@ -275,6 +283,7 @@
         - letter-spacing: 0.05vw
         - white-space: nowrap
         - opacity: 0.6
+        - width: 100%
       card:
         - background: none
         - padding: 0
@@ -285,6 +294,13 @@
         vertical-align: 5%;
         opacity: 0.4;
         width: 1.2vw;
+      }
+      #footer_container {
+        display: flex;
+        justify-content: space-between;
+      }
+      span {
+        color: #2f3436;
       }
       .ellipsis {
         color: #6a7377;
