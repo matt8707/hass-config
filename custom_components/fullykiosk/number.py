@@ -10,23 +10,16 @@ ENTITY_TYPES: tuple[NumberEntityDescription, ...] = (
     NumberEntityDescription(
         key="timeToScreensaverV2",
         name="Screensaver Timer",
-        step=1,
-        min_value=0,
-        max_value=9999,
         entity_category=EntityCategory.CONFIG,
     ),
     NumberEntityDescription(
         key="screensaverBrightness",
         name="Screensaver Brightness",
-        min_value=0,
-        max_value=255,
         entity_category=EntityCategory.CONFIG,
     ),
     NumberEntityDescription(
         key="timeToScreenOffV2",
         name="Screen Off Timer",
-        min_value=0,
-        max_value=9999,
         entity_category=EntityCategory.CONFIG,
     ),
 )
@@ -64,6 +57,15 @@ class FullyNumberEntity(CoordinatorEntity, NumberEntity):
             "sw_version": self.coordinator.data["appVersionName"],
             "configuration_url": f"http://{self.coordinator.data['ip4']}:2323",
         }
+
+        # Min, max, and step are not available in EntityDescription until HA 2022.2 release.
+        self._attr_step = 1
+        self._attr_min_value = 0
+
+        if self._key in ["timeToScreensaverV2", "timeToScreenOffV2"]:
+            self._attr_max_value = 9999
+        if self._key == "screensaverBrightness":
+            self._attr_max_value = 255
 
     @property
     def state(self):
