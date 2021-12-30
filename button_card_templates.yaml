@@ -833,12 +833,20 @@
 
   recently_downloaded:
     name: Senast nedladdat
+    variables:
+      i: >
+        [[[
+          if (entity) {
+            let max = states[entity.entity_id].attributes.data.length - 1;
+            return Math.floor(Math.random() * max) + 1;
+          }
+          ]]]
     state_display: >
       [[[
         if (entity != undefined) {
           let data = states[entity.entity_id].attributes.data,
-            number = data[1].number == undefined ? '(' + data[1].aired.split('-')[0] + ')' : data[1].number;
-          return `${data[1].title} ${number}`;
+            number = data[variables.i].number == undefined ? '(' + data[variables.i].aired.split('-')[0] + ')' : data[variables.i].number;
+          return `${data[variables.i].title} ${number}`;
         }
         return 'Okänt';
       ]]]
@@ -850,7 +858,7 @@
         media_image:
           - background-position: center center
           - background-image: >
-              [[[ return entity === undefined || `url(${states[entity.entity_id].attributes.data[1].fanart})`; ]]]
+              [[[ return entity === undefined || `url(${states[entity.entity_id].attributes.data[variables.i].fanart})`; ]]]
         blur:
           - display: >
               [[[ return entity === undefined ? 'none' : 'initial'; ]]]
