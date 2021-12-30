@@ -123,6 +123,9 @@
             font-size: 1.34vw;
             letter-spacing: 0.05vw;
           }
+          #state::first-letter {
+            text-transform: uppercase;
+          }
           /* portrait */
           @media screen and (max-width: 1200px) {
             #name, #state {
