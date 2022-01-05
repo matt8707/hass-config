@@ -194,6 +194,7 @@ browser_mod:
           grid-area: map
         card_mod:
           class: header
+        language: sv
         entity: vacuum.morty
         map_source:
           camera: camera.vacuum_map
