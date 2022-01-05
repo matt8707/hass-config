@@ -311,7 +311,8 @@ class MapDataParserViomi(MapDataParser):
         magic = buf.get_uint32('magic')
         if magic != map_id:
             raise ValueError(
-                f"error parsing section {name} at offset {buf._offs - 4:#x}: magic check failed {magic:#x}")
+                f"error parsing section {name} at offset {buf._offs - 4:#x}: magic check failed. " +
+                f"Magic: {magic:#x}, Map ID: {map_id:#x}")
 
     @staticmethod
     def parse_position(buf: ParsingBuffer, name: str) -> Optional[Point]:

@@ -19,7 +19,7 @@ class Point:
         return f"({self.x}, {self.y}, a = {self.a})"
 
     def __eq__(self, other):
-        return self.x == other.x and self.y == other.y and self.a == other.a
+        return other is not None and self.x == other.x and self.y == other.y and self.a == other.a
 
     def as_dict(self):
         if self.a is None:

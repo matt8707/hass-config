@@ -3,8 +3,12 @@ import logging
 import time
 from datetime import timedelta
 from enum import Enum
+from typing import Optional
 
-import miio
+try:
+    from miio import RoborockVacuum, DeviceException
+except ImportError:
+    from miio import Vacuum as RoborockVacuum, DeviceException
 import PIL.Image as Image
 import voluptuous as vol
 from homeassistant.components.camera import Camera, ENTITY_ID_FORMAT, PLATFORM_SCHEMA, SUPPORT_ON_OFF
@@ -145,7 +149,7 @@ class VacuumCamera(Camera):
         super().__init__()
         self.entity_id = entity_id
         self.content_type = CONTENT_TYPE
-        self._vacuum = miio.Vacuum(host, token)
+        self._vacuum = RoborockVacuum(host, token)
         self._connector = XiaomiCloudConnector(username, password)
         self._status = CameraStatus.INITIALIZING
         self._device = None
@@ -177,7 +181,7 @@ class VacuumCamera(Camera):
     def frame_interval(self):
         return 1
 
-    def camera_image(self):
+    def camera_image(self, width: Optional[int] = None, height: Optional[int] = None) -> Optional[bytes]:
         return self._image
 
     @property
@@ -195,7 +199,7 @@ class VacuumCamera(Camera):
         return SUPPORT_ON_OFF
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         attributes = {}
         if self._map_data is not None:
             rooms = []
@@ -300,7 +304,7 @@ class VacuumCamera(Camera):
                 _LOGGER.debug("Map name %s", map_name)
             except OSError as exc:
                 _LOGGER.error("Got OSError while fetching the state: %s", exc)
-            except miio.DeviceException as exc:
+            except DeviceException as exc:
                 if self._received_map_name_previously:
                     _LOGGER.warning("Got exception while fetching the state: %s", exc)
                 self._received_map_name_previously = False

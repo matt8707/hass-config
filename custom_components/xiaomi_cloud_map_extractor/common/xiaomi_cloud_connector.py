@@ -7,6 +7,7 @@ import os
 import random
 import time
 from typing import Optional
+from Crypto.Cipher import ARC4
 
 import requests
 
@@ -149,14 +150,15 @@ class XiaomiCloudConnector:
         params = {
             "data": '{"getVirtualModel":false,"getHuamiDevices":0}'
         }
-        return self.execute_api_call(url, params)
+        return self.execute_api_call_encrypted(url, params)
 
-    def execute_api_call(self, url, params):
+    def execute_api_call_encrypted(self, url, params):
         headers = {
-            "Accept-Encoding": "gzip",
+            "Accept-Encoding": "identity",
             "User-Agent": self._agent,
             "Content-Type": "application/x-www-form-urlencoded",
-            "x-xiaomi-protocal-flag-cli": "PROTOCAL-HTTP2"
+            "x-xiaomi-protocal-flag-cli": "PROTOCAL-HTTP2",
+            "MIOT-ENCRYPT-ALGORITHM": "ENCRYPT-RC4",
         }
         cookies = {
             "userId": str(self._userId),
@@ -171,18 +173,15 @@ class XiaomiCloudConnector:
         millis = round(time.time() * 1000)
         nonce = self.generate_nonce(millis)
         signed_nonce = self.signed_nonce(nonce)
-        signature = self.generate_signature(url.replace("/app", ""), signed_nonce, nonce, params)
-        fields = {
-            "signature": signature,
-            "_nonce": nonce,
-            "data": params["data"]
-        }
+        fields = self.generate_enc_params(url, "POST", signed_nonce, nonce, params, self._ssecurity)
+
         try:
             response = self._session.post(url, headers=headers, cookies=cookies, params=fields, timeout=10)
         except:
             response = None
         if response is not None and response.status_code == 200:
-            return response.json()
+            decoded = self.decrypt_rc4(self.signed_nonce(fields["_nonce"]), response.text)
+            return json.loads(decoded)
         return None
 
     def get_api_url(self, country):
@@ -216,5 +215,38 @@ class XiaomiCloudConnector:
         return base64.b64encode(signature.digest()).decode()
 
     @staticmethod
+    def generate_enc_signature(url, method, signed_nonce, params):
+        signature_params = [str(method).upper(), url.split("com")[1].replace("/app/", "/")]
+        for k, v in params.items():
+            signature_params.append(f"{k}={v}")
+        signature_params.append(signed_nonce)
+        signature_string = "&".join(signature_params)
+        return base64.b64encode(hashlib.sha1(signature_string.encode('utf-8')).digest()).decode()
+
+    @staticmethod
+    def generate_enc_params(url, method, signed_nonce, nonce, params, ssecurity):
+        params['rc4_hash__'] = XiaomiCloudConnector.generate_enc_signature(url, method, signed_nonce, params)
+        for k, v in params.items():
+            params[k] = XiaomiCloudConnector.encrypt_rc4(signed_nonce, v)
+        params.update({
+            'signature': XiaomiCloudConnector.generate_enc_signature(url, method, signed_nonce, params),
+            'ssecurity': ssecurity,
+            '_nonce': nonce,
+        })
+        return params
+
+    @staticmethod
     def to_json(response_text):
         return json.loads(response_text.replace("&&&START&&&", ""))
+
+    @staticmethod
+    def encrypt_rc4(password, payload):
+        r = ARC4.new(base64.b64decode(password))
+        r.encrypt(bytes(1024))
+        return base64.b64encode(r.encrypt(payload.encode())).decode()
+
+    @staticmethod
+    def decrypt_rc4(password, payload):
+        r = ARC4.new(base64.b64decode(password))
+        r.encrypt(bytes(1024))
+        return r.encrypt(base64.b64decode(payload))

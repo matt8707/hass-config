@@ -27,7 +27,7 @@ class MapDataParserRoidmi(MapDataParser):
         resolution = map_info["resolution"]
         x_min_calc = x_min / resolution
         y_min_calc = y_min / resolution
-        map_data = MapData(0, 1)
+        map_data = MapData(0, 1000)
         map_data.rooms = MapDataParserRoidmi.parse_rooms(map_info)
         image = MapDataParserRoidmi.parse_image(map_image, width, height, x_min_calc, y_min_calc, resolution,
                                                 colors, image_config, map_data.rooms)
@@ -112,7 +112,7 @@ class MapDataParserRoidmi(MapDataParser):
         areas = []
         if "autoArea" in map_info:
             areas = map_info["autoArea"]
-        elif "autoAreaValue" in map_info:
+        elif "autoAreaValue" in map_info and map_info["autoAreaValue"] is not None:
             areas = map_info["autoAreaValue"]
         for area in areas:
             id = area["id"]

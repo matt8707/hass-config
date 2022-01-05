@@ -15,7 +15,7 @@ class XiaomiVacuum(XiaomiCloudVacuum):
         params = {
             "data": '{"obj_name":"' + map_name + '"}'
         }
-        api_response = self._connector.execute_api_call(url, params)
+        api_response = self._connector.execute_api_call_encrypted(url, params)
         if api_response is None or \
                 "result" not in api_response or \
                 api_response["result"] is None or \
