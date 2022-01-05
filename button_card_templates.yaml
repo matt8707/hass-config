@@ -860,7 +860,7 @@
             let max = states[entity.entity_id].attributes.data.length - 1;
             return Math.floor(Math.random() * max) + 1;
           }
-          ]]]
+        ]]]
     state_display: >
       [[[
         if (entity != undefined) {
