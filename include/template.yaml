@@ -543,11 +543,3 @@ template:
         {% endif %}
       attributes:
         friendly_name: Minne
-
-    - unique_id: fullykiosk_last_app_start
-      icon: mdi:update
-      device_class: timestamp
-      state: >
-        {{ as_timestamp(states('sensor.galaxy_tab_a_last_app_start'), default=0) | timestamp_local(default=0) }}
-      attributes:
-        friendly_name: Senast omstart

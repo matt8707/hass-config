@@ -116,6 +116,9 @@ homeassistant:
     binary_sensor.galaxy_tab_a_plugged_in:
       friendly_name: Strömtillförsel
       icon: mdi:power-plug
+    sensor.galaxy_tab_a_last_app_start:
+      friendly_name: Senast omstart
+      icon: mdi:update
     sensor.galaxy_tab_a_battery_level:
       friendly_name: Batteri
     sensor.nas_volume_1_average_disk_temp:

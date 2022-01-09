@@ -173,7 +173,7 @@ browser_mod:
 
           - entity: binary_sensor.galaxy_tab_a_plugged_in
 
-          - entity: sensor.template_fullykiosk_last_app_start
+          - entity: sensor.galaxy_tab_a_last_app_start
 
           - type: custom:bar-card
             width: 55%
@@ -233,8 +233,8 @@ browser_mod:
                       hass.callService('browser_mod', 'toast', {
                         message: 'Laddar om startsidan...'
                       });
-                      hass.callService('fullykiosk', 'load_start_url', {
-                        entity_id: 'media_player.galaxy_tab_a_media_player'
+                      hass.callService('button', 'press', {
+                        entity_id: 'button.galaxy_tab_a_load_start_url'
                       });
                     ]]]
                 template: icon_name
@@ -248,8 +248,8 @@ browser_mod:
                       hass.callService('browser_mod', 'toast', {
                         message: 'Startar om Fully Kiosk Browser...'
                       });
-                      hass.callService('fullykiosk', 'restart', {
-                        entity_id: 'media_player.galaxy_tab_a_media_player'
+                      hass.callService('button', 'press', {
+                        entity_id: 'button.galaxy_tab_a_restart_browser'
                       });
                     ]]]
                 template: icon_name

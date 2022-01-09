@@ -29,9 +29,9 @@ automation:
                 option: Senast nedladdat
       - delay:
           seconds: 10
-      - service: fullykiosk.load_start_url
+      - service: button.press
         target:
-          entity_id: media_player.galaxy_tab_a_media_player
+          entity_id: button.galaxy_tab_a_load_start_url
       - choose:
         - conditions:
             - condition: state
