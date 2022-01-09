@@ -17,6 +17,8 @@ class Task(HacsTask):
     """ "Hacs task base."""
 
     events = [EVENT_HOMEASSISTANT_FINAL_WRITE]
+    _can_run_disabled = True
 
     async def async_execute(self) -> None:
-        await self.hacs.data.async_write()
+        """Execute the task."""
+        await self.hacs.data.async_write(force=True)

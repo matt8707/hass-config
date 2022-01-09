@@ -10,13 +10,13 @@ from homeassistant.core import HomeAssistant
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 
+from custom_components.hacs.const import DOMAIN
+
 from ..base import HacsBase
 from ..enums import HacsStage
 from ..exceptions import HacsException
-from ..helpers.functions.misc import extract_repository_from_url
-from ..helpers.functions.register_repository import register_repository
-from ..helpers.functions.store import async_load_from_store, async_save_to_store
-from ..share import get_hacs, list_removed_repositories
+from ..utils import regex
+from ..utils.store import async_load_from_store, async_save_to_store
 from .base import HacsTask
 
 
@@ -31,7 +31,7 @@ class Task(HacsTask):
     stages = [HacsStage.SETUP]
 
     async def async_execute(self) -> None:
-        """Execute this task."""
+        """Execute the task."""
         async_register_command(self.hass, hacs_settings)
         async_register_command(self.hass, hacs_config)
         async_register_command(self.hass, hacs_repositories)
@@ -85,9 +85,9 @@ async def get_critical_repositories(hass, connection, msg):
 )
 @websocket_api.require_admin
 @websocket_api.async_response
-async def hacs_config(_hass, connection, msg):
+async def hacs_config(hass, connection, msg):
     """Handle get media player cover command."""
-    hacs = get_hacs()
+    hacs: HacsBase = hass.data.get(DOMAIN)
     connection.send_message(
         websocket_api.result_message(
             msg["id"],
@@ -96,8 +96,8 @@ async def hacs_config(_hass, connection, msg):
                 "frontend_compact": hacs.configuration.frontend_compact,
                 "onboarding_done": hacs.configuration.onboarding_done,
                 "version": hacs.version,
-                "frontend_expected": hacs.frontend.version_expected,
-                "frontend_running": hacs.frontend.version_running,
+                "frontend_expected": hacs.frontend_version,
+                "frontend_running": hacs.frontend_version,
                 "dev": hacs.configuration.dev,
                 "debug": hacs.configuration.debug,
                 "country": hacs.configuration.country,
@@ -115,10 +115,11 @@ async def hacs_config(_hass, connection, msg):
 )
 @websocket_api.require_admin
 @websocket_api.async_response
-async def hacs_removed(_hass, connection, msg):
+async def hacs_removed(hass, connection, msg):
     """Get information about removed repositories."""
+    hacs: HacsBase = hass.data.get(DOMAIN)
     content = []
-    for repo in list_removed_repositories():
+    for repo in hacs.repositories.list_removed:
         content.append(repo.to_json())
     connection.send_message(websocket_api.result_message(msg["id"], content))
 
@@ -131,23 +132,23 @@ async def hacs_removed(_hass, connection, msg):
 )
 @websocket_api.require_admin
 @websocket_api.async_response
-async def hacs_repositories(_hass, connection, msg):
+async def hacs_repositories(hass, connection, msg):
     """Handle get media player cover command."""
-    hacs = get_hacs()
+    hacs: HacsBase = hass.data.get(DOMAIN)
     connection.send_message(
         websocket_api.result_message(
             msg["id"],
             [
                 {
-                    "additional_info": repo.information.additional_info,
+                    "additional_info": repo.additional_info,
                     "authors": repo.data.authors,
                     "available_version": repo.display_available_version,
                     "beta": repo.data.show_beta,
-                    "can_install": repo.can_install,
+                    "can_install": repo.can_download,
                     "category": repo.data.category,
                     "config_flow": repo.data.config_flow,
                     "country": repo.data.country,
-                    "custom": repo.custom,
+                    "custom": not hacs.repositories.is_default(str(repo.data.id)),
                     "default_branch": repo.data.default_branch,
                     "description": repo.data.description,
                     "domain": repo.data.domain,
@@ -159,17 +160,17 @@ async def hacs_repositories(_hass, connection, msg):
                     "hide": repo.data.hide,
                     "homeassistant": repo.data.homeassistant,
                     "id": repo.data.id,
-                    "info": repo.information.info,
+                    "info": None,
                     "installed_version": repo.display_installed_version,
                     "installed": repo.data.installed,
                     "issues": repo.data.open_issues,
-                    "javascript_type": repo.information.javascript_type,
+                    "javascript_type": None,
                     "last_updated": repo.data.last_updated,
                     "local_path": repo.content.path.local,
                     "main_action": repo.main_action,
                     "name": repo.display_name,
                     "new": repo.data.new,
-                    "pending_upgrade": repo.pending_upgrade,
+                    "pending_upgrade": repo.pending_update,
                     "releases": repo.data.published_tags,
                     "selected_tag": repo.data.selected_tag,
                     "stars": repo.data.stargazers_count,
@@ -180,7 +181,7 @@ async def hacs_repositories(_hass, connection, msg):
                     "updated_info": repo.status.updated_info,
                     "version_or_commit": repo.display_version_or_commit,
                 }
-                for repo in hacs.repositories
+                for repo in hacs.repositories.list_all
                 if repo.data.category in (msg.get("categories") or hacs.common.categories)
                 and not repo.ignored_by_country_configuration
             ],
@@ -200,7 +201,7 @@ async def hacs_repositories(_hass, connection, msg):
 @websocket_api.async_response
 async def hacs_repository_data(hass, connection, msg):
     """Handle get media player cover command."""
-    hacs = get_hacs()
+    hacs: HacsBase = hass.data.get(DOMAIN)
     repo_id = msg.get("repository")
     action = msg.get("action")
     data = msg.get("data")
@@ -209,7 +210,7 @@ async def hacs_repository_data(hass, connection, msg):
         return
 
     if action == "add":
-        repo_id = extract_repository_from_url(repo_id)
+        repo_id = regex.extract_repository_from_url(repo_id)
         if repo_id is None:
             return
 
@@ -219,15 +220,14 @@ async def hacs_repository_data(hass, connection, msg):
         if hacs.common.renamed_repositories.get(repo_id):
             repo_id = hacs.common.renamed_repositories[repo_id]
 
-        if not hacs.get_by_name(repo_id):
+        if not hacs.repositories.get_by_full_name(repo_id):
             try:
-                registration = await register_repository(repo_id, data.lower())
+                registration = await hacs.async_register_repository(
+                    repository_full_name=repo_id, category=data.lower()
+                )
                 if registration is not None:
                     raise HacsException(registration)
-            except (
-                Exception,
-                BaseException,
-            ) as exception:  # pylint: disable=broad-except
+            except BaseException as exception:  # lgtm [py/catch-base-exception] pylint: disable=broad-except
                 hass.bus.async_fire(
                     "hacs/error",
                     {
@@ -245,9 +245,9 @@ async def hacs_repository_data(hass, connection, msg):
                 },
             )
 
-        repository = hacs.get_by_name(repo_id)
+        repository = hacs.repositories.get_by_full_name(repo_id)
     else:
-        repository = hacs.get_by_id(repo_id)
+        repository = hacs.repositories.get_by_id(repo_id)
 
     if repository is None:
         hass.bus.async_fire("hacs/repository", {})
@@ -260,7 +260,7 @@ async def hacs_repository_data(hass, connection, msg):
 
         elif action == "set_version":
             repository.data.selected_tag = data
-            await repository.update_repository()
+            await repository.update_repository(force=True)
 
             repository.state = None
 
@@ -285,7 +285,7 @@ async def hacs_repository_data(hass, connection, msg):
         message = exception
     except AttributeError as exception:
         message = f"Could not use repository with ID {repo_id} ({exception})"
-    except (Exception, BaseException) as exception:  # pylint: disable=broad-except
+    except BaseException as exception:  # lgtm [py/catch-base-exception] pylint: disable=broad-except
         message = exception
 
     if message is not None:
@@ -307,7 +307,7 @@ async def hacs_repository_data(hass, connection, msg):
 @websocket_api.async_response
 async def hacs_repository(hass, connection, msg):
     """Handle get media player cover command."""
-    hacs = get_hacs()
+    hacs: HacsBase = hass.data.get(DOMAIN)
     data = {}
     repository = None
 
@@ -317,7 +317,7 @@ async def hacs_repository(hass, connection, msg):
         return
 
     try:
-        repository = hacs.get_by_id(repo_id)
+        repository = hacs.repositories.get_by_id(repo_id)
         hacs.log.debug(f"Running {action} for {repository.data.full_name}")
 
         if action == "update":
@@ -389,7 +389,7 @@ async def hacs_repository(hass, connection, msg):
         message = exception
     except AttributeError as exception:
         message = f"Could not use repository with ID {repo_id} ({exception})"
-    except (Exception, BaseException) as exception:  # pylint: disable=broad-except
+    except BaseException as exception:  # lgtm [py/catch-base-exception] pylint: disable=broad-except
         message = exception
 
     if message is not None:
@@ -412,7 +412,7 @@ async def hacs_repository(hass, connection, msg):
 @websocket_api.async_response
 async def hacs_settings(hass, connection, msg):
     """Handle get media player cover command."""
-    hacs = get_hacs()
+    hacs: HacsBase = hass.data.get(DOMAIN)
 
     action = msg["action"]
     hacs.log.debug("WS action '%s'", action)
@@ -433,7 +433,7 @@ async def hacs_settings(hass, connection, msg):
         hacs.configuration.frontend_compact = True
 
     elif action == "clear_new":
-        for repo in hacs.repositories:
+        for repo in hacs.repositories.list_all:
             if repo.data.new and repo.data.category in msg.get("categories", []):
                 hacs.log.debug(
                     "Clearing new flag from '%s'",
@@ -450,9 +450,9 @@ async def hacs_settings(hass, connection, msg):
 @websocket_api.websocket_command({vol.Required("type"): "hacs/status"})
 @websocket_api.require_admin
 @websocket_api.async_response
-async def hacs_status(_hass, connection, msg):
+async def hacs_status(hass, connection, msg):
     """Handle get media player cover command."""
-    hacs = get_hacs()
+    hacs: HacsBase = hass.data.get(DOMAIN)
     connection.send_message(
         websocket_api.result_message(
             msg["id"],

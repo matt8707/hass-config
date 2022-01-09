@@ -3,23 +3,22 @@
 from __future__ import annotations
 
 from datetime import timedelta
-from timeit import default_timer as timer
+from logging import Handler
+from time import monotonic
 
 from homeassistant.core import HomeAssistant
 
 from ..base import HacsBase
 from ..enums import HacsStage
-from ..mixin import LogMixin
 
 
-class HacsTask(LogMixin):
+class HacsTask:
     """Hacs task base."""
-
-    hass: HomeAssistant
 
     events: list[str] | None = None
     schedule: timedelta | None = None
     stages: list[HacsStage] | None = None
+    _can_run_disabled = False  ## Set to True if task can run while disabled
 
     def __init__(self, hacs: HacsBase, hass: HomeAssistant) -> None:
         self.hacs = hacs
@@ -30,29 +29,31 @@ class HacsTask(LogMixin):
         """Return the check slug."""
         return self.__class__.__module__.rsplit(".", maxsplit=1)[-1]
 
+    def task_logger(self, handler: Handler, msg: str) -> None:
+        """Log message from task"""
+        handler("HacsTask<%s> %s", self.slug, msg)
+
     async def execute_task(self, *_, **__) -> None:
         """Execute the task defined in subclass."""
-        if self.hacs.system.disabled:
-            self.log.warning(
-                "Skipping task %s, HACS is disabled - %s",
-                self.slug,
-                self.hacs.system.disabled_reason,
+        if not self._can_run_disabled and self.hacs.system.disabled:
+            self.task_logger(
+                self.hacs.log.debug,
+                f"Skipping task, HACS is disabled {self.hacs.system.disabled_reason}",
             )
             return
-        self.log.info("Executing task: %s", self.slug)
-        start_time = timer()
+        self.task_logger(self.hacs.log.debug, "Executing task")
+        start_time = monotonic()
 
         try:
-            if task := getattr(self, "execute", None):
-                await self.hass.async_add_executor_job(task)
-            elif task := getattr(self, "async_execute", None):
+            if task := getattr(self, "async_execute", None):
                 await task()  # pylint: disable=not-callable
-        except BaseException as exception:  # pylint: disable=broad-except
-            self.log.error("Task %s failed: %s", self.slug, exception)
+            elif task := getattr(self, "execute", None):
+                await self.hass.async_add_executor_job(task)
+
+        except BaseException as exception:  # lgtm [py/catch-base-exception] pylint: disable=broad-except
+            self.task_logger(self.hacs.log.error, f"failed: {exception}")
 
         else:
-            self.log.debug(
-                "Task %s took " "%.2f seconds to complete",
-                self.slug,
-                timer() - start_time,
+            self.hacs.log.debug(
+                "HacsTask<%s> took %.3f seconds to complete", self.slug, monotonic() - start_time
             )

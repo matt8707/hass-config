@@ -1,19 +1,18 @@
 """"Starting setup task: Frontend"."""
 from __future__ import annotations
 
+from aiohttp import web
+from homeassistant.components.http import HomeAssistantView
+from homeassistant.core import HomeAssistant
+
+from ..base import HacsBase
 from ..const import DOMAIN
 from ..enums import HacsStage
 from ..hacs_frontend import locate_dir
 from ..hacs_frontend.version import VERSION as FE_VERSION
-from ..webresponses.frontend import HacsFrontendDev
 from .base import HacsTask
 
 URL_BASE = "/hacsfiles"
-
-
-from homeassistant.core import HomeAssistant
-
-from ..base import HacsBase
 
 
 async def async_setup_task(hacs: HacsBase, hass: HomeAssistant) -> Task:
@@ -27,13 +26,17 @@ class Task(HacsTask):
     stages = [HacsStage.SETUP]
 
     async def async_execute(self) -> None:
+        """Execute the task."""
 
         # Register themes
         self.hass.http.register_static_path(f"{URL_BASE}/themes", self.hass.config.path("themes"))
 
         # Register frontend
         if self.hacs.configuration.frontend_repo_url:
-            self.log.warning("Frontend development mode enabled. Do not run in production!")
+            self.task_logger(
+                self.hacs.log.warning,
+                "Frontend development mode enabled. Do not run in production!",
+            )
             self.hass.http.register_view(HacsFrontendDev())
         else:
             #
@@ -51,21 +54,18 @@ class Task(HacsTask):
 
         # Register www/community for all other files
         use_cache = self.hacs.core.lovelace_mode == "storage"
-        self.log.info(
-            "%s mode, cache for /hacsfiles/: %s",
-            self.hacs.core.lovelace_mode,
-            use_cache,
+        self.task_logger(
+            self.hacs.log.info,
+            f"{self.hacs.core.lovelace_mode} mode, cache for /hacsfiles/: {use_cache}",
         )
+
         self.hass.http.register_static_path(
             URL_BASE,
             self.hass.config.path("www/community"),
             cache_headers=use_cache,
         )
 
-        self.hacs.frontend.version_running = FE_VERSION
-        for requirement in self.hacs.integration.requirements:
-            if "hacs_frontend" in requirement:
-                self.hacs.frontend.version_expected = requirement.split("==")[-1]
+        self.hacs.frontend_version = FE_VERSION
 
         # Add to sidepanel if needed
         if DOMAIN not in self.hass.data.get("frontend_panels", {}):
@@ -84,3 +84,23 @@ class Task(HacsTask):
                 },
                 require_admin=True,
             )
+
+
+class HacsFrontendDev(HomeAssistantView):
+    """Dev View Class for HACS."""
+
+    requires_auth = False
+    name = "hacs_files:frontend"
+    url = r"/hacsfiles/frontend/{requested_file:.+}"
+
+    async def get(self, request, requested_file):  # pylint: disable=unused-argument
+        """Handle HACS Web requests."""
+        hacs: HacsBase = request.app["hass"].data.get(DOMAIN)
+        requested = requested_file.split("/")[-1]
+        request = await hacs.session.get(f"{hacs.configuration.frontend_repo_url}/{requested}")
+        if request.status == 200:
+            result = await request.read()
+            response = web.Response(body=result)
+            response.headers["Content-Type"] = "application/javascript"
+
+            return response
