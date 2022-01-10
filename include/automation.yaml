@@ -26,7 +26,7 @@ automation:
               target:
                 entity_id: input_select.conditional_media
               data:
-                option: Senast nedladdat
+                option: Senast tillagt
       - delay:
           seconds: 10
       - service: button.press
@@ -748,7 +748,7 @@ automation:
                states.media_player.spotify, states.media_player.kok] %}
             {% if media_players | selectattr('state','eq','playing') | list | count == 0 %}
               {% if media_players | selectattr('state','eq','paused') | list | count == 0 %}
-              Senast nedladdat
+              Senast tillagt
               {% else %}
               {{ media_players | selectattr('state','eq','paused') | map(attribute='name') | max }}
               {% endif %}
@@ -775,7 +775,7 @@ automation:
         target:
           entity_id: input_select.conditional_media
         data:
-          option: Senast nedladdat
+          option: Senast tillagt
 
   - alias: conditional_media_atv1_fix
     id: '8872219660798'
@@ -798,13 +798,13 @@ automation:
                states.media_player.kok] %}
             {% if media_players | selectattr('state','eq','playing') | list | count == 0 %}
               {% if media_players | selectattr('state','eq','paused') | list | count == 0 %}
-              Senast nedladdat
+              Senast tillagt
               {% elif is_state('media_player.vardagsrum', 'paused') and 
               is_state_attr('media_player.vardagsrum', 'media_title', 'No title') or
               is_state('media_player.sovrum', 'paused') and 
               is_state_attr('media_player.sovrum', 'media_title', 'No title')
               %}
-              Senast nedladdat
+              Senast tillagt
               {% else %}
               {{ media_players | selectattr('state','eq','paused') | map(attribute='name') | max }}
               {% endif %}
@@ -833,13 +833,13 @@ automation:
                states.media_player.kok] %}
             {% if media_players | selectattr('state','eq','playing') | list | count == 0 %}
               {% if media_players | selectattr('state','eq','paused') | list | count == 0 %}
-              Senast nedladdat
+              Senast tillagt
               {% elif is_state('media_player.vardagsrum', 'paused') and 
               is_state_attr('media_player.vardagsrum', 'media_title', 'No title') or
               is_state('media_player.sovrum', 'paused') and 
               is_state_attr('media_player.sovrum', 'media_title', 'No title')
               %}
-              Senast nedladdat
+              Senast tillagt
               {% else %}
               {{ media_players | selectattr('state','eq','paused') | map(attribute='name') | max }}
               {% endif %}

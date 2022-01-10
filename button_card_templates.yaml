@@ -847,12 +847,12 @@
 
   #################################################
   #                                               #
-  #              RECENTLY DOWNLOADED              #
+  #                RECENTLY ADDED                 #
   #                                               #
   #################################################
 
-  recently_downloaded:
-    name: Senast nedladdat
+  recently_added:
+    name: Senast tillagt
     variables:
       i: >
         [[[

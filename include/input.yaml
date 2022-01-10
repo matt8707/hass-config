@@ -24,9 +24,9 @@ input_number:
 
 input_select:
   conditional_media:
-    initial: Senast nedladdat
+    initial: Senast tillagt
     options:
-      - Senast nedladdat
+      - Senast tillagt
       - Vardagsrum
       - Sovrum
       - Spotify
