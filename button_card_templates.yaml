@@ -68,7 +68,7 @@
         - justify-self: start
         - line-height: 115%
       card:
-        - font-family: Sf Display
+        - font-family: Sf Display, Roboto
         - border-radius: var(--custom-button-card-border-radius)
         - -webkit-tap-highlight-color: rgba(0,0,0,0)
         - transition: none
@@ -193,7 +193,7 @@
         text-align: left;
       }
       .time {
-        font-family: SF Text;
+        font-family: SF Text, Roboto;
         font-size: var(--sidebar-time-font-size);
         font-weight: 200;
         line-height: var(--sidebar-time-line-height);
@@ -206,7 +206,7 @@
         top: -.09em;
       }
       p {
-        font-family: SF Display;
+        font-family: SF Display, Roboto;
         font-size: var(--sidebar-font-size);
         line-height: var(--sidebar-line-height);
         font-weight: 300;
@@ -280,7 +280,7 @@
     styles:
       state:
         - place-self: start
-        - font-family: SF Display
+        - font-family: SF Display, Roboto
         - font-weight: 400
         - font-size: 1.26vw
         - letter-spacing: 0.05vw
@@ -457,13 +457,13 @@
         padding-right: 2px;
       }
       .title {
-        font-family: SF Text;
+        font-family: SF Text, Roboto;
         font-size: 1.3em;
         font-weight: 500;
         letter-spacing: 0.5px;
       }
       .subtitle {
-        font-family: SF Text;
+        font-family: SF Text, Roboto;
         font-size: 1em;
         line-height: 0.7em;
         padding-left: 3px;
@@ -477,7 +477,7 @@
       }
       ul {
         margin-top: -0.6em;
-        font-family: SF Display;
+        font-family: SF Display, Roboto;
         font-size: 0.95em;
         letter-spacing: 0.5px;
         padding: 0 0 0 2.5em;
@@ -1004,7 +1004,7 @@
         - border: '0.2vw solid #292c2e'
       state:
         - font-size: 2.7vw
-        - font-family: SF Mono
+        - font-family: SF Mono, Roboto
         - opacity: 0.65
         - padding: 0.55vw 1.2vw 0.5vw 1.2vw
 

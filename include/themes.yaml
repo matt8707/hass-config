@@ -83,7 +83,7 @@ frontend:
               h1 {
                 font-size: 2.4vw !important;
                 line-height: 0 !important;
-                font-family: SF Text !important;
+                font-family: SF Text, Roboto !important;
                 font-weight: 500 !important;
                 color: rgba(255, 255, 255, 0.8) !important;
                 padding: 1vw 0 2vw 0 !important;
@@ -250,7 +250,7 @@ frontend:
 
       card-mod-card: |
         .header .card-header {
-          font-family: SF Text;
+          font-family: SF Text, Roboto;
           letter-spacing: 0.005em;
           font-size: 1.6em;
           font-weight: 500;
@@ -330,7 +330,7 @@ frontend:
 
           .main-title {
             margin-top: 5px;
-            font-family: SF Text;
+            font-family: SF Text, Roboto;
             letter-spacing: 0.005em;
           }
 
@@ -398,7 +398,7 @@ frontend:
             font-weight: 400;
             position: absolute;
             z-index: 1;
-            font-family: SF Display;
+            font-family: SF Display, Roboto;
             letter-spacing: 0.02em;
             pointer-events: none;
             mix-blend-mode: difference;
