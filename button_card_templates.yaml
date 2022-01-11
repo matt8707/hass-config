@@ -878,7 +878,11 @@
         media_image:
           - background-position: center center
           - background-image: >
-              [[[ return entity === undefined || `url(${states[entity.entity_id].attributes.data[variables.i].fanart})`; ]]]
+              [[[
+                return entity === undefined ||
+                 `url('${states[entity.entity_id].attributes.data[variables.i].fanart}'),
+                  url('${states[entity.entity_id].attributes.data[variables.i].poster}')`;
+              ]]]
         blur:
           - display: >
               [[[ return entity === undefined ? 'none' : 'initial'; ]]]
