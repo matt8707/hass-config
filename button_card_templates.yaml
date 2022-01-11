@@ -6,7 +6,19 @@
   #                                               #
   #################################################
 
+  settings:
+    variables:
+      entity_tablet: switch.galaxy_tab_a_screensaver
+      entity_browser_mod: media_player.browser_9c06ce87_d1cf313c
+
+      translate_unknown: Okänt
+      translate_idle: Inaktiv
+      translate_home: Ja
+      translate_not_home: Nej
+
   base:
+    template:
+      - settings
     variables:
       state: >
         [[[ return entity === undefined || entity.state; ]]]
@@ -18,23 +30,23 @@
     show_state: true
     show_icon: false
     state_display: >
-      [[[ if (variables.state === true) return 'Okänt'; ]]]
+      [[[ if (variables.state === true) return variables.translate_unknown; ]]]
     tap_action:
       ui_sound_tablet: |
         [[[
-          let screensaver = states['switch.galaxy_tab_a_screensaver'] === undefined || 
-            states['switch.galaxy_tab_a_screensaver'].state;
+          let screensaver = states[variables.entity_tablet] === undefined || 
+            states[variables.entity_tablet].state;
 
           if (variables.state === 'off' && screensaver === 'off') {
             hass.callService('media_player', 'play_media', {
-              entity_id: 'media_player.browser_9c06ce87_d1cf313c',
+              entity_id: variables.entity_browser_mod,
               media_content_id: '/local/sound/on.m4a',
               media_content_type: 'music'
             });
           }
           if (variables.state === 'on' && screensaver === 'off') {
             hass.callService('media_player', 'play_media', {
-              entity_id: 'media_player.browser_9c06ce87_d1cf313c',
+              entity_id: variables.entity_browser_mod,
               media_content_id: '/local/sound/off.m4a',
               media_content_type: 'music'
             });
@@ -580,10 +592,10 @@
     state_display: >
       [[[
         if (variables.state === 'home') {
-          return 'Ja';
+          return variables.translate_home;
         }
         if (variables.state === 'not_home') {
-          return 'Nej';
+          return variables.translate_not_home;
         }
         return variables.state;
       ]]]
