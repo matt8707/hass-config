@@ -109,7 +109,7 @@ views:
         cards:
 
           - type: custom:button-card
-            entity: light.vardagsrum_group #hue_group
+            entity: light.group_belysning
             name: Belysning
             template:
               - light
@@ -169,7 +169,7 @@ views:
               - icon_hue
 
           - type: custom:button-card
-            entity: light.taklampor #hue_group
+            entity: light.group_taklampor
             name: Taklampor
             template:
               - light
@@ -221,7 +221,7 @@ views:
         cards:
 
           - type: custom:button-card
-            entity: light.sovrum #hue_group
+            entity: light.group_sanglampor
             name: Sänglampor
             template:
               - light
@@ -399,7 +399,7 @@ views:
         cards:
 
           - type: custom:button-card
-            entity: light.badrum #hue_group
+            entity: light.group_badrum
             name: Badrum
             template:
               - light
@@ -423,7 +423,7 @@ views:
               - icon_closet
 
           - type: custom:button-card
-            entity: light.hall #hue_group
+            entity: light.group_hall
             name: Hall
             template:
               - light

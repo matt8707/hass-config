@@ -35,7 +35,7 @@ automation:
       - choose:
         - conditions:
             - condition: state
-              entity_id: light.hall
+              entity_id: light.group_hall
               state: 'off'
           sequence:
             - service: switch.turn_on
@@ -156,7 +156,7 @@ automation:
     action:
       - service: light.turn_off
         target:
-          entity_id: light.badrum
+          entity_id: light.group_badrum
 
   - alias: balcony
     id: '1522208581249'
@@ -534,7 +534,7 @@ automation:
         from: 'off'
         to: 'on'
       - platform: state
-        entity_id: light.hall
+        entity_id: light.group_hall
         from: 'on'
         to: 'off'
     action:

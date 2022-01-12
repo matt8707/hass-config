@@ -8,14 +8,20 @@ homeassistant:
     ####################################################
 
     #light
-    light.vardagsrum_group:
+    light.group_belysning:
       friendly_name: Belysning
       icon: mdi:lamp
     light.dator:
       friendly_name: Datorlampa
-    light.sovrum:
+    light.group_taklampor:
+      friendly_name: Taklampor
+    light.group_sanglampor:
       friendly_name: Sänglampor
       icon: mdi:floor-lamp
+    light.group_badrum:
+      friendly_name: Badrum
+    light.group_hall:
+      friendly_name: Hallampor
 
     #esphome
     sensor.gosund_1_daily_energy:

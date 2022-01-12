@@ -34,11 +34,11 @@ script:
           sequence:
             - service: scene.turn_on
               target:
-                entity_id: scene.hemma_below_horizon
+                entity_id: scene.home_below_horizon
         default:
           - service: scene.turn_on
             target:
-              entity_id: scene.hemma_above_horizon
+              entity_id: scene.home_above_horizon
       - delay:
           seconds: 4
 
@@ -48,7 +48,7 @@ script:
       - service: homeassistant.turn_off
         target:
           entity_id:
-            - light.all_lights_exclude_hall
+            - light.group_all_exclude_hall
             - climate.ac
             - media_player.sony_bravia_tv
             - media_player.samsung_tv
