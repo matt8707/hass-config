@@ -29,6 +29,7 @@ import ssl
 import subprocess
 import sys
 import time
+from typing import Any
 import uuid
 import websocket
 from datetime import datetime
@@ -37,7 +38,6 @@ from threading import Thread, Lock
 from yarl import URL
 from . import exceptions
 from . import shortcuts
-
 
 PING_MATCHER = re.compile(
     r"(?P<min>\d+.\d+)\/(?P<avg>\d+.\d+)\/(?P<max>\d+.\d+)\/(?P<mdev>\d+.\d+)"
@@ -52,6 +52,7 @@ WIN32_PING_MATCHER = re.compile(r"(?P<min>\d+)ms.+(?P<max>\d+)ms.+(?P<avg>\d+)ms
 DEFAULT_POWER_ON_DELAY = 120
 MIN_APP_SCAN_INTERVAL = 10
 MAX_WS_PING_INTERVAL = 10
+PING_TIMEOUT = 3
 TYPE_DEEP_LINK = "DEEP_LINK"
 TYPE_NATIVE_LAUNCH = "NATIVE_LAUNCH"
 
@@ -60,6 +61,17 @@ _LOGGING = logging.getLogger(__name__)
 
 def gen_uuid():
     return str(uuid.uuid4())
+
+
+def kill_subprocess(
+    process: subprocess.Popen[Any],
+) -> None:
+    """Force kill a subprocess and wait for it to exit."""
+    process.kill()
+    process.communicate()
+    process.wait()
+
+    del process
 
 
 class App:
@@ -111,7 +123,7 @@ class Ping:
             self._ping_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
         try:
-            out = pinger.communicate()
+            out = pinger.communicate(timeout=self._count + PING_TIMEOUT)
             _LOGGING.debug("Output is %s", str(out))
             if sys.platform == "win32":
                 match = WIN32_PING_MATCHER.search(str(out).split("\n")[-1])
@@ -123,6 +135,9 @@ class Ping:
                 match = PING_MATCHER.search(str(out).split("\n")[-1])
                 rtt_min, rtt_avg, rtt_max, rtt_mdev = match.groups()
             return True
+        except subprocess.TimeoutExpired:
+            kill_subprocess(pinger)
+            return False
         except (subprocess.CalledProcessError, AttributeError):
             return False
 
