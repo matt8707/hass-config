@@ -742,20 +742,23 @@
 
           function marquee() {
             let state = elt.getElementById("state"),
-              container = elt.getElementById("container"),
-              spacer = "&nbsp;".repeat(3);
+              container = elt.getElementById("container");
 
             if (state && container) {
               state.innerHTML = output;
               let ro = new ResizeObserver(entries => {
-                let s = entries[0], c = entries[1];
+                let spacer = "&nbsp;".repeat(3),
+                  s = entries[0],
+                  c = entries[1],
+                  r = s && s.contentRect &&
+                      c && c.contentRect &&
+                      s.contentRect.width !== 0 &&
+                      c.contentRect.width !== 0;
 
-                if (s && s.contentRect && c && c.contentRect
-                && s.contentRect.width < c.contentRect.width) {
+                if (r && s.contentRect.width < c.contentRect.width) {
                   state.classList.remove("marquee");
                 }
-                else if (s && s.contentRect && c && c.contentRect
-                && s.contentRect.width >= c.contentRect.width) {
+                else if (r && s.contentRect.width >= c.contentRect.width) {
                   state.innerHTML = `${output} ${spacer} ${output} ${spacer}&nbsp;`;
                   state.classList.add("marquee");
                 }
@@ -930,20 +933,23 @@
 
           function marquee() {
             let state = elt.getElementById("state"),
-              container = elt.getElementById("container"),
-              spacer = "&nbsp;".repeat(3);
+              container = elt.getElementById("container");
 
             if (state && container) {
               state.innerHTML = output;
               let ro = new ResizeObserver(entries => {
-                let s = entries[0], c = entries[1];
+                let spacer = "&nbsp;".repeat(3),
+                  s = entries[0],
+                  c = entries[1],
+                  r = s && s.contentRect &&
+                      c && c.contentRect &&
+                      s.contentRect.width !== 0 &&
+                      c.contentRect.width !== 0;
 
-                if (s && s.contentRect && c && c.contentRect
-                && s.contentRect.width < c.contentRect.width) {
+                if (r && s.contentRect.width < c.contentRect.width) {
                   state.classList.remove("marquee");
                 }
-                else if (s && s.contentRect && c && c.contentRect
-                && s.contentRect.width >= c.contentRect.width) {
+                else if (r && s.contentRect.width >= c.contentRect.width) {
                   state.innerHTML = `${output} ${spacer} ${output} ${spacer}&nbsp;`;
                   state.classList.add("marquee");
                 }
