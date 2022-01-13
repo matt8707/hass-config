@@ -99,31 +99,11 @@ automation:
             entity_id: binary_sensor.aqara_contact_window
             state: 'on'
     action:
-      - service: notify.mobile_app_mattias_iphone_ios
+      - service: notify.ALL_DEVICES
         data:
           title: >
             {{ '\u267B' }} Sophämtning imorgon
           message: Stäng fönstret!
-
-  # - alias: disable_vacuum_map
-  #   id: '9857945964478'
-  #   initial_state: true
-  #   trigger:
-  #     - platform: state
-  #       entity_id: vacuum.morty
-  #   condition:
-  #     - condition: template
-  #       value_template: >
-  #         {{ trigger.to_state.state != trigger.from_state.state }}
-  #   action:
-  #     - service: >
-  #         {% if trigger.to_state.state in ['unavailable', 'unknown', 'docked'] %}
-  #           camera.turn_off
-  #         {% else %}
-  #           camera.turn_on
-  #         {% endif %}
-  #       target:
-  #         entity_id: camera.vacuum_map
 
     ####################################################
     #                                                  #
@@ -281,7 +261,7 @@ automation:
       - platform: event
         event_type: transmission_downloaded_torrent
     action:
-      - service: notify.mobile_app_mattias_iphone_ios
+      - service: notify.ALL_DEVICES
         data:
           title: Torrent nedladdad
           message: >
@@ -307,7 +287,7 @@ automation:
         entity_id: sensor.galaxy_tab_a_battery_level
         below: 50
     action:
-      - service: notify.mobile_app_mattias_iphone_ios
+      - service: notify.ALL_DEVICES
         data:
           title: >
             Ladda väggplattan...

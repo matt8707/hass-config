@@ -106,6 +106,13 @@ timer:
     duration: 01:00:00
     icon: mdi:washing-machine
 
+notify:
+  - name: ALL_DEVICES
+    platform: group
+    services:
+      - service: mobile_app_mattias_iphone_ios
+      - service: mobile_app_sanja_iphone
+
 lock:
   - platform: template
     name: Dator
