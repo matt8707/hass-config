@@ -106,15 +106,6 @@ timer:
     duration: 01:00:00
     icon: mdi:washing-machine
 
-ios:
-  push:
-    categories:
-      - name: Home Assistant
-        identifier: ios_hass
-        actions:
-          - identifier: start_watchtower
-            title: Uppdatera
-
 lock:
   - platform: template
     name: Dator

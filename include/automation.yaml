@@ -248,10 +248,11 @@ automation:
             {{ states('sensor.hass_version_latest') }} tillgänglig {{ '\U0001F389' }}
           message: Håll in för att uppdatera
           data:
-            data:
-              url: https://www.home-assistant.io/latest-release-notes/
-            push:
-              category: ios_hass
+            url: https://www.home-assistant.io/latest-release-notes/
+            actions:
+              - action: START_WATCHTOWER
+                title: Uppdatera
+
       - service: homeassistant.update_entity
         target:
           entity_id:
@@ -263,9 +264,9 @@ automation:
     initial_state: true
     trigger:
       - platform: event
-        event_type: ios.notification_action_fired
+        event_type: mobile_app_notification_action
         event_data:
-          actionName: START_WATCHTOWER
+          action: START_WATCHTOWER
     action:
       - service: switch.turn_on
         target:
