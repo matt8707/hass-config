@@ -279,7 +279,7 @@
       action: none
     state_display: >
       [[[
-        if (entity) {
+        if (entity && entity.state !== 'unknown') {
           let deltadays = (Date.parse(entity.state) - Date.now()) / 864e5,
             relative = new Intl.RelativeTimeFormat().format(Math.round(deltadays), 'days'),
             spacer = '<div><span>|</span></div>';
@@ -299,6 +299,7 @@
             </div>
           `;
         }
+        return ' ';
       ]]]
     styles:
       state:
