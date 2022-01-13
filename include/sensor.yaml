@@ -118,6 +118,7 @@ sensor:
       - hot_side_b
       - cold_side_c
       - cold_side_d
+    command_timeout: 60
     scan_interval: 1200
     # https://gist.github.com/matt8707/fbd53ab19bdd8b42385f60c4d388461d
 
