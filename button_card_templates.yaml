@@ -1035,10 +1035,10 @@
       loader: |
         [[[
           let elt = this.shadowRoot;
-          if (states["lock.dator"].state === "locked" && entity.state === "on") {
-            elt.getElementById("lock").classList.add("locked");
+          if (variables.state_on && variables.lock === 'locked') {
+            elt.getElementById('lock').classList.add('locked');
             window.setTimeout(() => {
-              elt.getElementById("lock").classList.remove("locked");
+              elt.getElementById('lock').classList.remove('locked');
             }, 1100);
           } else {
 
@@ -1056,9 +1056,9 @@
     custom_fields:
       circle: >
         [[[
-          if (states['script.home_leave']) {
-            let state = states['script.home_leave'].state === 'on' ? 'locked' : null;
-            if (states['lock.dator'].state === 'locked') {
+          if (entity && variables.trigger) {
+            let state = variables.trigger.state === 'on' ? 'locked' : null;
+            if (variables.lock === 'locked') {
               return `
                 <svg viewBox="0 0 50 50">
                   <style>

@@ -178,9 +178,6 @@ views:
           - type: custom:button-card
             entity: switch.computer_imac
             name: Dator
-            triggers_update:
-              - lock.dator
-              - script.home_leave
             hold_action:
               !include popup/studio_dator.yaml
             template:
@@ -188,6 +185,17 @@ views:
               - icon_imac
               - loader
               - lock
+            variables:
+              lock: >
+                [[[
+                  let lock = states['lock.dator'];
+                  return lock === undefined || lock.state;
+                ]]]
+              trigger: >
+                [[[
+                  let trigger = states['script.home_leave'];
+                  return trigger === undefined || trigger;
+                ]]]
 
           - type: custom:button-card
             entity: switch.wemo_monitors
