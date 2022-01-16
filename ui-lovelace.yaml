@@ -192,7 +192,6 @@ views:
           - type: custom:button-card
             entity: switch.wemo_monitors
             name: Monitorer
-            triggers_update: sensor.monitors_volume
             hold_action:
               !include popup/studio_monitorer.yaml
             template:
@@ -203,8 +202,8 @@ views:
             variables:
               circle_input: >
                 [[[
-                  var entity_id = 'sensor.monitors_volume';
-                  return states[entity_id] === undefined ? null : states[entity_id].state;
+                  let sensor = states['sensor.monitors_volume'];
+                  return sensor === undefined || sensor.state;
                 ]]]
 
       #################################################
