@@ -86,7 +86,7 @@
             "s     s"
         - grid-template-columns: repeat(2, 1fr)
         - grid-template-rows: auto repeat(2, min-content)
-        - gap: 2%
+        - gap: 1.3%
         - align-items: start
       name:
         - justify-self: start
@@ -151,11 +151,19 @@
           #state::first-letter {
             text-transform: uppercase;
           }
+          #blur, #overlay {
+            top: 77%;
+            height: calc((100% - 77%) + 0.5%);
+          }
           /* portrait */
           @media screen and (max-width: 1200px) {
             #name, #state {
               font-size: 2vw;
               letter-spacing: 0.05vw;
+            }
+            #blur, #overlay {
+              top: 75.5%;
+              height: calc((100% - 75.5%) + 0.5%);
             }
           }
           /* phone */
@@ -163,6 +171,10 @@
             #name, #state {
               font-size: 3.1vw;
               letter-spacing: 0.12vw;
+            }
+            #blur, #overlay {
+              top: 74%;
+              height: calc((100% - 74%) + 0.5%);
             }
           }
           @keyframes card_bounce {
@@ -850,11 +862,12 @@
       name:
         - z-index: 3
         - overflow: visible
-        - margin-bottom: -1%
+        - margin-bottom: -0.75%
       state:
         - z-index: 3
         - max-width: unset
         - overflow: visible
+        - margin-bottom: -0.5%
       card:
         - background-color: rgba(115, 115, 115, 0.2)
         - padding: 5%
@@ -864,10 +877,8 @@
       custom_fields:
         blur:
           - z-index: 2
-          - top: 75%
           - left: 0%
           - width: 100%
-          - height: 25.5%
           - position: absolute
           - background-color: rgba(0, 0, 0, 0.2)
           - backdrop-filter: blur(0.4em)
@@ -875,10 +886,8 @@
         overlay:
           - z-index: 2
           - opacity: 1
-          - top: 75.5%
           - left: 0%
           - width: 100%
-          - height: 26%
           - position: absolute
           - background-color: rgba(255, 255, 255, 0.8)
         media_image:
