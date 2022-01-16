@@ -76,6 +76,8 @@
         ]]]
       action: toggle
       haptic: medium
+    hold_action:
+      haptic: success
     styles:
       grid:
         - grid-template-areas: |
