@@ -387,7 +387,7 @@
         ]]]
     styles:
       custom_fields:
-        circle: &person
+        circle:
           - display: initial
           - width: 90%
           - letter-spacing: 0.03vw
