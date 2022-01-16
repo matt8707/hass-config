@@ -371,8 +371,8 @@ views:
                       - icon_apple_tv
 
                   - type: custom:button-card
-                    name: Sovrum
                     entity: media_player.sovrum
+                    name: Sovrum
                     template:
                       - media
                       - icon_apple_tv
@@ -455,8 +455,6 @@ views:
               - sensor.matte_last_changed
             tap_action:
               !include popup/hemma_mattias.yaml
-            hold_action:
-              action: none
             variables:
               retain: sensor.matte_last_changed
             template: person
@@ -468,8 +466,6 @@ views:
               - sensor.sanja_last_changed
             tap_action:
               !include popup/hemma_sanja.yaml
-            hold_action:
-              action: none
             variables:
               retain: sensor.sanja_last_changed
             template: person
