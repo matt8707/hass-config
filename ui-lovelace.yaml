@@ -58,7 +58,7 @@ views:
         cards:
           - type: custom:button-card
             entity: sensor.template_sidebar
-            template: sidebar_template
+            template: sidebar
 
           - type: conditional
             conditions:

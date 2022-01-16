@@ -189,7 +189,7 @@
   #                                               #
   #################################################
 
-  sidebar_template:
+  sidebar:
     show_state: false
     show_icon: false
     tap_action:
@@ -199,7 +199,7 @@
         if (entity) {
           let attr = [];
           for (let [k, value] of Object.entries(entity.attributes))
-            value != false && (attr += `<p>${value}</p>`);
+            value !== false && (attr += `<p>${value}</p>`);
           return attr;
         }
       ]]]
