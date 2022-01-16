@@ -124,8 +124,11 @@ views:
             name: Tv
             state_display: >
               [[[
-                if (variables.state == 'playing') {
+                if (variables.state === 'playing') {
                   return 'På';
+                }
+                if (variables.state === true) {
+                  return variables.translate_unknown;
                 }
               ]]]
             hold_action:
