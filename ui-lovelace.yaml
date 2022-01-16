@@ -90,10 +90,7 @@ views:
                 tap_action:
                   !include popup/sidebar_update.yaml
                 hold_action:
-                  action: call-service
-                  service: homeassistant.update_entity
-                  service_data:
-                    entity_id: sensor.hacs
+                  action: none
 
       #################################################
       #                                               #
