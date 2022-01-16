@@ -27,6 +27,7 @@ lovelace:
       { url: /hacsfiles/lovelace-xiaomi-vacuum-map-card/xiaomi-vacuum-map-card.js,  type: module },
       { url: /hacsfiles/swipe-card/swipe-card.js,                                   type: module },
 
+      { url: '/local/hold_action_fix.js?v=1',                                       type: module },
       { url: '/local/calendar-card.js?v=3.109.1',                                   type: module },
       { url: '/local/custom_icons.js?v=28082021',                                   type: module },
       { url: /local/font.css,                                                       type: css    } ]
