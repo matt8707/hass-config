@@ -804,7 +804,7 @@
         ]]]
       overlay: >
         [[[
-          if (entity && variables.entity_picture && variables.media_off) return '<div></div>';
+          if (entity && variables.entity_picture === undefined && variables.media_on) return '<div></div>';
         ]]]
       media_image: >
         <div></div>
