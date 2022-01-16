@@ -10,8 +10,7 @@ import socket
 import voluptuous as vol
 from websocket import WebSocketException
 
-from .api.samsungws import SamsungTVWS
-from .api.exceptions import ConnectionFailure
+from .api.samsungws import ConnectionFailure, SamsungTVWS
 from .api.smartthings import SmartThingsTV
 
 from homeassistant.components.media_player.const import DOMAIN as MP_DOMAIN

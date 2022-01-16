@@ -21,33 +21,22 @@ Copyright (C) 2020 Ollo69
 
 """
 import base64
+from datetime import datetime
+from enum import Enum
 import json
 import logging
-import re
 import requests
 import ssl
 import subprocess
 import sys
+from threading import Thread, Lock
 import time
 from typing import Any
 import uuid
 import websocket
-from datetime import datetime
-from enum import Enum
-from threading import Thread, Lock
 from yarl import URL
-from . import exceptions
+
 from . import shortcuts
-
-PING_MATCHER = re.compile(
-    r"(?P<min>\d+.\d+)\/(?P<avg>\d+.\d+)\/(?P<max>\d+.\d+)\/(?P<mdev>\d+.\d+)"
-)
-
-PING_MATCHER_BUSYBOX = re.compile(
-    r"(?P<min>\d+.\d+)\/(?P<avg>\d+.\d+)\/(?P<max>\d+.\d+)"
-)
-
-WIN32_PING_MATCHER = re.compile(r"(?P<min>\d+)ms.+(?P<max>\d+)ms.+(?P<avg>\d+)ms")
 
 DEFAULT_POWER_ON_DELAY = 120
 MIN_APP_SCAN_INTERVAL = 10
@@ -56,10 +45,20 @@ PING_TIMEOUT = 3
 TYPE_DEEP_LINK = "DEEP_LINK"
 TYPE_NATIVE_LAUNCH = "NATIVE_LAUNCH"
 
+_WS_ENDPOINT_REMOTE_CONTROL = "/api/v2/channels/samsung.remote.control"
+_WS_ENDPOINT_APP_CONTROL = "/api/v2"
+_WS_ENDPOINT_ART = "/api/v2/channels/com.samsung.art-app"
+
 _LOGGING = logging.getLogger(__name__)
 
 
+def _format_rest_url(host: str, append: str = "") -> str:
+    """Return URL used for rest commands."""
+    return f"http://{host}:8001/api/v2/{append}"
+
+
 def gen_uuid():
+    """Generate new uuid."""
     return str(uuid.uuid4())
 
 
@@ -74,7 +73,49 @@ def kill_subprocess(
     del process
 
 
+class Ping:
+    """Class for handling Ping to a specific host."""
+
+    def __init__(self, host):
+        """Initialize the object."""
+        self._ip_address = host
+        if sys.platform == "win32":
+            self._ping_cmd = ["ping", "-n", "1", "-w", "2000", host]
+        else:
+            self._ping_cmd = ["ping", "-n", "-q", "-c1", "-W2", host]
+
+    def ping(self):
+        """Send ICMP echo request and return True if success."""
+        with subprocess.Popen(
+                self._ping_cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL
+        ) as pinger:
+            try:
+                pinger.communicate(timeout=1+PING_TIMEOUT)
+                return pinger.returncode == 0
+            except subprocess.TimeoutExpired:
+                kill_subprocess(pinger)
+                return False
+            except subprocess.CalledProcessError:
+                return False
+
+
+class ConnectionFailure(Exception):
+    """Error during connection."""
+    pass
+
+
+class ResponseError(Exception):
+    """Error in response."""
+    pass
+
+
+class HttpApiError(Exception):
+    """Error using HTTP API."""
+    pass
+
+
 class App:
+    """Define a TV Application."""
     def __init__(self, app_id, app_name, app_type):
         self.app_id = app_id
         self.app_name = app_name
@@ -82,73 +123,15 @@ class App:
 
 
 class ArtModeStatus(Enum):
+    """Define possible ArtMode status."""
     Unsupported = 0
     Unavailable = 1
     Off = 2
     On = 3
 
 
-class Ping:
-    """The Class for handling the data retrieval."""
-
-    def __init__(self, host, count):
-        """Initialize the data object."""
-        self._ip_address = host
-        self._count = count
-        self.available = False
-
-        if sys.platform == "win32":
-            self._ping_cmd = [
-                "ping",
-                "-n",
-                str(self._count),
-                "-w",
-                "2000",
-                self._ip_address,
-            ]
-        else:
-            self._ping_cmd = [
-                "ping",
-                "-n",
-                "-q",
-                "-c",
-                str(self._count),
-                "-W2",
-                self._ip_address,
-            ]
-
-    def ping(self):
-        """Send ICMP echo request and return details if success."""
-        pinger = subprocess.Popen(
-            self._ping_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-        )
-        try:
-            out = pinger.communicate(timeout=self._count + PING_TIMEOUT)
-            _LOGGING.debug("Output is %s", str(out))
-            if sys.platform == "win32":
-                match = WIN32_PING_MATCHER.search(str(out).split("\n")[-1])
-                rtt_min, rtt_avg, rtt_max = match.groups()
-            elif "max/" not in str(out):
-                match = PING_MATCHER_BUSYBOX.search(str(out).split("\n")[-1])
-                rtt_min, rtt_avg, rtt_max = match.groups()
-            else:
-                match = PING_MATCHER.search(str(out).split("\n")[-1])
-                rtt_min, rtt_avg, rtt_max, rtt_mdev = match.groups()
-            return True
-        except subprocess.TimeoutExpired:
-            kill_subprocess(pinger)
-            return False
-        except (subprocess.CalledProcessError, AttributeError):
-            return False
-
-
 class SamsungTVWS:
-
-    _WS_ENDPOINT_REMOTE_CONTROL = "/api/v2/channels/samsung.remote.control"
-    _WS_ENDPOINT_APP_CONTROL = "/api/v2"
-    _WS_ENDPOINT_ART = "/api/v2/channels/com.samsung.art-app"
-
-    _REST_URL_FORMAT = "http://{host}:8001/api/v2/{append}"
+    """Class to manage websocket communication with tizen TV."""
 
     def __init__(
         self,
@@ -161,6 +144,7 @@ class SamsungTVWS:
         name="SamsungTvRemote",
         app_list=None,
     ):
+        """Initialize SamsungTVWS object."""
         self.host = host
         self.token = token
         self.token_file = token_file
@@ -196,12 +180,12 @@ class SamsungTVWS:
         self._last_art_ping = datetime.min
         self._client_art_supported = 2
 
-        self._ping = Ping(self.host, 1)
+        self._ping = Ping(self.host)
 
     def __enter__(self):
         return self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, exc_type, exc_value, exc_traceback):
         self.close()
 
     @staticmethod
@@ -231,14 +215,6 @@ class SamsungTVWS:
         if token:
             return str(new_uri.update_query({"token": token}))
         return str(new_uri)
-
-    def _format_rest_url(self, append=""):
-        params = {
-            "host": self.host,
-            "append": append,
-        }
-
-        return self._REST_URL_FORMAT.format(**params)
 
     def _get_token(self):
         if self.token_file is not None:
@@ -288,7 +264,7 @@ class SamsungTVWS:
 
         if using_remote:
             # we consider a message sent valid as a ping
-            self._last_ping = datetime.now()
+            self._last_ping = datetime.utcnow()
 
         if key_press_delay is None:
             if self.key_press_delay > 0:
@@ -299,7 +275,7 @@ class SamsungTVWS:
         return True
 
     def _rest_request(self, target, method="GET"):
-        url = self._format_rest_url(target)
+        url = _format_rest_url(self.host, target)
         try:
             if method == "POST":
                 return requests.post(url, timeout=self.timeout)
@@ -310,7 +286,7 @@ class SamsungTVWS:
             else:
                 return requests.get(url, timeout=self.timeout)
         except requests.ConnectionError:
-            raise exceptions.HttpApiError(
+            raise HttpApiError(
                 "TV unreachable or feature not supported on this model."
             )
 
@@ -322,7 +298,7 @@ class SamsungTVWS:
             _LOGGING.debug(
                 "Failed to parse response from TV. response text: %s", response
             )
-            raise exceptions.ResponseError(
+            raise ResponseError(
                 "Failed to parse response from TV. Maybe feature not supported on this model"
             )
 
@@ -350,7 +326,7 @@ class SamsungTVWS:
 
         is_ssl = self._is_ssl_connection()
         url = self._format_websocket_url(
-            self._WS_ENDPOINT_REMOTE_CONTROL,
+            _WS_ENDPOINT_REMOTE_CONTROL,
             is_ssl=is_ssl
         )
         sslopt = {"cert_reqs": ssl.CERT_NONE} if is_ssl else {}
@@ -378,7 +354,7 @@ class SamsungTVWS:
 
     def _on_ping_remote(self, _, payload):
         _LOGGING.debug("Received WS remote ping %s, sending pong", payload)
-        self._last_ping = datetime.now()
+        self._last_ping = datetime.utcnow()
         if self._ws_remote.sock:
             try:
                 self._ws_remote.sock.pong(payload)
@@ -393,7 +369,7 @@ class SamsungTVWS:
             return
 
         # we consider a message valid as a ping
-        self._last_ping = datetime.now()
+        self._last_ping = datetime.utcnow()
 
         if event == "ms.channel.connect":
             conn_data = response.get("data")
@@ -439,7 +415,7 @@ class SamsungTVWS:
 
         is_ssl = self._is_ssl_connection()
         url = self._format_websocket_url(
-            self._WS_ENDPOINT_APP_CONTROL,
+            _WS_ENDPOINT_APP_CONTROL,
             is_ssl=is_ssl,
             use_token=False
         )
@@ -463,7 +439,7 @@ class SamsungTVWS:
 
     def _on_ping_control(self, _, payload):
         _LOGGING.debug("Received WS control ping %s, sending pong", payload)
-        self._last_control_ping = datetime.now()
+        self._last_control_ping = datetime.utcnow()
         if self._ws_control.sock:
             try:
                 self._ws_control.sock.pong(payload)
@@ -565,7 +541,7 @@ class SamsungTVWS:
 
         is_ssl = self._is_ssl_connection()
         url = self._format_websocket_url(
-            self._WS_ENDPOINT_ART,
+            _WS_ENDPOINT_ART,
             is_ssl=is_ssl,
             use_token=False
         )
@@ -589,7 +565,7 @@ class SamsungTVWS:
 
     def _on_ping_art(self, _, payload):
         _LOGGING.debug("Received WS art ping %s, sending pong", payload)
-        self._last_art_ping = datetime.now()
+        self._last_art_ping = datetime.utcnow()
         if self._ws_art.sock:
             try:
                 self._ws_art.sock.pong(payload)
@@ -604,7 +580,7 @@ class SamsungTVWS:
             return
 
         # we consider a message valid as a ping
-        self._last_art_ping = datetime.now()
+        self._last_art_ping = datetime.utcnow()
 
         if event == "ms.channel.connect":
             conn_data = response.get("data")
@@ -694,7 +670,7 @@ class SamsungTVWS:
     def ping_device(self):
         result = self._ping.ping()
         # check ws ping/pong
-        call_time = datetime.now()
+        call_time = datetime.utcnow()
         if result and self._ws_remote:
             difference = (call_time - self._last_ping).total_seconds()
             result = difference < MAX_WS_PING_INTERVAL
@@ -717,7 +693,7 @@ class SamsungTVWS:
         if self._artmode_status == ArtModeStatus.Unsupported:
             return
         if self._ws_art:
-            difference = (datetime.now() - self._last_art_ping).total_seconds()
+            difference = (datetime.utcnow() - self._last_art_ping).total_seconds()
             if difference >= MAX_WS_PING_INTERVAL:
                 self._artmode_status = ArtModeStatus.Unavailable
                 self._ws_art.close()
@@ -726,7 +702,7 @@ class SamsungTVWS:
 
     def set_power_on_request(self, set_art_mode=False, power_on_delay=0):
         self._power_on_requested = True
-        self._power_on_requested_time = datetime.now()
+        self._power_on_requested_time = datetime.utcnow()
         self._power_on_artmode = set_art_mode
         self._power_on_delay = max(power_on_delay, 0) or DEFAULT_POWER_ON_DELAY
 
@@ -739,7 +715,7 @@ class SamsungTVWS:
             return
 
         with self._sync_lock:
-            call_time = datetime.now()
+            call_time = datetime.utcnow()
             difference = (call_time - self._last_app_scan).total_seconds()
             if (difference < MIN_APP_SCAN_INTERVAL and not force_scan) or difference < 1:
                 return
@@ -801,7 +777,7 @@ class SamsungTVWS:
 
         is_ssl = self._is_ssl_connection()
         url = self._format_websocket_url(
-            self._WS_ENDPOINT_REMOTE_CONTROL,
+            _WS_ENDPOINT_REMOTE_CONTROL,
             is_ssl=is_ssl
         )
         sslopt = {"cert_reqs": ssl.CERT_NONE} if is_ssl else {}
@@ -827,7 +803,7 @@ class SamsungTVWS:
 
         if not completed:
             self.close()
-            raise exceptions.ConnectionFailure(response)
+            raise ConnectionFailure(response)
 
         self.connection = connection
         return connection

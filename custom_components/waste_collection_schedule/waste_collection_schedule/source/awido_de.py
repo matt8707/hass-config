@@ -26,6 +26,7 @@ TEST_CASES = {
         "city": "Kaufbeuren",
         "street": "Rehgrund",
     },
+    "Tübingen, Dettenhausen": {"customer": "tuebingen", "city": "Dettenhausen"},
 }
 
 _LOGGER = logging.getLogger(__name__)
@@ -54,7 +55,25 @@ class Source:
 
         oid = city_to_oid[self._city]
 
-        if self._street is not None:
+        if self._street is None:
+            # test if we have to use city also as street name
+            self._street = self._city
+            r = requests.get(
+                f"https://awido.cubefour.de/WebServices/Awido.Service.svc/secure/getGroupedStreets/{oid}",
+                params={"client": self._customer},
+            )
+            streets = json.loads(r.text)
+
+            # create street to key map from retrieved places
+            street_to_oid = {
+                street["value"].strip(): street["key"] for (street) in streets
+            }
+
+            if self._street in street_to_oid:
+                oid = street_to_oid[self._street]
+
+        else:
+            # street specified
             r = requests.get(
                 f"https://awido.cubefour.de/WebServices/Awido.Service.svc/secure/getGroupedStreets/{oid}",
                 params={"client": self._customer},

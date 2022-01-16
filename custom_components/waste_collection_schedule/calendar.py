@@ -56,7 +56,7 @@ class WasteCollectionCalendar(CalendarEventDevice):
     def _convert(self, collection):
         """Convert an collection into a Home Assistant calendar event."""
         return {
-            "uid": f"self._scraper.calendar_title-{collection.date.isoformat()}-{collection.type}",
+            "uid": f"{self._scraper.calendar_title}-{collection.date.isoformat()}-{collection.type}",
             "summary": collection.type,
             "start": {"date": collection.date.isoformat()},
             "end": {"date": (collection.date + timedelta(days=1)).isoformat()},

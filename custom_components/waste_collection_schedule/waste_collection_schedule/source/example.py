@@ -1,12 +1,11 @@
 import datetime
-from typing import Dict
 
 from waste_collection_schedule import Collection  # type: ignore[attr-defined]
 
 TITLE = "Example Source"
 DESCRIPTION = "Source for example waste collection."
 URL = None
-TEST_CASES: Dict[str, Dict[str, str]] = {}
+TEST_CASES = {"Example": {"days": 10}}
 
 
 class Source:

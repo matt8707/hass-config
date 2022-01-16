@@ -398,7 +398,7 @@ class SamsungTVDevice(MediaPlayerEntity):
     def _update_forced(self):
         """Check if a forced update is required."""
         if self._set_update_forced:
-            self._update_forced_time = datetime.now()
+            self._update_forced_time = datetime.utcnow()
             self._power_on_detected = datetime.min
             self._set_update_forced = False
             return False
@@ -406,7 +406,7 @@ class SamsungTVDevice(MediaPlayerEntity):
         if not self._update_forced_time:
             return False
 
-        call_time = datetime.now()
+        call_time = datetime.utcnow()
         difference = (call_time - self._update_forced_time).total_seconds()
         if difference >= 10:
             self._update_forced_time = None
@@ -423,8 +423,8 @@ class SamsungTVDevice(MediaPlayerEntity):
 
             if power_on_delay > 0:
                 if not self._power_on_detected:
-                    self._power_on_detected = datetime.now()
-                difference = (datetime.now() - self._power_on_detected).total_seconds()
+                    self._power_on_detected = datetime.utcnow()
+                difference = (datetime.utcnow() - self._power_on_detected).total_seconds()
                 if difference < power_on_delay:
                     return False
         else:
@@ -750,7 +750,7 @@ class SamsungTVDevice(MediaPlayerEntity):
 
         if self.state == STATE_ON:  # NB: We are checking properties, not attribute!
             if self._delayed_set_source:
-                difference = (datetime.now() - self._delayed_set_source_time).total_seconds()
+                difference = (datetime.utcnow() - self._delayed_set_source_time).total_seconds()
                 if difference > DELAYED_SOURCE_TIMEOUT:
                     self._delayed_set_source = None
                 else:
@@ -863,8 +863,12 @@ class SamsungTVDevice(MediaPlayerEntity):
             self._logo.set_logo_color(new_logo_option)
             logo_option_changed = True
 
-        if new_media_title == self._attr_media_title and not logo_option_changed:
-            return
+        if not logo_option_changed:
+            logo_option_changed = self._logo.check_requested()
+
+        if not logo_option_changed:
+            if self._attr_media_title and new_media_title == self._attr_media_title:
+                return
 
         media_image_url = await self._logo.async_find_match(new_media_title)
         self._attr_media_image_url = media_image_url
@@ -888,13 +892,17 @@ class SamsungTVDevice(MediaPlayerEntity):
                         return self._st.channel_name
                     if self._st.channel != "":
                         return self._st.channel
+                    return None
 
                 elif self._st.channel_name != "":
                     # the channel name holds the running app ID
                     # regardless of the self._cloud_source value
                     return self._st.channel_name
 
-        return self._get_source()
+        media_title = self._get_source()
+        if media_title and media_title != DEFAULT_APP:
+            return media_title
+        return None
 
     @property
     def media_channel(self):
@@ -1364,7 +1372,7 @@ class SamsungTVDevice(MediaPlayerEntity):
         if self.state != STATE_ON:
             if await self._async_turn_on():
                 self._delayed_set_source = source
-                self._delayed_set_source_time = datetime.now()
+                self._delayed_set_source_time = datetime.utcnow()
             return
 
         if self._source_list and source in self._source_list:
