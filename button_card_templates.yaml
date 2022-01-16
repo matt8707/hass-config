@@ -152,8 +152,8 @@
             text-transform: uppercase;
           }
           #blur, #overlay {
-            top: 77%;
-            height: calc((100% - 77%) + 0.5%);
+            top: calc((100% - var(--media-blur-height)) + 0.5%);
+            height: var(--media-blur-height);
           }
           /* portrait */
           @media screen and (max-width: 1200px) {
@@ -162,8 +162,8 @@
               letter-spacing: 0.05vw;
             }
             #blur, #overlay {
-              top: 75.5%;
-              height: calc((100% - 75.5%) + 0.5%);
+              top: calc((100% - (var(--media-blur-height) + 1.5%)) + 0.5%);
+              height: calc(var(--media-blur-height) + 1.5%);
             }
           }
           /* phone */
@@ -173,8 +173,8 @@
               letter-spacing: 0.12vw;
             }
             #blur, #overlay {
-              top: 74%;
-              height: calc((100% - 74%) + 0.5%);
+              top: calc((100% - (var(--media-blur-height) + 3%)) + 0.5%);
+              height: calc(var(--media-blur-height) + 3%);
             }
           }
           @keyframes card_bounce {
