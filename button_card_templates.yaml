@@ -932,6 +932,8 @@
   #################################################
 
   recently_added:
+    template:
+      - conditional_media
     name: Senast tillagt
     variables:
       i: >

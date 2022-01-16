@@ -312,7 +312,6 @@ views:
                       tap_action:
                         action: none
                       template:
-                        - conditional_media
                         - recently_added
                         - icon_plex
 
