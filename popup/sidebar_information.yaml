@@ -22,20 +22,15 @@ browser_mod:
               padding: 1.5em 2.7em 2.3em 2em;
             }
             ha-card {
-              animation: border 1s forwards;
+              border-right: 1.5px solid rgba(0, 0, 0, 0.2);
               border-radius: 0;
-            }
-            @keyframes border {
-              0%, 100% {
-                border-right: 1px solid rgba(0, 0, 0, 0.3);
-              }
+              transition: none;
             }
             /* phone */
             @media screen and (max-width: 800px) {
               ha-card {
+                border-right: none;
                 border-bottom: 1.5px solid rgba(0, 0, 0, 0.2);
-                padding-right: 0;
-                animation: none;
               }
             }
           $hui-horizontal-stack-card:

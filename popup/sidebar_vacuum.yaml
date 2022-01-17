@@ -17,19 +17,15 @@ browser_mod:
     layout-card$grid-layout:
       $: |
         hui-vertical-stack-card {
-          animation: border 1s forwards;
-        }
-        @keyframes border {
-          0%, 100% {
-              border-right: 1.5px solid rgba(0, 0, 0, 0.2);
-          }
+          border-right: 1.5px solid rgba(0, 0, 0, 0.2);
+          border-radius: 0;
+          transition: none;
         }
         /* phone */
         @media screen and (max-width: 800px) {
           hui-vertical-stack-card {
-              border-bottom: 1.5px solid rgba(0, 0, 0, 0.2);
-              padding-right: 0;
-              animation: none;
+            border-right: none;
+            border-bottom: 1.5px solid rgba(0, 0, 0, 0.2);
           }
         }
       $hui-vertical-stack-card:
