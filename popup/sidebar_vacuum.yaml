@@ -8,6 +8,12 @@ browser_mod:
         width: calc(385px + 510px);
         max-width: 90vw;
       }
+      /* phone */
+      @media screen and (max-width: 800px) {
+        :host .content {
+          max-width: 100vw;
+        }
+      }
     layout-card$grid-layout:
       $: |
         hui-vertical-stack-card {
@@ -38,6 +44,7 @@ browser_mod:
         $hui-horizontal-stack-card$: |
           #root {
             justify-content: space-evenly;
+            max-width: 82vw; /* iphonex */
           }
       $xiaomi-vacuum-map-card:
         $: |
