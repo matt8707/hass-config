@@ -1,7 +1,6 @@
 
 blueprints
 tts
-__pycache__
 .*
 !.HA_VERSION
 
@@ -9,6 +8,8 @@ google_calendars.yaml
 known_devices.yaml
 secrets.yaml
 
+custom_components/*
+www/community/*
 www/Plex_Recently_Added/*
 www/fonts
 
