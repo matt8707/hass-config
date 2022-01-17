@@ -1,1 +1,0 @@
-"""Xiaomi cloud map extractor."""
