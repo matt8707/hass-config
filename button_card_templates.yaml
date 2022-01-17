@@ -151,7 +151,7 @@
           #state::first-letter {
             text-transform: uppercase;
           }
-          #blur, #overlay {
+          #blur, #overlayx {
             top: calc((100% - var(--media-blur-height)) + 0.5%);
             height: var(--media-blur-height);
           }
@@ -161,7 +161,7 @@
               font-size: 2vw;
               letter-spacing: 0.05vw;
             }
-            #blur, #overlay {
+            #blur, #overlayx {
               top: calc((100% - (var(--media-blur-height) + 1.5%)) + 0.5%);
               height: calc(var(--media-blur-height) + 1.5%);
             }
@@ -172,7 +172,7 @@
               font-size: 3.1vw;
               letter-spacing: 0.12vw;
             }
-            #blur, #overlay {
+            #blur, #overlayx {
               top: calc((100% - (var(--media-blur-height) + 3%)) + 0.5%);
               height: calc(var(--media-blur-height) + 3%);
             }
@@ -807,7 +807,7 @@
         [[[
           if (entity && variables.entity_picture && variables.media_on) return '<div></div>';
         ]]]
-      overlay: >
+      overlayx: >
         [[[
           if (entity && variables.entity_picture === undefined && variables.media_on) return '<div></div>';
         ]]]
@@ -876,22 +876,19 @@
         - -webkit-clip-path: inset(0) #fix safari bug
       custom_fields:
         blur:
-          - z-index: 2
+          - z-index: 1
           - left: 0%
           - width: 100%
           - position: absolute
           - background-color: rgba(0, 0, 0, 0.2)
           - backdrop-filter: blur(0.4em)
           - -webkit-backdrop-filter: blur(0.4em)
-        overlay:
-          - z-index: 2
-          - opacity: 1
+        overlayx:
           - left: 0%
           - width: 100%
           - position: absolute
           - background-color: rgba(255, 255, 255, 0.8)
         media_image:
-          - z-index: 1
           - top: 0
           - left: 0
           - width: 100%
@@ -905,7 +902,7 @@
                   : 'none';
               ]]]
         play_pause:
-          - z-index: 3
+          - z-index: 2
           - top: 0
           - right: 0
           - bottom: 0
@@ -923,7 +920,7 @@
                   : 'none';
               ]]]
         icon:
-          - z-index: 3
+          - z-index: 2
           - width: 29%
           - fill: >
               [[[
@@ -1017,7 +1014,7 @@
                   ? 'none'
                   : 'initial';
                 ]]]
-        overlay:
+        overlayx:
           - display: none
       card:
         - color: >

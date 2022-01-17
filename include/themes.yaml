@@ -47,7 +47,7 @@ frontend:
       sidebar-time-line-height: 4vw
       sidebar-font-size: 1.5vw
       sidebar-line-height: 2.1vw
-      media-blur-height: 23.5%
+      media-blur-height: 24.5%
       card-content-padding: 1.8em 2.2em 1.8em 2em
 
     ####################################################
