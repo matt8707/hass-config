@@ -1,545 +1,545 @@
 template:
-  select:
-    - name: vacuum_speed
-      state: >
-        {% set fan_speed = state_attr('vacuum.morty', 'fan_speed') %}
-        {{ 'Standard' if fan_speed == None else fan_speed }}
-      options: >
-        {% set fan_speed_list = state_attr('vacuum.morty', 'fan_speed_list') %}
-        {{ ['Standard'] if fan_speed_list == None else fan_speed_list }}
-      select_option:
-        service: vacuum.set_fan_speed
-        target:
-          entity_id: vacuum.morty
-        data:
-          fan_speed: >
-            {{ option }}
+  - select:
+      - name: vacuum_speed
+        state: >
+          {% set fan_speed = state_attr('vacuum.morty', 'fan_speed') %}
+          {{ 'Standard' if fan_speed == None else fan_speed }}
+        options: >
+          {% set fan_speed_list = state_attr('vacuum.morty', 'fan_speed_list') %}
+          {{ ['Standard'] if fan_speed_list == None else fan_speed_list }}
+        select_option:
+          service: vacuum.set_fan_speed
+          target:
+            entity_id: vacuum.morty
+          data:
+            fan_speed: >
+              {{ option }}
 
-    - name: hdmi_bravia
-      state: >
-        {% set source = state_attr('media_player.sony_bravia_tv', 'source') %}
-        {{ 'HDMI' if source == None else source }}
-      options: >
-        {% set source_list = state_attr('media_player.sony_bravia_tv', 'source_list') %}
-        {{ ['HDMI'] if source_list == None else source_list }}
-      select_option:
-        service: media_player.select_source
-        target:
-          entity_id: media_player.sony_bravia_tv
-        data:
-          source: >
-            {{ option }}
+      - name: hdmi_bravia
+        state: >
+          {% set source = state_attr('media_player.sony_bravia_tv', 'source') %}
+          {{ 'HDMI' if source == None else source }}
+        options: >
+          {% set source_list = state_attr('media_player.sony_bravia_tv', 'source_list') %}
+          {{ ['HDMI'] if source_list == None else source_list }}
+        select_option:
+          service: media_player.select_source
+          target:
+            entity_id: media_player.sony_bravia_tv
+          data:
+            source: >
+              {{ option }}
 
-    - name: hdmi_samsung
-      state: >
-        {% set source = state_attr('media_player.samsung_tv', 'source') %}
-        {{ 'Apple' if source == None else source }}
-      options: >
-        {% set source_list = state_attr('media_player.samsung_tv', 'source_list') %}
-        {{ ['Apple'] if source_list == None else source_list }}
-      select_option:
-        service: media_player.select_source
-        target:
-          entity_id: media_player.samsung_tv
-        data:
-          source: >
-            {{ option }}
+      - name: hdmi_samsung
+        state: >
+          {% set source = state_attr('media_player.samsung_tv', 'source') %}
+          {{ 'Apple' if source == None else source }}
+        options: >
+          {% set source_list = state_attr('media_player.samsung_tv', 'source_list') %}
+          {{ ['Apple'] if source_list == None else source_list }}
+        select_option:
+          service: media_player.select_source
+          target:
+            entity_id: media_player.samsung_tv
+          data:
+            source: >
+              {{ option }}
 
-  binary_sensor:
-    - unique_id: laundry_time_trigger
-      state: >
-        {% set start_time = state_attr('calendar.tvatta', 'start_time') %}
-        {{ as_timestamp(start_time) - as_timestamp(now()) < 10 * 60 if start_time != None }}
+  - binary_sensor:
+      - unique_id: laundry_time_trigger
+        state: >
+          {% set start_time = state_attr('calendar.tvatta', 'start_time') %}
+          {{ as_timestamp(start_time) - as_timestamp(now()) < 10 * 60 if start_time != None }}
 
-    - unique_id: sidebar_update_color
-      state: >
-        {% set installed = states('sensor.hass_version_installed') %}
-        {% set latest = states('sensor.hass_version_latest') 
-        if not installed | regex_search('b') else states('sensor.hass_version_latest_beta') %}
-        {{ (installed != latest and installed != 'unknown' and latest != 'unknown')
-        or (states('sensor.hacs') != 'unknown' and states('sensor.hacs') | int(default=0) > 0) }}
+      - unique_id: sidebar_update_color
+        state: >
+          {% set installed = states('sensor.hass_version_installed') %}
+          {% set latest = states('sensor.hass_version_latest') 
+          if not installed | regex_search('b') else states('sensor.hass_version_latest_beta') %}
+          {{ (installed != latest and installed != 'unknown' and latest != 'unknown')
+          or (states('sensor.hacs') != 'unknown' and states('sensor.hacs') | int(default=0) > 0) }}
 
-    - unique_id: imac_vpn
-      device_class: connectivity
-      icon: >
-        mdi:shield-{{ 'alert' if is_state('switch.computer_imac', 'on') and 
-        states('sensor.imac_ip') == states('sensor.myip') else 'check' }}
-      state: >
-        {{ is_state('switch.computer_imac', 'on') and 
-        states('sensor.imac_ip') != states('sensor.myip') }}
-      attributes:
-        friendly_name: VPN
+      - unique_id: imac_vpn
+        device_class: connectivity
+        icon: >
+          mdi:shield-{{ 'alert' if is_state('switch.computer_imac', 'on') and 
+          states('sensor.imac_ip') == states('sensor.myip') else 'check' }}
+        state: >
+          {{ is_state('switch.computer_imac', 'on') and 
+          states('sensor.imac_ip') != states('sensor.myip') }}
+        attributes:
+          friendly_name: VPN
 
-    - unique_id: udm_internet
-      icon: mdi:wan
-      device_class: connectivity
-      state: >
-        {{ states('sensor.udm_unifios').split('|\n')[4] | default }}
-      attributes:
-        friendly_name: Internet
+      - unique_id: udm_internet
+        icon: mdi:wan
+        device_class: connectivity
+        state: >
+          {{ states('sensor.udm_unifios').split('|\n')[4] | default }}
+        attributes:
+          friendly_name: Internet
 
-    - unique_id: udm_upgradable
-      icon: mdi:update
-      device_class: update
-      state: >
-        {{ states('sensor.udm_unifios').split('|\n')[7] | default }}
-      attributes:
-        friendly_name: Uppdatering
+      - unique_id: udm_upgradable
+        icon: mdi:update
+        device_class: update
+        state: >
+          {{ states('sensor.udm_unifios').split('|\n')[7] | default }}
+        attributes:
+          friendly_name: Uppdatering
 
-  sensor:
-    - unique_id: sidebar
-      state: template
-      attributes:
-        time: >
-          {% set hours = now().strftime('%H') %}
-          {% set minutes = now().strftime('%M') %}
-          <span class="time">
-            {{ hours }}<span class="time-colon">:</span>{{ minutes }}
-          </span>
-        date: |
-          <font color='#6a7377'><b>
-          {%- if strptime(states('sensor.date'), '%Y-%m-%d').day != null %}
-          {%- set days = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'] %}
-          {%- set months = ['Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni', 
-          'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December'] %}
-            {{- days[now().weekday()] }}<br>
-            {{- strptime(states('sensor.date'), '%Y-%m-%d').day }} {{ months[now().month-1] }}
-          {%- endif -%}
-          </b></font>
-        greet: |
-          <b>
-          {%- set time = now().hour %}
-          {%- if time <= 1 -%} God natt {{'\U0001F611'}}
-          {%- elif time <= 3 -%} God natt {{'\U0001F62A'}}
-          {%- elif time <= 5 -%} God natt {{'\U0001F634'}}
-          {%- elif time <= 7 -%} God morgon {{'\U0001F4A9'}}
-          {%- elif time <= 9 -%} God morgon {{'\u2615\uFE0F'}}
-          {%- elif time <= 10 -%} God morgon {{'\U0001F642'}}
-          {%- elif time <= 13 -%} God dag {{'\U0001F60A'}}
-          {%- elif time <= 15 -%} God dag {{'\U0001F60E'}}
-          {%- elif time <= 17 -%} God dag {{'\U0001F44B\U0001F3FB'}}
-          {%- elif time <= 19 -%} God kväll {{'\U0001F44B\U0001F3FB'}}
-          {%- elif time <= 22 -%} God kväll {{'\U0001F60C'}}
-          {%- elif time <= 23 -%} God kväll {{'\U0001F974'}}
-          {%- else %} God kväll {{'\U0001F974'}}
-          {%- endif -%}
-          </b>
-        active: |
-          <b>
-          {%- set lights = [
-            states.light.tv,
-            states.light.golv,
-            states.light.horna,
-            states.light.dator,
-            states.light.vask_hoger,
-            states.light.vask_vanster,
-            states.light.byra,
-            states.light.garderob,
-            states.light.hall_1,
-            states.light.hall_2,
-            states.light.hall_3,
-            states.light.mattias,
-            states.light.sanja,
-            states.light.spot_1,
-            states.light.spot_2,
-            states.switch.deltaco_sh_p01
-          ] %}
+  - sensor:
+      - unique_id: sidebar
+        state: template
+        attributes:
+          time: >
+            {% set hours = now().strftime('%H') %}
+            {% set minutes = now().strftime('%M') %}
+            <span class="time">
+              {{ hours }}<span class="time-colon">:</span>{{ minutes }}
+            </span>
+          date: |
+            <font color='#6a7377'><b>
+            {%- if strptime(states('sensor.date'), '%Y-%m-%d').day != null %}
+            {%- set days = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'] %}
+            {%- set months = ['Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni', 
+            'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December'] %}
+              {{- days[now().weekday()] }}<br>
+              {{- strptime(states('sensor.date'), '%Y-%m-%d').day }} {{ months[now().month-1] }}
+            {%- endif -%}
+            </b></font>
+          greet: |
+            <b>
+            {%- set time = now().hour %}
+            {%- if time <= 1 -%} God natt {{'\U0001F611'}}
+            {%- elif time <= 3 -%} God natt {{'\U0001F62A'}}
+            {%- elif time <= 5 -%} God natt {{'\U0001F634'}}
+            {%- elif time <= 7 -%} God morgon {{'\U0001F4A9'}}
+            {%- elif time <= 9 -%} God morgon {{'\u2615\uFE0F'}}
+            {%- elif time <= 10 -%} God morgon {{'\U0001F642'}}
+            {%- elif time <= 13 -%} God dag {{'\U0001F60A'}}
+            {%- elif time <= 15 -%} God dag {{'\U0001F60E'}}
+            {%- elif time <= 17 -%} God dag {{'\U0001F44B\U0001F3FB'}}
+            {%- elif time <= 19 -%} God kväll {{'\U0001F44B\U0001F3FB'}}
+            {%- elif time <= 22 -%} God kväll {{'\U0001F60C'}}
+            {%- elif time <= 23 -%} God kväll {{'\U0001F974'}}
+            {%- else %} God kväll {{'\U0001F974'}}
+            {%- endif -%}
+            </b>
+          active: |
+            <b>
+            {%- set lights = [
+              states.light.tv,
+              states.light.golv,
+              states.light.horna,
+              states.light.dator,
+              states.light.vask_hoger,
+              states.light.vask_vanster,
+              states.light.byra,
+              states.light.garderob,
+              states.light.hall_1,
+              states.light.hall_2,
+              states.light.hall_3,
+              states.light.mattias,
+              states.light.sanja,
+              states.light.spot_1,
+              states.light.spot_2,
+              states.switch.deltaco_sh_p01
+            ] %}
 
-          {%- set switches = [
-            states.switch.computer_imac,
-            states.switch.playstation_5,
-            states.switch.wemo_monitors,
-            states.fan.studio_wemo,
-            states.media_player.samsung_tv
-          ] %}
+            {%- set switches = [
+              states.switch.computer_imac,
+              states.switch.playstation_5,
+              states.switch.wemo_monitors,
+              states.fan.studio_wemo,
+              states.media_player.samsung_tv
+            ] %}
 
-          {%- set media_players = [
-            states.media_player.sony_bravia_tv
-          ] %}
+            {%- set media_players = [
+              states.media_player.sony_bravia_tv
+            ] %}
 
-          {%- set lights_on = lights | selectattr('state','eq','on') | list %}
-          {%- set lights_name = lights | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
+            {%- set lights_on = lights | selectattr('state','eq','on') | list %}
+            {%- set lights_name = lights | selectattr('state','eq','on') | map(attribute='name') | join(', ') %}
 
-          {%- set switches_on = switches | selectattr('state','eq','on') | list %}
-          {%- set media_players_playing = media_players | selectattr('state','eq','playing') | list %}
-          {%- set append = switches_on + media_players_playing %}
-          {%- set switches_name = append | map(attribute='name') | join(', ') %}
+            {%- set switches_on = switches | selectattr('state','eq','on') | list %}
+            {%- set media_players_playing = media_players | selectattr('state','eq','playing') | list %}
+            {%- set append = switches_on + media_players_playing %}
+            {%- set switches_name = append | map(attribute='name') | join(', ') %}
 
-          {%- if (lights_on | length == 0) and (switches_on | length > 0) -%}
-            {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på
+            {%- if (lights_on | length == 0) and (switches_on | length > 0) -%}
+              {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på
 
-          {%- elif (lights_on | length == 1) and (switches_on | length == 1) -%}
-            {{ lights_name }} och {{switches_name }} är på
+            {%- elif (lights_on | length == 1) and (switches_on | length == 1) -%}
+              {{ lights_name }} och {{switches_name }} är på
 
-          {%- elif (lights_on | length == 1) and (switches_on | length > 1) -%}
-            {{ lights_name }}, {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på
+            {%- elif (lights_on | length == 1) and (switches_on | length > 1) -%}
+              {{ lights_name }}, {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på
 
-          {%- elif (lights_on | length > 1) and (switches_on | length == 1) -%}
-            {{ lights_on | length }} lampor och {{ switches_name }} är på
+            {%- elif (lights_on | length > 1) and (switches_on | length == 1) -%}
+              {{ lights_on | length }} lampor och {{ switches_name }} är på
 
-          {%- elif (lights_on | length > 1) and (switches_on | length > 1) -%}
-            {{ lights_on | length }} lampor, {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på
+            {%- elif (lights_on | length > 1) and (switches_on | length > 1) -%}
+              {{ lights_on | length }} lampor, {{ switches_name | regex_replace(',([^,]*)$',' och\\1') }} är på
 
-          {%- elif (lights_on | length == 1) and (switches_on | length == 0) -%}
-            {{ lights_name }} är på
+            {%- elif (lights_on | length == 1) and (switches_on | length == 0) -%}
+              {{ lights_name }} är på
 
-          {%- elif (lights_on | length > 1) and (switches_on | length == 0) -%}
-            {{ lights_on | length }} lampor är på
+            {%- elif (lights_on | length > 1) and (switches_on | length == 0) -%}
+              {{ lights_on | length }} lampor är på
 
-          {%- else %}
-            <font color='#6a7377'>Allt är avstängt</font>
-          {%- endif -%}
-          </b>
-        mailbox: |
-          {% set mailbox = states('sensor.mailbox') %}
-          {% if mailbox | int(default=0) > 0 %}
-            {{ '\U0001F4EC' }} <font color='#6a7377'><b>Brevlåda ({{ mailbox }})</b></font>
-          {% endif %}
-        vacuum: |
-          {% set entity_id = 'vacuum.morty' %}
-          {%- if is_state(entity_id, 'cleaning') -%}
-            <b>Morty dammsuger</b>
-          {%- elif is_state(entity_id, 'returning') -%}
-            <b>Morty är färdig</b>
-          {%- endif %}
-        weather: |
-          {%- set temperature = states('sensor.dark_sky_temperature') %}
-          {%- set apparent = states('sensor.dark_sky_apparent_temperature') | round %}
-          {%- set precip = states('sensor.dark_sky_precip_probability') | round %}
-          {% if not is_state('sensor.dark_sky_temperature', 'unknown') %}
-            {%- if temperature | float(default=0) <= 0.0 -%}
-              Känns som {{ apparent }}° med {{ precip }}% risk för snö {{'\u2744\uFE0F'}}
-            {%- elif temperature | float(default=0) > 0.0 -%} 
-              Känns som {{ apparent}}° med {{ precip }}% risk för regn {{ '\u2614\uFE0F' if precip > 30 }}
+            {%- else %}
+              <font color='#6a7377'>Allt är avstängt</font>
+            {%- endif -%}
+            </b>
+          mailbox: |
+            {% set mailbox = states('sensor.mailbox') %}
+            {% if mailbox | int(default=0) > 0 %}
+              {{ '\U0001F4EC' }} <font color='#6a7377'><b>Brevlåda ({{ mailbox }})</b></font>
+            {% endif %}
+          vacuum: |
+            {% set entity_id = 'vacuum.morty' %}
+            {%- if is_state(entity_id, 'cleaning') -%}
+              <b>Morty dammsuger</b>
+            {%- elif is_state(entity_id, 'returning') -%}
+              <b>Morty är färdig</b>
             {%- endif %}
-          {%- else %}
-            Kan inte läsa in väderinformation...
-          {%- endif %}
-        transport: |
-          {{ states('sensor.skanetrafiken') }}
-        laundry: |
-          {%- set start_time = state_attr('calendar.tvatta', 'start_time') %}
-          {% if start_time != None %}
-            {%- set time = as_timestamp(start_time) | timestamp_custom('%H:%M') %}
-            {%- set hours = as_timestamp(start_time) | timestamp_custom('%H') | int(default=0) / 24 %}
-            {%- set count = (as_timestamp(start_time) - as_timestamp(now())) / 86400 - hours %}
-            {%- set day = strptime(start_time, '%Y-%m-%d %H:%M:%S').strftime('%A') 
-            | replace('Monday', 'Måndag')
-            | replace('Tuesday', 'Tisdag')
-            | replace('Wednesday', 'Onsdag')
-            | replace('Thursday', 'Torsdag')
-            | replace('Friday', 'Fredag')
-            | replace('Saturday', 'Lördag')
-            | replace('Sunday', 'Söndag') %}
-            {%- if count <= 0.0 -%}
-              {{'\U0001F4A6'}} Tvätt idag {{ time }}
-            {%- elif count <= 1.0 -%}
-              Tvätt imorgon klockan {{ time }}
-            {%- elif count <= 2.0 -%}
-              Tvätt i övermorgon klockan {{ time }}
-            {%- else -%}
-              Tvätt om {{ (count + hours) | round }} dagar på {{ day }} kl {{ time }}
+          weather: |
+            {%- set temperature = states('sensor.dark_sky_temperature') %}
+            {%- set apparent = states('sensor.dark_sky_apparent_temperature') | round %}
+            {%- set precip = states('sensor.dark_sky_precip_probability') | round %}
+            {% if not is_state('sensor.dark_sky_temperature', 'unknown') %}
+              {%- if temperature | float(default=0) <= 0.0 -%}
+                Känns som {{ apparent }}° med {{ precip }}% risk för snö {{'\u2744\uFE0F'}}
+              {%- elif temperature | float(default=0) > 0.0 -%} 
+                Känns som {{ apparent}}° med {{ precip }}% risk för regn {{ '\u2614\uFE0F' if precip > 30 }}
+              {%- endif %}
+            {%- else %}
+              Kan inte läsa in väderinformation...
             {%- endif %}
-          {%- endif %}
-        battery: |
-          {% set entities = states.sensor 
-            | selectattr('entity_id', 'search', 'battery')
-            | rejectattr('entity_id', 'search', 'iphone')
-            | map(attribute = 'entity_id') | list %}
-          {%- for sensor in entities if states(sensor) != 'unknown' and states(sensor) !=
-          'unavailable' and states(sensor) != 'None' and states(sensor) | int(default=0) <= 5 %}
-            {%- if loop.first %} {{-'\u26A0\uFE0F'}} Batteri {% else %}, {% endif -%}
-            {{ state_attr(sensor, 'friendly_name') }} {{ states(sensor) }}%
-          {%- endfor %}
-        mathem: |
-          {%- set start_time = state_attr('calendar.mathem', 'start_time') %}
-          {%- set end_time = state_attr('calendar.mathem', 'end_time') %}
-          {% if start_time != None %}
-            {%- set time = as_timestamp(start_time) | timestamp_custom('%H:%M') %}
-            {%- set time_end = as_timestamp(end_time) | timestamp_custom('%H:%M') %}
-            {%- set hours = as_timestamp(start_time) | timestamp_custom('%H') | int(default=0) / 24 %}
-            {%- set count = (as_timestamp(start_time) - as_timestamp(now())) / 86400 - hours %}
-            {%- set day = strptime(start_time, '%Y-%m-%d %H:%M:%S').strftime('%A') 
-            | replace('Monday', 'Måndag')
-            | replace('Tuesday', 'Tisdag')
-            | replace('Wednesday', 'Onsdag')
-            | replace('Thursday', 'Torsdag')
-            | replace('Friday', 'Fredag')
-            | replace('Saturday', 'Lördag')
-            | replace('Sunday', 'Söndag') %}
-            {%- if count <= 0.0 -%}
-              {{'\U0001F6D2'}} Mathem idag mellan {{ time }}-{{ time_end }}
-            {%- elif count <= 1.0 -%}
-              Mathem imorgon mellan {{ time }}-{{ time_end }}
-            {%- elif count <= 2.0 -%}
-              Mathem i övermorgon mellan {{ time }}-{{ time_end }}
-            {%- else -%}
-              Mathem om {{ (count + hours) | round }} dagar på {{ day }} mellan {{ time }}-{{ time_end }}
+          transport: |
+            {{ states('sensor.skanetrafiken') }}
+          laundry: |
+            {%- set start_time = state_attr('calendar.tvatta', 'start_time') %}
+            {% if start_time != None %}
+              {%- set time = as_timestamp(start_time) | timestamp_custom('%H:%M') %}
+              {%- set hours = as_timestamp(start_time) | timestamp_custom('%H') | int(default=0) / 24 %}
+              {%- set count = (as_timestamp(start_time) - as_timestamp(now())) / 86400 - hours %}
+              {%- set day = strptime(start_time, '%Y-%m-%d %H:%M:%S').strftime('%A') 
+              | replace('Monday', 'Måndag')
+              | replace('Tuesday', 'Tisdag')
+              | replace('Wednesday', 'Onsdag')
+              | replace('Thursday', 'Torsdag')
+              | replace('Friday', 'Fredag')
+              | replace('Saturday', 'Lördag')
+              | replace('Sunday', 'Söndag') %}
+              {%- if count <= 0.0 -%}
+                {{'\U0001F4A6'}} Tvätt idag {{ time }}
+              {%- elif count <= 1.0 -%}
+                Tvätt imorgon klockan {{ time }}
+              {%- elif count <= 2.0 -%}
+                Tvätt i övermorgon klockan {{ time }}
+              {%- else -%}
+                Tvätt om {{ (count + hours) | round }} dagar på {{ day }} kl {{ time }}
+              {%- endif %}
             {%- endif %}
-          {%- endif %}
-        plex: |
-          {% if is_state('binary_sensor.plex_availability', 'off') -%}
-            {{-'\u26A0\uFE0F'}} Plex är nere...
-          {%- endif %}
-        nas: |
-          {% if is_state('binary_sensor.nas_internet_access', 'off') -%}
-            {{-'\u26A0\uFE0F'}} Kontrollera NAS internetåtkomst
-          {%- endif %}
+          battery: |
+            {% set entities = states.sensor 
+              | selectattr('entity_id', 'search', 'battery')
+              | rejectattr('entity_id', 'search', 'iphone')
+              | map(attribute = 'entity_id') | list %}
+            {%- for sensor in entities if states(sensor) != 'unknown' and states(sensor) !=
+            'unavailable' and states(sensor) != 'None' and states(sensor) | int(default=0) <= 5 %}
+              {%- if loop.first %} {{-'\u26A0\uFE0F'}} Batteri {% else %}, {% endif -%}
+              {{ state_attr(sensor, 'friendly_name') }} {{ states(sensor) }}%
+            {%- endfor %}
+          mathem: |
+            {%- set start_time = state_attr('calendar.mathem', 'start_time') %}
+            {%- set end_time = state_attr('calendar.mathem', 'end_time') %}
+            {% if start_time != None %}
+              {%- set time = as_timestamp(start_time) | timestamp_custom('%H:%M') %}
+              {%- set time_end = as_timestamp(end_time) | timestamp_custom('%H:%M') %}
+              {%- set hours = as_timestamp(start_time) | timestamp_custom('%H') | int(default=0) / 24 %}
+              {%- set count = (as_timestamp(start_time) - as_timestamp(now())) / 86400 - hours %}
+              {%- set day = strptime(start_time, '%Y-%m-%d %H:%M:%S').strftime('%A') 
+              | replace('Monday', 'Måndag')
+              | replace('Tuesday', 'Tisdag')
+              | replace('Wednesday', 'Onsdag')
+              | replace('Thursday', 'Torsdag')
+              | replace('Friday', 'Fredag')
+              | replace('Saturday', 'Lördag')
+              | replace('Sunday', 'Söndag') %}
+              {%- if count <= 0.0 -%}
+                {{'\U0001F6D2'}} Mathem idag mellan {{ time }}-{{ time_end }}
+              {%- elif count <= 1.0 -%}
+                Mathem imorgon mellan {{ time }}-{{ time_end }}
+              {%- elif count <= 2.0 -%}
+                Mathem i övermorgon mellan {{ time }}-{{ time_end }}
+              {%- else -%}
+                Mathem om {{ (count + hours) | round }} dagar på {{ day }} mellan {{ time }}-{{ time_end }}
+              {%- endif %}
+            {%- endif %}
+          plex: |
+            {% if is_state('binary_sensor.plex_availability', 'off') -%}
+              {{-'\u26A0\uFE0F'}} Plex är nere...
+            {%- endif %}
+          nas: |
+            {% if is_state('binary_sensor.nas_internet_access', 'off') -%}
+              {{-'\u26A0\uFE0F'}} Kontrollera NAS internetåtkomst
+            {%- endif %}
 
-    - unique_id: updates
-      state: template
-      attributes:
-        esphome: >
-          {% macro f(e) %}
-            {{- device_attr(device_id('switch.' + e), 'sw_version') -}}
-          {% endmacro %}
-          {% set group = [f('gosund_1_switch'), f('gosund_2_switch'), f('gosund_3_switch')] | min %}
-          {% set installed = group.split()[0] %}
-          {% set latest = states('sensor.esphome_version_latest') %}
-          {% set url = 'https://github.com/esphome/esphome/releases/latest' %}
-          {% if installed != latest %}
-            <b><a href="#" onclick="window.open('{{ url }}');">ESPHome</a></b> {{ installed + ' \u279e ' + latest }}
-          {% endif %}
-        playactor: >
-          {% set installed = states('sensor.playactor_version_installed') %}
-          {% set latest = states('sensor.playactor_version_latest') %}
-          {% set url = 'https://github.com/dhleong/playactor/releases/latest' %}
-          {% if installed != latest %}
-            <b><a href="#" onclick="window.open('{{ url }}');">playactor</a></b> {{ installed + ' \u279e ' + latest }}
-          {% endif %}
-        kemperprofiler: >
-          {% set installed = state_attr('sensor.kemper_version', 'profiler_installed') %}
-          {% set latest = state_attr('sensor.kemper_version', 'profiler_latest') %}
-          {% set url = 'https://www.kemper-amps.com/downloads' %}
-          {% if installed != latest %}
-            <b><a href="#" onclick="window.open('{{ url }}');">Kemper Profiler OS</a></b> {{ installed + ' \u279e ' + latest }}
-          {% endif %}
-        rigmanager: >
-          {% set installed = state_attr('sensor.kemper_version', 'rigmanager_installed') %}
-          {% set latest = state_attr('sensor.kemper_version', 'rigmanager_latest') %}
-          {% set url = 'https://www.kemper-amps.com/downloads' %}
-          {% if installed != latest %}
-            <b><a href="#" onclick="window.open('{{ url }}');">Rig Manager</a></b> {{ installed + ' \u279e ' + latest }}
-          {% endif %}
-        unifi: >
-          {% set installed = states('sensor.template_udm_version') %}
-          {% set url = 'https://community.ui.com/releases?q=dream+machine' %}
-          {% if is_state('binary_sensor.template_udm_upgradable', 'on') %}
-            <b><a href="#" onclick="window.open('{{ url }}');">UniFi Dream Machine ({{ installed }})</a></b> uppdatering tillgänglig
-          {% endif %}
-        synology: >
-          {% set installed = device_attr(device_id('sensor.nas_volume_1_status'), 'sw_version').split(' ')[1] %}
-          {% set latest = states('sensor.synology_dsm_latest') %}
-          {% set url = 'https://www.synology.com/en-global/releaseNote/DSM' %}
-          {% if is_state('binary_sensor.nas_update_available', 'on') %}
-            <b><a href="#" onclick="window.open('{{ url }}');">Synology DSM</a></b> {{ installed + ' \u279e ' + latest }}
-          {% endif %}
+      - unique_id: updates
+        state: template
+        attributes:
+          esphome: >
+            {% macro f(e) %}
+              {{- device_attr(device_id('switch.' + e), 'sw_version') -}}
+            {% endmacro %}
+            {% set group = [f('gosund_1_switch'), f('gosund_2_switch'), f('gosund_3_switch')] | min %}
+            {% set installed = group.split()[0] %}
+            {% set latest = states('sensor.esphome_version_latest') %}
+            {% set url = 'https://github.com/esphome/esphome/releases/latest' %}
+            {% if installed != latest %}
+              <b><a href="#" onclick="window.open('{{ url }}');">ESPHome</a></b> {{ installed + ' \u279e ' + latest }}
+            {% endif %}
+          playactor: >
+            {% set installed = states('sensor.playactor_version_installed') %}
+            {% set latest = states('sensor.playactor_version_latest') %}
+            {% set url = 'https://github.com/dhleong/playactor/releases/latest' %}
+            {% if installed != latest %}
+              <b><a href="#" onclick="window.open('{{ url }}');">playactor</a></b> {{ installed + ' \u279e ' + latest }}
+            {% endif %}
+          kemperprofiler: >
+            {% set installed = state_attr('sensor.kemper_version', 'profiler_installed') %}
+            {% set latest = state_attr('sensor.kemper_version', 'profiler_latest') %}
+            {% set url = 'https://www.kemper-amps.com/downloads' %}
+            {% if installed != latest %}
+              <b><a href="#" onclick="window.open('{{ url }}');">Kemper Profiler OS</a></b> {{ installed + ' \u279e ' + latest }}
+            {% endif %}
+          rigmanager: >
+            {% set installed = state_attr('sensor.kemper_version', 'rigmanager_installed') %}
+            {% set latest = state_attr('sensor.kemper_version', 'rigmanager_latest') %}
+            {% set url = 'https://www.kemper-amps.com/downloads' %}
+            {% if installed != latest %}
+              <b><a href="#" onclick="window.open('{{ url }}');">Rig Manager</a></b> {{ installed + ' \u279e ' + latest }}
+            {% endif %}
+          unifi: >
+            {% set installed = states('sensor.template_udm_version') %}
+            {% set url = 'https://community.ui.com/releases?q=dream+machine' %}
+            {% if is_state('binary_sensor.template_udm_upgradable', 'on') %}
+              <b><a href="#" onclick="window.open('{{ url }}');">UniFi Dream Machine ({{ installed }})</a></b> uppdatering tillgänglig
+            {% endif %}
+          synology: >
+            {% set installed = device_attr(device_id('sensor.nas_volume_1_status'), 'sw_version').split(' ')[1] %}
+            {% set latest = states('sensor.synology_dsm_latest') %}
+            {% set url = 'https://www.synology.com/en-global/releaseNote/DSM' %}
+            {% if is_state('binary_sensor.nas_update_available', 'on') %}
+              <b><a href="#" onclick="window.open('{{ url }}');">Synology DSM</a></b> {{ installed + ' \u279e ' + latest }}
+            {% endif %}
 
-    - unique_id: udm_cpu
-      icon: mdi:chip
-      unit_of_measurement: '%'
-      state: >
-        {{ states('sensor.udm_unifios').split('|\n')[0] | default }}
-      attributes:
-        friendly_name: Processor
+      - unique_id: udm_cpu
+        icon: mdi:chip
+        unit_of_measurement: '%'
+        state: >
+          {{ states('sensor.udm_unifios').split('|\n')[0] | default }}
+        attributes:
+          friendly_name: Processor
 
-    - unique_id: udm_cpu_temp
-      icon: mdi:thermometer
-      unit_of_measurement: '°C'
-      state: >
-        {{ states('sensor.udm_unifios').split('|\n')[1] | default }}
-      attributes:
-        friendly_name: Processortemperatur
+      - unique_id: udm_cpu_temp
+        icon: mdi:thermometer
+        unit_of_measurement: '°C'
+        state: >
+          {{ states('sensor.udm_unifios').split('|\n')[1] | default }}
+        attributes:
+          friendly_name: Processortemperatur
 
-    - unique_id: udm_mem
-      icon: mdi:memory
-      unit_of_measurement: '%'
-      state: >
-        {{ states('sensor.udm_unifios').split('|\n')[2] | default }}
-      attributes:
-        friendly_name: Minne
+      - unique_id: udm_mem
+        icon: mdi:memory
+        unit_of_measurement: '%'
+        state: >
+          {{ states('sensor.udm_unifios').split('|\n')[2] | default }}
+        attributes:
+          friendly_name: Minne
 
-    - unique_id: udm_disk
-      icon: mdi:harddisk
-      unit_of_measurement: '%'
-      state: >
-        {{ states('sensor.udm_unifios').split('|\n')[3] | default }}
-      attributes:
-        friendly_name: Lagring
+      - unique_id: udm_disk
+        icon: mdi:harddisk
+        unit_of_measurement: '%'
+        state: >
+          {{ states('sensor.udm_unifios').split('|\n')[3] | default }}
+        attributes:
+          friendly_name: Lagring
 
-    - unique_id: udm_uptime
-      device_class: timestamp
-      state: >
-        {{ states('sensor.udm_unifios').split('|\n')[5] | default }}
-      attributes:
-        friendly_name: Senaste omstart
+      - unique_id: udm_uptime
+        device_class: timestamp
+        state: >
+          {{ states('sensor.udm_unifios').split('|\n')[5] | default }}
+        attributes:
+          friendly_name: Senaste omstart
 
-    - unique_id: udm_version
-      icon: mdi:router-wireless
-      state: >
-        {{ states('sensor.udm_unifios').split('|\n')[6] | default }}
-      attributes:
-        friendly_name: Version
+      - unique_id: udm_version
+        icon: mdi:router-wireless
+        state: >
+          {{ states('sensor.udm_unifios').split('|\n')[6] | default }}
+        attributes:
+          friendly_name: Version
 
-    - unique_id: nas_status
-      icon: custom:synology-nas
-      state: >
-        {% set entity_id = 'sensor.nas_volume_1_status' %}
-        {% if is_state(entity_id, 'normal') %}
-          Bra
-        {% elif is_state(entity_id, 'background') %}
-          Verifierar
-        {% else %}
-          {{ states(entity_id) }}
-        {% endif %}
-      attributes:
-        friendly_name: Systemhälsa
-
-    - unique_id: hass_version
-      icon: mdi:home-assistant
-      state: >
-        {{ 'Senaste' if states('sensor.hass_version_installed') == 
-        states('sensor.hass_version_latest') else states('sensor.hass_version_latest') }}
-      attributes:
-        friendly_name: >
-          Installerad {{ states('sensor.hass_version_installed') }}
-
-    - unique_id: hass_dev_release
-      icon: mdi:dev-to
-      device_class: timestamp
-      state: >
-        {{ (as_timestamp(state_attr('calendar.home_assistant_devs', 'start_time'), default=0) + 60*60*18) | timestamp_local(default) }}
-      attributes:
-        friendly_name: >
-          {% set release = state_attr('calendar.home_assistant_devs','message') %}
-          {% if release == 'Home Assistant Core Beta Release' %}
-            Nästa beta
-          {% elif release == 'Home Assistant Core Release' %}
-            Nästa release
+      - unique_id: nas_status
+        icon: custom:synology-nas
+        state: >
+          {% set entity_id = 'sensor.nas_volume_1_status' %}
+          {% if is_state(entity_id, 'normal') %}
+            Bra
+          {% elif is_state(entity_id, 'background') %}
+            Verifierar
           {% else %}
-            {{ release }}
+            {{ states(entity_id) }}
           {% endif %}
+        attributes:
+          friendly_name: Systemhälsa
 
-    - unique_id: hacs_version
-      state: >
-        {{ device_attr(device_id('sensor.hacs'), 'sw_version') }}
+      - unique_id: hass_version
+        icon: mdi:home-assistant
+        state: >
+          {{ 'Senaste' if states('sensor.hass_version_installed') == 
+          states('sensor.hass_version_latest') else states('sensor.hass_version_latest') }}
+        attributes:
+          friendly_name: >
+            Installerad {{ states('sensor.hass_version_installed') }}
 
-    - unique_id: dockermon_mem
-      icon: mdi:memory
-      state: >
-        {% set entity_id = 'sensor.docker_cpu' %}
-        {{ (state_attr(entity_id, 'memory_stats')['usage'] / 
-        state_attr(entity_id, 'memory_stats')['limit'] * 100) | round(1) | default(0) }}
-      attributes:
-        friendly_name: Minne
+      - unique_id: hass_dev_release
+        icon: mdi:dev-to
+        device_class: timestamp
+        state: >
+          {{ (as_timestamp(state_attr('calendar.home_assistant_devs', 'start_time'), default=0) + 60*60*18) | timestamp_local(default) }}
+        attributes:
+          friendly_name: >
+            {% set release = state_attr('calendar.home_assistant_devs','message') %}
+            {% if release == 'Home Assistant Core Beta Release' %}
+              Nästa beta
+            {% elif release == 'Home Assistant Core Release' %}
+              Nästa release
+            {% else %}
+              {{ release }}
+            {% endif %}
 
-    - unique_id: printer_status
-      icon: mdi:printer-wireless
-      state: >
-        {% macro prt(state, translate) %}
-        {{ translate if states('sensor.hp_deskjet_2600_series') == state }}
-        {% endmacro %}
-        {{ prt('On', 'På') }}
-        {{ prt('Scanning', 'Skannar') }}
-        {{ prt('Copying', 'Kopierar') }}
-        {{ prt('Printing', 'Skriver ut') }}
-        {{ prt('Cancelling Job', 'Avbryter') }}
-        {{ prt('trayEmptyOrOpen', 'Inga papper') }}
-        {{ prt('idle', 'Viloläge') }}
-        {{ prt('Off', 'Av') }}
-      attributes:
-        friendly_name: Skrivare
+      - unique_id: hacs_version
+        state: >
+          {{ device_attr(device_id('sensor.hacs'), 'sw_version') }}
 
-    - unique_id: domain_counter
-      state: >
-        {{ states | count }}
-      attributes:
-        automation: >
-          {{ states.automation | count }}
-        binary_sensor: >
-          {{ states.binary_sensor | count }}
-        device_tracker: >
-          {{ states.device_tracker | count }}
-        light: >
-          {{ states.light | count }}
-        media_player: >
-          {{ states.media_player | count }}
-        sensor: >
-          {{ states.sensor | count }}
-        switch: >
-          {{ states.switch | count }}
-        other: >
-          {{ states.calendar | count +
-          states.camera | count +
-          states.climate | count +
-          states.fan | count +
-          states.input_boolean | count +
-          states.input_number | count +
-          states.input_select | count +
-          states.lock | count +
-          states.person | count +
-          states.remote | count +
-          states.scene | count +
-          states.script | count +
-          states.select | count +
-          states.sun | count +
-          states.timer | count +
-          states.vacuum | count +
-          states.weather | count +
-          states.zone | count }}
+      - unique_id: dockermon_mem
+        icon: mdi:memory
+        state: >
+          {% set entity_id = 'sensor.docker_cpu' %}
+          {{ (state_attr(entity_id, 'memory_stats')['usage'] / 
+          state_attr(entity_id, 'memory_stats')['limit'] * 100) | round(1) | default(0) }}
+        attributes:
+          friendly_name: Minne
 
-    - unique_id: vacuum_filter
-      icon: custom:roborock-filter
-      unit_of_measurement: '%'
-      state: >
-        {{ (states('sensor.morty_filter_left') | int(default=0) / 5400) | int(default=0) }}
-      attributes:
-        friendly_name: Filter
+      - unique_id: printer_status
+        icon: mdi:printer-wireless
+        state: >
+          {% macro prt(state, translate) %}
+          {{ translate if states('sensor.hp_deskjet_2600_series') == state }}
+          {% endmacro %}
+          {{ prt('On', 'På') }}
+          {{ prt('Scanning', 'Skannar') }}
+          {{ prt('Copying', 'Kopierar') }}
+          {{ prt('Printing', 'Skriver ut') }}
+          {{ prt('Cancelling Job', 'Avbryter') }}
+          {{ prt('trayEmptyOrOpen', 'Inga papper') }}
+          {{ prt('idle', 'Viloläge') }}
+          {{ prt('Off', 'Av') }}
+        attributes:
+          friendly_name: Skrivare
 
-    - unique_id: vacuum_mainbrush
-      icon: custom:roborock-mainbrush
-      unit_of_measurement: '%'
-      state: >
-        {{ (states('sensor.morty_main_brush_left') | int(default=0) / 10800) | int(default=0) }}
-      attributes:
-        friendly_name: Huvudborste
+      - unique_id: domain_counter
+        state: >
+          {{ states | count }}
+        attributes:
+          automation: >
+            {{ states.automation | count }}
+          binary_sensor: >
+            {{ states.binary_sensor | count }}
+          device_tracker: >
+            {{ states.device_tracker | count }}
+          light: >
+            {{ states.light | count }}
+          media_player: >
+            {{ states.media_player | count }}
+          sensor: >
+            {{ states.sensor | count }}
+          switch: >
+            {{ states.switch | count }}
+          other: >
+            {{ states.calendar | count +
+            states.camera | count +
+            states.climate | count +
+            states.fan | count +
+            states.input_boolean | count +
+            states.input_number | count +
+            states.input_select | count +
+            states.lock | count +
+            states.person | count +
+            states.remote | count +
+            states.scene | count +
+            states.script | count +
+            states.select | count +
+            states.sun | count +
+            states.timer | count +
+            states.vacuum | count +
+            states.weather | count +
+            states.zone | count }}
 
-    - unique_id: vacuum_sensors
-      icon: custom:roborock-sensor
-      unit_of_measurement: '%'
-      state: >
-        {{ (states('sensor.morty_sensor_dirty_left') | int(default=0) / 1080) | int(default=0) }}
-      attributes:
-        friendly_name: Sensorer
+      - unique_id: vacuum_filter
+        icon: custom:roborock-filter
+        unit_of_measurement: '%'
+        state: >
+          {{ (states('sensor.morty_filter_left') | int(default=0) / 5400) | int(default=0) }}
+        attributes:
+          friendly_name: Filter
 
-    - unique_id: vacuum_sidebrush
-      icon: custom:roborock-sidebrush
-      unit_of_measurement: '%'
-      state: >
-        {{ (states('sensor.morty_side_brush_left') | int(default=0) / 7200) | int(default=0) }}
-      attributes:
-        friendly_name: Sidoborste
+      - unique_id: vacuum_mainbrush
+        icon: custom:roborock-mainbrush
+        unit_of_measurement: '%'
+        state: >
+          {{ (states('sensor.morty_main_brush_left') | int(default=0) / 10800) | int(default=0) }}
+        attributes:
+          friendly_name: Huvudborste
 
-    - unique_id: fullykiosk_storage
-      icon: mdi:sd
-      unit_of_measurement: '%'
-      state: >
-        {% set FreeSpace = states('sensor.galaxy_tab_a_internal_storage_free_space') | float(default=0) %}
-        {% set TotalSpace = states('sensor.galaxy_tab_a_internal_storage_total_space') | float(default=0) %}
-        {% if not (FreeSpace == 0.0 or TotalSpace == 0.0) %}
-          {{ 100 - (FreeSpace / TotalSpace * 100) | int(default=0) }}
-        {% endif %}
-      attributes:
-        friendly_name: Lagring
+      - unique_id: vacuum_sensors
+        icon: custom:roborock-sensor
+        unit_of_measurement: '%'
+        state: >
+          {{ (states('sensor.morty_sensor_dirty_left') | int(default=0) / 1080) | int(default=0) }}
+        attributes:
+          friendly_name: Sensorer
 
-    - unique_id: fullykiosk_memory
-      icon: mdi:memory
-      unit_of_measurement: '%'
-      state: >
-        {% set FreeMemory = states('sensor.galaxy_tab_a_ram_free_memory') | float(default=0) %}
-        {% set TotalMemory = states('sensor.galaxy_tab_a_ram_total_memory') | float(default=0) %}
-        {% if not (FreeMemory == 0.0 or TotalMemory == 0.0) %}
-          {{ 100 - (FreeMemory / TotalMemory * 100) | int(default=0) }}
-        {% endif %}
-      attributes:
-        friendly_name: Minne
+      - unique_id: vacuum_sidebrush
+        icon: custom:roborock-sidebrush
+        unit_of_measurement: '%'
+        state: >
+          {{ (states('sensor.morty_side_brush_left') | int(default=0) / 7200) | int(default=0) }}
+        attributes:
+          friendly_name: Sidoborste
+
+      - unique_id: fullykiosk_storage
+        icon: mdi:sd
+        unit_of_measurement: '%'
+        state: >
+          {% set FreeSpace = states('sensor.galaxy_tab_a_internal_storage_free_space') | float(default=0) %}
+          {% set TotalSpace = states('sensor.galaxy_tab_a_internal_storage_total_space') | float(default=0) %}
+          {% if not (FreeSpace == 0.0 or TotalSpace == 0.0) %}
+            {{ 100 - (FreeSpace / TotalSpace * 100) | int(default=0) }}
+          {% endif %}
+        attributes:
+          friendly_name: Lagring
+
+      - unique_id: fullykiosk_memory
+        icon: mdi:memory
+        unit_of_measurement: '%'
+        state: >
+          {% set FreeMemory = states('sensor.galaxy_tab_a_ram_free_memory') | float(default=0) %}
+          {% set TotalMemory = states('sensor.galaxy_tab_a_ram_total_memory') | float(default=0) %}
+          {% if not (FreeMemory == 0.0 or TotalMemory == 0.0) %}
+            {{ 100 - (FreeMemory / TotalMemory * 100) | int(default=0) }}
+          {% endif %}
+        attributes:
+          friendly_name: Minne
