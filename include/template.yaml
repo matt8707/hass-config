@@ -1,4 +1,11 @@
 template:
+
+    ####################################################
+    #                                                  #
+    #                      SELECT                      #
+    #                                                  #
+    ####################################################
+
   - select:
       - name: vacuum_speed
         state: >
@@ -45,6 +52,12 @@ template:
             source: >
               {{ option }}
 
+    ####################################################
+    #                                                  #
+    #                  BINARY SENSOR                   #
+    #                                                  #
+    ####################################################
+
   - binary_sensor:
       - unique_id: laundry_time_trigger
         state: >
@@ -85,6 +98,12 @@ template:
           {{ states('sensor.udm_unifios').split('|\n')[7] | default }}
         attributes:
           friendly_name: Uppdatering
+
+    ####################################################
+    #                                                  #
+    #                      SENSOR                      #
+    #                                                  #
+    ####################################################
 
   - sensor:
       - unique_id: sidebar
@@ -328,8 +347,8 @@ template:
               <b><a href="#" onclick="window.open('{{ url }}');">UniFi Dream Machine ({{ installed }})</a></b> uppdatering tillgänglig
             {% endif %}
           synology: >
-            {% set installed = device_attr(device_id('sensor.nas_volume_1_status'), 'sw_version').split(' ')[1] %}
-            {% set latest = states('sensor.synology_dsm_latest') %}
+            {% set installed = state_attr('binary_sensor.nas_update_available', 'installed_version') %}
+            {% set latest = state_attr('binary_sensor.nas_update_available', 'latest_available_version') %}
             {% set url = 'https://www.synology.com/en-global/releaseNote/DSM' %}
             {% if is_state('binary_sensor.nas_update_available', 'on') %}
               <b><a href="#" onclick="window.open('{{ url }}');">Synology DSM</a></b> {{ installed + ' \u279e ' + latest }}

@@ -67,15 +67,6 @@ sensor:
       {{ value_json.tag_name }}
     scan_interval: 86400
 
-  - platform: scrape
-    name: synology_dsm_latest
-    resource: https://www.synology.com/en-global/releaseNote/DSM
-    select: >
-      #release_notes_content > div:first-child > h3
-    value_template: >
-      {{ value.split(' ')[1] }}
-    scan_interval: 86400
-
   - platform: command_line
     name: kemper_version
     command: !secret kemper_version
