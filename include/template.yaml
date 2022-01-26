@@ -7,6 +7,53 @@ template:
     ####################################################
 
   - select:
+      - name: conditional_media
+        state: >
+          {% set recently_added = 'Senast tillagt' %}
+          {% set paused_timeout_minutes = 15 %}
+          {% set media_players = [
+            states.media_player.vardagsrum,
+            states.media_player.sovrum,
+            states.media_player.spotify,
+            states.media_player.kok ] %}
+
+          {% macro media(state) %}
+          {% set state = media_players | selectattr('state','eq',state) | list %}
+          {% set last_changed = recently_added if state | length == 0 else state | map(attribute='last_changed') | list | max %}
+            {{ state | selectattr('last_changed','eq', last_changed) | map(attribute='name') | list | join }}
+          {% endmacro %}
+
+          {% set playing = media_players | selectattr('state','eq','playing') | list %}
+          {% set timeout_playing = False if playing | length == 0 else
+            (as_timestamp(now()) - as_timestamp(playing | map(attribute='last_changed') | list | max)) < paused_timeout_minutes * 60 %}
+
+          {% set paused = media_players | selectattr('state','eq','paused') | list %}
+          {% set timeout_paused = False if paused | length == 0 else
+            (as_timestamp(now()) - as_timestamp(paused | map(attribute='last_changed') | list | max)) < paused_timeout_minutes * 60 %}
+
+          {% if playing %}
+            {{ media('playing') if timeout_playing else media('paused') if timeout_paused else media('playing') }}
+          {% elif paused %}
+            {{ media('paused') if timeout_paused else recently_added }}
+          {% else %}
+            {{ recently_added }}
+          {% endif %}
+        options: >
+          {% set recently_added = ['Senast tillagt'] %}
+          {% set media_players = [
+            states.media_player.vardagsrum,
+            states.media_player.sovrum,
+            states.media_player.spotify,
+            states.media_player.kok ] %}
+          {{ recently_added + media_players | map(attribute='name') | list }}
+        select_option:
+          service: select.select_option
+          target:
+            entity_id: select.conditional_media
+          data:
+            option: >
+              {{ option }}
+
       - name: vacuum_speed
         state: >
           {% set fan_speed = state_attr('vacuum.morty', 'fan_speed') %}

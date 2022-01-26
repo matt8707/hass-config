@@ -21,13 +21,3 @@ input_number:
     min: 1
     max: 12
     unit_of_measurement: h
-
-input_select:
-  conditional_media:
-    initial: Senast tillagt
-    options:
-      - Senast tillagt
-      - Vardagsrum
-      - Sovrum
-      - Spotify
-      - Google Nest Mini

@@ -304,8 +304,14 @@ views:
 
                   - type: conditional
                     conditions:
-                      - entity: input_select.conditional_media
-                        state: Senast tillagt
+                      - entity: select.conditional_media
+                        state_not: Vardagsrum
+                      - entity: select.conditional_media
+                        state_not: Sovrum
+                      - entity: select.conditional_media
+                        state_not: Spotify
+                      - entity: select.conditional_media
+                        state_not: Kök
                     card:
                       type: custom:button-card
                       entity: sensor.plex_recently_added
@@ -317,7 +323,7 @@ views:
 
                   - type: conditional
                     conditions:
-                      - entity: input_select.conditional_media
+                      - entity: select.conditional_media
                         state: Vardagsrum
                     card:
                       type: custom:button-card
@@ -328,7 +334,7 @@ views:
 
                   - type: conditional
                     conditions:
-                      - entity: input_select.conditional_media
+                      - entity: select.conditional_media
                         state: Sovrum
                     card:
                       type: custom:button-card
@@ -339,7 +345,7 @@ views:
 
                   - type: conditional
                     conditions:
-                      - entity: input_select.conditional_media
+                      - entity: select.conditional_media
                         state: Spotify
                     card:
                       type: custom:button-card
@@ -350,8 +356,8 @@ views:
 
                   - type: conditional
                     conditions:
-                      - entity: input_select.conditional_media
-                        state: Google Nest Mini
+                      - entity: select.conditional_media
+                        state: Kök
                     card:
                       type: custom:button-card
                       entity: media_player.kok
