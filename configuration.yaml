@@ -69,7 +69,7 @@ climate:
     controller_data: remote.broadlink_remote
     temperature_sensor: sensor.broadlink_rm4_pro_temperature
     humidity_sensor: sensor.broadlink_rm4_pro_humidity
-    power_sensor: binary_sensor.gosund_2_power_state
+    power_sensor: binary_sensor.gosund_ac_power_state
     power_sensor_restore_state: true
 
 influxdb:
