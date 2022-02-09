@@ -11,9 +11,9 @@ browser_mod:
           class: content
         entities:
 
-          - entity: fan.studio_wemo
+          - entity: fan.studio
             secondary_info: last-changed
 
           - type: custom:slider-entity-row
-            entity: input_number.wemo_fan_timer
+            entity: input_number.fan_timer
             hide_state: false

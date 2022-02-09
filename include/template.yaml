@@ -214,8 +214,8 @@ template:
             {%- set switches = [
               states.switch.computer_imac,
               states.switch.playstation_5,
-              states.switch.wemo_monitors,
-              states.fan.studio_wemo,
+              states.switch.gosund_monitors_switch,
+              states.fan.studio,
               states.media_player.samsung_tv
             ] %}
 
@@ -359,7 +359,7 @@ template:
             {% macro f(e) %}
               {{- device_attr(device_id('switch.' + e), 'sw_version') -}}
             {% endmacro %}
-            {% set group = [f('gosund_1_switch'), f('gosund_2_switch'), f('gosund_3_switch')] | min %}
+            {% set group = [f('gosund_monitors_switch'), f('gosund_ac_switch'), f('gosund_fan_switch')] | min %}
             {% set installed = group.split()[0] %}
             {% set latest = states('sensor.esphome_version_latest') %}
             {% set url = 'https://github.com/esphome/esphome/releases/latest' %}
@@ -453,8 +453,8 @@ template:
           {% set entity_id = 'sensor.nas_volume_1_status' %}
           {% if is_state(entity_id, 'normal') %}
             Bra
-          {% elif is_state(entity_id, 'background') %}
-            Verifierar
+          {% elif is_state(entity_id, 'background_scrubbing') %}
+            Dataskrubbning
           {% else %}
             {{ states(entity_id) }}
           {% endif %}

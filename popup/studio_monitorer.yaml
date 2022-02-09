@@ -21,7 +21,7 @@ browser_mod:
           class: content
         entities:
 
-          - entity: switch.wemo_monitors
+          - entity: switch.gosund_monitors_switch
             secondary_info: last-changed
 
           - type: custom:slider-entity-row

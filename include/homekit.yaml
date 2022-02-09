@@ -4,10 +4,10 @@ homekit:
       include_entities:
         - switch.deltaco_sh_p01
         - switch.computer_imac
-        - switch.wemo_monitors
+        - switch.gosund_monitors_switch
         - climate.ac
         - switch.playstation_5
-        - fan.studio_wemo
+        - fan.studio
         - person.matte
         - person.sanja
         - script.home_leave
@@ -20,13 +20,13 @@ homekit:
         name: Balkong
       switch.computer_imac:
         name: Dator
-      switch.wemo_monitors:
+      switch.gosund_monitors_switch:
         name: Monitorer
       climate.ac:
         name: Klimat
       switch.playstation_5:
         name: Playstation
-      fan.studio_wemo:
+      fan.studio:
         name: Fläkt
       person.matte:
         name: Mattias

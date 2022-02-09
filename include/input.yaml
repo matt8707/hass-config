@@ -14,7 +14,7 @@ input_number:
     max: 75
     unit_of_measurement: '%'
 
-  wemo_fan_timer:
+  fan_timer:
     name: Stäng efter
     icon: mdi:timer-outline
     initial: 12

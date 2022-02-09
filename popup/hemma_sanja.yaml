@@ -72,7 +72,7 @@ browser_mod:
         card_mod:
           class: content
         entities:
-          - entity: sensor.template_printer_status
+          - entity: sensor.hp_deskjet_2600_series
 
           - type: custom:bar-card
             width: 55%

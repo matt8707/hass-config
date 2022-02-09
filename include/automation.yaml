@@ -415,7 +415,7 @@ automation:
     initial_state: true
     trigger:
       - platform: state
-        entity_id: switch.wemo_monitors
+        entity_id: switch.gosund_monitors_switch
         from:
           - 'on'
           - 'off'
@@ -432,7 +432,7 @@ automation:
       - choose:
         - conditions:
             - condition: state
-              entity_id: switch.wemo_monitors
+              entity_id: switch.gosund_monitors_switch
               state: 'on'
           sequence:
             - service: shell_command.reference_monitors
@@ -452,7 +452,7 @@ automation:
     action:
       - service: switch.turn_off
         target:
-          entity_id: switch.wemo_monitors
+          entity_id: switch.gosund_monitors_switch
 
     ####################################################
     #                                                  #
@@ -460,17 +460,17 @@ automation:
     #                                                  #
     ####################################################
 
-  - alias: wemo_fan_turn_off
+  - alias: fan_turn_off
     id: '0568618309657'
     initial_state: true
     trigger:
       - platform: state
-        entity_id: switch.wemo_fan
+        entity_id: switch.gosund_fan_switch
         from: 'off'
         to: 'on'
         for:
           hours: >
-            {{ states('input_number.wemo_fan_timer') | int }}
+            {{ states('input_number.fan_timer') | int }}
       - platform: state
         entity_id: switch.computer_imac
         from: 'on'
@@ -480,7 +480,7 @@ automation:
     action:
       - service: switch.turn_off
         target:
-          entity_id: switch.wemo_fan
+          entity_id: switch.gosund_fan_switch
 
     ####################################################
     #                                                  #

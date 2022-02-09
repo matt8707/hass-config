@@ -198,7 +198,7 @@ views:
                 ]]]
 
           - type: custom:button-card
-            entity: switch.wemo_monitors
+            entity: switch.gosund_monitors_switch
             name: Monitorer
             hold_action:
               !include popup/studio_monitorer.yaml
@@ -247,7 +247,7 @@ views:
               circle_input: >
                 [[[
                   if (entity) {
-                    return entity.state == 'cool' ?
+                    return entity.state === 'cool' ?
                       entity.attributes.temperature :
                       entity.attributes.current_temperature;
                   }
@@ -306,10 +306,13 @@ views:
                     conditions:
                       - entity: select.conditional_media
                         state_not: Vardagsrum
+
                       - entity: select.conditional_media
                         state_not: Sovrum
+
                       - entity: select.conditional_media
                         state_not: Spotify
+
                       - entity: select.conditional_media
                         state_not: Kök
                     card:
@@ -418,7 +421,7 @@ views:
               - icon_bathroom
 
           - type: custom:button-card
-            entity: fan.studio_wemo
+            entity: switch.gosund_fan_switch
             name: "Fläkt\u00B2"
             hold_action:
               !include popup/studio_flakt.yaml

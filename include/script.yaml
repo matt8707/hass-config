@@ -52,8 +52,8 @@ script:
             - climate.ac
             - media_player.sony_bravia_tv
             - media_player.samsung_tv
-            - switch.wemo_fan
-            - switch.wemo_monitors
+            - switch.gosund_fan_switch
+            - switch.gosund_monitors_switch
             - switch.computer_imac
             - switch.deltaco_sh_p01
       - delay:

@@ -23,13 +23,9 @@ homeassistant:
     light.group_hall:
       friendly_name: Hallampor
 
-    #esphome
-    sensor.gosund_1_daily_energy:
-      friendly_name: gosund_1_da
-    sensor.gosund_2_daily_energy:
+    #esphome/energy
+    sensor.gosund_ac_daily_energy:
       friendly_name: Electrolux ChillFlex Pro Gold
-    sensor.gosund_3_daily_energy:
-      friendly_name: gosund_3_da
 
     #media_player
     media_player.sony_bravia_tv:
@@ -69,7 +65,7 @@ homeassistant:
       friendly_name: Sensor Badrum
 
     #fan
-    fan.studio_wemo:
+    fan.studio:
       icon: custom:pedestal-fan
 
     # template.yaml
@@ -99,20 +95,6 @@ homeassistant:
       icon: mdi:calendar-clock
 
     #sidebar_information.yaml
-    switch.watchtower:
-      icon: custom:docker-watchtower
-    sensor.databas:
-      icon: mdi:database
-    sensor.home_assistant_log:
-      friendly_name: Loggfil
-      icon: mdi:file-document
-    sensor.uptime:
-      friendly_name: Senast omstart
-      icon: mdi:update
-      device_class: timestamp
-    sensor.docker_cpu:
-      friendly_name: Processor
-      icon: mdi:chip
     switch.galaxy_tab_a_screensaver:
       friendly_name: Skärmsläckare
       icon: mdi:power-sleep
@@ -150,15 +132,12 @@ homeassistant:
       friendly_name: Senaste omstart
       icon: mdi:update
       device_class: timestamp
-    sensor.imac_system_ssd:
-      friendly_name: System SSD
-      icon: custom:imac-ssd
-    sensor.imac_macintosh_hd:
+    sensor.mattias_imac_storage:
       friendly_name: Macintosh HD
-      icon: mdi:harddisk
+      icon: custom:imac-ssd
 
     # studio_monitorer.yaml
-    switch.wemo_monitors:
+    switch.gosund_monitors_switch:
       friendly_name: Monitorer
       icon: custom:studio-monitor
     automation.turn_off_monitors:

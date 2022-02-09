@@ -1,19 +1,19 @@
 fan:
   - platform: template
     fans:
-      studio_wemo:
+      studio:
         friendly_name: "Fläkt\u00B2"
         value_template: >
-          {{ 'off' if is_state('switch.wemo_fan', 'unavailable') 
-          else states('switch.wemo_fan') }}
+          {{ 'off' if is_state('switch.gosund_fan_switch', 'unavailable') 
+          else states('switch.gosund_fan_switch') }}
         turn_on:
           - service: switch.turn_on
             target:
-              entity_id: switch.wemo_fan
+              entity_id: switch.gosund_fan_switch
         turn_off:
           - service: switch.turn_off
             target:
-              entity_id: switch.wemo_fan
+              entity_id: switch.gosund_fan_switch
 
       climate_fan_only:
         speed_count: 3
