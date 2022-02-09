@@ -211,22 +211,6 @@ sensor:
     scan_interval: 86400
 
   - platform: command_line
-    name: imac_system_ssd
-    command: !secret imac_system_ssd
-    unit_of_measurement: '%'
-    value_template: >
-      {{ value[:-1] }}
-    scan_interval: 86400
-
-  - platform: command_line
-    name: imac_macintosh_hd
-    command: !secret imac_macintosh_hd
-    unit_of_measurement: '%'
-    value_template: >
-      {{ value[:-1] }}
-    scan_interval: 86400
-
-  - platform: command_line
     name: imac_cpu
     command: !secret imac_cpu
     unit_of_measurement: '%'
@@ -244,7 +228,9 @@ sensor:
     name: imac_uptime
     command: !secret imac_uptime
     value_template: >
-      {{ value[:-1] | int(default=0) | timestamp_custom('%Y-%m-%dT%H:%M:%S') }}
+      {% set timestamp = value[:-1] | int(default=None) %}
+      {% set year = 86400 * 365 %}
+      {{ timestamp | timestamp_local if (as_timestamp(now()) - timestamp) < year }}
     scan_interval: 86400
 
   - platform: command_line

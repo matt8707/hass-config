@@ -303,8 +303,6 @@ automation:
           entity_id:
             - sensor.imac_cpu
             - sensor.imac_mem
-            - sensor.imac_system_ssd
-            - sensor.imac_macintosh_hd
             - sensor.imac_uptime
             - sensor.imac_ip
             - sensor.monitors_volume

@@ -117,6 +117,7 @@ notify:
     platform: group
     services:
       - service: mobile_app_mattias_iphone_ios
+      - service: mobile_app_mattias_imac
       - service: mobile_app_sanja_iphone
 
 monitor_docker:

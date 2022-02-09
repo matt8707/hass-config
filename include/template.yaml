@@ -586,6 +586,14 @@ template:
         attributes:
           friendly_name: Sidoborste
 
+      - unique_id: imac_macintosh_hd
+        icon: custom:imac-ssd
+        unit_of_measurement: '%'
+        state: >
+          {{ 100 - states('sensor.mattias_imac_storage') | float }}
+        attributes:
+          friendly_name: Macintosh HD
+
       - unique_id: fullykiosk_storage
         icon: mdi:sd
         unit_of_measurement: '%'
