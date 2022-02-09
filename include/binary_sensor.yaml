@@ -16,3 +16,7 @@ binary_sensor:
   - platform: ping
     name: nas_internet_access
     host: 8.8.8.8
+
+  - platform: ping
+    name: rpi_ping
+    host: !secret rpi_ping_host

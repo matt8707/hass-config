@@ -19,3 +19,7 @@ shell_command:
 
   unifi_poweroff: !secret unifi_poweroff
   unifi_reboot: !secret unifi_reboot
+
+  rpi_poweroff: !secret rpi_poweroff
+  rpi_reboot: !secret rpi_reboot
+  rpi_led_off: !secret rpi_led_off
