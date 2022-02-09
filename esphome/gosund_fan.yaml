@@ -1,9 +1,9 @@
 substitutions:
-  name: gosund-3
+  name: gosund-fan
 
 wifi:
   manual_ip:
-    static_ip: !secret static_ip_gosund_3
+    static_ip: !secret static_ip_gosund_fan
 
 packages:
   device_base: !include .config.gosund_sp112.yaml

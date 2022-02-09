@@ -35,50 +35,6 @@ uart:
   rx_pin: RX
   baud_rate: 4800
 
-sensor:
-  - platform: cse7766
-    update_interval: 5s
-    voltage:
-      name: ${name}_voltage
-      accuracy_decimals: 2
-      filters:
-        - multiply: 1.906
-    current:
-      name: ${name}_current
-      accuracy_decimals: 3
-      filters:
-        - calibrate_linear:
-            - 0.0 -> 0.0
-            - 0.19 -> 0.20
-            - 0.21 -> 0.22
-            - 2.96 -> 3.01
-            - 3.07 -> 3.10
-    power:
-      name: ${name}_power
-      id: power
-      accuracy_decimals: 1
-      filters:
-        - multiply: 1.906
-        - calibrate_linear:
-            - 0.0 -> 0.0
-            - 42.4 -> 44.4
-            - 49.7 -> 51.5
-            - 677.0 -> 687.0
-            - 700.0 -> 713.0
-        - lambda: if (x < 5.0) return 0.0; else return x;
-      on_value:
-        then:
-          lambda: |-
-            if (x >= 5.0) id(power_state).publish_state(true);
-            else id(power_state).publish_state(false);
-
-  - platform: total_daily_energy
-    name: ${name}_daily_energy
-    power_id: power
-    filters:
-      - multiply: 0.001
-    unit_of_measurement: kWh
-
 binary_sensor:
   #button press
   - platform: gpio
@@ -88,11 +44,6 @@ binary_sensor:
       inverted: true
     on_press:
       - switch.toggle: relay
-
-  #power publish lambda
-  - platform: template
-    name: ${name}_power_state
-    id: power_state
 
 switch:
   #toggle relay (power output)
