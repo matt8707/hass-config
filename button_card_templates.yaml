@@ -127,7 +127,7 @@
             l_min = 28,
             l_max = 48,
             l_calc = entity.attributes.brightness / 2.54 * (l_max - l_min) / 100 + l_min;
-          var light_color = entity.attributes.color_mode === 'color_temp'
+          var light_color = entity.attributes.color_mode === 'color_temp' || entity.attributes.color_mode === 'brightness'
             ? `hsl(204, 58%, ${l_calc}%);`
             : `hsl(${h}, ${s}%, ${l_calc}%);`;
         }
