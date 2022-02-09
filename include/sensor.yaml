@@ -1,17 +1,4 @@
 sensor:
-  - platform: version
-    name: hass_version_installed
-    source: local
-
-  - platform: version
-    name: hass_version_latest
-    source: container
-
-  - platform: version
-    name: hass_version_latest_beta
-    source: container
-    beta: true
-
   - platform: filesize
     file_paths:
       - /config/home-assistant.log
@@ -34,8 +21,6 @@ sensor:
       - type: processor_use
       - type: last_boot
     scan_interval: 120
-
-  - platform: uptime
 
   - platform: time_date
     display_options:
@@ -94,25 +79,6 @@ sensor:
     value_template: >
       {{ value.split(' ')[1].split('v')[1] }}
 
-  - platform: command_line
-    name: james_webb_space_telescope
-    command: !secret jwst_scrape
-    value_template: >
-      {{ value_json.launchDateTimeString }}
-    json_attributes:
-      - launch_elapsed
-      - from_earth
-      - to_l2_orbit
-      - distance_complete
-      - cruising_speed
-      - hot_side_a
-      - hot_side_b
-      - cold_side_c
-      - cold_side_d
-    command_timeout: 60
-    scan_interval: 1200
-    # https://gist.github.com/matt8707/fbd53ab19bdd8b42385f60c4d388461d
-
   - platform: rest
     name: skanetrafiken
     resource: !secret skanetrafiken
@@ -155,8 +121,6 @@ sensor:
     json_attributes:
       - body
     scan_interval: 21600
-
-  - platform: dnsip
 
   - platform: darksky
     api_key: !secret darksky_api_key

@@ -111,14 +111,6 @@ template:
           {% set start_time = state_attr('calendar.tvatta', 'start_time') %}
           {{ as_timestamp(start_time) - as_timestamp(now()) < 10 * 60 if start_time != None }}
 
-      - unique_id: sidebar_update_color
-        state: >
-          {% set installed = states('sensor.hass_version_installed') %}
-          {% set latest = states('sensor.hass_version_latest') 
-          if not installed | regex_search('b') else states('sensor.hass_version_latest_beta') %}
-          {{ (installed != latest and installed != 'unknown' and latest != 'unknown')
-          or (states('sensor.hacs') != 'unknown' and states('sensor.hacs') | int(default=0) > 0) }}
-
       - unique_id: imac_vpn
         device_class: connectivity
         icon: >
@@ -317,32 +309,6 @@ template:
               {%- if loop.first %} {{-'\u26A0\uFE0F'}} Batteri {% else %}, {% endif -%}
               {{ state_attr(sensor, 'friendly_name') }} {{ states(sensor) }}%
             {%- endfor %}
-          mathem: |
-            {%- set start_time = state_attr('calendar.mathem', 'start_time') %}
-            {%- set end_time = state_attr('calendar.mathem', 'end_time') %}
-            {% if start_time != None %}
-              {%- set time = as_timestamp(start_time) | timestamp_custom('%H:%M') %}
-              {%- set time_end = as_timestamp(end_time) | timestamp_custom('%H:%M') %}
-              {%- set hours = as_timestamp(start_time) | timestamp_custom('%H') | int(default=0) / 24 %}
-              {%- set count = (as_timestamp(start_time) - as_timestamp(now())) / 86400 - hours %}
-              {%- set day = strptime(start_time, '%Y-%m-%d %H:%M:%S').strftime('%A') 
-              | replace('Monday', 'Måndag')
-              | replace('Tuesday', 'Tisdag')
-              | replace('Wednesday', 'Onsdag')
-              | replace('Thursday', 'Torsdag')
-              | replace('Friday', 'Fredag')
-              | replace('Saturday', 'Lördag')
-              | replace('Sunday', 'Söndag') %}
-              {%- if count <= 0.0 -%}
-                {{'\U0001F6D2'}} Mathem idag mellan {{ time }}-{{ time_end }}
-              {%- elif count <= 1.0 -%}
-                Mathem imorgon mellan {{ time }}-{{ time_end }}
-              {%- elif count <= 2.0 -%}
-                Mathem i övermorgon mellan {{ time }}-{{ time_end }}
-              {%- else -%}
-                Mathem om {{ (count + hours) | round }} dagar på {{ day }} mellan {{ time }}-{{ time_end }}
-              {%- endif %}
-            {%- endif %}
           plex: |
             {% if is_state('binary_sensor.plex_availability', 'off') -%}
               {{-'\u26A0\uFE0F'}} Plex är nere...
@@ -489,70 +455,6 @@ template:
       - unique_id: hacs_version
         state: >
           {{ device_attr(device_id('sensor.hacs'), 'sw_version') }}
-
-      - unique_id: dockermon_mem
-        icon: mdi:memory
-        state: >
-          {% set entity_id = 'sensor.docker_cpu' %}
-          {{ (state_attr(entity_id, 'memory_stats')['usage'] / 
-          state_attr(entity_id, 'memory_stats')['limit'] * 100) | round(1) | default(0) }}
-        attributes:
-          friendly_name: Minne
-
-      - unique_id: printer_status
-        icon: mdi:printer-wireless
-        state: >
-          {% macro prt(state, translate) %}
-          {{ translate if states('sensor.hp_deskjet_2600_series') == state }}
-          {% endmacro %}
-          {{ prt('On', 'På') }}
-          {{ prt('Scanning', 'Skannar') }}
-          {{ prt('Copying', 'Kopierar') }}
-          {{ prt('Printing', 'Skriver ut') }}
-          {{ prt('Cancelling Job', 'Avbryter') }}
-          {{ prt('trayEmptyOrOpen', 'Inga papper') }}
-          {{ prt('idle', 'Viloläge') }}
-          {{ prt('Off', 'Av') }}
-        attributes:
-          friendly_name: Skrivare
-
-      - unique_id: domain_counter
-        state: >
-          {{ states | count }}
-        attributes:
-          automation: >
-            {{ states.automation | count }}
-          binary_sensor: >
-            {{ states.binary_sensor | count }}
-          device_tracker: >
-            {{ states.device_tracker | count }}
-          light: >
-            {{ states.light | count }}
-          media_player: >
-            {{ states.media_player | count }}
-          sensor: >
-            {{ states.sensor | count }}
-          switch: >
-            {{ states.switch | count }}
-          other: >
-            {{ states.calendar | count +
-            states.camera | count +
-            states.climate | count +
-            states.fan | count +
-            states.input_boolean | count +
-            states.input_number | count +
-            states.input_select | count +
-            states.lock | count +
-            states.person | count +
-            states.remote | count +
-            states.scene | count +
-            states.script | count +
-            states.select | count +
-            states.sun | count +
-            states.timer | count +
-            states.vacuum | count +
-            states.weather | count +
-            states.zone | count }}
 
       - unique_id: vacuum_filter
         icon: custom:roborock-filter
