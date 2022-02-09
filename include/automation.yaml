@@ -233,7 +233,7 @@ automation:
     action:
       - service: switch.turn_on
         target:
-          entity_id: switch.watchtower
+          entity_id: switch.docker_watchtower
 
   - alias: notify_and_remove_completed_torrent
     id: '7876919385611'

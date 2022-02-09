@@ -119,6 +119,16 @@ notify:
       - service: mobile_app_mattias_iphone_ios
       - service: mobile_app_sanja_iphone
 
+monitor_docker:
+  - name: Docker
+    monitored_conditions: [allinone]
+    scan_interval: 120
+
+  - name: RPi Docker
+    url: !secret monitor_docker_rpi_url
+    monitored_conditions: [allinone]
+    scan_interval: 120
+
 lock:
   - platform: template
     name: Dator

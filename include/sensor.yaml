@@ -166,19 +166,6 @@ sensor:
       - apparent_temperature
       - precip_probability
 
-  - platform: rest
-    name: docker_cpu
-    resource: !secret ha_dockermon_cpu
-    value_template: >
-      {% set cpuDelta = value_json.cpu_stats.cpu_usage.total_usage - value_json.precpu_stats.cpu_usage.total_usage %}
-      {% set systemDelta = value_json.cpu_stats.system_cpu_usage - value_json.precpu_stats.system_cpu_usage %}
-      {{ (cpuDelta / systemDelta * value_json.cpu_stats.cpu_usage.percpu_usage | length * 100) | round(1) }}
-    json_attributes:
-      - cpu_stats
-      - precpu_stats
-      - memory_stats
-    scan_interval: 120
-
   - platform: plex_recently_added
     token: !secret plex_token
     host: !secret plex_host
