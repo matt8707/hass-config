@@ -98,6 +98,12 @@ google:
   client_id: !secret google_client_id
   client_secret: !secret google_client_secret
 
+calendar:
+  - platform: caldav
+    username: !secret caldav_username
+    password: !secret caldav_password
+    url: https://caldav.icloud.com
+
 browser_mod:
   prefix: browser_
 
