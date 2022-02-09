@@ -41,10 +41,8 @@ views:
             "sidebar  .           .       ."
     cards:
 
-      - type: custom:button-card
-        styles: #extra_styles fix
-          card:
-            - display: none
+      - type: custom:button-card #extra_styles fix
+        styles: {card: [display: none]}
 
       #################################################
       #                                               #
@@ -56,6 +54,7 @@ views:
         view_layout:
           grid-area: sidebar
         cards:
+
           - type: custom:button-card
             entity: sensor.template_sidebar
             template: sidebar
