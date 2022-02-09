@@ -68,29 +68,6 @@ views:
               entity: timer.laundry
               template: laundry
 
-          - type: grid
-            cards:
-              - type: button
-                icon: custom:roborock-vacuum
-                tap_action:
-                  !include popup/sidebar_vacuum.yaml
-                hold_action:
-                  action: none
-
-              - type: button
-                icon: mdi:information-outline
-                tap_action:
-                  !include popup/sidebar_information.yaml
-                hold_action:
-                  action: none
-
-              - type: button
-                icon: mdi:arrow-up-bold-circle-outline
-                tap_action:
-                  !include popup/sidebar_update.yaml
-                hold_action:
-                  action: none
-
       #################################################
       #                                               #
       #                  VARDAGSRUM                   #
@@ -502,8 +479,103 @@ views:
       #                                               #
       #################################################
 
-      - type: custom:button-card
+      - type: horizontal-stack
         view_layout:
           grid-area: footer
-        entity: sensor.james_webb_space_telescope
-        template: footer_jwst
+        cards:
+
+          - type: custom:button-card
+            name: >
+              <ha-icon icon="mdi:nas"></ha-icon> NAS
+            tap_action:
+              !include popup/footer/nas.yaml
+            variables:
+              notify: >
+                [[[
+                  let status = states['sensor.nas_volume_1_status'],
+                    security = states['binary_sensor.nas_security_status'];
+                  if (status && security) {
+                    return status.state === 'background_scrubbing' ||
+                    security.state === 'on';
+                  }
+                ]]]
+            template: footer
+
+          - type: custom:button-card
+            name: >
+              <ha-icon icon="mdi:arrow-up-bold-circle-outline"></ha-icon> Uppdatera
+            tap_action:
+              !include popup/footer/updater.yaml
+            variables:
+              notify: >
+                [[[
+                  let hass_installed = hass.config.version,
+                    hass_version_latest = states['sensor.hass_version_latest'],
+                    hass_version_latest_beta = states['sensor.hass_version_latest_beta'],
+                    hacs = states['sensor.hacs'];
+
+                  if (hass_version_latest && hass_version_latest.state.includes('.')
+                    && hass_version_latest_beta && hass_version_latest_beta.state.includes('.')
+                    && hacs && Number.isInteger(parseInt(hacs.state))) {
+
+                    let hass_latest = hass_installed.includes('b')
+                        ? hass_version_latest_beta.state
+                        : hass_version_latest.state,
+                      hass_count = hass_installed !== hass_latest ? 1 : 0;
+                    return hass_count + parseInt(hacs.state);
+                  }
+                  return 0;
+                ]]]
+            template: footer
+
+          - type: custom:button-card
+            name: >
+              <ha-icon icon="mdi:robot-vacuum-variant"></ha-icon> Städa
+            tap_action:
+              !include popup/footer/vacuum.yaml
+            variables:
+              notify: >
+                [[[
+                  let last_clean = states['sensor.morty_last_clean_end'],
+                    week_ms = 6048e5;
+                  if (last_clean) {
+                    return (Date.now() - Date.parse(last_clean.state)) > week_ms;
+                  }
+                ]]]
+            template: footer
+
+          - type: custom:button-card
+            name: >
+              <ha-icon icon="mdi:chart-line-variant"></ha-icon> Historik
+            tap_action:
+              !include popup/footer/history.yaml
+            template: footer
+
+          - type: custom:button-card
+            name: >
+              <ha-icon icon="mdi:tablet"></ha-icon> Platta
+            tap_action:
+              !include popup/footer/tablet.yaml
+            template: footer
+
+          - type: custom:button-card
+            name: >
+              <ha-icon icon="mdi:router-wireless"></ha-icon> Router
+            tap_action:
+              !include popup/footer/router.yaml
+            variables:
+              notify: >
+                [[[
+                  let internet = states['binary_sensor.template_udm_internet'];
+                  if (internet) {
+                    return internet.state === 'off';
+                  }
+                ]]]
+            template: footer
+
+          - type: custom:button-card
+            name: >
+              <ha-icon icon="mdi:raspberry-pi"></ha-icon> RPi
+            tap_action:
+              !include popup/footer/rpi.yaml
+            template: footer

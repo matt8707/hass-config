@@ -48,7 +48,7 @@ frontend:
       sidebar-font-size: 1.5vw
       sidebar-line-height: 2.1vw
       media-blur-height: 24.5%
-      card-content-padding: 1.8em 2.2em 1.8em 2em
+      card-content-padding: 1.4em 2.2em 1.6em 1.5em
 
     ####################################################
     #                                                  #
@@ -119,7 +119,7 @@ frontend:
               hui-horizontal-stack-card$:
                 .: |
                   hui-conditional-card {
-                    margin: 0 !important;
+                    margin: 1px !important;
                   }
 
         #################################################
@@ -158,96 +158,38 @@ frontend:
               display: flex;
               justify-content: center;
             }
-            hui-conditional-card > button-card {
-              width: 65%;
-            }
             /* phone */
             @media screen and (max-width: 800px) {
-              hui-conditional-card {
-                position: absolute;
-                top: 3vw;
-                right: 5.5vw;
-                padding: 19vw 0 0 0;
-              }
               hui-conditional-card > button-card {
-                width: 100%;
                 zoom: 250%;
-                filter: contrast(75%)
+                width: 100%;
+                filter: contrast(85%);
               }
             }
 
         #################################################
         #                                               #
-        #             SIDEBAR BOTTOM ICONS              #
+        #                    FOOTER                     #
         #                                               #
         #################################################
 
-        "grid-layout$hui-vertical-stack-card$hui-grid-card":
-          .: |
-            hui-grid-card {
-              display: flex;
-              flex: auto;
-              align-items: flex-end;
-            }
-
-            /* phone */
-            @media screen and (max-width: 800px) {
-              hui-grid-card {
-                position: absolute;
-                right: 5.5vw;
-              }
-            }
-
+        grid-layout$hui-horizontal-stack-card:
           $: |
             #root {
-              width: 100%;
-              padding: 0 13% 25% 13%;
+              flex-wrap: wrap;
+              justify-content: center;
+              overflow: visible;
+              margin-top: 1vh;
+              padding-bottom: 2.5em;
             }
-
-            /* phone */
-            @media screen and (max-width: 800px) {
+            @media screen and (min-width: 1200px) {
               #root {
-                padding: 0 0 0 55%;
+                flex-wrap: nowrap;
+                justify-content: space-between;
+                margin-top: -1.6vh;
+                padding-bottom: 0;
               }
             }
-
-          #conditional color
-          "$hui-button-card:last-of-type$": |
-            {% if is_state('binary_sensor.template_sidebar_update_color', 'on') %}
-
-              ha-card, ha-state-icon {
-                color: rgb(35, 78 ,106) !important;
-                opacity: 1 !important;
-                animation: update 1.5s ease-out infinite;
-              }
-
-              ha-card:hover {
-                filter: brightness(130%);
-                animation-play-state: paused;
-              }
-
-            {% endif %}
-
-              @keyframes update {
-                0% {
-                  transform: scale(1);
-                }
-                40% {
-                  transform: scale(1.08);
-                }
-                50% {
-                  transform: scale(0.98);
-                }
-                55% {
-                  transform: scale(1.02);
-                }
-                60% {
-                  transform: scale(0.98);
-                }
-                100% {
-                  transform: scale(1);
-                }
-              }
 
       card-mod-card: |
         .header .card-header {
@@ -255,13 +197,15 @@ frontend:
           letter-spacing: 0.005em;
           font-size: 1.6em;
           font-weight: 500;
-          padding: 1em 0 0 1.68em;
+          padding: 1em 0 0 1.38em;
           line-height: initial;
           cursor: default;
         }
 
         .content .card-content {
           padding: var(--card-content-padding);
+          font-family: SF Text, Roboto;
+          letter-spacing: normal;
         }
 
         /* * * * * * * * * * * * * * * * * *
@@ -296,6 +240,8 @@ frontend:
 
         .type-custom-bar-card bar-card-name {
           padding-left: 0.25em;
+          font-family: SF Text, Roboto;
+          letter-spacing: normal;
         }
 
         .type-custom-bar-card bar-card-iconbar {

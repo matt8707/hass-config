@@ -306,71 +306,132 @@
   #                                               #
   #################################################
 
-  footer_jwst:
-    show_state: true
-    show_name: false
-    show_icon: false
-    tap_action:
-      action: none
-    state_display: >
-      [[[
-        if (entity && entity.state !== 'unknown') {
-          let deltadays = (Date.parse(entity.state) - Date.now()) / 864e5,
-            relative = new Intl.RelativeTimeFormat().format(Math.round(deltadays), 'days'),
-            spacer = '<div><span>|</span></div>';
-          return `
-            <div id="footer_container">
-              <div><ha-icon icon="mdi:rocket-launch"></ha-icon> ${relative.replace(/([1-9][0-9]*)/, '<b>$1</b>')}</div>
-              ${spacer}
-              <div><ha-icon icon="mdi:speedometer"></ha-icon> <b>${(parseFloat(entity.attributes.cruising_speed)).toFixed(2)}</b> km/s</div>
-              ${spacer}
-              <div><ha-icon icon="mdi:map-marker-radius"></ha-icon> <b>${parseFloat(entity.attributes.distance_complete).toFixed(2)}</b> %</div>
-              ${spacer}
-              <div><ha-icon icon="mdi:orbit"></ha-icon> <b>${parseInt(entity.attributes.to_l2_orbit)}</b> km till L2</div>
-              ${spacer}
-              <div><ha-icon icon="mdi:shield-sun"></ha-icon> <b>${entity.attributes.hot_side_a}</b> °C</div>
-              ${spacer}
-              <div><ha-icon icon="mdi:hexagon-multiple"></ha-icon> <b>${entity.attributes.cold_side_c}</b> °C</div>
-            </div>
-          `;
-        }
-        return ' ';
-      ]]]
+  footer:
+    variables:
+      notify: >
+        [[[
+          return false;
+        ]]]
+    size: 2vw
+    color: '#9da0a2'
+    custom_fields:
+      notify: >
+        [[[
+          if (Number.isInteger(variables.notify)) {
+            return variables.notify;
+          } else if (variables.notify) {
+            return '!';
+          }
+        ]]]
     styles:
-      state:
-        - place-self: start
+      name:
         - font-family: SF Display, Roboto
-        - font-weight: 400
-        - font-size: 1.26vw
-        - letter-spacing: 0.05vw
-        - white-space: nowrap
-        - opacity: 0.6
-        - width: 100%
+        - font-weight: 500
       card:
-        - background: none
-        - padding: 0
-        - margin-top: -1vw
-        - overflow: hidden
+        - color: rgba(157,160,162, 0.56)
+        - width: fit-content
+        - background: rgba(115, 115, 115, 0.08)
+        - letter-spacing: 0.05vw
+        - opacity: 0.9
+        - transition: none
+        - padding: 0 0 0.05vw 0
+        - overflow: visible
+      custom_fields:
+        notify:
+          - display: >
+              [[[
+                if (Number.isInteger(variables.notify)) {
+                  return variables.notify > 0
+                    ? 'initial'
+                    : 'none';
+                } else if (variables.notify) {
+                  return variables.notify
+                    ? 'initial'
+                    : 'none';
+                }
+              ]]]
+          - position: absolute
+          - top: -0.9vw
+          - right: -1vw
+          - font-family: SF Display, Roboto
+          - font-weight: 700
+          - color: '#d6d6d6'
+          - background: '#8b3333'
+          - border-radius: 50%
+          - text-align: center
+          - text-overflow: unset
+          - z-index: 1
+    hold_action:
+      action: none
+    tap_action:
+      load: none
     extra_styles: |
+      :host {
+        --name-font-size: 1.3vw;
+        --name-icon-size: 1.6vw;
+        --notify-font-size: 0.9vw;
+        --notify-box-size: 1.8vw;
+        --name-padding-v: 0.7vw;
+        --name-padding-h: 1.1vw;
+        --card-border-radius: 0.6vw;
+      }
+      #name {
+        font-size: var(--name-font-size);
+        padding: var(--name-padding-v) var(--name-padding-h);
+        letter-spacing: 0.05vw;
+      }
       ha-icon {
+        width: var(--name-icon-size);
         vertical-align: 5%;
-        opacity: 0.4;
-        width: 1.2vw;
+        padding-right: 0.1vw;
+        filter: brightness(50%);
       }
-      #footer_container {
-        display: flex;
-        justify-content: space-between;
+      #card {
+        border-radius: var(--card-border-radius);
       }
-      span {
-        color: #2f3436;
+      #notify {
+        font-size: var(--notify-font-size);
+        width: var(--notify-box-size);
+        height: var(--notify-box-size);
+        line-height: var(--notify-box-size);
       }
-      .ellipsis {
-        color: #6a7377;
+      /* portrait */
+      @media screen and (max-width: 1200px) {
+        #name {
+          font-size: calc(var(--name-font-size) * 1.6);
+          padding: calc(var(--name-padding-v) * 1.6) calc(var(--name-padding-h) * 1.6);
+        }
+        ha-icon {
+          width: calc(var(--name-icon-size) * 1.6);
+        }
+        #card {
+          border-radius: calc(var(--card-border-radius) * 1.6);
+        }
+        #notify {
+          font-size: calc(var(--notify-font-size) * 1.6);
+          width: calc(var(--notify-box-size) * 1.6);
+          height: calc(var(--notify-box-size) * 1.6);
+          line-height: calc(var(--notify-box-size) * 1.6);
+        }
       }
       /* phone */
       @media screen and (max-width: 800px) {
-        #state {
-          display: none;
+        #name {
+          font-size: calc(var(--name-font-size) * 2.5);
+          padding: calc(var(--name-padding-v) * 2.5) calc(var(--name-padding-h) * 2.5);
+          letter-spacing: 0.12vw;
+        }
+        ha-icon {
+          width: calc(var(--name-icon-size) * 2.5);
+        }
+        #card {
+          border-radius: calc(var(--card-border-radius) * 2.5);
+        }
+        #notify {
+          font-size: calc(var(--notify-font-size) * 2.5);
+          width: calc(var(--notify-box-size) * 2.5);
+          height: calc(var(--notify-box-size) * 2.5);
+          line-height: calc(var(--notify-box-size) * 2.5);
         }
       }
 
