@@ -1,0 +1,358 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Information
+  style:
+    .: |
+      @media screen and (min-width: 1200px) {
+        :host .content {
+          width: calc(385px + 385px + 385px);
+          max-width: 90vw;
+        }
+      }
+    layout-card:
+      $grid-layout:
+        $:
+          hui-entities-card:
+            $: |
+              .card-content {
+                padding: var(--card-content-padding);
+                padding-bottom: 1.2em;
+              }
+              ha-card {
+                border-right: 1.5px solid rgba(0, 0, 0, 0.2);
+                border-radius: 0;
+                transition: none;
+                font-family: SF Text, Roboto;
+                letter-spacing: normal;
+              }
+              /* portrait */
+              @media screen and (max-width: 1200px) {
+                ha-card {
+                  border-right: none;
+                  border-bottom: 1.5px solid rgba(0, 0, 0, 0.2);
+                }
+              }
+            $hui-horizontal-stack-card:
+              $: |
+                #root {
+                  justify-content: space-evenly;
+                  margin-top: 1.7em;
+                  max-width: 82vw; /* iphonex */
+                }
+  card:
+    type: custom:layout-card
+    layout_type: custom:grid-layout
+    layout:
+      grid-template-columns: 385px 385px 385px
+      grid-template-rows: 1fr
+      grid-template-areas: |
+        "hass tablet nas"
+      mediaquery:
+        #portrait
+        "(max-width: 1200px)":
+          grid-template-columns: 1fr
+          grid-template-rows: repeat(3, 1fr)
+          grid-template-areas: |
+            "hass"
+            "tablet"
+            "nas"
+    cards:
+
+      #################################################
+      #                                               #
+      #                HOME ASSISTANT                 #
+      #                                               #
+      #################################################
+
+      - type: entities
+        view_layout:
+          grid-area: hass
+        title: Home Assistant
+        show_header_toggle: false
+        card_mod:
+          class: header
+        entities:
+          - entity: sensor.template_hass_version
+
+          - entity: switch.docker_watchtower
+            name: Watchtower
+            icon: custom:docker-watchtower
+
+          - entity: sensor.template_hass_dev_release
+
+          - entity: sensor.databas
+            icon: mdi:database
+
+          - entity: sensor.home_assistant_log
+            name: Loggfil
+            icon: mdi:file-document
+
+          - type: attribute
+            entity: sensor.docker_home_assistant
+            attribute: uptime
+            format: relative
+            name: Senast omstart
+            icon: mdi:update
+
+          - type: custom:bar-card
+            width: 55%
+            height: 2em
+            decimal: 0
+            unit_of_measurement: '%'
+            positions: &bar_card_positions
+              icon: outside
+              indicator: 'off'
+              name: outside
+            severity: &bar_card_severity
+              - color: '#303435'
+                from: 0
+                to: 89
+              - color: '#6d2525'
+                from: 90
+                to: 999
+            entity_row: true
+            entities:
+
+              - entity: sensor.docker_home_assistant
+                attribute: cpu_percentage
+                name: Processor
+                icon: mdi:chip
+
+              - entity: sensor.docker_home_assistant
+                attribute: memory_percentage
+                name: Minne
+                icon: mdi:memory
+
+          - type: custom:hui-horizontal-stack-card
+            cards:  
+              - type: custom:button-card
+                name: Serveromstart
+                icon: mdi:reload
+                tap_action:
+                  services: |
+                    [[[
+                      return `[[[
+                        hass.callService('browser_mod', 'toast', {
+                          message: 'Startar om Home Assistant...'
+                        });
+                        hass.callService('homeassistant', 'restart');
+                      ]]]`
+                    ]]]
+                template: icon_name
+
+              - type: custom:button-card
+                name: Container
+                icon: mdi:reload
+                tap_action:
+                  action: call-service
+                  service: script.turn_on
+                  service_data:
+                    entity_id: script.homeassistant_restart
+                template: icon_name
+
+      #################################################
+      #                                               #
+      #                    DOCKER                     #
+      #                                               #
+      #################################################
+
+      - type: entities
+        view_layout:
+          grid-area: tablet
+        title: Docker
+        state_color: true
+        show_header_toggle: false
+        card_mod:
+          class: header
+        entities:
+
+          - entity: sensor.docker_containers_total
+            name: Containrar Totalt
+
+          - entity: sensor.docker_containers_running
+            name: Containrar Körs
+
+          - entity: sensor.docker_containers_paused
+            name: Containrar Pausade
+
+          - entity: sensor.docker_containers_stopped
+            name: Containrar Stoppade
+
+          - type: custom:bar-card
+            width: 55%
+            height: 2em
+            decimal: 0
+            unit_of_measurement: '%'
+            positions: *bar_card_positions
+            severity: *bar_card_severity
+            entity_row: true
+            entities:
+
+              - entity: sensor.docker_cpu
+                name: Processor
+
+              - entity: sensor.docker_memory_percent
+                name: Minne
+
+          - entity: switch.docker_transmission_seed
+
+        footer:
+          type: custom:apexcharts-card
+          layout: minimal
+          graph_span: 1h
+          locale: se
+          show:
+            loading: false
+          apex_config:
+            chart:
+              fontFamily: Roboto
+              height: 135px
+              offsetY: -20px
+            tooltip:
+              style:
+                fontSize: 14px
+              x:
+                show: true
+                format: dddd HH:mm
+            xaxis:
+              crosshairs:
+                show: false
+            legend:
+              fontSize: 14px
+              fontWeight: 400
+              itemMargin:
+                horizontal: 25
+              formatter: |
+                EVAL:(seriesName, opts) => {
+                  var arr = opts.w.globals.series[opts.seriesIndex],
+                    value = arr[arr.length - 1],
+                    convert = (value / 1024).toFixed(2);
+                  if (value == null) {
+                    return seriesName;
+                  } else {
+                    return value < 1024 ? `${Math.round(value)} kB/s` : `${convert} MB/s`;
+                  }
+                }
+              markers:
+                width: 26
+                height: 23
+                customHTML:
+                  - 'EVAL:() => {return `<ha-icon icon="mdi:arrow-down-bold" style="--mdc-icon-size: 23px;"></ha-icon>`}'
+                  - 'EVAL:() => {return `<ha-icon icon="mdi:arrow-up-bold" style="--mdc-icon-size: 23px;"></ha-icon>`}'
+                fillColors:
+                  - none
+                  - none
+            fill:
+              type: gradient
+              gradient:
+                type: vertical
+                opacityFrom: 0.8
+                opacityTo: 0
+                stops:
+                  - 0
+                  - 99
+                  - 100
+            stroke:
+              width: 3
+          all_series_config:
+            type: area
+            fill_raw: last
+          series:
+            - entity: sensor.nas_network_down
+              name: Ned
+              color: green
+            - entity: sensor.nas_network_up
+              name: Upp
+              color: '#385581'
+
+      #################################################
+      #                                               #
+      #                      NAS                      #
+      #                                               #
+      #################################################
+
+      - type: entities
+        view_layout:
+          grid-area: nas
+        title: Synology DS918+
+        show_header_toggle: false
+        card_mod:
+          class: header
+          style: |
+            ha-card {
+              border: none !important;
+            }
+        entities:
+          - entity: sensor.template_nas_status
+
+          - entity: binary_sensor.nas_security_status
+            name: Säkerhetsstatus
+
+          - entity: sensor.nas_volume_1_average_disk_temp
+
+          - entity: sensor.last_boot
+            name: Senast omstart
+
+          - entity: binary_sensor.nas_update_available
+            name: Uppdatering
+
+          - type: custom:bar-card
+            width: 55%
+            height: 2em
+            decimal: 0
+            unit_of_measurement: '%'
+            positions: *bar_card_positions
+            severity: *bar_card_severity
+            entity_row: true
+            entities:
+
+              - entity: sensor.processor_use_percent
+                name: Processor
+                tap_action:
+                  action: call-service
+                  service: homeassistant.update_entity
+                  service_data:
+                    entity_id: sensor.processor_use_percent
+
+              - entity: sensor.memory_use_percent
+                name: Minne - 4GB
+                tap_action:
+                  action: call-service
+                  service: homeassistant.update_entity
+                  service_data:
+                    entity_id: sensor.memory_use_percent
+
+              - entity: sensor.disk_use_percent
+                name: Lagring - 10.5TB
+                tap_action:
+                  action: call-service
+                  service: homeassistant.update_entity
+                  service_data:
+                    entity_id: sensor.disk_use_percent
+
+          - type: custom:hui-horizontal-stack-card
+            cards:
+              - type: custom:button-card
+                name: Starta om
+                icon: mdi:restart-alert
+                tap_action:
+                  action: call-service
+                  service: button.press
+                  service_data:
+                    entity_id: button.nas_reboot
+                confirmation:
+                  text: Är du säker på att du vill starta om NAS?
+                template: icon_name
+
+              - type: custom:button-card
+                name: Stäng av...
+                icon: mdi:alert
+                tap_action:
+                  action: call-service
+                  service: button.press
+                  service_data:
+                    entity_id: button.nas_shutdown
+                confirmation:
+                  text: Är du säker på att du vill stänga av NAS?
+                template: icon_name

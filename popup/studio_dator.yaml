@@ -39,17 +39,17 @@ browser_mod:
                   height: 2em
                   decimal: 0
                   unit_of_measurement: '%'
-                  positions: &pos
+                  positions:
                     icon: outside
                     indicator: 'off'
                     name: outside
-                  severity: &sev
+                  severity:
                     - color: '#303435'
                       from: 0
                       to: 89
                     - color: '#6d2525'
                       from: 90
-                      to: 100
+                      to: 999
                   entity_row: true
                   entities:
 
@@ -67,6 +67,13 @@ browser_mod:
                         service_data:
                           entity_id: sensor.imac_mem
 
+                    - entity: sensor.template_imac_macintosh_hd
+                      tap_action:
+                        action: call-service
+                        service: homeassistant.update_entity
+                        service_data:
+                          entity_id: sensor.template_imac_macintosh_hd
+
                 - entity: automation.macos_notification_motion_hall
                 - entity: sensor.imac_uptime
 
@@ -83,30 +90,6 @@ browser_mod:
                       }
 
                 - entity: input_boolean.computer_lock
-
-                - type: custom:bar-card
-                  width: 55%
-                  height: 2em
-                  decimal: 0
-                  unit_of_measurement: '%'
-                  positions: *pos
-                  severity: *sev
-                  entity_row: true
-                  entities:
-
-                    - entity: sensor.imac_system_ssd
-                      tap_action:
-                        action: call-service
-                        service: homeassistant.update_entity
-                        service_data:
-                          entity_id: sensor.imac_system_ssd
-
-                    - entity: sensor.imac_macintosh_hd
-                      tap_action:
-                        action: call-service
-                        service: homeassistant.update_entity
-                        service_data:
-                          entity_id: sensor.imac_macintosh_hd
 
             - type: horizontal-stack
               cards:

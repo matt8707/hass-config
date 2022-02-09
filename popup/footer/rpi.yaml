@@ -1,0 +1,124 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Raspberry Pi 3B
+  style:
+    hui-vertical-stack-card:
+      $: |
+        hui-horizontal-stack-card {
+          padding: 0em 2em 2.3em 2em;
+        }
+      $hui-horizontal-stack-card$: |
+        #root {
+          justify-content: space-evenly;
+        }
+  card:
+    type: vertical-stack
+    cards:
+      - type: entities
+        state_color: true
+        card_mod:
+          class: content
+        entities:
+
+          - entity: binary_sensor.rpi_ping
+            secondary_info: last-changed
+            name: Anslutning
+            icon: mdi:raspberry-pi
+
+          - type: custom:bar-card
+            width: 55%
+            height: 2em
+            decimal: 0
+            unit_of_measurement: '%'
+            positions: &positions
+              icon: outside
+              indicator: 'off'
+              name: outside
+            severity: &severity
+              - color: '#303435'
+                from: 0
+                to: 89
+              - color: '#6d2525'
+                from: 90
+                to: 999
+            entity_row: true
+            entities:
+
+              - entity: sensor.rpi_cpu
+                tap_action:
+                  action: call-service
+                  service: homeassistant.update_entity
+                  service_data:
+                    entity_id: sensor.rpi_cpu
+
+              - entity: sensor.rpi_mem
+                tap_action:
+                  action: call-service
+                  service: homeassistant.update_entity
+                  service_data:
+                    entity_id: sensor.rpi_mem
+
+              - entity: sensor.rpi_sd
+                tap_action:
+                  action: call-service
+                  service: homeassistant.update_entity
+                  service_data:
+                    entity_id: sensor.rpi_sd
+
+          - entity: script.rpi_led
+            icon: mdi:led-variant-on
+
+          - entity: sensor.rpi_uptime
+            tap_action:
+              action: call-service
+              service: homeassistant.update_entity
+              service_data:
+                entity_id: sensor.rpi_uptime
+
+
+
+
+          - type: custom:bar-card
+            width: 55%
+            height: 2em
+            decimal: 0
+            unit_of_measurement: '%'
+            positions: *positions
+            severity: *severity
+            entity_row: true
+            entities:
+
+              - entity: sensor.rpi_docker_cpu
+                name: Docker CPU
+
+              - entity: sensor.rpi_docker_memory_percent
+                name: Docker RAM
+
+          - entity: sensor.rpi_docker_containers_total
+            name: Antal containrar
+
+          - entity: switch.rpi_docker_mi_scale
+          - entity: switch.rpi_docker_playactor
+          - entity: switch.rpi_docker_switchbot_mqtt
+
+      - type: horizontal-stack
+        cards:
+
+          - type: custom:button-card
+            name: Starta om
+            icon: mdi:restart
+            tap_action:
+              action: call-service
+              service: shell_command.rpi_reboot
+            template: icon_name
+
+          - type: custom:button-card
+            name: Stäng av...
+            icon: mdi:alert
+            tap_action:
+              action: call-service
+              service: shell_command.rpi_poweroff
+            confirmation:
+              text: Är du säker på att du vill stänga av RPi?
+            template: icon_name

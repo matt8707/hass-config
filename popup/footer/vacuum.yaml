@@ -5,7 +5,7 @@ browser_mod:
   style:
     .: |
       :host .content {
-        width: calc(385px + 510px);
+        width: calc(385px + 495px);
         max-width: 90vw;
       }
       /* phone */
@@ -48,6 +48,8 @@ browser_mod:
             padding: var(--card-content-padding);
             padding-top: 0;
             padding-bottom: 0;
+            font-family: SF Text, Roboto;
+            letter-spacing: normal;
           }
           div.tiles-wrapper, div.vacuum-controls, #map-zoomer-overlay {
             display: none;
@@ -76,7 +78,7 @@ browser_mod:
     type: custom:layout-card
     layout_type: custom:grid-layout
     layout:
-      grid-template-columns: 385px 510px
+      grid-template-columns: 385px 495px
       grid-template-rows: 1fr
       grid-template-areas: |
         "info map"
@@ -101,7 +103,7 @@ browser_mod:
           grid-area: info
         cards:
         - type: entities
-          title: Inställningar
+          title: Översikt
           card_mod:
             class: header
           entities:
@@ -122,7 +124,7 @@ browser_mod:
             severity:
               - color: '#303435'
                 from: 11
-                to: 100
+                to: 999
               - color: '#6d2525'
                 from: 0
                 to: 10
@@ -154,13 +156,19 @@ browser_mod:
                 action: call-service
                 service: >
                   [[[
-                    return entity.state === 'docked' || entity.state === 'paused'
-                      ? 'vacuum.start'
-                      : 'vacuum.pause';
+                    return `[[[
+                      return entity.state === 'docked' || entity.state === 'paused'
+                        ? 'vacuum.start'
+                        : 'vacuum.pause';
+                    ]]]`
                   ]]]
                 service_data:
                   entity_id: >
-                    [[[ return entity.entity_id; ]]]
+                    [[[
+                      return `[[[
+                        return entity.entity_id;
+                      ]]]`
+                    ]]]
               template: icon_only
 
             - type: custom:button-card
@@ -171,7 +179,11 @@ browser_mod:
                 service: vacuum.return_to_base
                 service_data:
                   entity_id: >
-                    [[[ return entity.entity_id; ]]]
+                    [[[
+                      return `[[[
+                        return entity.entity_id;
+                      ]]]`
+                    ]]]
               template: icon_only
 
             - type: custom:button-card

@@ -1,0 +1,75 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: UniFi Dream Machine
+  style:
+    hui-vertical-stack-card:
+      $: |
+        hui-horizontal-stack-card {
+          padding: 0em 2em 2.3em 2em;
+        }
+      $hui-horizontal-stack-card$: |
+        #root {
+          justify-content: space-evenly;
+        }
+  card:
+    type: vertical-stack
+    cards:
+      - type: entities
+        state_color: true
+        card_mod:
+          class: content
+        entities:
+
+          - entity: binary_sensor.template_udm_internet
+            secondary_info: last-changed
+
+          - entity: sensor.template_udm_cpu_temp
+            name: CPU Temperatur
+
+          - type: custom:bar-card
+            width: 55%
+            height: 2em
+            decimal: 0
+            unit_of_measurement: '%'
+            positions:
+              icon: outside
+              indicator: 'off'
+              name: outside
+            severity:
+              - color: '#303435'
+                from: 0
+                to: 89
+              - color: '#6d2525'
+                from: 90
+                to: 999
+            entity_row: true
+            entities:
+              - entity: sensor.template_udm_cpu
+              - entity: sensor.template_udm_mem
+              - entity: sensor.template_udm_disk
+
+          - entity: sensor.template_udm_uptime
+          - entity: binary_sensor.template_udm_upgradable
+
+      - type: horizontal-stack
+        cards:
+          - type: custom:button-card
+            name: Starta om
+            icon: mdi:restart-alert
+            tap_action:
+              action: call-service
+              service: shell_command.unifi_reboot
+            confirmation:
+              text: Är du säker på att du vill starta om routern?
+            template: icon_name
+
+          - type: custom:button-card
+            name: Stäng av...
+            icon: mdi:alert
+            tap_action:
+              action: call-service
+              service: shell_command.unifi_poweroff
+            confirmation:
+              text: Är du säker på att du vill stänga av routern?
+            template: icon_name

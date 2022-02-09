@@ -4,28 +4,22 @@ browser_mod:
   title: Matte
   style:
     hui-vertical-stack-card:
-      $hui-history-graph-card$ : |
-        .content {
-          padding: 0.2em 1.7em 1.2em 1.7em !important;
-        }
       $: |
         button-card {
           align-self: center;
-          padding: 0.2em 0 2.3em 0;
+          padding: 0.2em 0 2em 0;
         }
       $hui-map-card:
         $: |
-          mwc-icon-button {
+          ha-icon-button {
             color: var(--primary-color);
+            zoom: 112%;
+            margin-top: 0.5em;
           }
           ha-card {
+            border-top: 2px solid #1a1a1a;
             border-radius: 0;
-            animation: border 1s forwards;
-          }
-          @keyframes border {
-            0%, 100% {
-              border-top: 2px solid #1a1a1a;
-            }
+            transition: none;
           }
         $ha-map$: |
           #map {
@@ -35,8 +29,10 @@ browser_mod:
             display: none;
           }
           .leaflet-bar a {
-            background-color: rgba(47, 51, 51, 0.9) !important;
+            background-color: rgba(115, 123, 124, 0.2) !important;
             color: #9da0a2 !important;
+            backdrop-filter: blur(0.25em);
+            zoom: 120%;
           }
           a.leaflet-control-zoom-in {
             border-bottom: 1px solid #181818 !important;
