@@ -496,6 +496,14 @@ template:
         attributes:
           friendly_name: Macintosh HD
 
+      - unique_id: fullykiosk_last_app_start
+        icon: mdi:update
+        device_class: timestamp
+        state: >
+          {{ as_timestamp(states('sensor.galaxy_tab_a_last_app_start'), default=0) | timestamp_local(default=0) }}
+        attributes:
+          friendly_name: Senast omstart
+
       - unique_id: fullykiosk_storage
         icon: mdi:sd
         unit_of_measurement: '%'
