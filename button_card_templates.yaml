@@ -228,7 +228,9 @@
         if (entity) {
           let attr = [];
           for (let [k, value] of Object.entries(entity.attributes))
-            value !== false && (attr += `<p>${value}</p>`);
+            window.navigator.userAgent.match(/iPhone/i)
+              ? k !== 'time' && k !== 'date' && value !== false && (attr += `<p>${k === 'greet' ? `<span class="iphone">${value}</span>` : `${value}`}</p>`)
+              : value !== false && (attr += `<p>${value}</p>`);
           return attr;
         }
       ]]]
@@ -243,6 +245,10 @@
         padding: 1.8vw 2.5vw 0 var(--custom-layout-card-padding);
         white-space: normal;
         text-align: left;
+      }
+      .iphone {
+        font-size: 1.5em;
+        color: rgba(255, 255, 255, 0.8);
       }
       .time {
         font-family: SF Text, Roboto;
