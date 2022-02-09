@@ -421,12 +421,6 @@ automation:
           - 'on'
           - 'off'
     action:
-      - service: shell_command.reference_click
-      - delay:
-          milliseconds: 100
-      - service: shell_command.reference_kill
-      - delay:
-          milliseconds: 100
       - choose:
         - conditions:
             - condition: state

@@ -9,8 +9,6 @@ shell_command:
   monitors_mute_on: !secret monitors_mute_on
   monitors_mute_off: !secret monitors_mute_off
 
-  reference_click: !secret reference_click
-  reference_kill: !secret reference_kill
   reference_monitors: !secret reference_monitors
   reference_headphones: !secret reference_headphones
 
