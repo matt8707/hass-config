@@ -27,19 +27,20 @@ browser_mod:
           - type: custom:slider-entity-row
             entity: input_number.monitors_volume
             hide_state: false
-            style: >
-              :host {
-              --paper-item-icon-color:
-                {% if is_state('binary_sensor.monitors_mute_state', 'on') %}
-                  #FFFFFF20
-                {% elif states(config.entity) | int == 0 %}
-                  #9da0a2
-                {% elif states(config.entity) | int < 60 %}
-                  #3182b7
-                {% else %}
-                  red
-                {% endif %};
-                }
+            card_mod:
+              style: >
+                :host {
+                --paper-item-icon-color:
+                  {% if is_state('binary_sensor.monitors_mute_state', 'on') %}
+                    #FFFFFF20
+                  {% elif states(config.entity) | int == 0 %}
+                    #9da0a2
+                  {% elif states(config.entity) | int < 60 %}
+                    #3182b7
+                  {% else %}
+                    red
+                  {% endif %};
+                  }
 
           - entity: automation.turn_off_monitors
 

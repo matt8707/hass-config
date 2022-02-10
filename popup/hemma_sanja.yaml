@@ -36,20 +36,23 @@ browser_mod:
           - entity: device_tracker.sanjas_iphone_unifi
             name: Router
             icon: mdi:wifi
-            style: &state |
-              state-badge {
-                color: {{ '#3182b7' if is_state(config.entity, 'home') else '#3c3f3f' }};
-              }
+            card_mod:
+              style: &state |
+                state-badge {
+                  color: {{ '#3182b7' if is_state(config.entity, 'home') else '#3c3f3f' }};
+                }
 
           - entity: device_tracker.sanja_bluetooth
             name: Bluetooth
             icon: mdi:bluetooth
-            style: *state
+            card_mod:
+              style: *state
 
           - entity: device_tracker.sanjas_iphone_ios
             name: Position
             icon: custom:iphone-modern
-            style: *state
+            card_mod:
+              style: *state
 
       - type: custom:button-card
         name: Spela upp ljud på iPhone XR

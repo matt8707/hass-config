@@ -83,11 +83,12 @@ browser_mod:
                     service: homeassistant.update_entity
                     service_data:
                       entity_id: sensor.imac_ip
-                  style: |
-                    :host {
-                      --paper-item-icon-color:
-                        {{ 'var(--state-icon-active-color)' if is_state(config.entity, 'Ansluten') else 'red' }};
-                      }
+                  card_mod:
+                    style: |
+                      :host {
+                        --paper-item-icon-color:
+                          {{ 'var(--state-icon-active-color)' if is_state(config.entity, 'Ansluten') else 'red' }};
+                        }
 
                 - entity: input_boolean.computer_lock
 
