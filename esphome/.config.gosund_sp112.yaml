@@ -90,3 +90,8 @@ status_led:
 time:
   - platform: homeassistant
     id: homeassistant_time
+
+text_sensor:
+  - platform: version
+    name: ${name}_esphome_version
+    hide_timestamp: true

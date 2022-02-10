@@ -323,9 +323,9 @@ template:
         attributes:
           esphome: >
             {% macro f(e) %}
-              {{- device_attr(device_id('switch.' + e), 'sw_version') -}}
+              {{- states('sensor.gosund_' + e + '_esphome_version') -}}
             {% endmacro %}
-            {% set group = [f('gosund_monitors_switch'), f('gosund_ac_switch'), f('gosund_fan_switch')] | min %}
+            {% set group = [f('monitors'), f('ac'), f('fan')] | min %}
             {% set installed = group.split()[0] %}
             {% set latest = states('sensor.esphome_version_latest') %}
             {% set url = 'https://github.com/esphome/esphome/releases/latest' %}
