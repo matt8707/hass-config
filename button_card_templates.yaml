@@ -716,19 +716,21 @@
       action: fire-dom-event
       browser_mod:
         command: popup
-        title: Home Assistant Community Store
-        style: >
-          :host .content {
-            width: 75em;
-          }
+        title: HACS
+        style:
+          div: |
+            .content {
+              padding: 0;
+            }
+          hui-iframe-card$: |
+            ha-card {
+              margin-left: -58px;
+            }
+        large: true
         card:
           type: iframe
-          url: /hacs
-          aspect_ratio: 65%
-          style: |
-            ha-card {
-              border-radius: 0 0 1em 1em;
-            }
+          url: >
+            [[[ return `/${hass.panels.hacs.url_path}` ]]]
     template: icon_name
 
   hacs_navigate_ios:
