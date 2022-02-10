@@ -9,8 +9,12 @@ browser_mod:
       }
     hui-grid-card:
       $: |
-        button-card:nth-child(2), button-card:nth-child(4) {
+        button-card:nth-child(2),
+        button-card:nth-child(4) {
           margin: 0.6em 0 2.1em 0.8em;
+        }
+        button-card:nth-child(6) {
+          margin: 0.6em 0 0.5em 0.8em;
         }
         #root {
           grid-gap: 0 !important;
@@ -106,3 +110,44 @@ browser_mod:
       - type: custom:button-card
         entity: sensor.template_updates
         template: updater_other
+
+      - type: custom:button-card
+        entity: sensor.template_updates
+        name: Kontrollera
+        icon: mdi:reload
+        styles:
+          card:
+            - width: max-content
+            - filter: 'opacity(30%)'
+            - display: >
+                [[[
+                  return `[[[
+                    return entity
+                      ? 'flex'
+                      : 'none';
+                  ]]]`
+                ]]]
+        tap_action:
+          toast: |
+            [[[
+              return `[[[
+                hass.callService('browser_mod', 'toast', {
+                  message: 'Söker efter uppdateringar...',
+                  duration: 3000
+                });
+              ]]]`
+            ]]]
+          action: call-service
+          service: homeassistant.update_entity
+          service_data:
+            entity_id:
+              - sensor.gosund_monitors_esphome_version
+              - sensor.gosund_ac_esphome_version
+              - sensor.gosund_fan_esphome_version
+              - sensor.esphome_version_latest
+              - sensor.playactor_version_installed
+              - sensor.playactor_version_latest
+              - sensor.kemper_version
+              - sensor.udm_unifios
+              - binary_sensor.nas_update_available
+        template: icon_name
