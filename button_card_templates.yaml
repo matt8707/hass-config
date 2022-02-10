@@ -592,17 +592,7 @@
         font-family: SF Text, Roboto;
         font-size: 0.88em;
         letter-spacing: 0.5px;
-        padding: 0 0 0 1.2em;
         line-height: 1.6em;
-        list-style: none;
-      }
-      ul li::before {
-        content: "\2022";
-        color: #828383;
-        font-weight: bold;
-        display: inline-block;
-        width: 1em;
-        margin-left: -1em;
       }
       code {
         background-color: var(--secondary-background-color);
