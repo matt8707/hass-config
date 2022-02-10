@@ -36,9 +36,6 @@ browser_mod:
               indicator: 'off'
               name: outside
             severity: &severity
-              - color: '#303435'
-                from: 0
-                to: 89
               - color: '#6d2525'
                 from: 90
                 to: 999

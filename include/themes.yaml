@@ -49,6 +49,7 @@ frontend:
       sidebar-line-height: 2.1vw
       media-blur-height: 24.5%
       card-content-padding: 1.4em 2.2em 1.6em 1.5em
+      bar-card-color: '#303435'
 
     ####################################################
     #                                                  #
