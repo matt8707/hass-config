@@ -493,10 +493,15 @@ views:
               notify: >
                 [[[
                   let status = states['sensor.nas_volume_1_status'],
-                    security = states['binary_sensor.nas_security_status'];
-                  if (status && security) {
-                    return status.state === 'background_scrubbing' ||
-                    security.state === 'on';
+                    security = states['binary_sensor.nas_security_status'],
+                    disk_use = states['sensor.disk_use_percent'],
+                    nas_update = states['binary_sensor.nas_update_available'];
+                  if (status && security && disk_use && nas_update) {
+                    return nas_update.state === 'on'
+                      ? 1
+                      : status.state === 'background_scrubbing' ||
+                        security.state === 'on' ||
+                        parseFloat(disk_use.state) >= 85;
                   }
                 ]]]
             template: footer
@@ -556,6 +561,14 @@ views:
               <ha-icon icon="mdi:tablet"></ha-icon> Platta
             tap_action:
               !include popup/footer/tablet.yaml
+            variables:
+              notify: >
+                [[[
+                  let plugged_in = states['binary_sensor.galaxy_tab_a_plugged_in'];
+                  if (plugged_in) {
+                    return plugged_in.state === 'off';
+                  }
+                ]]]
             template: footer
 
           - type: custom:button-card
@@ -566,9 +579,12 @@ views:
             variables:
               notify: >
                 [[[
-                  let internet = states['binary_sensor.template_udm_internet'];
-                  if (internet) {
-                    return internet.state === 'off';
+                  let internet = states['binary_sensor.template_udm_internet'],
+                    upgradable = states['binary_sensor.template_udm_upgradable'];
+                  if (internet && upgradable) {
+                    return upgradable.state === 'on'
+                      ? 1
+                      : internet.state === 'off';
                   }
                 ]]]
             template: footer
@@ -578,4 +594,12 @@ views:
               <ha-icon icon="mdi:raspberry-pi"></ha-icon> RPi
             tap_action:
               !include popup/footer/rpi.yaml
+            variables:
+              notify: >
+                [[[
+                  let ping = states['binary_sensor.rpi_ping'];
+                  if (ping) {
+                    return ping.state === 'off';
+                  }
+                ]]]
             template: footer
