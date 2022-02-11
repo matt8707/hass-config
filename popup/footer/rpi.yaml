@@ -73,9 +73,6 @@ browser_mod:
               service_data:
                 entity_id: sensor.rpi_uptime
 
-
-
-
           - type: custom:bar-card
             width: 55%
             height: 2em
