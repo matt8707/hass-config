@@ -18,11 +18,7 @@ fan:
       climate_fan_only:
         speed_count: 3
         value_template: >
-          {% if is_state('climate.ac', 'fan_only') %}
-            on
-          {% else %}
-            off
-          {% endif %}
+          {{ is_state('climate.ac', 'fan_only') | iif('on', 'off') }}
         turn_on:
           - service: climate.set_hvac_mode
             target:
@@ -73,8 +69,4 @@ fan:
               entity_id: climate.ac
             data:
               swing_mode: >
-                {% if is_state_attr('climate.ac', 'swing_mode', 'off') %}
-                  on
-                {% else %}
-                  off
-                {% endif %}
+                {{ is_state_attr('climate.ac', 'swing_mode', 'off') | iif('on', 'off') }}

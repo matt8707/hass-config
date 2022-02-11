@@ -84,7 +84,7 @@ browser_mod:
                     style: |
                       :host {
                         --paper-item-icon-color:
-                          {{ 'var(--state-icon-active-color)' if is_state(config.entity, 'Ansluten') else 'red' }};
+                          {{ is_state(config.entity, 'Ansluten') | iif('var(--state-icon-active-color)', 'red') }};
                         }
 
                 - entity: input_boolean.computer_lock

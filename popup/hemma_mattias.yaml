@@ -64,7 +64,7 @@ browser_mod:
             card_mod:
               style: &state |
                 state-badge {
-                  color: {{ '#3182b7' if is_state(config.entity, 'home') else '#3c3f3f' }};
+                  color: {{ is_state(config.entity, 'home') | iif('#3182b7', '#3c3f3f') }};
                 }
 
           - entity: device_tracker.mattias_bluetooth
