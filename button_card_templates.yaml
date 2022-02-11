@@ -326,13 +326,12 @@
     styles:
       name:
         - font-family: SF Display, Roboto
-        - font-weight: 500
       card:
-        - color: rgba(157,160,162, 0.56)
+        - color: rgba(157,160,162, 0.6)
         - width: fit-content
-        - background: rgba(115, 115, 115, 0.08)
+        - background: rgba(115, 115, 115, 0.03)
+        - border: 0.12vw solid rgba(58, 69, 73, 0.2)
         - letter-spacing: 0.05vw
-        - opacity: 0.9
         - transition: none
         - padding: 0 0 0.05vw 0
         - overflow: visible
@@ -367,8 +366,8 @@
       load: none
     extra_styles: |
       :host {
-        --name-font-size: 1.3vw;
-        --name-icon-size: 1.6vw;
+        --name-font-size: 1.26vw;
+        --name-icon-size: 1.5vw;
         --notify-font-size: 0.9vw;
         --notify-box-size: 1.8vw;
         --name-padding-v: 0.7vw;
@@ -382,7 +381,7 @@
       }
       ha-icon {
         width: var(--name-icon-size);
-        vertical-align: 5%;
+        vertical-align: 7%;
         padding-right: 0.1vw;
         filter: brightness(50%);
       }
@@ -398,20 +397,20 @@
       /* portrait */
       @media screen and (max-width: 1200px) {
         #name {
-          font-size: calc(var(--name-font-size) * 1.6);
-          padding: calc(var(--name-padding-v) * 1.6) calc(var(--name-padding-h) * 1.6);
+          font-size: calc(var(--name-font-size) * 1.4);
+          padding: calc(var(--name-padding-v) * 1.4) calc(var(--name-padding-h) * 1.4);
         }
         ha-icon {
-          width: calc(var(--name-icon-size) * 1.6);
+          width: calc(var(--name-icon-size) * 1.4);
         }
         #card {
-          border-radius: calc(var(--card-border-radius) * 1.6);
+          border-radius: calc(var(--card-border-radius) * 1.4);
         }
         #notify {
-          font-size: calc(var(--notify-font-size) * 1.6);
-          width: calc(var(--notify-box-size) * 1.6);
-          height: calc(var(--notify-box-size) * 1.6);
-          line-height: calc(var(--notify-box-size) * 1.6);
+          font-size: calc(var(--notify-font-size) * 1.4);
+          width: calc(var(--notify-box-size) * 1.4);
+          height: calc(var(--notify-box-size) * 1.4);
+          line-height: calc(var(--notify-box-size) * 1.4);
         }
       }
       /* phone */
