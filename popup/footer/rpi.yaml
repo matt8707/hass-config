@@ -103,16 +103,28 @@ browser_mod:
             name: Starta om
             icon: mdi:restart
             tap_action:
-              action: call-service
-              service: shell_command.rpi_reboot
+              confirm: >
+                [[[
+                  return `[[[
+                    if (window.confirm('Är du säker på att du vill starta om RPi?')) {
+                      hass.callService('browser_mod', 'toast', { message: 'Startar om RPi...', duration: 3000 });
+                      hass.callService('shell_command', 'rpi_reboot');
+                    }
+                  ]]]`
+                ]]]
             template: icon_name
 
           - type: custom:button-card
             name: Stäng av...
             icon: mdi:alert
             tap_action:
-              action: call-service
-              service: shell_command.rpi_poweroff
-            confirmation:
-              text: Är du säker på att du vill stänga av RPi?
+              confirm: >
+                [[[
+                  return `[[[
+                    if (window.confirm('Är du säker på att du vill stänga av RPi?')) {
+                      hass.callService('browser_mod', 'toast', { message: 'Stänger av RPi...', duration: 3000 });
+                      hass.callService('shell_command', 'rpi_poweroff');
+                    }
+                  ]]]`
+                ]]]
             template: icon_name

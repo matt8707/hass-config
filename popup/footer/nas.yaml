@@ -334,22 +334,28 @@ browser_mod:
                 name: Starta om
                 icon: mdi:restart-alert
                 tap_action:
-                  action: call-service
-                  service: button.press
-                  service_data:
-                    entity_id: button.nas_reboot
-                confirmation:
-                  text: Är du säker på att du vill starta om NAS?
+                  confirm: >
+                    [[[
+                      return `[[[
+                        if (window.confirm('Är du säker på att du vill starta om NAS?')) {
+                          hass.callService('browser_mod', 'toast', { message: 'Startar om NAS...', duration: 3000 });
+                          hass.callService('button', 'press', { entity_id: 'button.nas_reboot' });
+                        }
+                      ]]]`
+                    ]]]
                 template: icon_name
 
               - type: custom:button-card
                 name: Stäng av...
                 icon: mdi:alert
                 tap_action:
-                  action: call-service
-                  service: button.press
-                  service_data:
-                    entity_id: button.nas_shutdown
-                confirmation:
-                  text: Är du säker på att du vill stänga av NAS?
+                  confirm: >
+                    [[[
+                      return `[[[
+                        if (window.confirm('Är du säker på att du vill stänga av NAS?')) {
+                          hass.callService('browser_mod', 'toast', { message: 'Stänger av NAS...', duration: 3000 });
+                          hass.callService('button', 'press', { entity_id: 'button.nas_shutdown' });
+                        }
+                      ]]]`
+                    ]]]
                 template: icon_name
