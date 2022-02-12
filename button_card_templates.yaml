@@ -553,6 +553,7 @@
       state:
         - text-align: left
         - justify-self: left
+        - white-space: normal
       card:
         - cursor: default
         - padding: 0.2em 0 0 0.6em
@@ -585,6 +586,9 @@
       }
       a {
         color: var(--primary-color);
+      }
+      li {
+        padding-bottom: 0.5em;
       }
       ul {
         margin-top: -0.6em;

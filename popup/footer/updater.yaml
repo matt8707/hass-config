@@ -6,6 +6,7 @@ browser_mod:
     .: |
       :host .content {
         padding: var(--card-content-padding);
+        width: 98%;
       }
     hui-grid-card:
       $: |
