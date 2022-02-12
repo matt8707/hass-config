@@ -2,8 +2,6 @@ shell_command:
   imac_off: !secret imac_off
   imac_sleep: !secret imac_sleep
   imac_restart: !secret imac_restart
-  imac_notify_motion_hall: !secret imac_notify_motion_hall
-  imac_notify_laundry: !secret imac_notify_laundry
 
   monitors_volume_slider: !secret monitors_volume_slider
   monitors_mute_on: !secret monitors_mute_on

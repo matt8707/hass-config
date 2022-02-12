@@ -106,11 +106,6 @@ template:
     ####################################################
 
   - binary_sensor:
-      - unique_id: laundry_time_trigger
-        state: >
-          {% set start_time = state_attr('calendar.tvatta', 'start_time') %}
-          {{ as_timestamp(start_time) - as_timestamp(now()) < 10 * 60 if start_time != None }}
-
       - unique_id: imac_vpn
         device_class: connectivity
         icon: >

@@ -1,5 +1,4 @@
 homeassistant:
-  customize:
 
     ####################################################
     #                                                  #
@@ -7,6 +6,11 @@ homeassistant:
     #                                                  #
     ####################################################
 
+  customize_domain:
+    automation:
+      initial_state: true
+
+  customize:
     #light
     light.group_belysning:
       friendly_name: Belysning
