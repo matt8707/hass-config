@@ -1324,7 +1324,7 @@
     show_name: false
     show_state: true
     tap_action:
-      services: >
+      restart: >
         [[[
           hass.callService('timer', 'cancel', {
             entity_id: entity.entity_id
@@ -1334,13 +1334,10 @@
           });
         ]]]
     hold_action:
-      services: >
+      cancel: >
         [[[
           hass.callService('timer', 'cancel', {
             entity_id: entity.entity_id
-          });
-          hass.callService('input_boolean', 'turn_off', {
-            entity_id: 'input_boolean.laundry_display'
           });
         ]]]
     styles:
