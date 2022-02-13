@@ -23,11 +23,6 @@ script:
           media_content_id: >
             KEY_MENU+1500+KEY_DOWN+500+KEY_DOWN+500+KEY_DOWN+500+KEY_ENTER+1000+KEY_DOWN+500+KEY_DOWN+500+KEY_DOWN+500+KEY_DOWN+500+KEY_ENTER+1000+KEY_ENTER+1000+KEY_DOWN+500+KEY_DOWN+500+KEY_ENTER+1000+KEY_HOME+500+KEY_HOME+500
 
-  rpi_led:
-    alias: Släck LED-lampor
-    sequence:
-      - service: shell_command.rpi_led_off
-
   home_arrive:
     alias: Hemma
     sequence:

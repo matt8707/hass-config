@@ -63,9 +63,6 @@ browser_mod:
                   service_data:
                     entity_id: sensor.rpi_sd
 
-          - entity: script.rpi_led
-            icon: mdi:led-variant-on
-
           - entity: sensor.rpi_uptime
             tap_action:
               action: call-service
@@ -98,6 +95,21 @@ browser_mod:
 
       - type: horizontal-stack
         cards:
+
+          - type: custom:button-card
+            icon: mdi:led-variant-on
+            styles:
+              grid:
+                - column-gap: 0
+            tap_action:
+              confirm: >
+                [[[
+                  return `[[[
+                    hass.callService('browser_mod', 'toast', { message: 'Släcker LED-lampor...', duration: 3000 });
+                    hass.callService('shell_command', 'rpi_led_off');
+                  ]]]`
+                ]]]
+            template: icon_name
 
           - type: custom:button-card
             name: Starta om

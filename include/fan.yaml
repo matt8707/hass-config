@@ -4,8 +4,8 @@ fan:
       studio:
         friendly_name: "Fläkt\u00B2"
         value_template: >
-          {{ 'off' if is_state('switch.gosund_fan_switch', 'unavailable') 
-          else states('switch.gosund_fan_switch') }}
+          {% set entity_id = 'switch.gosund_fan_switch' %}
+          {{ is_state(entity_id, 'unavailable') | iif('off', states(entity_id)) }}
         turn_on:
           - service: switch.turn_on
             target:

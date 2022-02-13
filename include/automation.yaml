@@ -180,18 +180,20 @@ automation:
 
   - alias: ios_notify_hass_update
     id: '7958228563778'
+    variables:
+      latest: >
+        {{ states(trigger.entity_id) }}
     trigger:
       - platform: state
         entity_id: sensor.hass_version_latest
     condition: >
       {% set installed = states('sensor.hass_version_installed') %}
-      {% set latest = states('sensor.hass_version_latest') %}
       {{ installed != latest if '.' in installed and '.' in latest else false }}
     action:
       - service: notify.mobile_app_mattias_iphone_ios
         data:
           title: >
-            {{ states('sensor.hass_version_latest') }} tillgänglig {{ '\U0001F389' }}
+            {{ latest }} tillgänglig {{ '\U0001F389' }}
           message: Håll in för att uppdatera
           data:
             url: https://www.home-assistant.io/latest-release-notes/

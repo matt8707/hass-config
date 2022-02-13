@@ -1,11 +1,5 @@
 binary_sensor:
   - platform: command_line
-    name: plex_availability
-    command: !secret plex_availability
-    scan_interval: 300
-    device_class: connectivity
-
-  - platform: command_line
     name: monitors_mute_state
     scan_interval: 86400
     command: !secret monitors_mute_state

@@ -1,17 +1,8 @@
 sensor:
-  - platform: filesize
-    file_paths:
-      - /config/home-assistant.log
-
-  - platform: sql
-    db_url: !secret recorder_db_url
-    queries:
-      - name: Databas
-        query: >
-          SELECT table_schema "database", Round(Sum(data_length + index_length) / POWER(1024,2), 1) 
-          "value" FROM information_schema.tables WHERE table_schema="homeassistant" GROUP BY table_schema;
-        column: value
-        unit_of_measurement: MB
+  - platform: time_date
+    display_options:
+      - time
+      - date
 
   - platform: systemmonitor
     resources:
@@ -22,105 +13,19 @@ sensor:
       - type: last_boot
     scan_interval: 120
 
-  - platform: time_date
-    display_options:
-      - time
-      - date
+  - platform: filesize
+    file_paths:
+      - /config/home-assistant.log
 
-  - platform: command_line
-    name: udm_unifios
-    command: !secret udm_unifios
-    value_template: |-
-      {% set json = value_json.data[0] %}
-      {{ json["system-stats"].cpu }}|
-      {{ json.temperatures[1].value | round(1) }}|
-      {{ json["system-stats"].mem }}|
-      {{ ((json.storage[1].used / json.storage[1].size) * 100) | round(1) }}|
-      {{ json.internet }}|
-      {{ json.startup_timestamp | timestamp_local }}|
-      {{ json.displayable_version }}|
-      {{ json.upgradable }}
-    scan_interval: 120
-
-  - platform: rest
-    name: esphome_version_latest
-    resource: https://api.github.com/repos/esphome/esphome/releases/latest
-    authentication: basic
-    username: !secret github_username
-    password: !secret github_access_token
-    value_template: >
-      {{ value_json.tag_name }}
-    scan_interval: 86400
-
-  - platform: command_line
-    name: kemper_version
-    command: !secret kemper_version
-    value_template: >
-      {{ value_json.profiler_installed == value_json.profiler_latest and 
-      value_json.rigmanager_latest == value_json.rigmanager_installed }}
-    json_attributes:
-      - profiler_latest
-      - profiler_installed
-      - rigmanager_latest
-      - rigmanager_installed
-    scan_interval: 86400
-
-  - platform: rest
-    name: playactor_version_latest
-    resource: https://api.github.com/repos/dhleong/playactor/releases/latest
-    value_template: >
-      {{ value_json.tag_name }}
-    scan_interval: 86400
-
-  - platform: command_line
-    name: playactor_version_installed
-    scan_interval: 86400
-    command: !secret playactor_version_installed
-    value_template: >
-      {{ value.split(' ')[1].split('v')[1] }}
-
-  - platform: rest
-    name: skanetrafiken
-    resource: !secret skanetrafiken
-    value_template: >
-      {% if value_json is defined %}
-        {% set ns = namespace(found=false) %}
-        {% for i in range(value_json.Trip | length) %}
-          {% set json = value_json.Trip[i].LegList.Leg[1].Origin %}
-          {% set name = json.name.split()[1] %}
-          {% set timestamp = json.date + 'T' + json.time %}
-          {% set offset = 60 * 15 %}
-          {% if (as_timestamp(timestamp) - as_timestamp(now())) > offset and not ns.found %}
-            {% set ns.found = true %}
-            {% set ns.timestamp = as_timestamp(timestamp) | timestamp_custom('%H:%M') %}
-            {% set ns.name = name %}
-          {% endif %}
-        {% endfor %}
-        {% if ns.timestamp != null and ns.name != null %}
-          Nästa buss går {{ ns.timestamp }} från {{ ns.name }}
-        {% endif %}
-      {% else %}
-        false
-      {% endif %}
-    scan_interval: 86400
-
-  - platform: rest
-    name: hass_release_notes
-    resource: https://api.github.com/repos/home-assistant/core/releases/latest
-    value_template: >
-      {{ value_json.name }}
-    json_attributes:
-      - body
-    scan_interval: 21600
-
-  - platform: rest
-    name: hass_release_notes_rc
-    resource: https://api.github.com/repos/home-assistant/core/releases?per_page=1
-    value_template: >
-      {{ value_json[0].name }}
-    json_attributes:
-      - body
-    scan_interval: 21600
+  - platform: sql
+    db_url: !secret recorder_db_url
+    queries:
+      - name: Databas
+        query: >
+          SELECT table_schema "database", Round(Sum(data_length + index_length) / POWER(1024,2), 1)
+          "value" FROM information_schema.tables WHERE table_schema="homeassistant" GROUP BY table_schema;
+        column: value
+        unit_of_measurement: MB
 
   - platform: darksky
     api_key: !secret darksky_api_key
@@ -143,6 +48,12 @@ sensor:
     value_template: >
       {{ value.daysTo }}
 
+    ####################################################
+    #                                                  #
+    #                       MQTT                       #
+    #                                                  #
+    ####################################################
+
   - platform: mqtt
     name: switchbot_battery
     state_topic: !secret switchbot_mqtt_battery
@@ -164,15 +75,11 @@ sensor:
     name: mailbox
     state_topic: homeassistant/persistence/mailbox
 
-  - platform: command_line
-    name: imac_ip
-    command: !secret imac_ip
-    scan_interval: 86400
-
-  - platform: command_line
-    name: monitors_volume
-    command: !secret monitors_update_volume
-    scan_interval: 86400
+    ####################################################
+    #                                                  #
+    #                   COMMAND LINE                   #
+    #                                                  #
+    ####################################################
 
   - platform: command_line
     name: imac_cpu
@@ -198,12 +105,14 @@ sensor:
     scan_interval: 86400
 
   - platform: command_line
-    name: rpi_sd
-    command: !secret rpi_sd
-    unit_of_measurement: '%'
-    value_template: >
-      {{ value[:-1] }}
-    scan_interval: 300
+    name: imac_ip
+    command: !secret imac_ip
+    scan_interval: 86400
+
+  - platform: command_line
+    name: monitors_volume
+    command: !secret monitors_update_volume
+    scan_interval: 86400
 
   - platform: command_line
     name: rpi_cpu
@@ -220,8 +129,51 @@ sensor:
     scan_interval: 300
 
   - platform: command_line
+    name: rpi_sd
+    command: !secret rpi_sd
+    unit_of_measurement: '%'
+    value_template: >
+      {{ value[:-1] }}
+    scan_interval: 300
+
+  - platform: command_line
     name: rpi_uptime
     command: !secret rpi_uptime
     value_template: >
       {{ value | replace(' ', 'T') }}
     scan_interval: 300
+
+  - platform: command_line
+    name: udm_unifios
+    command: !secret udm_unifios
+    value_template: |-
+      {% set json = value_json.data[0] %}
+      {{ json["system-stats"].cpu }}|
+      {{ json.temperatures[1].value | round(1) }}|
+      {{ json["system-stats"].mem }}|
+      {{ ((json.storage[1].used / json.storage[1].size) * 100) | round(1) }}|
+      {{ json.internet }}|
+      {{ json.startup_timestamp | timestamp_local }}|
+      {{ json.displayable_version }}|
+      {{ json.upgradable }}
+    scan_interval: 120
+
+  - platform: command_line
+    name: kemper_version
+    command: !secret kemper_version
+    value_template: >
+      {{ value_json.profiler_installed == value_json.profiler_latest and
+      value_json.rigmanager_latest == value_json.rigmanager_installed }}
+    json_attributes:
+      - profiler_latest
+      - profiler_installed
+      - rigmanager_latest
+      - rigmanager_installed
+    scan_interval: 86400
+
+  - platform: command_line
+    name: playactor_version_installed
+    command: !secret playactor_version_installed
+    value_template: >
+      {{ value.split(' ')[1].split('v')[1] }}
+    scan_interval: 86400
