@@ -894,7 +894,7 @@
       custom_fields:
         icon:
           - clip-path: circle()
-          - width: 79%
+          - width: 77%
           - pointer-events: none
           - display: grid
     custom_fields:
@@ -1308,7 +1308,7 @@
             let loader = (id, style, timeout) => {
                 elt.getElementById(id) && (elt.getElementById(id).style.display = style,
                   window.setTimeout(() => {
-                    elt.getElementById(id).style.display = timeout
+                    elt.getElementById('loader').style.display = 'none'
                   }, 20000))
             };
             loader('circle', 'none', 'initial'),
@@ -1564,9 +1564,8 @@
     styles:
       custom_fields:
         icon:
-          - width: 89%
-          - margin-top: -7%
-          - margin-left: 1%
+          - width: 87%
+          - margin-top: -8%
           - fill: >
               [[[
                 return variables.state_on ? '#616161' : '#9da0a2';
@@ -1648,9 +1647,9 @@
     styles:
       custom_fields:
         icon:
-          - width: 88%
-          - margin-left: -1%
-          - margin-top: -7%
+          - width: 89%
+          - margin-left: -2%
+          - margin-top: -9%
     custom_fields:
       icon: >
         [[[
@@ -1714,7 +1713,7 @@
     styles:
       custom_fields:
         icon:
-          - width: 70%
+          - width: 74%
           - margin-left: -8%
           - margin-top: 3%
     custom_fields:
@@ -1804,9 +1803,9 @@
     styles:
       custom_fields:
         icon:
-          - width: 82%
+          - width: 80%
           - margin-left: 1%
-          - margin-top: -6%
+          - margin-top: -5%
           - fill: >
               [[[ return variables.state_on ? '#72757c' : '#9da0a2'; ]]]
     custom_fields:
@@ -2134,7 +2133,7 @@
       custom_fields:
         icon:
           - width: 80%
-          - margin-left: -15%
+          - margin-left: -16%
     custom_fields:
       icon: >
         [[[
@@ -2245,6 +2244,8 @@
       custom_fields:
         icon:
           - width: 79%
+          - margin-left: -1%
+          - margin-top: -1%
           - fill: >
               [[[ return variables.state_on ? '#516d82' : '#9da0a2'; ]]]
     custom_fields:
@@ -2293,7 +2294,8 @@
         - transition: all 0.3s ease-out
       custom_fields:
         icon:
-          - width: 70%
+          - width: 72%
+          - margin-left: -1%
           - fill: >
               [[[ return variables.state_on ? '#c7983e' : '#9da0a2'; ]]]
     custom_fields:
