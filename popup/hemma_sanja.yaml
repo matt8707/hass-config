@@ -4,14 +4,22 @@ browser_mod:
   title: Sanja
   style:
     hui-vertical-stack-card:
-      $hui-history-graph-card$ : |
-        .content {
-          padding: 0.2em 1em 1.2em 1.7em !important;
-        }
       $: |
         button-card {
           align-self: center;
-          padding: 0.5em 0 0.5em 0;
+          padding: .2em 0 1em 0;
+        }
+        hui-history-graph-card {
+          padding: 0 1em 0 1em;
+        }
+      $hui-entities-card$: |
+        #states {
+          padding-left: 2em;
+          padding-bottom: .9em;
+        }
+      $hui-glance-card$: |
+        .entities {
+          padding: 12px 29px 4px 26px !important;
         }
   card:
     type: vertical-stack
@@ -26,8 +34,6 @@ browser_mod:
       - type: history-graph
         entities:
           - entity: person.sanja
-        hours_to_show: 24
-        refresh_interval: 0
 
       - type: glance
         show_state: false

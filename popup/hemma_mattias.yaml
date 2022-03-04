@@ -7,7 +7,19 @@ browser_mod:
       $: |
         button-card {
           align-self: center;
-          padding: 0.2em 0 2em 0;
+          padding: .2em 0 2em 0;
+        }
+        hui-history-graph-card {
+          padding: 0 1em 0 1em;
+        }
+      $hui-entities-card$: |
+        #states {
+          padding-left: 2em;
+          padding-bottom: .9em;
+        }
+      $hui-glance-card$: |
+        .entities {
+          padding: 12px 29px 4px 26px !important;
         }
       $hui-map-card:
         $: |

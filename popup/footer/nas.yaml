@@ -17,13 +17,12 @@ browser_mod:
             $: |
               .card-content {
                 padding: var(--card-content-padding);
-                padding-bottom: 1.2em;
+                padding-bottom: 0.8em;
               }
               ha-card {
                 border-right: 1.5px solid rgba(0, 0, 0, 0.2);
                 border-radius: 0;
                 transition: none;
-                font-family: SF Text, Roboto;
                 letter-spacing: normal;
               }
               /* portrait */
@@ -164,18 +163,6 @@ browser_mod:
           class: header
         entities:
 
-          - entity: sensor.docker_containers_total
-            name: Containrar Totalt
-
-          - entity: sensor.docker_containers_running
-            name: Containrar Körs
-
-          - entity: sensor.docker_containers_paused
-            name: Containrar Pausade
-
-          - entity: sensor.docker_containers_stopped
-            name: Containrar Stoppade
-
           - type: custom:bar-card
             width: 55%
             height: 2em
@@ -191,6 +178,18 @@ browser_mod:
 
               - entity: sensor.docker_memory_percent
                 name: Minne
+
+          - entity: sensor.docker_containers_total
+            name: Containrar Totalt
+
+          - entity: sensor.docker_containers_running
+            name: Containrar Körs
+
+          - entity: sensor.docker_containers_paused
+            name: Containrar Pausade
+
+          - entity: sensor.docker_containers_stopped
+            name: Containrar Stoppade
 
           - entity: switch.docker_transmission_seed
 
@@ -218,15 +217,13 @@ browser_mod:
               itemMargin:
                 horizontal: 25
               formatter: |
-                EVAL:(seriesName, opts) => {
+                EVAL: (seriesName, opts) => {
                   var arr = opts.w.globals.series[opts.seriesIndex],
                     value = arr[arr.length - 1],
-                    convert = (value / 1024).toFixed(2);
-                  if (value == null) {
-                    return seriesName;
-                  } else {
-                    return value < 1024 ? `${Math.round(value)} kB/s` : `${convert} MB/s`;
-                  }
+                    convert = (value/1024).toFixed(2);
+                  return value == null
+                    ? seriesName : value < 1024 ? `${Math.round(value)} kB/s`
+                    : `${convert} MB/s`;
                 }
               markers:
                 width: 26
