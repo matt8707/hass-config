@@ -31,6 +31,7 @@ lovelace:
       { url: '/local/calendar-card.js?v=3.109.1',                                   type: module },
       { url: '/local/custom_icons.js?v=28082021',                                   type: module },
       { url: '/local/marked.min.js?v=4.0.12',                                       type: module },
+      { url: '/local/vanilla-tilt.min.js?v=1.7.2',                                  type: module },
       { url: /local/font.css,                                                       type: css    } ]
 
 logger:

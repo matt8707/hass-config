@@ -126,10 +126,14 @@ frontend:
                 div {
                   height: 100%;
                 }
+                .swiper-container {
+                  margin: -1.5vw !important;
+                  padding: 1.5vw !important;
+                }
               hui-horizontal-stack-card$:
                 .: |
                   hui-conditional-card {
-                    margin: 1px !important;
+                    margin: 0 0.1vw 0 0 !important;
                   }
 
         #################################################

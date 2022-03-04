@@ -28,6 +28,8 @@
   base:
     template:
       - settings
+      - tilt
+      - extra_styles
     variables:
       state_on: >
         [[[ return ['on', 'home', 'cool', 'fan_only', 'playing'].indexOf(entity === undefined || entity.state) !== -1; ]]]
@@ -43,6 +45,24 @@
         [[[ return entity === undefined || entity.attributes.entity_picture; ]]]
       timeout: >
         [[[ return entity === undefined || Date.now() - Date.parse(entity.last_changed); ]]]
+      tilt_options: >
+        [[[
+          let options = {
+            max: 5,
+            scale: 1.06,
+            glare: true,
+            'max-glare': 0.15,
+            perspective: 800,
+            speed: 800,
+            parallax: '25px'
+          }
+          if (this._config.template.includes('conditional_media')) {
+            options.scale = options.scale % parseInt(options.scale) / 2 + parseInt(options.scale);
+            options.perspective = options.perspective * 2;
+            return options;
+          }
+          return options;
+        ]]]
     aspect_ratio: 1/1
     show_state: true
     show_icon: false
@@ -69,15 +89,6 @@
             });
           }
         ]]]
-      animation_card: |
-        [[[
-          let time = 900;
-          this.shadowRoot.getElementById('card').style.animation =
-            `card_bounce ${time}ms cubic-bezier(0.22, 1, 0.36, 1)`,
-            window.setTimeout(() => {
-              this.shadowRoot.getElementById('card').style.animation = 'none'
-            }, time);
-        ]]]
       action: toggle
       haptic: medium
     hold_action:
@@ -102,7 +113,7 @@
         - border-radius: var(--custom-button-card-border-radius)
         - -webkit-tap-highlight-color: rgba(0,0,0,0)
         - transition: none
-        - padding: 10% 9% 9% 10%
+        - padding: 11.5% 10.5% 10.5% 11.5%
         - --mdc-ripple-color: >
             [[[
               return variables.state_on
@@ -121,7 +132,9 @@
                 ? 'rgba(255, 255, 255, 0.8)'
                 : 'rgba(115, 115, 115, 0.2)';
             ]]]
-    extra_styles: |
+
+  extra_styles:
+    extra_styles: >
       [[[
         if (entity) {
           let hs = entity.attributes.hs_color === undefined,
@@ -134,6 +147,7 @@
             ? `hsl(204, 58%, ${l_calc}%);`
             : `hsl(${h}, ${s}%, ${l_calc}%);`;
         }
+
         return `
           svg {
             --light-color:
@@ -154,60 +168,150 @@
           #state::first-letter {
             text-transform: uppercase;
           }
-          #blur, #overlayx {
-            top: calc((100% - var(--media-blur-height)) + 0.5%);
-            height: var(--media-blur-height);
-          }
           /* portrait */
           @media screen and (max-width: 1200px) {
             #name, #state {
               font-size: 2vw;
-              letter-spacing: 0.05vw;
-            }
-            #blur, #overlayx {
-              top: calc((100% - (var(--media-blur-height) + 1.5%)) + 0.5%);
-              height: calc(var(--media-blur-height) + 1.5%);
             }
           }
           /* phone */
           @media screen and (max-width: 800px) {
             #name, #state {
-              font-size: 3.1vw;
-              letter-spacing: 0.12vw;
-            }
-            #blur, #overlayx {
-              top: calc((100% - (var(--media-blur-height) + 3%)) + 0.5%);
-              height: calc(var(--media-blur-height) + 3%);
+              font-size: 3vw;
             }
           }
-          @keyframes card_bounce {
-            0% {
-              transform: scale(1);
-            }
-            15% {
-              transform: scale(0.9);
-            }
-            25% {
-              transform: scale(1);
-            }
-            30% {
-              transform: scale(0.98);
-            }
-            100% {
-              transform: scale(1);
-            }
+
+          /* tilt */
+          #ripple, .js-tilt-glare {
+            clip-path: inset(0 round var(--custom-button-card-border-radius));
+            overflow: hidden;
           }
-          .marquee {
-            animation: marquee 20s linear infinite;
+          .js-tilt-glare {
+            z-index: 1;
           }
-          @keyframes marquee {
-            from {
-              transform: translateX(0%);
-            }
-            to {
-              transform: translateX(-50%);
-            }
+          .js-tilt-glare-inner {
+            background-color: rgba(0,0,0,0.9);
           }
+          #container {
+            transform: translateZ(${variables.tilt_options.parallax});
+          }
+          #card {
+            transform-style: preserve-3d;
+            overflow: visible;
+          }
+
+          ${this._config.template.includes('conditional_media') ? `
+            :host {
+              --blur-intensity: blur(4.5px) brightness(0.8);
+            }
+            /* phone */
+            @media screen and (max-width: 800px) {
+              :host {
+                --blur-intensity: blur(2.5px) brightness(0.8);
+              }
+            }
+            #ripple, .js-tilt-glare {
+              clip-path: inset(0 round calc(var(--custom-button-card-border-radius) / 2));
+            }
+            #container {
+              overflow: hidden;
+            }
+            .marquee {
+              animation: marquee 20s linear infinite;
+            }
+            @keyframes marquee {
+              from {
+                transform: translateX(0%);
+              }
+              to {
+                transform: translateX(-50%);
+              }
+            }
+          `:''}
+
+          ${this._config.template.includes('footer') ? `
+            :host {
+              --name-font-size: 1.22vw;
+              --name-icon-size: 1.5vw;
+              --notify-font-size: 0.9vw;
+              --notify-box-size: 1.8vw;
+              --name-padding-v: 0.7vw;
+              --name-padding-h: 1.1vw;
+              --card-border-radius: 0.6vw;
+            }
+            #ripple, .js-tilt-glare {
+              border-radius: calc(var(--card-border-radius) - 0.1vw);
+              clip-path: inset(0 round calc( var(--custom-button-card-border-radius) - 0.1vw ));
+            }
+            #name {
+              font-size: var(--name-font-size);
+              padding: var(--name-padding-v) var(--name-padding-h);
+              letter-spacing: 0.012vw;
+            }
+            ha-icon {
+              width: var(--name-icon-size);
+              vertical-align: 7%;
+              padding-right: 0.1vw;
+              opacity: 0.4;
+            }
+            #card {
+              border-radius: var(--card-border-radius);
+              background: rgba(115, 115, 115, 0.04);
+            }
+            #notify {
+              font-size: var(--notify-font-size);
+              width: var(--notify-box-size);
+              height: var(--notify-box-size);
+              line-height: var(--notify-box-size);
+              padding-right: 0.5px;
+              padding-top: 0.5px;
+            }
+            /* portrait */
+            @media screen and (max-width: 1200px) {
+              #name {
+                font-size: calc(var(--name-font-size) * 1.4);
+                padding: calc(var(--name-padding-v) * 1.4) calc(var(--name-padding-h) * 1.4);
+              }
+              ha-icon {
+                width: calc(var(--name-icon-size) * 1.4);
+              }
+              #card {
+                border-radius: calc(var(--card-border-radius) * 1.4);
+                margin: 0 0.5vw;
+              }
+              #notify {
+                font-size: calc(var(--notify-font-size) * 1.4);
+                width: calc(var(--notify-box-size) * 1.4);
+                height: calc(var(--notify-box-size) * 1.4);
+                line-height: calc(var(--notify-box-size) * 1.4);
+              }
+            }
+            /* phone */
+            @media screen and (max-width: 800px) {
+              #name {
+                font-size: calc(var(--name-font-size) * 2.7);
+                padding: calc(var(--name-padding-v) * 2.7) calc(var(--name-padding-h) * 2.7);
+                letter-spacing: 0.12vw;
+              }
+              ha-icon {
+                width: calc(var(--name-icon-size) * 2.7);
+              }
+              #card {
+                border-radius: calc(var(--card-border-radius) * 2.7);
+                background: rgba(115, 115, 115, 0.08);
+                margin: 0 0.5vw;
+              }
+              #notify {
+                font-size: calc(var(--notify-font-size) * 2.7);
+                width: calc(var(--notify-box-size) * 2.7);
+                height: calc(var(--notify-box-size) * 2.7);
+                line-height: calc(var(--notify-box-size) * 2.7);
+                padding: 0;
+              }
+            }
+          `:''}
+
+
         `
       ]]]
 
@@ -308,11 +412,17 @@
   #################################################
 
   footer:
+    template:
+      - settings
+      - tilt
+      - extra_styles
     variables:
       notify: >
         [[[
           return false;
         ]]]
+      tilt_options: >
+        [[[ return { max: 5, scale: 1.1, glare: true, 'max-glare': 0.07, perspective: 1000, speed: 800, parallax: '10px' }; ]]]
     size: 2vw
     color: '#9da0a2'
     custom_fields:
@@ -321,7 +431,7 @@
           if (Number.isInteger(variables.notify)) {
             return variables.notify;
           } else if (variables.notify) {
-            return '!';
+            return `<span style="font-weight: 900;">!</span>`;
           }
         ]]]
     styles:
@@ -360,76 +470,8 @@
     hold_action:
       action: none
     tap_action:
-      load: none
-    extra_styles: |
-      :host {
-        --name-font-size: 1.2vw;
-        --name-icon-size: 1.5vw;
-        --notify-font-size: 0.9vw;
-        --notify-box-size: 1.8vw;
-        --name-padding-v: 0.7vw;
-        --name-padding-h: 1.1vw;
-        --card-border-radius: 0.6vw;
-      }
-      #name {
-        font-size: var(--name-font-size);
-        padding: var(--name-padding-v) var(--name-padding-h);
-        letter-spacing: 0.07vw;
-      }
-      ha-icon {
-        width: var(--name-icon-size);
-        vertical-align: 7%;
-        padding-right: 0.1vw;
-        filter: brightness(50%);
-      }
-      #card {
-        border-radius: var(--card-border-radius);
-      }
-      #notify {
-        font-size: var(--notify-font-size);
-        width: var(--notify-box-size);
-        height: var(--notify-box-size);
-        line-height: var(--notify-box-size);
-      }
-      /* portrait */
-      @media screen and (max-width: 1200px) {
-        #name {
-          font-size: calc(var(--name-font-size) * 1.4);
-          padding: calc(var(--name-padding-v) * 1.4) calc(var(--name-padding-h) * 1.4);
-        }
-        ha-icon {
-          width: calc(var(--name-icon-size) * 1.4);
-        }
-        #card {
-          border-radius: calc(var(--card-border-radius) * 1.4);
-        }
-        #notify {
-          font-size: calc(var(--notify-font-size) * 1.4);
-          width: calc(var(--notify-box-size) * 1.4);
-          height: calc(var(--notify-box-size) * 1.4);
-          line-height: calc(var(--notify-box-size) * 1.4);
-        }
-      }
-      /* phone */
-      @media screen and (max-width: 800px) {
-        #name {
-          font-size: calc(var(--name-font-size) * 2.5);
-          padding: calc(var(--name-padding-v) * 2.5) calc(var(--name-padding-h) * 2.5);
-          letter-spacing: 0.12vw;
-        }
-        ha-icon {
-          width: calc(var(--name-icon-size) * 2.5);
-        }
-        #card {
-          border-radius: calc(var(--card-border-radius) * 2.5);
-        }
-        #notify {
-          font-size: calc(var(--notify-font-size) * 2.5);
-          width: calc(var(--notify-box-size) * 2.5);
-          height: calc(var(--notify-box-size) * 2.5);
-          line-height: calc(var(--notify-box-size) * 2.5);
-        }
-      }
+      haptic: medium
+
 
   #################################################
   #                                               #
@@ -491,7 +533,7 @@
               loader = (id, style, timeout) => {
                 elt.getElementById(id) && (elt.getElementById(id).style.display = style,
                   window.setTimeout(() => {
-                    elt.getElementById(id).style.display = timeout
+                    elt.getElementById('loader').style.display = 'none'
                   }, 20000))
               };
             loader('circle', 'none', 'initial'),
@@ -502,13 +544,34 @@
       custom_fields:
         loader:
           - display: none
-          - top: 3%
-          - left: 60%
-          - width: 37%
+          - top: -5.8%
+          - right: -5.3%
+          - width: 50%
           - position: absolute
           - opacity: 0.5
           - filter: >
               [[[ return variables.state === 'off' ? 'invert(1)' : 'none'; ]]]
+
+  #################################################
+  #                                               #
+  #                     TILT                      #
+  #                                               #
+  #################################################
+
+  tilt:
+    custom_fields:
+      tilt: >
+        [[[
+          setTimeout(() => {
+            let elt = this.shadowRoot,
+              card = elt.getElementById('card'),
+              ignore = window.navigator.userAgent;
+            if (elt && card && VanillaTilt.init !== undefined
+              && !ignore.match(/iPhone/i) && !ignore.match(/Android/i)) {
+              VanillaTilt.init(card, variables.tilt_options);
+            }
+          }, 0);
+        ]]]
 
   #################################################
   #                                               #
