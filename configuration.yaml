@@ -22,6 +22,7 @@ lovelace:
       { url: /hacsfiles/kiosk-mode/kiosk-mode.js,                                   type: module },
       { url: /hacsfiles/light-entity-card/light-entity-card.js,                     type: module },
       { url: /hacsfiles/light-popup-card/light-popup-card.js,                       type: module },
+      { url: /hacsfiles/lovelace-card-mod/card-mod.js,                              type: module },
       { url: /hacsfiles/lovelace-layout-card/layout-card.js,                        type: module },
       { url: /hacsfiles/lovelace-slider-entity-row/slider-entity-row.js,            type: module },
       { url: /hacsfiles/lovelace-xiaomi-vacuum-map-card/xiaomi-vacuum-map-card.js,  type: module },
