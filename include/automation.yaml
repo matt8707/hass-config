@@ -77,6 +77,25 @@ automation:
             {{ '\u267B' }} Sophämtning imorgon
           message: Stäng fönstret!
 
+  - alias: vacuum_empty_bin
+    id: '5443599527378'
+    variables:
+      vacuum: 'vacuum.morty'
+    trigger:
+      - platform: state
+        entity_id: sensor.morty_last_clean_end
+    condition: >
+      {{ not is_state(vacuum, 'docked') and
+      as_timestamp(now()) - as_timestamp(states(trigger.entity_id)) < 7200 }}
+    action:
+      - service: xiaomi_miio.vacuum_goto
+        target:
+          entity_id: >
+            {{ vacuum }}
+        data:
+          x_coord: 16821
+          y_coord: 23105
+
     ####################################################
     #                                                  #
     #                      LIGHTS                      #
