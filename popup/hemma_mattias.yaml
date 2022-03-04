@@ -23,6 +23,10 @@ browser_mod:
         }
       $hui-map-card:
         $: |
+          #root {
+            height: 27em;
+            padding-bottom: 0 !important;
+          }
           ha-icon-button {
             color: var(--primary-color);
             zoom: 112%;
