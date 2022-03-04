@@ -293,10 +293,11 @@ views:
                     card:
                       type: custom:button-card
                       entity: sensor.plex_recently_added
+                      name: Senast tillagt
                       tap_action:
                         action: none
                       template:
-                        - recently_added
+                        - conditional_media
                         - icon_plex
 
                   - type: conditional
