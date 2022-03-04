@@ -4,89 +4,86 @@ browser_mod:
   large: true
   title: Historik
   style:
-    hui-vertical-stack-card:
+    hui-grid-card:
       $: |
-        hui-horizontal-stack-card {
-          padding: 0em 2em 2.3em 2em;
-        }
-      $hui-horizontal-stack-card$: |
         #root {
-          justify-content: space-evenly;
+          padding: 1.5em;
         }
   card:
-    type: vertical-stack
+    type: grid
+    columns: 2
+    square: false
     cards:
+
+      #kwh
       - type: custom:apexcharts-card
-        layout: minimal
-        graph_span: 2h
-        locale: se
+        graph_span: 12months
         apex_config:
           tooltip:
             style:
               fontSize: 14px
             x:
               show: true
-              format: dddd HH:mm
-          chart:
-            fontFamily: SF Text
-            height: 250px
-          legend:
-            fontSize: 15px
-            fontWeight: 600
-            itemMargin:
-              horizontal: 25
-            formatter: |
-              EVAL:(seriesName, opts) => {
-                var arr = opts.w.globals.series[opts.seriesIndex],
-                  value = arr[arr.length - 1],
-                  convert = (value / 1024).toFixed(2);
-                if (value == null) {
-                  return seriesName;
-                } else {
-                  return value < 1024 ? `${Math.round(value)} kB/s` : `${convert} MB/s`;
+              formatter: |
+                EVAL:(timestamp) => {
+                  let date = new Date(timestamp).toLocaleString('sv-SE',{year: 'numeric', month:'long'}).toString()
+                  return date.charAt(0).toUpperCase() + date.slice(1);
                 }
-              }
-            markers:
-              width: 26
-              height: 23
-              customHTML:
-                - |-
-                  EVAL:() => {
-                    return `<ha-icon icon="mdi:arrow-down-bold" style="--mdc-icon-size: 23px;"></ha-icon>`
-                  }
-                - |-
-                  EVAL:() => {
-                    return `<ha-icon icon="mdi:arrow-up-bold" style="--mdc-icon-size: 23px;"></ha-icon>`
-                  }
-              fillColors:
-                - none
-                - none
+          chart:
+            height: 400px
+            fontFamily: SF Text
           fill:
             type: gradient
             gradient:
               type: vertical
               shadeIntensity: 0.2
-              opacityFrom: 0.7
-              opacityTo: 0.1
+              opacityFrom: 1
+              opacityTo: 0.7
               stops:
                 - 0
-                - 90
+                - 70
                 - 100
-          stroke:
-            curve: smooth
-            width: 3
-        all_series_config:
-          type: area
-          fill_raw: last
+          grid:
+            show: true
+            borderColor: rgba(112, 135, 164, 0.1)
+          yaxis:
+            show: true
+            decimalsInFloat: 0
+            labels:
+              style:
+                colors:
+                  - rgba(255, 255, 255, 0.5)
+                fontSize: 13px
+                fontWeight: 200
+              offsetX: -2
+          title:
+            text: ⚡ kWh
+            style:
+              color: white
+              fontSize: 38px
+              fontWeight: 700
+          xaxis:
+            tooltip:
+              enabled: false
+            crosshairs:
+              show: false
+            axisTicks:
+              show: false
+            axisBorder:
+              show: true
+              color: rgba(112, 135, 164, 0.5)
+              height: 1
         series:
-          - entity: sensor.nas_network_down
-            name: Ned
-            color: green
-          - entity: sensor.nas_network_up
-            name: Upp
-            color: '#385581'
+          - entity: sensor.date
+            name: Förbrukning
+            unit: kWh
+            type: column
+            color: rgba(228,224,17,1)
+            data_generator: !secret apexcharts_tibber
+
+      #influx
       - type: custom:apexcharts-card
-        graph_span: 4month
+        graph_span: 1month
         apex_config:
           yaxis:
             show: true
@@ -162,68 +159,12 @@ browser_mod:
             curve: smooth
             name: Mattias
             color: '#9a0ca3'
-            data_generator: |
-              let params = new URLSearchParams({
-                db: "home_assistant",
-                q: "SELECT value FROM kg WHERE entity_id = 'mattias_weight'"
-              }),
-              request = async () => {
-                let a = [],
-                  r = await fetch("http://192.168.1.241:8086/query?" + params),
-                  j = await r.json();
-                for (let r of j.results[0].series[0].values) a.push([new Date(r[0]), r[1]]);
-                return a
-              };
-              return request()
+            data_generator: !secret apexcharts_influx
+
+      #github
       - type: custom:apexcharts-card
-        chart_type: radialBar
+        graph_span: 2.2year
         apex_config:
-          chart:
-            fontFamily: SF Display
-            height: 200px
-          legend:
-            show: false
-        series:
-          - entity: sensor.disk_use_percent
-            name: NAS
-          - entity: sensor.imac_system_ssd
-            name: imac ssd
-          - entity: sensor.imac_macintosh_hd
-            name: imac hdd
-          - entity: sensor.rpi_sd
-            name: rpi sd
-          - entity: sensor.template_udm_disk
-            name: udm emcc
-      - type: custom:apexcharts-card
-        graph_span: 12months
-        apex_config:
-          tooltip:
-            style:
-              fontSize: 14px
-            x:
-              show: true
-              formatter: |
-                EVAL:(timestamp) => {
-                  let date = new Date(timestamp).toLocaleString('sv-SE',{year: 'numeric', month:'long'}).toString()
-                  return date.charAt(0).toUpperCase() + date.slice(1);
-                }
-          chart:
-            height: 400px
-            fontFamily: SF Text
-          fill:
-            type: gradient
-            gradient:
-              type: vertical
-              shadeIntensity: 0.2
-              opacityFrom: 1
-              opacityTo: 0.7
-              stops:
-                - 0
-                - 70
-                - 100
-          grid:
-            show: true
-            borderColor: rgba(112, 135, 164, 0.1)
           yaxis:
             show: true
             decimalsInFloat: 0
@@ -234,12 +175,25 @@ browser_mod:
                 fontSize: 13px
                 fontWeight: 200
               offsetX: -2
+          grid:
+            show: true
+            borderColor: rgba(112, 135, 164, 0.1)
           title:
-            text: ⚡ kWh
+            text: ⭐ matt8707/hass-config
             style:
               color: white
-              fontSize: 38px
-              fontWeight: 700
+              fontSize: 30px
+              fontWeight: 100
+          tooltip:
+            style:
+              fontSize: 14px
+            x:
+              show: true
+              formatter: |
+                EVAL:(timestamp) => {
+                  let date = new Date(timestamp).toLocaleString('sv-SE',{day: 'numeric', year: 'numeric', month:'long'}).toString().split(' ');
+                  return `${date[0]} ${date[1].charAt(0).toUpperCase() + date[1].slice(1)} ${date[2]}`;
+                }
           xaxis:
             tooltip:
               enabled: false
@@ -251,19 +205,43 @@ browser_mod:
               show: true
               color: rgba(112, 135, 164, 0.5)
               height: 1
+            labels:
+              style:
+                fontSize: 15px
+                fontWeight: 500
+              offsetX: -1
+              formatter: |
+                EVAL:(timestamp) => {
+                  return new Date(timestamp).toLocaleString('sv-SE',{day: 'numeric', month:'short'});
+                }
+          chart:
+            fontFamily: SF Text
+            height: 350px
+          fill:
+            type: gradient
+            gradient:
+              type: vertical
+              shadeIntensity: 0.2
+              opacityFrom: 0.7
+              opacityTo: 0.1
+              stops:
+                - 0
+                - 90
+                - 100
+          stroke:
+            curve: smooth
+            width: 3
+        all_series_config:
+          type: area
+          fill_raw: last
         series:
           - entity: sensor.date
-            name: Förbrukning
-            unit: kWh
-            type: column
-            color: rgba(228,224,17,1)
-            data_generator: |
-              let array = [], request = async () => {
-                let request = await fetch("https://api.tibber.com/v1-beta/gql", {method:"POST",headers:{Authorization:"Bearer ","Content-Type":"application/json"},body:JSON.stringify({query:"{viewer{homes{consumption(resolution: MONTHLY, last: 12){nodes{from consumption}}}}}"})}),
-                  json = await request.json();
-                for (let request of json.data.viewer.homes[0].consumption.nodes) array.push([new Date(request.from), request.consumption]);
-                return array
-              }; return request()
+            curve: smooth
+            name: Mattias
+            color: '#9a0ca3'
+            data_generator: !secret apexcharts_github
+
+      #entity counter
       - type: custom:apexcharts-card
         chart_type: donut
         apex_config:
@@ -395,6 +373,8 @@ browser_mod:
           - entity: sensor.template_domain_counter
             attribute: other
             name: Other
+      
+      #radial
       - type: grid
         cards:
           - type: custom:apexcharts-card
