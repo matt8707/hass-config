@@ -616,10 +616,10 @@
             : marked.parse(hass_release_notes_rc.attributes.body);
 
           let subtitle = installed === latest
-            ? variables.translate_no_updates
+            ? `${variables.translate_no_updates} <b>&larr;</b> ${installed}`
             : `${ !installed.includes('.') || !latest.includes('.')
-                ? variables.translate_no_updates
-                : latest + ' ' + variables.translate_available + ' ' + String.fromCodePoint("0x1f389")
+                ? `${variables.translate_no_updates} <b>&larr;</b> ${installed}`
+                : `${installed} <b>&rarr;</b> ${latest} ${variables.translate_available} ${String.fromCodePoint("0x1f389")}`
               }`;
 
           let output = installed === latest
@@ -630,7 +630,7 @@
               }`;
 
           return `
-            <ha-icon icon="mdi:home-assistant"></ha-icon> <span class="title">Home Assistant ${installed}</span><br>
+            <ha-icon icon="mdi:home-assistant"></ha-icon> <span class="title">Home Assistant</span><br>
             <p class="subtitle">${subtitle}</p>
             ${output}
           `;
@@ -651,15 +651,14 @@
             : entity.attributes.repositories;
           for (var i = 0; i < arr.length; i++) {
             output += `<li><b><a href="#" onclick="window.open('https://github.com/${arr[i].name}/releases');">
-              ${arr[i].display_name}</a></b> ${arr[i].installed_version} \u279e ${arr[i].available_version}</li>`
+              ${arr[i].display_name}</a></b> ${arr[i].installed_version} <b>&rarr;</b> ${arr[i].available_version}</li>`
           }
           let count = arr.length;
-          let subtitle = count == 0
-            ? variables.translate_no_updates
-            : `${count} ${count == 1 ? variables.translate_update_available : variables.translate_updates_available} ${String.fromCodePoint('0x1f389')}`;
+          let subtitle = count === 0
+            ? `${variables.translate_no_updates} ${hacs_version === undefined || hacs_version.state === 'unknown' ? ' ' : `<b>&larr;</b> ${hacs_version.state}`}`
+            : `${count} ${count === 1 ? variables.translate_update_available : variables.translate_updates_available} ${String.fromCodePoint('0x1f389')}`;
           return `
-            <ha-icon icon="hacs:hacs"></ha-icon> <span class="title">Community Store ${hacs_version === undefined 
-            || hacs_version.state === 'unknown' ? ' ' : hacs_version.state}</span><br>
+            <ha-icon icon="hacs:hacs"></ha-icon> <span class="title">Community Store</span><br>
             <p class="subtitle">${subtitle}</p>
             <ul>${output}</ul>
           `;
