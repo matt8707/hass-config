@@ -358,6 +358,44 @@ template:
               <b><a href="#" onclick="window.open('{{ url }}');">Synology DSM</a></b> {{ installed + ' <b>&rarr;</b> ' + latest }}
             {% endif %}
 
+      - unique_id: domain_counter
+        state: >
+          {{ states | count }}
+        attributes:
+          automation: >
+            {{ states.automation | count }}
+          binary_sensor: >
+            {{ states.binary_sensor | count }}
+          device_tracker: >
+            {{ states.device_tracker | count }}
+          light: >
+            {{ states.light | count }}
+          media_player: >
+            {{ states.media_player | count }}
+          sensor: >
+            {{ states.sensor | count }}
+          switch: >
+            {{ states.switch | count }}
+          other: >
+            {{ states.calendar | count +
+            states.camera | count +
+            states.climate | count +
+            states.fan | count +
+            states.input_boolean | count +
+            states.input_number | count +
+            states.input_select | count +
+            states.lock | count +
+            states.person | count +
+            states.remote | count +
+            states.scene | count +
+            states.script | count +
+            states.select | count +
+            states.sun | count +
+            states.timer | count +
+            states.vacuum | count +
+            states.weather | count +
+            states.zone | count }}
+
       - unique_id: udm_cpu
         state: >
           {{ states('sensor.udm_unifios').split('|\n')[0] | default }}
