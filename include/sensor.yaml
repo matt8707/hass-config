@@ -41,7 +41,7 @@ sensor:
     port: !secret plex_port
     max: 1
     img_dir: /
-    image_resolution: 500
+    image_resolution: 900
 
   - platform: waste_collection_schedule
     name: Sophämtning
