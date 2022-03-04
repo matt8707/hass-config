@@ -37,6 +37,7 @@ logger:
   logs:
     homeassistant.components.websocket_api: fatal
     homeassistant.components.camera: fatal
+    homeassistant.helpers.entity: fatal
 
 recorder:
   db_url: !secret recorder_db_url
