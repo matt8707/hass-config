@@ -199,13 +199,10 @@ browser_mod:
           layout: minimal
           graph_span: 1h
           locale: se
-          show:
-            loading: false
           apex_config:
             chart:
-              fontFamily: Roboto
+              fontFamily: var(--primary-font-family)
               height: 135px
-              offsetY: -20px
             tooltip:
               style:
                 fontSize: 14px

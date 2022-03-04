@@ -35,16 +35,28 @@ frontend:
       paper-toast-background-color: '#1b1b1bf2'
       vertical-stack-card-margin: 0
 
+      #font
+      primary-font-family: SF Text, Roboto, system-ui
+      paper-font-common-base_-_font-family: var(--primary-font-family)
+      paper-font-common-code_-_font-family: var(--primary-font-family)
+      paper-font-body1_-_font-family: var(--primary-font-family)
+      paper-font-subhead_-_font-family: var(--primary-font-family)
+      paper-font-headline_-_font-family: var(--primary-font-family)
+      paper-font-caption_-_font-family: var(--primary-font-family)
+      paper-font-title_-_font-family: var(--primary-font-family)
+      ha-card-header-font-family: var(--primary-font-family)
+      mdc-typography-body1-font-family: var(--primary-font-family)
+      mdc-typography-font-family: var(--primary-font-family)
+
       #custom variables
       ha-card-background-color: rgba(34,38,39,0.9)
       ha-card-header-background-color: rgba(48,52,52,0.8)
       custom-layout-card-padding: 3.3vw
-      custom-button-card-border-radius: 8%
-      sidebar-time-font-size: 5vw
-      sidebar-time-line-height: 4vw
-      sidebar-font-size: 1.5vw
-      sidebar-line-height: 2.1vw
-      media-blur-height: 24.5%
+      custom-button-card-border-radius: 9.5%
+      sidebar-time-font-size: 5.2vw
+      sidebar-time-line-height: 4.3vw
+      sidebar-font-size: 1.42vw
+      sidebar-line-height: 2vw
       card-content-padding: 1.4em 2.2em 1.6em 1.5em
       bar-card-color: '#303435'
 
@@ -82,10 +94,10 @@ frontend:
               h1 {
                 font-size: 2.4vw !important;
                 line-height: 0 !important;
-                font-family: SF Text, Roboto !important;
                 font-weight: 500 !important;
                 color: rgba(255, 255, 255, 0.8) !important;
                 padding: 1vw 0 2vw 0 !important;
+                letter-spacing: 0.006vw !important;
               }
               /* portrait */
               @media screen and (max-width: 1200px) {
@@ -191,7 +203,6 @@ frontend:
 
       card-mod-card: |
         .header .card-header {
-          font-family: SF Text, Roboto;
           letter-spacing: 0.005em;
           font-size: 1.6em;
           font-weight: 500;
@@ -202,7 +213,6 @@ frontend:
 
         .content .card-content {
           padding: var(--card-content-padding);
-          font-family: SF Text, Roboto;
           letter-spacing: normal;
         }
 
@@ -238,7 +248,6 @@ frontend:
 
         .type-custom-bar-card bar-card-name {
           padding-left: 0.25em;
-          font-family: SF Text, Roboto;
           letter-spacing: normal;
         }
 
@@ -274,8 +283,7 @@ frontend:
 
           .main-title {
             margin-top: 5px;
-            font-family: SF Text, Roboto;
-            letter-spacing: 0.005em;
+            font-family: var(--primary-font-family);
           }
 
           mwc-icon-button {
@@ -342,8 +350,7 @@ frontend:
             font-weight: 400;
             position: absolute;
             z-index: 1;
-            font-family: SF Display, Roboto;
-            letter-spacing: 0.02em;
+            letter-spacing: -0.01em;
             pointer-events: none;
             mix-blend-mode: difference;
             text-align: center;

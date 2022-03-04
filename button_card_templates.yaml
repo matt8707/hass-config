@@ -99,7 +99,6 @@
         - justify-self: start
         - line-height: 115%
       card:
-        - font-family: Sf Display, Roboto
         - border-radius: var(--custom-button-card-border-radius)
         - -webkit-tap-highlight-color: rgba(0,0,0,0)
         - transition: none
@@ -149,8 +148,8 @@
             text-align: left !important;
           }
           #name, #state {
-            font-size: 1.34vw;
-            letter-spacing: 0.05vw;
+            font-size: 1.32vw;
+            letter-spacing: -0.02vw;
           }
           #state::first-letter {
             text-transform: uppercase;
@@ -237,6 +236,7 @@
     extra_styles: |
       #card {
         padding: 0;
+        font-family: SF Display, Roboto, system-ui;
       }
       #container {
         display: flex !important;
@@ -251,25 +251,26 @@
         color: rgba(255, 255, 255, 0.8);
       }
       .time {
-        font-family: SF Text, Roboto;
         font-size: var(--sidebar-time-font-size);
         font-weight: 200;
         line-height: var(--sidebar-time-line-height);
-        letter-spacing: -0.05vw;
+        letter-spacing: 0.11vw;
         margin-left: -0.3vw;
         color: rgba(255, 255, 255, 0.8);
       }
       .time-colon {
         position: relative;
-        top: -.09em;
+        top: -.11em;
       }
       p {
-        font-family: SF Display, Roboto;
         font-size: var(--sidebar-font-size);
         line-height: var(--sidebar-line-height);
         font-weight: 300;
-        letter-spacing: 0.06vw;
+        letter-spacing: 0.07vw;
         color: #6a7377;
+      }
+      b {
+        font-weight: 700;
       }
       p > b {
         color: rgba(255, 255, 255, 0.8);
@@ -324,12 +325,9 @@
           }
         ]]]
     styles:
-      name:
-        - font-family: SF Display, Roboto
       card:
         - color: rgba(157,160,162, 0.55)
         - width: fit-content
-        - background: rgba(115, 115, 115, 0.04)
         - border: 0.12vw solid rgba(58, 69, 73, 0.2)
         - transition: none
         - padding: 0 0 0.05vw 0
@@ -352,7 +350,6 @@
           - position: absolute
           - top: -0.9vw
           - right: -1vw
-          - font-family: SF Display, Roboto
           - font-weight: 700
           - color: '#d6d6d6'
           - background: '#8b3333'
@@ -472,7 +469,6 @@
         circle:
           - display: initial
           - width: 90%
-          - letter-spacing: 0.03vw
           - margin: -6% -5% 0 0
           - justify-self: end
           - opacity: 1
@@ -557,6 +553,7 @@
       card:
         - cursor: default
         - padding: 0.2em 0 0 0.6em
+        - letter-spacing: var(--mdc-typography-body1-letter-spacing)
     tap_action:
       href:
     extra_styles: |
@@ -570,29 +567,22 @@
         padding-right: 2px;
       }
       .title {
-        font-family: SF Text, Roboto;
         font-size: 1.3em;
         font-weight: 500;
       }
       .subtitle {
-        font-family: SF Text, Roboto;
-        font-size: 0.9em;
+        font-size: 0.95em;
         line-height: 0.7em;
         padding-left: 3px;
         padding-bottom: 10px;
         font-weight: 500;
-        letter-spacing: 0.5px;
         color: #828383;
       }
       a {
         color: var(--primary-color);
       }
-      li {
-        padding-bottom: 0.5em;
-      }
       ul {
         margin-top: -0.6em;
-        font-family: SF Text, Roboto;
         font-size: 0.88em;
         letter-spacing: 0.5px;
         line-height: 1.6em;
