@@ -321,28 +321,28 @@ template:
             {% set latest = states('sensor.esphome_version_latest') %}
             {% set url = 'https://github.com/esphome/esphome/releases/latest' %}
             {% if installed != latest %}
-              <b><a href="#" onclick="window.open('{{ url }}');">ESPHome</a></b> {{ installed + ' \u279e ' + latest }}
+              <b><a href="#" onclick="window.open('{{ url }}');">ESPHome</a></b> {{ installed + ' <b>&rarr;</b> ' + latest }}
             {% endif %}
           playactor: >
             {% set installed = states('sensor.playactor_version_installed') %}
             {% set latest = states('sensor.playactor_version_latest') %}
             {% set url = 'https://github.com/dhleong/playactor/releases/latest' %}
             {% if installed != latest %}
-              <b><a href="#" onclick="window.open('{{ url }}');">playactor</a></b> {{ installed + ' \u279e ' + latest }}
+              <b><a href="#" onclick="window.open('{{ url }}');">playactor</a></b> {{ installed + ' <b>&rarr;</b> ' + latest }}
             {% endif %}
           kemperprofiler: >
             {% set installed = state_attr('sensor.kemper_version', 'profiler_installed') %}
             {% set latest = state_attr('sensor.kemper_version', 'profiler_latest') %}
             {% set url = 'https://www.kemper-amps.com/downloads' %}
             {% if installed != latest %}
-              <b><a href="#" onclick="window.open('{{ url }}');">Kemper Profiler OS</a></b> {{ installed + ' \u279e ' + latest }}
+              <b><a href="#" onclick="window.open('{{ url }}');">Kemper Profiler OS</a></b> {{ installed + ' <b>&rarr;</b> ' + latest }}
             {% endif %}
           rigmanager: >
             {% set installed = state_attr('sensor.kemper_version', 'rigmanager_installed') %}
             {% set latest = state_attr('sensor.kemper_version', 'rigmanager_latest') %}
             {% set url = 'https://www.kemper-amps.com/downloads' %}
             {% if installed != latest %}
-              <b><a href="#" onclick="window.open('{{ url }}');">Rig Manager</a></b> {{ installed + ' \u279e ' + latest }}
+              <b><a href="#" onclick="window.open('{{ url }}');">Rig Manager</a></b> {{ installed + ' <b>&rarr;</b> ' + latest }}
             {% endif %}
           unifi: >
             {% set installed = states('sensor.template_udm_version') %}
@@ -355,7 +355,7 @@ template:
             {% set latest = state_attr('binary_sensor.nas_update_available', 'latest_available_version') %}
             {% set url = 'https://www.synology.com/en-global/releaseNote/DSM' %}
             {% if is_state('binary_sensor.nas_update_available', 'on') %}
-              <b><a href="#" onclick="window.open('{{ url }}');">Synology DSM</a></b> {{ installed + ' \u279e ' + latest }}
+              <b><a href="#" onclick="window.open('{{ url }}');">Synology DSM</a></b> {{ installed + ' <b>&rarr;</b> ' + latest }}
             {% endif %}
 
       - unique_id: udm_cpu
