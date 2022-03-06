@@ -5,6 +5,7 @@ views:
     path: 0
     layout:
       #default
+      margin: 0
       grid-gap: var(--custom-layout-card-padding)
       grid-template-columns: repeat(4, 1fr) 0
       grid-template-rows: 0 repeat(2, fit-content(100%)) 0fr
