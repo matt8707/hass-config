@@ -109,7 +109,7 @@ browser_mod:
               name: outside
             severity: &bar_card_severity
               - color: '#6d2525'
-                from: 90
+                from: 85
                 to: 999
             entity_row: true
             entities:
