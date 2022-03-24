@@ -1164,8 +1164,7 @@
 
   media_youtube:
     variables:
-      token:
-        !include .youtube_token.txt
+      token: !secret youtube_token
     custom_fields:
       youtube: >
         [[[
