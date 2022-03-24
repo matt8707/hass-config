@@ -21,6 +21,8 @@ camera:
       color_map_outside: [0,0,0,0]
       color_grey_wall: [0,0,0,0]
       color_map_wall: [0,0,0,0]
+      color_zones_outline: [0,0,0,0]
+      color_zones: [0,0,0,0]
     room_colors:
       1: [42,46,48]
       2: [42,46,48]
