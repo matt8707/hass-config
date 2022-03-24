@@ -307,15 +307,10 @@ frontend:
             color: #9e9e9e;
           }
 
-        "mwc-icon-button":
+        mwc-icon-button:
           $: |
             button > mwc-ripple {
               margin-top: 3px;
-            }
-
-        "layout-card$grid-layout$": |
-            #root {
-              margin: 0 !important;
             }
 
         $: |

@@ -43,6 +43,7 @@ browser_mod:
     type: custom:layout-card
     layout_type: custom:grid-layout
     layout:
+      margin: 0
       grid-template-columns: 385px 385px 385px
       grid-template-rows: 1fr
       grid-template-areas: |
