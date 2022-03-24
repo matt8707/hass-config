@@ -85,8 +85,8 @@ automation:
       - platform: state
         entity_id: sensor.morty_last_clean_end
     condition: >
-      {{ not is_state(vacuum, 'docked') and
-      as_timestamp(now()) - as_timestamp(states(trigger.entity_id)) < 7200 }}
+      {{ not is_state(vacuum, 'docked') and as_timestamp(now()) -
+      as_timestamp(states(trigger.entity_id)) | int(default=None) < 7200 }}
     action:
       - service: xiaomi_miio.vacuum_goto
         target:

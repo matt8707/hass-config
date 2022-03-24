@@ -101,7 +101,7 @@ sensor:
     value_template: >
       {% set timestamp = value[:-1] | int(default=None) %}
       {% set year = 86400 * 365 %}
-      {{ timestamp | timestamp_local if (as_timestamp(now()) - timestamp) < year }}
+      {{ timestamp | timestamp_local if (as_timestamp(now()) - timestamp) < year else None}}
     scan_interval: 86400
 
   - platform: command_line
