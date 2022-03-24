@@ -310,8 +310,6 @@
               }
             }
           `:''}
-
-
         `
       ]]]
 
@@ -424,6 +422,7 @@
       tilt_options: >
         [[[ return { max: 5, scale: 1.1, glare: true, 'max-glare': 0.07, perspective: 1000, speed: 800, parallax: '10px' }; ]]]
     size: 2vw
+    show_icon: false
     color: '#9da0a2'
     custom_fields:
       notify: >
