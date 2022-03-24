@@ -1018,7 +1018,7 @@
         [[[
           if (entity) {
             let data = entity.attributes.data;
-            return Math.floor(Math.random() * (data.length - 1)) + 1;
+            return data === undefined || Math.floor(Math.random() * (data.length - 1)) + 1;
           }
         ]]]
     state_display: >
