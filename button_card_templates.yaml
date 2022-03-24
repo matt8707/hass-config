@@ -549,7 +549,7 @@
           - position: absolute
           - opacity: 0.5
           - filter: >
-              [[[ return variables.state === 'off' ? 'invert(1)' : 'none'; ]]]
+              [[[ return variables.state_on ? 'none' : 'invert(1)'; ]]]
 
   #################################################
   #                                               #
