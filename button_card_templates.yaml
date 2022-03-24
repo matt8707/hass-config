@@ -1016,8 +1016,8 @@
     variables:
       i: >
         [[[
-          let data = entity.attributes.data;
-          if (entity && data) {
+          if (entity) {
+            let data = entity.attributes.data;
             return Math.floor(Math.random() * (data.length - 1)) + 1;
           }
         ]]]
@@ -1101,9 +1101,11 @@
         - background: rgba(115, 115, 115, 0.2) center center/cover no-repeat
         - background-image: &media_background_image >
             [[[
-              return entity.attributes.data !== undefined
-                ? `url("${entity.attributes.data[variables.i].fanart}"), url("${entity.attributes.data[variables.i].poster}")`
-                : `url("${variables.entity_picture}")`;
+              if (entity) {
+                return entity.attributes.data !== undefined
+                  ? `url("${entity.attributes.data[variables.i].fanart}"), url("${entity.attributes.data[variables.i].poster}")`
+                  : `url("${variables.entity_picture}")`;
+              }
             ]]]
         - color: >
             [[[
