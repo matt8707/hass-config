@@ -4,6 +4,9 @@ browser_mod:
   title: Information
   style:
     .: |
+      :host {
+        --ha-card-border-radius: 0;
+      }
       @media screen and (min-width: 1200px) {
         :host .content {
           width: calc(385px + 385px + 385px);
