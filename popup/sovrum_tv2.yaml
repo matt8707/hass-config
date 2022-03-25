@@ -28,6 +28,8 @@ browser_mod:
 
           - entity: script.samsung_tv_energy_saving
 
+          - entity: script.bedroom_tv_night
+
           - entity: select.hdmi_samsung
 
       - type: horizontal-stack

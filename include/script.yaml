@@ -23,6 +23,22 @@ script:
           media_content_id: >
             KEY_MENU+1500+KEY_DOWN+500+KEY_DOWN+500+KEY_DOWN+500+KEY_ENTER+1000+KEY_DOWN+500+KEY_DOWN+500+KEY_DOWN+500+KEY_DOWN+500+KEY_ENTER+1000+KEY_ENTER+1000+KEY_DOWN+500+KEY_DOWN+500+KEY_ENTER+1000+KEY_HOME+500+KEY_HOME+500
 
+  bedroom_tv_night:
+    alias: Nattläge
+    icon: mdi:bed
+    sequence:
+      - service: media_player.volume_set
+        data:
+          volume_level: 0.1
+        target:
+          entity_id: media_player.samsung_tv
+      - service: light.turn_off
+        data:
+          transition: 10
+        target:
+          area_id: sovrum
+      - service: script.samsung_tv_energy_saving
+
   home_arrive:
     alias: Hemma
     sequence:

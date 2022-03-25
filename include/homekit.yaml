@@ -15,6 +15,7 @@ homekit:
         - script.samsung_tv_energy_saving
         - vacuum.morty
         - fan.climate_fan_only
+        - script.bedroom_tv_night
     entity_config:
       switch.deltaco_sh_p01:
         name: Balkong
@@ -42,6 +43,8 @@ homekit:
         name: Morty
       fan.climate_fan_only:
         name: AC Fläkt
+      script.bedroom_tv_night:
+        name: Nattläge
 
   - name: HASS Bridge Sony
     ip_address: !secret homekit_ip_address
