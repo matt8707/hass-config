@@ -561,15 +561,18 @@
     custom_fields:
       tilt: >
         [[[
-          setTimeout(() => {
-            let elt = this.shadowRoot,
-              card = elt.getElementById('card'),
-              ignore = window.navigator.userAgent;
-            if (elt && card && VanillaTilt.init !== undefined
-              && !ignore.match(/iPhone/i) && !ignore.match(/Android/i)) {
-              VanillaTilt.init(card, variables.tilt_options);
-            }
-          }, 0);
+          try {
+            setTimeout(() => {
+              let elt = this.shadowRoot,
+                card = elt.getElementById('card'),
+                ignore = window.navigator.userAgent;
+              if (elt && card && !ignore.match(/iPhone/i) && !ignore.match(/Android/i)) {
+                VanillaTilt.init(card, variables.tilt_options);
+              }
+            }, 0);
+          }
+          catch (e) {
+          }
         ]]]
 
   #################################################
@@ -1168,29 +1171,35 @@
     custom_fields:
       youtube: >
         [[[
-          let elt = this.shadowRoot;
-          if (entity && elt && entity.attributes.app_name === 'YouTube') {
-            let api = 'https://www.googleapis.com/youtube/v3/search',
-              artist = entity.attributes.media_artist,
-              title = entity.attributes.media_title,
-              options = 'type=video&part=snippet&maxResults=1',
-              token = variables.token.split('|'),
-              random = Math.floor(Math.random() * token.length),
-              url = `${api}?q="${artist}%20${title}"&${options}&key=${token[random]}`;
+          try {
+            let elt = this.shadowRoot;
+            if (entity && elt && entity.attributes.app_name === 'YouTube') {
+              let api = 'https://www.googleapis.com/youtube/v3/search',
+                artist = entity.attributes.media_artist,
+                title = entity.attributes.media_title,
+                options = 'type=video&part=snippet&maxResults=1',
+                token = variables.token.split('|'),
+                random = Math.floor(Math.random() * token.length),
+                url = `${api}?q="${artist}%20${title}"&${options}&key=${token[random]}`;
 
-            fetch(url).then(e => e.json()).then(e => {
-              let json = e.items[0].snippet.thumbnails,
-                hq = json[Object.keys(json).pop()].url,
-                card = elt.getElementById('card'),
-                blur_overlay = elt.getElementById('blur_overlay');
+              fetch(url).then(e => e.json()).then(e => {
+                if (e.items[0].snippet.thumbnails !== undefined) {
+                  let json = e.items[0].snippet.thumbnails,
+                    hq = json[Object.keys(json).pop()].url,
+                    card = elt.getElementById('card'),
+                    blur_overlay = elt.getElementById('blur_overlay');
 
-              if (entity.state !== 'idle' && artist !== undefined && title !== undefined) {
-                card.style.backgroundImage = `url("${hq}")`;
-                blur_overlay.style.backgroundImage = `url("${hq}")`;
-                card.style.backgroundSize = '178%';
-                blur_overlay.style.backgroundSize = '178%';
-              }
-            });
+                  if (entity.state !== 'idle' && artist !== undefined && title !== undefined) {
+                    card.style.backgroundImage = `url("${hq}")`;
+                    blur_overlay.style.backgroundImage = `url("${hq}")`;
+                    card.style.backgroundSize = '178%';
+                    blur_overlay.style.backgroundSize = '178%';
+                  }
+                }
+              });
+            }
+          }
+          catch (e) {
           }
         ]]]
 
