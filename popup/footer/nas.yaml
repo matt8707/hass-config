@@ -87,7 +87,7 @@ browser_mod:
           - entity: sensor.databas
             icon: mdi:database
 
-          - entity: sensor.home_assistant_log
+          - entity: sensor.home_assistant_log_size
             name: Loggfil
             icon: mdi:file-document
 

@@ -13,10 +13,6 @@ sensor:
       - type: last_boot
     scan_interval: 120
 
-  - platform: filesize
-    file_paths:
-      - /config/home-assistant.log
-
   - platform: sql
     db_url: !secret recorder_db_url
     queries:

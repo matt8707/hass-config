@@ -34,7 +34,7 @@ automation:
     id: '3331821824310'
     trigger:
       - platform: numeric_state
-        entity_id: sensor.home_assistant_log
+        entity_id: sensor.home_assistant_log_size
         above: 50
     action:
       - service: shell_command.ha_purge_logs
