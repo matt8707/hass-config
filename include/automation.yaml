@@ -492,7 +492,7 @@ automation:
               minutes: 15
           - service: browser_mod.close_popup
             data:
-              deviceID: 9c06ce87_d1cf313c
+              deviceID: dd239c79_406b9d77
 
     ####################################################
     #                                                  #
@@ -595,7 +595,7 @@ automation:
     action:
       - service: media_player.play_media
         target:
-          entity_id: media_player.browser_9c06ce87_d1cf313c
+          entity_id: media_player.browser_dd239c79_406b9d77
         data:
           media_content_id: /local/sound/timer.mp3
           media_content_type: music
