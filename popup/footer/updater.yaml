@@ -151,5 +151,5 @@ browser_mod:
               - sensor.playactor_version_latest
               - sensor.kemper_version
               - sensor.udm_unifios
-              - binary_sensor.nas_update_available
+              - update.nas_dsm_update
         template: icon_name

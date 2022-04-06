@@ -351,10 +351,10 @@ template:
               <b><a href="#" onclick="window.open('{{ url }}');">UniFi Dream Machine ({{ installed }})</a></b> uppdatering tillgänglig
             {% endif %}
           synology: >
-            {% set installed = state_attr('binary_sensor.nas_update_available', 'installed_version') %}
-            {% set latest = state_attr('binary_sensor.nas_update_available', 'latest_available_version') %}
+            {% set installed = state_attr('update.nas_dsm_update', 'installed_version') %}
+            {% set latest = state_attr('update.nas_dsm_update', 'latest_version') %}
             {% set url = 'https://www.synology.com/en-global/releaseNote/DSM' %}
-            {% if is_state('binary_sensor.nas_update_available', 'on') %}
+            {% if is_state('update.nas_dsm_update', 'on') %}
               <b><a href="#" onclick="window.open('{{ url }}');">Synology DSM</a></b> {{ installed + ' <b>&rarr;</b> ' + latest }}
             {% endif %}
 
