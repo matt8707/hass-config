@@ -616,6 +616,7 @@ automation:
 
   - alias: person_home
     id: '8423590985012'
+    mode: parallel
     trigger:
       platform: state
       entity_id:
@@ -628,23 +629,13 @@ automation:
         - home
         - not_home
     action:
-      - choose:
-        - conditions: >
-            {{ trigger.entity_id == 'person.matte' }}
-          sequence:
-            - service: mqtt.publish
-              data:
-                topic: homeassistant/persistence/matte
-                payload_template: >
-                  {{ now() }}
-                retain: true
-        default:
-          - service: mqtt.publish
-            data:
-              topic: homeassistant/persistence/sanja
-              payload_template: >
-                {{ now() }}
-              retain: true
+      service: mqtt.publish
+      data:
+        topic_template: >
+          homeassistant/persistence/{{ trigger.to_state.name | lower }}
+        payload_template: >
+          {{ now() }}
+        retain: true
 
   - alias: mailbox_count
     id: '2878459556162'
