@@ -113,8 +113,7 @@ template:
         attributes:
           friendly_name: VPN
           icon: >
-            mdi:shield-{{ iif(is_state('switch.computer_imac', 'on') and
-            states('sensor.imac_ip') == states('sensor.myip'), 'alert', 'check') }}
+            mdi:shield-{{ iif(this.state == 'on', 'check', 'alert') }}
           device_class: connectivity
 
       - unique_id: udm_internet
@@ -377,24 +376,8 @@ template:
           switch: >
             {{ states.switch | count }}
           other: >
-            {{ states.calendar | count +
-            states.camera | count +
-            states.climate | count +
-            states.fan | count +
-            states.input_boolean | count +
-            states.input_number | count +
-            states.input_select | count +
-            states.lock | count +
-            states.person | count +
-            states.remote | count +
-            states.scene | count +
-            states.script | count +
-            states.select | count +
-            states.sun | count +
-            states.timer | count +
-            states.vacuum | count +
-            states.weather | count +
-            states.zone | count }}
+            {% set exclude = this.attributes | list %}
+            {{ states | rejectattr('domain', 'in', exclude) | list | count }}
 
       - unique_id: udm_cpu
         state: >
