@@ -2,8 +2,8 @@ automation:
   - alias: homeassistant_start
     id: '7426848686945'
     trigger:
-      - platform: homeassistant
-        event: start
+      platform: homeassistant
+      event: start
     action:
       - service: browser_mod.close_popup
       - delay:
@@ -22,45 +22,45 @@ automation:
     id: '9381519720051'
     mode: restart
     trigger:
-      - platform: event
-        event_type: lovelace_updated
+      platform: event
+      event_type: lovelace_updated
     action:
-      - service: browser_mod.toast
-        data:
-          duration: 1
-          message: ' '
+      service: browser_mod.toast
+      data:
+        duration: 1
+        message: ' '
 
   - alias: clear_log_filesize
     id: '3331821824310'
     trigger:
-      - platform: numeric_state
-        entity_id: sensor.home_assistant_log_size
-        above: 50
+      platform: numeric_state
+      entity_id: sensor.home_assistant_log_size
+      above: 50
     action:
-      - service: shell_command.ha_purge_logs
+      service: shell_command.ha_purge_logs
 
   - alias: climate_safeguard
     id: '0374158275864'
     trigger:
-      - platform: state
-        entity_id: climate.ac
-        to: cool
+      platform: state
+      entity_id: climate.ac
+      to: cool
     condition:
-      - condition: state
-        entity_id: binary_sensor.aqara_contact_window
-        state: 'off'
+      condition: state
+      entity_id: binary_sensor.aqara_contact_window
+      state: 'off'
     action:
-      - service: climate.set_hvac_mode
-        target:
-          entity_id: climate.ac
-        data:
-          hvac_mode: fan_only
+      service: climate.set_hvac_mode
+      target:
+        entity_id: climate.ac
+      data:
+        hvac_mode: fan_only
 
   - alias: waste_collection
     id: '5611101897022'
     trigger:
-      - platform: time
-        at: '22:30'
+      platform: time
+      at: '22:30'
     condition:
       - condition: and
         conditions:
@@ -71,11 +71,11 @@ automation:
             entity_id: binary_sensor.aqara_contact_window
             state: 'on'
     action:
-      - service: notify.ALL_DEVICES
-        data:
-          title: >
-            {{ '\u267B' }} Sophämtning imorgon
-          message: Stäng fönstret!
+      service: notify.ALL_DEVICES
+      data:
+        title: >
+          {{ '\u267B' }} Sophämtning imorgon
+        message: Stäng fönstret!
 
   - alias: vacuum_empty_bin
     id: '5443599527378'
@@ -105,40 +105,40 @@ automation:
   - alias: tv_on_lights
     id: '6657050215613'
     trigger:
-      - platform: state
-        entity_id: media_player.sony_bravia_tv
-        from: 'off'
-        to: 'on'
+      platform: state
+      entity_id: media_player.sony_bravia_tv
+      from: 'off'
+      to: 'on'
     action:
-      - service: light.turn_on
-        target:
-          entity_id: light.tv
+      service: light.turn_on
+      target:
+        entity_id: light.tv
 
   - alias: no_motion_bathroom
     id: '9936892396917'
     trigger:
-      - platform: state
-        entity_id: binary_sensor.sensor_badrum_motion
-        to: 'off'
-        for:
-          minutes: 30
+      platform: state
+      entity_id: binary_sensor.sensor_badrum_motion
+      to: 'off'
+      for:
+        minutes: 30
     action:
-      - service: light.turn_off
-        target:
-          entity_id: light.group_badrum
+      service: light.turn_off
+      target:
+        entity_id: light.group_badrum
 
   - alias: balcony
     id: '1522208581249'
     mode: restart
     trigger:
-      - platform: state
-        entity_id: binary_sensor.wemo_motion
-        from:
-          - 'on'
-          - 'off'
-        to:
-          - 'on'
-          - 'off'
+      platform: state
+      entity_id: binary_sensor.wemo_motion
+      from:
+        - 'on'
+        - 'off'
+      to:
+        - 'on'
+        - 'off'
     action:
       - choose:
         - conditions: >
@@ -165,37 +165,37 @@ automation:
     id: '3900676590344'
     mode: parallel
     trigger:
-      - platform: state
-        entity_id:
-          - binary_sensor.sensor_garderob_motion
-          - binary_sensor.sensor_badrum_motion
-          - binary_sensor.wemo_motion
-        from: 'off'
-        to: 'on'
+      platform: state
+      entity_id:
+        - binary_sensor.sensor_garderob_motion
+        - binary_sensor.sensor_badrum_motion
+        - binary_sensor.wemo_motion
+      from: 'off'
+      to: 'on'
     action:
-      - service: browser_mod.toast
-        data:
-          duration: 3000
-          message: >
-            Rörelse detekterat i {{ trigger.to_state.name }}
+      service: browser_mod.toast
+      data:
+        duration: 3000
+        message: >
+          Rörelse detekterat i {{ trigger.to_state.name }}
 
   - alias: macos_notification_motion_hall
     id: '4135668040301'
     initial_state: false
     trigger:
-      - platform: state
-        entity_id: binary_sensor.sensor_hall_motion
-        from: 'off'
-        to: 'on'
+      platform: state
+      entity_id: binary_sensor.sensor_hall_motion
+      from: 'off'
+      to: 'on'
     condition:
-      - condition: state
-        entity_id: switch.computer_imac
-        state: 'on'
+      condition: state
+      entity_id: switch.computer_imac
+      state: 'on'
     action:
-      - service: notify.mobile_app_mattias_imac
-        data:
-          message: Rörelse i hallen detekterat
-          title: Home Assistant
+      service: notify.mobile_app_mattias_imac
+      data:
+        message: Rörelse i hallen detekterat
+        title: Home Assistant
 
   - alias: ios_notify_hass_update
     id: '7958228563778'
@@ -205,8 +205,8 @@ automation:
       installed: >
         {{ states('sensor.hass_version_installed') }}
     trigger:
-      - platform: state
-        entity_id: sensor.hass_version_latest
+      platform: state
+      entity_id: sensor.hass_version_latest
     condition: >
       {{ installed != latest if '.' in installed and '.' in latest else false }}
     action:
@@ -225,28 +225,28 @@ automation:
           data:
             url: https://www.home-assistant.io/latest-release-notes/
             actions:
-              - action: START_WATCHTOWER
-                title: Uppdatera
+              action: START_WATCHTOWER
+              title: Uppdatera
 
   - alias: ios_notify_hass_update_action
     id: '0694774018396'
     trigger:
-      - platform: event
-        event_type: mobile_app_notification_action
-        event_data:
-          action: START_WATCHTOWER
+      platform: event
+      event_type: mobile_app_notification_action
+      event_data:
+        action: START_WATCHTOWER
     action:
-      - service: switch.turn_on
-        target:
-          entity_id: switch.docker_watchtower
+      service: switch.turn_on
+      target:
+        entity_id: switch.docker_watchtower
 
   - alias: notify_and_remove_completed_torrent
     id: '7876919385611'
     mode: parallel
     max: 25
     trigger:
-      - platform: event
-        event_type: transmission_downloaded_torrent
+      platform: event
+      event_type: transmission_downloaded_torrent
     action:
       - service: notify.ALL_DEVICES
         data:
@@ -269,15 +269,15 @@ automation:
   - alias: ios_notify_tablet_unplugged
     id: '3972668118831'
     trigger:
-      - platform: numeric_state
-        entity_id: sensor.galaxy_tab_a_battery_level
-        below: 50
+      platform: numeric_state
+      entity_id: sensor.galaxy_tab_a_battery_level
+      below: 50
     action:
-      - service: notify.ALL_DEVICES
-        data:
-          title: Ladda väggplattan...
-          message: >
-            Batteri {{ states(trigger.entity_id) }}%
+      service: notify.ALL_DEVICES
+      data:
+        title: Ladda väggplattan...
+        message: >
+          Batteri {{ states(trigger.entity_id) }}%
 
     ####################################################
     #                                                  #
@@ -295,25 +295,25 @@ automation:
         from: 'off'
         to: 'on'
     condition:
-      - condition: state
-        entity_id: switch.computer_imac
-        state: 'on'
+      condition: state
+      entity_id: switch.computer_imac
+      state: 'on'
     action:
-      - service: homeassistant.update_entity
-        target:
-          entity_id:
-            - sensor.imac_cpu
-            - sensor.imac_mem
-            - sensor.imac_uptime
-            - sensor.imac_ip
-            - sensor.monitors_volume
-            - binary_sensor.monitors_mute_state
+      service: homeassistant.update_entity
+      target:
+        entity_id:
+          - sensor.imac_cpu
+          - sensor.imac_mem
+          - sensor.imac_uptime
+          - sensor.imac_ip
+          - sensor.monitors_volume
+          - binary_sensor.monitors_mute_state
 
   - alias: skanetrafiken_scan_interval
     id: '0745322571221'
     trigger:
-      - platform: time_pattern
-        minutes: /5
+      platform: time_pattern
+      minutes: /5
     condition:
       condition: not
       conditions:
@@ -321,23 +321,21 @@ automation:
           after: '01:00:00'
           before: '04:00:00'
     action:
-      - service: homeassistant.update_entity
-        target:
-          entity_id: sensor.skanetrafiken
+      service: homeassistant.update_entity
+      target:
+        entity_id: sensor.skanetrafiken
 
   - alias: hacs_sensor_refresh
     id: '2001123854555'
     trigger:
-      - platform: event
-        event_type: hacs/repository
-        event_data:
-          action: install
+      platform: event
+      event_type: hacs/repository
+      event_data:
+        action: install
     action:
-      # - delay:
-      #     seconds: 4
-      - service: homeassistant.update_entity
-        target:
-          entity_id: sensor.hacs
+      service: homeassistant.update_entity
+      target:
+        entity_id: sensor.hacs
 
     ####################################################
     #                                                  #
@@ -348,12 +346,12 @@ automation:
   - alias: monitors_volume_slider
     id: '0022255594357'
     trigger:
-      - platform: state
-        entity_id: input_number.monitors_volume
+      platform: state
+      entity_id: input_number.monitors_volume
     condition:
-      - condition: state
-        entity_id: switch.computer_imac
-        state: 'on'
+      condition: state
+      entity_id: switch.computer_imac
+      state: 'on'
     action:
       - service: shell_command.monitors_volume_slider
       - service: homeassistant.update_entity
@@ -371,12 +369,12 @@ automation:
       volume: >
         {{ states(trigger.entity_id) | int }}
     trigger:
-      - platform: state
-        entity_id: sensor.monitors_volume
+      platform: state
+      entity_id: sensor.monitors_volume
     condition:
-      - condition: state
-        entity_id: switch.computer_imac
-        state: 'on'
+      condition: state
+      entity_id: switch.computer_imac
+      state: 'on'
     action:
       - service: homeassistant.update_entity
         target:
@@ -392,14 +390,14 @@ automation:
     id: '7780410156815'
     mode: queued
     trigger:
-      - platform: state
-        entity_id: switch.gosund_monitors_switch
-        from:
-          - 'on'
-          - 'off'
-        to:
-          - 'on'
-          - 'off'
+      platform: state
+      entity_id: switch.gosund_monitors_switch
+      from:
+        - 'on'
+        - 'off'
+      to:
+        - 'on'
+        - 'off'
     action:
       - choose:
         - conditions:
@@ -414,16 +412,16 @@ automation:
   - alias: turn_off_monitors
     id: '9863921240123'
     trigger:
-      - platform: state
-        entity_id: switch.computer_imac
-        from: 'on'
-        to: 'off'
-        for:
-          minutes: 15
+      platform: state
+      entity_id: switch.computer_imac
+      from: 'on'
+      to: 'off'
+      for:
+        minutes: 15
     action:
-      - service: switch.turn_off
-        target:
-          entity_id: switch.gosund_monitors_switch
+      service: switch.turn_off
+      target:
+        entity_id: switch.gosund_monitors_switch
 
     ####################################################
     #                                                  #
@@ -448,9 +446,9 @@ automation:
         for:
           minutes: 15
     action:
-      - service: switch.turn_off
-        target:
-          entity_id: switch.gosund_fan_switch
+      service: switch.turn_off
+      target:
+        entity_id: switch.gosund_fan_switch
 
     ####################################################
     #                                                  #
@@ -570,8 +568,8 @@ automation:
     id: '4792508317061'
     mode: restart
     trigger:
-      - platform: time_pattern
-        minutes: /5
+      platform: time_pattern
+      minutes: /5
     condition: >
       {% set start_time = state_attr('calendar.tvatta', 'start_time') %}
       {{ as_timestamp(start_time) - as_timestamp(now()) < 10 * 60 if start_time != None else false }}
@@ -588,10 +586,10 @@ automation:
   - alias: laundry_alert
     id: '3403466403120'
     trigger:
-      - platform: event
-        event_type: timer.finished
-        event_data:
-          entity_id: timer.laundry
+      platform: event
+      event_type: timer.finished
+      event_data:
+        entity_id: timer.laundry
     action:
       - service: media_player.play_media
         target:
@@ -613,16 +611,16 @@ automation:
   - alias: person_home
     id: '8423590985012'
     trigger:
-      - platform: state
-        entity_id:
-          - person.matte
-          - person.sanja
-        from:
-          - home
-          - not_home
-        to:
-          - home
-          - not_home
+      platform: state
+      entity_id:
+        - person.matte
+        - person.sanja
+      from:
+        - home
+        - not_home
+      to:
+        - home
+        - not_home
     action:
       - choose:
         - conditions: >

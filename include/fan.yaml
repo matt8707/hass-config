@@ -7,28 +7,28 @@ fan:
           {% set entity_id = 'switch.gosund_fan_switch' %}
           {{ is_state(entity_id, 'unavailable') | iif('off', states(entity_id)) }}
         turn_on:
-          - service: switch.turn_on
-            target:
-              entity_id: switch.gosund_fan_switch
+          service: switch.turn_on
+          target:
+            entity_id: switch.gosund_fan_switch
         turn_off:
-          - service: switch.turn_off
-            target:
-              entity_id: switch.gosund_fan_switch
+          service: switch.turn_off
+          target:
+            entity_id: switch.gosund_fan_switch
 
       climate_fan_only:
         speed_count: 3
         value_template: >
           {{ is_state('climate.ac', 'fan_only') | iif('on', 'off') }}
         turn_on:
-          - service: climate.set_hvac_mode
-            target:
-              entity_id: climate.ac
-            data:
-              hvac_mode: fan_only
+          service: climate.set_hvac_mode
+          target:
+            entity_id: climate.ac
+          data:
+            hvac_mode: fan_only
         turn_off:
-          - service: climate.turn_off
-            target:
-              entity_id: climate.ac
+          service: climate.turn_off
+          target:
+            entity_id: climate.ac
         percentage_template: >
           {% set speed = state_attr('climate.ac', 'fan_mode') %}
           {% if speed == 'low' %}
@@ -64,9 +64,9 @@ fan:
         oscillating_template: >
           {{ is_state_attr('climate.ac', 'swing_mode', 'on') }}
         set_oscillating:
-          - service: climate.set_swing_mode
-            target:
-              entity_id: climate.ac
-            data:
-              swing_mode: >
-                {{ is_state_attr('climate.ac', 'swing_mode', 'off') | iif('on', 'off') }}
+          service: climate.set_swing_mode
+          target:
+            entity_id: climate.ac
+          data:
+            swing_mode: >
+              {{ is_state_attr('climate.ac', 'swing_mode', 'off') | iif('on', 'off') }}

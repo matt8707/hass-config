@@ -4,57 +4,57 @@ rest:
     password: !secret github_access_token
     resource: https://api.github.com/repos/esphome/esphome/releases/latest
     sensor:
-      - name: esphome_version_latest
-        value_template: >
-          {{ value_json.tag_name }}
+      name: esphome_version_latest
+      value_template: >
+        {{ value_json.tag_name }}
     scan_interval: 86400
 
   - resource: https://api.github.com/repos/dhleong/playactor/releases/latest
     sensor:
-      - name: playactor_version_latest
-        value_template: >
-          {{ value_json.tag_name }}
+      name: playactor_version_latest
+      value_template: >
+        {{ value_json.tag_name }}
     scan_interval: 86400
 
   - resource: https://api.github.com/repos/home-assistant/core/releases/latest
     sensor:
-      - name: hass_release_notes
-        value_template: >
-          {{ value_json.name }}
-        json_attributes:
-          - body
+      name: hass_release_notes
+      value_template: >
+        {{ value_json.name }}
+      json_attributes:
+        - body
     scan_interval: 21600
 
   - resource: https://api.github.com/repos/home-assistant/core/releases?per_page=1
     sensor:
-      - name: hass_release_notes_rc
-        value_template: >
-          {{ value_json[0].name }}
-        json_attributes:
-          - body
+      name: hass_release_notes_rc
+      value_template: >
+        {{ value_json[0].name }}
+      json_attributes:
+        - body
     scan_interval: 21600
 
   - resource: !secret skanetrafiken
     sensor:
-      - name: skanetrafiken
-        value_template: >
-          {% if value_json is defined %}
-            {% set ns = namespace(found=false) %}
-            {% for i in range(value_json.Trip | length) %}
-              {% set json = value_json.Trip[i].LegList.Leg[1].Origin %}
-              {% set name = json.name.split()[1] %}
-              {% set timestamp = json.date + 'T' + json.time %}
-              {% set offset = 60 * 15 %}
-              {% if (as_timestamp(timestamp) - as_timestamp(now())) > offset and not ns.found %}
-                {% set ns.found = true %}
-                {% set ns.timestamp = as_timestamp(timestamp) | timestamp_custom('%H:%M') %}
-                {% set ns.name = name %}
-              {% endif %}
-            {% endfor %}
-            {% if ns.timestamp != null and ns.name != null %}
-              Nästa buss går {{ ns.timestamp }} från {{ ns.name }}
+      name: skanetrafiken
+      value_template: >
+        {% if value_json is defined %}
+          {% set ns = namespace(found=false) %}
+          {% for i in range(value_json.Trip | length) %}
+            {% set json = value_json.Trip[i].LegList.Leg[1].Origin %}
+            {% set name = json.name.split()[1] %}
+            {% set timestamp = json.date + 'T' + json.time %}
+            {% set offset = 60 * 15 %}
+            {% if (as_timestamp(timestamp) - as_timestamp(now())) > offset and not ns.found %}
+              {% set ns.found = true %}
+              {% set ns.timestamp = as_timestamp(timestamp) | timestamp_custom('%H:%M') %}
+              {% set ns.name = name %}
             {% endif %}
-          {% else %}
-            false
+          {% endfor %}
+          {% if ns.timestamp != null and ns.name != null %}
+            Nästa buss går {{ ns.timestamp }} från {{ ns.name }}
           {% endif %}
+        {% else %}
+          false
+        {% endif %}
     scan_interval: 86400
