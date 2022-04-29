@@ -63,14 +63,13 @@ automation:
       platform: time
       at: '22:30'
     condition:
-      - condition: and
-        conditions:
-          - condition: state
-            entity_id: sensor.sophamtning
-            state: '1'
-          - condition: state
-            entity_id: binary_sensor.aqara_contact_window
-            state: 'on'
+      and:
+        - condition: state
+          entity_id: sensor.sophamtning
+          state: '1'
+        - condition: state
+          entity_id: binary_sensor.aqara_contact_window
+          state: 'on'
     action:
       service: notify.ALL_DEVICES
       data:
@@ -317,11 +316,10 @@ automation:
       platform: time_pattern
       minutes: /5
     condition:
-      condition: not
-      conditions:
-        - condition: time
-          after: '01:00:00'
-          before: '04:00:00'
+      not:
+        condition: time
+        after: '01:00:00'
+        before: '04:00:00'
     action:
       service: homeassistant.update_entity
       target:
