@@ -43,3 +43,4 @@ camera:
       vacuum_radius: 10
     attributes:
       - calibration_points
+    scan_interval: 10
