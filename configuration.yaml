@@ -39,6 +39,7 @@ logger:
     homeassistant.components.websocket_api: fatal
     homeassistant.components.camera: fatal
     homeassistant.helpers.entity: fatal
+    custom_components.monitor_docker.helpers: fatal
 
 recorder:
   db_url: !secret recorder_db_url
