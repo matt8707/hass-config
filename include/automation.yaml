@@ -5,7 +5,9 @@ automation:
       platform: homeassistant
       event: start
     action:
-      - service: browser_mod.close_popup
+      - service: button.press
+        target:
+          entity_id: button.galaxy_tab_a_restart_browser
       - delay:
           minutes: 1
       - if:
