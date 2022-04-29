@@ -80,21 +80,33 @@ automation:
   - alias: vacuum_empty_bin
     id: '5443599527378'
     variables:
-      vacuum: 'vacuum.morty'
+      vacuum: vacuum.morty
     trigger:
-      - platform: state
-        entity_id: sensor.morty_last_clean_end
+      platform: state
+      entity_id: sensor.morty_total_clean_count
     condition: >
-      {{ not is_state(vacuum, 'docked') and as_timestamp(now()) -
-      as_timestamp(states(trigger.entity_id)) | int(default=None) < 7200 }}
+      {{ not is_state(vacuum, 'docked') }}
     action:
-      - service: xiaomi_miio.vacuum_goto
-        target:
-          entity_id: >
-            {{ vacuum }}
-        data:
-          x_coord: 16821
-          y_coord: 23105
+      - delay:
+          seconds: 3
+      - if:
+          condition: template
+          value_template: >
+            {{ is_state(vacuum, 'returning') }}
+        then:
+          - service: vacuum.pause
+            target:
+              entity_id: >
+                {{ vacuum }}
+          - delay:
+              seconds: 2
+          - service: xiaomi_miio.vacuum_goto
+            target:
+              entity_id: >
+                {{ vacuum }}
+            data:
+              x_coord: 16821
+              y_coord: 23105
 
     ####################################################
     #                                                  #
