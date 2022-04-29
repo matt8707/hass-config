@@ -641,31 +641,19 @@ automation:
     id: '2878459556162'
     mode: restart
     trigger:
-      - platform: state
-        entity_id: binary_sensor.aqara_contact_count
-        from: 'off'
-        to: 'on'
-      - platform: state
-        entity_id: binary_sensor.aqara_contact_reset
-        from: 'off'
-        to: 'on'
+      platform: state
+      entity_id:
+        - binary_sensor.aqara_contact_count
+        - binary_sensor.aqara_contact_reset
+      from: 'off'
+      to: 'on'
     condition: >
-      {{ as_timestamp(now()) - as_timestamp(state_attr(this.entity_id, 'last_triggered')) > 7
-      or trigger.entity_id == 'binary_sensor.aqara_contact_reset' }}
+      {{ as_timestamp(now()) - as_timestamp(state_attr(this.entity_id,
+      'last_triggered')) > 7 or 'reset' in trigger.entity_id }}
     action:
-      - choose:
-        - conditions: >
-            {{ trigger.entity_id == 'binary_sensor.aqara_contact_reset' }}
-          sequence:
-            - service: mqtt.publish
-              data:
-                topic: homeassistant/persistence/mailbox
-                payload: 0
-                retain: true
-        default:
-          - service: mqtt.publish
-            data:
-              topic: homeassistant/persistence/mailbox
-              payload_template: >
-                {{ states('sensor.mailbox') | int + 1 }}
-              retain: true
+      service: mqtt.publish
+      data:
+        topic: homeassistant/persistence/mailbox
+        payload_template: >
+          {{ iif('reset' in trigger.entity_id, 0, states('sensor.mailbox') | int + 1) }}
+        retain: true
