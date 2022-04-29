@@ -1,6 +1,6 @@
 # Home Assistant Configuration
 
-[Home Assistant Container](https://www.home-assistant.io/installation/#compare-installation-methods) on a Synology DiskStation DS918+ NAS. Use cases are a [Galaxy Tab A 10.1](https://www.samsung.com/us/mobile/tablets/galaxy-tab-a/galaxy-tab-a-10-1-2019-32gb-black-wi-fi-sm-t510nzkaxar/) ([wall mounted](https://www.durable.eu/information-and-presentation/tablet-holder/wall-mounted-tablet-holder/tablet-holder-wall.html)) tablet with [Fully Kiosk Browser](https://www.ozerov.de/fully-kiosk-browser/) and [homeassistant-desktop](https://github.com/mrvnklm/homeassistant-desktop) on macOS. My configuration is exposed to HomeKit with Apple TV acting as a hub for remote connection. I also support [Nabu Casa](https://www.nabucasa.com/).
+[Home Assistant Container](https://www.home-assistant.io/installation/#compare-installation-methods) on a Synology DiskStation DS918+ NAS. [Wall mounted](https://www.durable.eu/en_DE/tablet-holder-wall/893323) tablet ([Galaxy Tab A 10.1](https://www.samsung.com/us/mobile/tablets/galaxy-tab-a/galaxy-tab-a-10-1-2019-32gb-black-wi-fi-sm-t510nzkaxar/)) using [Fully Kiosk Browser](https://www.fully-kiosk.com/#get-kiosk-apps). My configuration is exposed to HomeKit with Apple TV acting as a hub for remote connection.
 
 If you like anything here, be sure to :star2: my repo!
 
@@ -21,7 +21,7 @@ No, because this is not a custom card or integration
 
 ## Features
 
-* [Lovelace UI](https://www.home-assistant.io/lovelace/) using custom [button-card](https://github.com/custom-cards/button-card) and [layout-card](https://github.com/thomasloven/lovelace-layout-card)
+* [Dashboard (Lovelace)](https://www.home-assistant.io/lovelace/) using custom [button-card](https://github.com/custom-cards/button-card) and [layout-card](https://github.com/thomasloven/lovelace-layout-card)
 * Portrait, landscape and mobile view - [responsive_demo.mp4](https://user-images.githubusercontent.com/36163594/120789256-ad825000-c531-11eb-97c2-18904c48efdd.mp4)
 * Less cluttered interface by displaying more information in a popup
 * Loading animation for slow responding entities
@@ -79,9 +79,6 @@ I've made a tool to help with css element selectors - [https://matt8707.github.i
 
 ## Hardware
 
-<details>
-<summary>click to expand</summary>
-
 | Vendor | Product | Integration | Description |
 |---|---|---|---|
 | Ubiquiti | UniFi Dream Machine | [unifi](https://www.home-assistant.io/integrations/unifi/) | Router, controller, switch and access point |
@@ -106,8 +103,6 @@ I've made a tool to help with css element selectors - [https://matt8707.github.i
 | Apple | iPhone X | [ios](https://www.home-assistant.io/integrations/ios/) | Home Assistant Companion App for iOS |
 
 *Note: I do not recommend "Belkin WeMo" or "Deltaco SH-P01"*
-
-</details>
 
 ---
 
