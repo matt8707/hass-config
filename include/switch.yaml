@@ -35,18 +35,17 @@ switch:
             target:
               entity_id: light.dator
         turn_off:
-          - choose:
-            - conditions:
-                - condition: state
-                  entity_id: input_boolean.computer_lock
-                  state: 'on'
-              sequence:
-                - service: browser_mod.toast
-                  data:
-                    duration: 8000
-                    message: Dator är låst från att stängas av...
-            default:
-              - service: shell_command.imac_off
+          if:
+            condition: state
+            entity_id: input_boolean.computer_lock
+            state: 'on'
+          then:
+            service: browser_mod.toast
+            data:
+              duration: 8000
+              message: Dator är låst från att stängas av...
+          else:
+            service: shell_command.imac_off
 
       monitors_mute:
         value_template: >

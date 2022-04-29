@@ -8,15 +8,14 @@ automation:
       - service: browser_mod.close_popup
       - delay:
           minutes: 1
-      - choose:
-        - conditions:
-            - condition: state
-              entity_id: light.group_hall
-              state: 'off'
-          sequence:
-            - service: switch.turn_on
-              target:
-                entity_id: switch.galaxy_tab_a_screensaver
+      - if:
+          - condition: state
+            entity_id: light.group_hall
+            state: 'off'
+        then:
+          - service: switch.turn_on
+            target:
+              entity_id: switch.galaxy_tab_a_screensaver
 
   - alias: lovelace_updated_ignore
     id: '9381519720051'
@@ -140,20 +139,21 @@ automation:
         - 'on'
         - 'off'
     action:
-      - choose:
-        - conditions: >
-            {{ trigger.to_state.state == 'on' and
-            is_state('sun.sun', 'below_horizon') }}
-          sequence:
-            - service: switch.turn_on
-              target:
-                entity_id: switch.deltaco_sh_p01
-        default:
-          - delay:
-              minutes: 25
-          - service: switch.turn_off
-            target:
-              entity_id: switch.deltaco_sh_p01
+      if:
+        condition: template
+        value_template: >
+          {{ trigger.to_state.state == 'on' and
+          is_state('sun.sun', 'below_horizon') }}
+      then:
+        service: switch.turn_on
+        target:
+          entity_id: switch.deltaco_sh_p01
+      else:
+        - delay:
+            minutes: 25
+        - service: switch.turn_off
+          target:
+            entity_id: switch.deltaco_sh_p01
 
     ####################################################
     #                                                  #
@@ -399,15 +399,14 @@ automation:
         - 'on'
         - 'off'
     action:
-      - choose:
-        - conditions:
-            - condition: state
-              entity_id: switch.gosund_monitors_switch
-              state: 'on'
-          sequence:
-            - service: shell_command.reference_monitors
-        default:
-          - service: shell_command.reference_headphones
+      if:
+        condition: state
+        entity_id: switch.gosund_monitors_switch
+        state: 'on'
+      then:
+        service: shell_command.reference_monitors
+      else:
+        service: shell_command.reference_headphones
 
   - alias: turn_off_monitors
     id: '9863921240123'
@@ -460,37 +459,36 @@ automation:
     id: '9452750674803'
     mode: restart
     trigger:
-      - platform: state
-        entity_id: binary_sensor.sensor_hall_motion
-        from: 'off'
-        to: 'on'
-      - platform: state
-        entity_id: light.group_hall
-        from: 'on'
-        to: 'off'
+      platform: state
+      entity_id:
+        - binary_sensor.sensor_hall_motion
+        - light.group_hall
+      from: 'off'
+      to: 'on'
     action:
-      - choose:
-        - conditions: >
-            {{ trigger.entity_id == 'binary_sensor.sensor_hall_motion' }}
-          sequence:
-            - service: switch.turn_off
-              target:
-                entity_id: switch.galaxy_tab_a_screensaver
-            - service: light.turn_on
-              target:
-                entity_id: light.galaxy_tab_a_screen
-              data:
-                brightness_pct: >
-                  {{ is_state('sun.sun', 'above_horizon') | iif(90, 65) }}
-        default:
-          - service: switch.turn_on
-            target:
-              entity_id: switch.galaxy_tab_a_screensaver
-          - delay:
-              minutes: 15
-          - service: browser_mod.close_popup
-            data:
-              deviceID: dd239c79_406b9d77
+      if:
+        condition: template
+        value_template: >
+          {{ 'sensor_hall_motion' in trigger.entity_id }}
+      then:
+        - service: switch.turn_off
+          target:
+            entity_id: switch.galaxy_tab_a_screensaver
+        - service: light.turn_on
+          target:
+            entity_id: light.galaxy_tab_a_screen
+          data:
+            brightness_pct: >
+              {{ iif(is_state('sun.sun', 'above_horizon'), 90, 65) }}
+      else:
+        - service: switch.turn_on
+          target:
+            entity_id: switch.galaxy_tab_a_screensaver
+        - delay:
+            minutes: 15
+        - service: browser_mod.close_popup
+          data:
+            deviceID: dd239c79_406b9d77
 
     ####################################################
     #                                                  #
@@ -511,14 +509,9 @@ automation:
           domain: media_player
           service: turn_on
           service_data:
-            entity_id: media_player.sony_bravia_tv
-      - platform: event
-        event_type: call_service
-        event_data:
-          domain: media_player
-          service: turn_on
-          service_data:
-            entity_id: media_player.samsung_tv
+            entity_id:
+              - media_player.sony_bravia_tv
+              - media_player.samsung_tv
       - platform: event
         event_type: call_service
         event_data:
@@ -530,33 +523,34 @@ automation:
       - service: media_player.turn_on
         target:
           entity_id: >
-            {% if entity_id == 'media_player.sony_bravia_tv' %}
+            {% if 'sony_bravia_tv' in entity_id %}
               media_player.vardagsrum
-            {% elif entity_id == 'media_player.samsung_tv' %}
+            {% elif 'samsung_tv' in entity_id %}
               media_player.sovrum
-            {% elif entity_id == 'switch.playstation_5' %}
+            {% elif 'playstation_5' in entity_id %}
               media_player.samsung_tv
             {% endif %}
-      - choose:
-        - conditions: >
-            {{ entity_id == 'switch.playstation_5' }}
-          sequence:
-            - service: media_player.select_source
-              target:
-                entity_id: media_player.samsung_tv
-              data:
-                source: PS5
-        default:
-          - service: remote.send_command
-            target:
-              entity_id: >
-                {% if entity_id == 'media_player.sony_bravia_tv' %}
-                  remote.vardagsrum
-                {% elif entity_id == 'media_player.samsung_tv' %}
-                  remote.sovrum
-                {% endif %}
-            data:
-              command: wakeup
+      - if:
+          condition: template
+          value_template: >
+            {{ 'playstation_5' in entity_id }}
+        then:
+          service: media_player.select_source
+          target:
+            entity_id: media_player.samsung_tv
+          data:
+            source: PS5
+        else:
+          service: remote.send_command
+          target:
+            entity_id: >
+              {% if 'sony_bravia_tv' in entity_id %}
+                remote.vardagsrum
+              {% elif 'samsung_tv' in entity_id %}
+                remote.sovrum
+              {% endif %}
+          data:
+            command: wakeup
 
     ####################################################
     #                                                  #
