@@ -13,16 +13,6 @@ sensor:
       - type: last_boot
     scan_interval: 120
 
-  - platform: sql
-    db_url: !secret recorder_db_url
-    queries:
-      - name: Databas
-        query: >
-          SELECT table_schema "database", Round(Sum(data_length + index_length) / POWER(1024,2), 1)
-          "value" FROM information_schema.tables WHERE table_schema="homeassistant" GROUP BY table_schema;
-        column: value
-        unit_of_measurement: MB
-
   - platform: darksky
     api_key: !secret darksky_api_key
     language: sv
