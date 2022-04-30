@@ -471,12 +471,14 @@ automation:
     id: '9452750674803'
     mode: restart
     trigger:
-      platform: state
-      entity_id:
-        - binary_sensor.sensor_hall_motion
-        - light.group_hall
-      from: 'off'
-      to: 'on'
+      - platform: state
+        entity_id: binary_sensor.sensor_hall_motion
+        from: 'off'
+        to: 'on'
+      - platform: state
+        entity_id: light.group_hall
+        from: 'on'
+        to: 'off'
     action:
       if:
         condition: template
