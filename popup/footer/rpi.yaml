@@ -80,7 +80,7 @@ browser_mod:
             entity_row: true
             entities:
 
-              - entity: sensor.rpi_docker_cpu
+              - entity: sensor.rpi_docker_1cpu
                 name: Docker CPU
 
               - entity: sensor.rpi_docker_memory_percent

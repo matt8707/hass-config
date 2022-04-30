@@ -177,7 +177,7 @@ browser_mod:
             entity_row: true
             entities:
 
-              - entity: sensor.docker_cpu
+              - entity: sensor.docker_1cpu
                 name: Processor
 
               - entity: sensor.docker_memory_percent
