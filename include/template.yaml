@@ -450,7 +450,8 @@ template:
 
       - unique_id: hass_dev_release
         state: >
-          {{ (as_timestamp(state_attr('calendar.home_assistant_devs', 'start_time'), default=0) + 60*60*18) | timestamp_local(default) }}
+          {% set start_time = state_attr('calendar.home_assistant_devs', 'start_time') %}
+          {{ (as_timestamp(start_time, default=0) + 60*60*20.5) | timestamp_local(default) }}
         attributes:
           friendly_name: >
             {% set release = state_attr('calendar.home_assistant_devs','message') %}
