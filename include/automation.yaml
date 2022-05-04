@@ -89,10 +89,8 @@ automation:
     action:
       - delay:
           seconds: 3
-      - if:
-          condition: template
-          value_template: >
-            {{ is_state(vacuum, 'returning') }}
+      - if: >
+          {{ is_state(vacuum, 'returning') }}
         then:
           - service: vacuum.pause
             target:
@@ -152,11 +150,9 @@ automation:
         - 'on'
         - 'off'
     action:
-      if:
-        condition: template
-        value_template: >
-          {{ trigger.to_state.state == 'on' and
-          is_state('sun.sun', 'below_horizon') }}
+      if: >
+        {{ trigger.to_state.state == 'on' and
+        is_state('sun.sun', 'below_horizon') }}
       then:
         service: switch.turn_on
         target:
@@ -480,10 +476,8 @@ automation:
         from: 'on'
         to: 'off'
     action:
-      if:
-        condition: template
-        value_template: >
-          {{ 'sensor_hall_motion' in trigger.entity_id }}
+      if: >
+        {{ 'sensor_hall_motion' in trigger.entity_id }}
       then:
         - service: switch.turn_off
           target:
@@ -544,10 +538,8 @@ automation:
             {% elif 'playstation_5' in entity_id %}
               media_player.samsung_tv
             {% endif %}
-      - if:
-          condition: template
-          value_template: >
-            {{ 'playstation_5' in entity_id }}
+      - if: >
+          {{ 'playstation_5' in entity_id }}
         then:
           service: media_player.select_source
           target:
