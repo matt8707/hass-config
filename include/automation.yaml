@@ -234,8 +234,8 @@ automation:
           data:
             url: https://www.home-assistant.io/latest-release-notes/
             actions:
-              action: START_WATCHTOWER
-              title: Uppdatera
+              - action: START_WATCHTOWER
+                title: Uppdatera
 
   - alias: ios_notify_hass_update_action
     id: '0694774018396'
