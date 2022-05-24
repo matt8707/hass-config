@@ -286,6 +286,9 @@ automation:
           name: Transmission
           id: >
             {{ trigger.event.data.id }}
+      - service: homeassistant.update_entity
+        target:
+          entity_id: sensor.plex_recently_added
       - delay:
           minutes: 10
       - service: transmission.remove_torrent
