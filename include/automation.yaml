@@ -333,18 +333,6 @@ automation:
       target:
         entity_id: sensor.skanetrafiken
 
-  - alias: hacs_sensor_refresh
-    id: '2001123854555'
-    trigger:
-      platform: event
-      event_type: hacs/repository
-      event_data:
-        action: install
-    action:
-      service: homeassistant.update_entity
-      target:
-        entity_id: sensor.hacs
-
     ####################################################
     #                                                  #
     #                     MONITORS                     #

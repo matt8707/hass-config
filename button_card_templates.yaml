@@ -708,18 +708,19 @@
       [[[
         if (entity) {
           let output = '',
-            hacs_version = states['sensor.template_hacs_version'] || undefined;
-          var arr = entity.attributes.repositories === undefined
-            ? []
-            : entity.attributes.repositories;
-          for (var i = 0; i < arr.length; i++) {
-            output += `<li><b><a href="#" onclick="window.open('https://github.com/${arr[i].name}/releases');">
-              ${arr[i].display_name}</a></b> ${arr[i].installed_version} <b>&rarr;</b> ${arr[i].available_version}</li>`
-          }
-          let count = arr.length;
-          let subtitle = count === 0
-            ? `${variables.translate_no_updates} ${hacs_version === undefined || hacs_version.state === 'unknown' ? ' ' : `<b>&larr;</b> ${hacs_version.state}`}`
-            : `${count} ${count === 1 ? variables.translate_update_available : variables.translate_updates_available} ${String.fromCodePoint('0x1f389')}`;
+              count = parseInt(entity.state) || 0,
+              subtitle = count === 0
+                ? `${variables.translate_no_updates} <b>&larr;</b> ${states['update.hacs_update'].attributes.installed_version || ''}`
+                : `${count} ${count === 1 ? variables.translate_update_available : variables.translate_updates_available} ${String.fromCodePoint('0x1f389')}`;
+          Object.keys(states).forEach(key => {
+            let s = states[key],
+                e = s.entity_id,
+                a = s.attributes;
+            if (e.includes('update.') && s.state === 'on') {
+              output += `<li><b><a href="#" onclick="window.open('${a.release_url}');">
+              ${a.friendly_name}</a></b> ${a.installed_version} <b>&rarr;</b> ${a.latest_version}</li>`
+            }
+          });
           return `
             <ha-icon icon="hacs:hacs"></ha-icon> <span class="title">Community Store</span><br>
             <p class="subtitle">${subtitle}</p>

@@ -465,10 +465,6 @@ template:
           icon: mdi:dev-to
           device_class: timestamp
 
-      - unique_id: hacs_version
-        state: >
-          {{ device_attr(device_id('sensor.hacs'), 'sw_version') }}
-
       - unique_id: vacuum_filter
         state: >
           {{ (states('sensor.morty_filter_left') | int(default=0) / 5400) | int(default=0) }}
