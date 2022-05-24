@@ -609,6 +609,24 @@ automation:
           message: >
             {{'\U0001F9FA'}} {{ ['Tvätten är färdig', 'Tvätten är klar', 'Dags att gå ner'] | random }}
 
+  - alias: laundry_notify_ios_shorcuts
+    id: '2360411947125'
+    trigger:
+      platform: event
+      event_type: call_service
+      event_data:
+        domain: google
+        service: add_event
+    action:
+      service: notify.mobile_app_mattias_iphone_ios
+      data:
+        title: Tvättid tillagd
+        message: >
+          {% set date = trigger.event.data.service_data.start_date_time | as_datetime %}
+          {% set day = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'] %}
+          {% set month = ['Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni', 'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December'] %}
+          {{ day[date.weekday()] }}, {{ date.day }} {{ month[date.month - 1] }} {{ date.strftime('%H') }}:{{ date.strftime('%M') }}
+
     ####################################################
     #                                                  #
     #                   PERSISTENCE                    #
