@@ -1,7 +1,7 @@
 action: fire-dom-event
 browser_mod:
   command: popup
-  title: Information
+  title: NAS
   style:
     .: |
       :host {
