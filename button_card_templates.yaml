@@ -569,7 +569,7 @@
               if (elt && card && !ignore.match(/iPhone/i) && !ignore.match(/Android/i)) {
                 VanillaTilt.init(card, variables.tilt_options);
               }
-            }, 0);
+            }, 50);
           }
           catch (e) {
           }
