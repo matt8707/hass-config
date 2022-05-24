@@ -124,6 +124,25 @@ automation:
       target:
         entity_id: light.tv
 
+  - alias: imac_on_lights
+    id: '1336620978344'
+    trigger:
+      - platform: state
+        entity_id: switch.computer_imac
+        from: 'off'
+        to: 'on'
+      - platform: state
+        entity_id: switch.computer_imac
+        from: 'on'
+        to: 'off'
+        for:
+          minutes: 30
+    action:
+      service: >
+        light.turn_{{ trigger.to_state.state }}
+      target:
+        entity_id: light.dator
+
   - alias: no_motion_bathroom
     id: '9936892396917'
     trigger:
