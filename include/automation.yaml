@@ -506,7 +506,7 @@ automation:
             minutes: 15
         - service: browser_mod.close_popup
           data:
-            deviceID: dd239c79_406b9d77
+            deviceID: dd239c79-406b9d77
 
     ####################################################
     #                                                  #
