@@ -94,14 +94,6 @@ wemo:
   discovery: false
   static: !secret wemo_static
 
-spotify:
-  client_id: !secret spotify_client_id
-  client_secret: !secret spotify_client_secret
-
-google:
-  client_id: !secret google_client_id
-  client_secret: !secret google_client_secret
-
 calendar:
   - platform: caldav
     username: !secret caldav_username
