@@ -15,11 +15,6 @@ switch:
         command_on: !secret playstation_5_wake
         command_off: !secret playstation_5_sleep
 
-  - platform: mqtt
-    name: switchbot_mqtt
-    command_topic: !secret switchbot_mqtt_command
-    state_topic: !secret switchbot_mqtt_state
-
   - platform: template
     switches:
       computer_imac:
