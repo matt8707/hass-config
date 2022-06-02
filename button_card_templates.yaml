@@ -30,7 +30,7 @@ base:
     - extra_styles
   variables:
     state_on: >
-      [[[ return ['on', 'home', 'cool', 'fan_only', 'playing', 'locked'].indexOf(entity === undefined || entity.state) !== -1; ]]]
+      [[[ return ['on', 'home', 'cool', 'fan_only', 'playing', 'unlocked'].indexOf(entity === undefined || entity.state) !== -1; ]]]
     state: >
       [[[ return entity === undefined || entity.state; ]]]
     entity_id: >
