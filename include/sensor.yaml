@@ -136,3 +136,27 @@ sensor:
     value_template: >
       {{ value.split(' ')[1].split('v')[1] }}
     scan_interval: 86400
+
+  - platform: command_line
+    name: hacs_installed
+    command: |-
+      python3 << EOF
+      import os, json
+      installed = {"repositories": []}
+      path = "/config/.storage/hacs/"
+      for file in os.listdir(path):
+          name, ext = os.path.splitext(file)
+          if ext == ".hacs":
+              hacs_file = path + file
+              with open(hacs_file, "r") as file:
+                  dict = json.load(file)
+                  name = dict["data"]["full_name"]
+                  installed["repositories"] += [name]
+                  file.close()
+      print(json.dumps(installed))
+      EOF
+    value_template: >
+      {{ value_json.repositories | count }}
+    json_attributes:
+      - repositories
+    scan_interval: 86400
