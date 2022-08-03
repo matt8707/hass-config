@@ -1,0 +1,70 @@
+lock:
+  tap_action:
+    loader: |
+      [[[
+        let elt = this.shadowRoot;
+        if (variables.state_on && variables.lock === 'on') {
+            elt.getElementById('lock').classList.add('locked');
+            window.setTimeout(() => {
+                elt.getElementById('lock').classList.remove('locked');
+            }, 1100);
+        } else {
+
+          // duplicate of "loader" template
+            let loader = (id, style, timeout) => {
+                elt.getElementById(id) && (elt.getElementById(id).style.display = style,
+                    window.setTimeout(() => {
+                      elt.getElementById('loader').style.display = 'none'
+                    }, 20000))
+            };
+            loader('circle', 'none', 'initial'),
+            loader('loader', 'initial', 'none');
+        }
+      ]]]
+  custom_fields:
+    circle: >
+      [[[
+        if (entity && variables.trigger) {
+            let state = variables.trigger.state === 'on' ? 'locked' : null;
+            if (variables.lock === 'on') {
+                return `
+                  <svg viewBox="0 0 50 50">
+                    <style>
+                      @keyframes locked {
+                        from,
+                        to {
+                          transform: translateX(0);
+                        }
+                        10%,
+                        30%,
+                        50%,
+                        70%,
+                        90% {
+                          transform: translateX(-8%);
+                        }
+                        20%,
+                        40%,
+                        60%,
+                        80% {
+                          transform: translateX(8%);
+                        }
+                      }
+                      .locked {
+                        animation: locked 1.1s;
+                      }
+                    </style>
+                    <path id="lock" class="${state}" d="M8.2 22.6h2.4v-7.2C10.6 7.5 17.1 1 25 1s14.4 6.4 14.4 14.4v7.2h2.4V49H8.2m26.4-26.4v-7.2c0-5.3-4.3-9.6-9.6-9.6s-9.6 4.3-9.6 9.6v7.2"/>
+                  </svg>
+                `;
+            }
+        }
+      ]]]
+  styles:
+    custom_fields:
+      circle:
+        - width: 45%
+        - fill: var(--state-icon-color)
+        - margin: 1% 2% 0 0
+        - justify-self: end
+        - opacity: 1
+        - display: grid

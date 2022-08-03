@@ -1,0 +1,85 @@
+sidebar:
+  show_state: false
+  show_icon: false
+  tap_action:
+    action: none
+  name: >
+    [[[
+      if (entity) {
+          let attr = [];
+          for (let [k, value] of Object.entries(entity.attributes))
+              window.navigator.userAgent.match(/iPhone/i)
+                  ? k !== 'time' && k !== 'date' && value !== false && (attr += `<p>${k === 'greet' ? `<span class="iphone">${value}</span>` : `${value}`}</p>`)
+                  : value !== false && (attr += `<p>${value}</p>`);
+          return attr;
+      }
+    ]]]
+  extra_styles: >
+    #card {
+      padding: 0;
+      font-family: SF Pro Display, Roboto, system-ui;
+    }
+    #container {
+      display: flex !important;
+    }
+    #name {
+      padding: 1vw 2.5vw 0 var(--custom-layout-card-padding);
+      white-space: normal;
+      text-align: left;
+    }
+    .iphone {
+      font-size: 1.5em;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .time {
+      font-size: var(--sidebar-time-font-size);
+      font-weight: 300;
+      line-height: var(--sidebar-time-line-height);
+      letter-spacing: 0.11vw;
+      margin-left: -0.3vw;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    @supports not (-moz-appearance:none) {
+      .time-colon {
+        position: relative;
+        top: -.11em;
+      }
+    }
+    p {
+      font-size: var(--sidebar-font-size);
+      line-height: var(--sidebar-line-height);
+      font-weight: 200;
+      letter-spacing: 0.07vw;
+      color: #6a7377;
+    }
+    b {
+      font-weight: 700;
+    }
+    p > b {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    /* portrait */
+    @media screen and (max-width: 1200px) {
+      .time {
+        font-size: calc(var(--sidebar-time-font-size) * 1.4 );
+        line-height: calc(var(--sidebar-time-line-height) * 1.4 );
+      }
+      p {
+        font-size: calc(var(--sidebar-font-size) * 1.4 );
+        line-height: calc(var(--sidebar-line-height) * 1.4 );
+      }
+    }
+    /* phone */
+    @media screen and (max-width: 800px) {
+      .time {
+        font-size: calc(var(--sidebar-time-font-size) * 2.6 );
+      }
+      p {
+        font-size: calc(var(--sidebar-font-size) * 2.6 );
+        line-height: calc(var(--sidebar-line-height) * 2.6 );
+        letter-spacing: 0.16vw;
+      }
+      #name {
+        padding: 0 0 0 1vw;
+      }
+    }

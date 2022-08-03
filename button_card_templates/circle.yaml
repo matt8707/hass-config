@@ -1,0 +1,199 @@
+circle:
+  styles:
+    card:
+      - --c-stroke-color-on: '#b0b0b0'
+      - --c-stroke-color-off: none
+      - --c-fill-color-on: none
+      - --c-fill-color-off: rgba(255,255,255,0.04)
+      - --c-stroke-width: 2.3
+      - --c-stroke-width-dragging: 4
+      - --c-font-color: '#97989c'
+      - --c-font-size: 14px
+      - --c-unit-font-size: 10.5px
+      - --c-font-weight: 700
+      - --c-letter-spacing: -0.02rem
+    custom_fields:
+      circle:
+        - display: initial
+        - width: 88%
+        - margin: -3% 2% 0 0
+        - justify-self: end
+        - opacity: 1
+  custom_fields:
+    circle: >
+      [[[
+        if (entity) {
+            let r = 22.1,
+                c = r * 2 * Math.PI,
+                tspan = '<tspan dx=".2" dy="-.4">',
+                domain = entity.entity_id.split('.')[0],
+                state = variables.state_on,
+                input = variables.circle_input || ' ',
+                unit = variables.circle_input_unit || ' ';
+
+           /* * * * * * * * * * * * * * * * * *
+            *                                 *
+            *             CIRCLE              *
+            *                                 *
+            * * * * * * * * * * * * * * * * * */
+
+            let circle = (state, input, unit) => {
+                return `
+                  <svg viewBox="0 0 50 50">
+                    <style>
+                      circle {
+                        transform: rotate(-90deg);
+                        transform-origin: 50% 50%;
+                        stroke-dasharray: ${c};
+                        stroke-dashoffset: ${c - input / 100 * c};
+                        stroke-width: var(--c-stroke-width);
+                        stroke: ${state ? 'var(--c-stroke-color-on)' : 'var(--c-stroke-color-off)'};
+                        fill: ${state ? 'var(--c-fill-color-on)' : 'var(--c-fill-color-off)'};
+                      }
+                      text {
+                        font-size: var(--c-font-size);
+                        font-weight: var(--c-font-weight);
+                        letter-spacing: var(--c-letter-spacing);
+                        fill: var(--c-font-color);
+                      }
+                      tspan {
+                        font-size: var(--c-unit-font-size);
+                      }
+                      #circle_value, tspan {
+                        text-anchor: middle;
+                        dominant-baseline: central;
+                      }
+                    </style>
+                    <circle id="circle_stroke" cx="25" cy="25" r="${r}"/>
+                    <text id="circle_value" x="50%" y="52%">${input}${tspan}${unit}</tspan></text>
+                  </svg>
+
+                  ${domain === 'light' && `
+                      <input id="circle_slider" type="range" min="0" max="100" value="${input}">
+                  `};
+                `;
+            }
+
+           /* * * * * * * * * * * * * * * * * *
+            *                                 *
+            *              LIGHT              *
+            *                                 *
+            * * * * * * * * * * * * * * * * * */
+
+            if (domain === 'light' && state) {
+
+                // wait 0ms for shadow dom
+                setTimeout(() => {
+
+                    // then get elements
+                    let elt = this.shadowRoot,
+                        circle_slider = elt.getElementById('circle_slider'),
+                        circle_value = elt.getElementById('circle_value'),
+                        circle_stroke = elt.getElementById('circle_stroke');
+
+                    // approximate position of thumb relative to circle
+                    circle_slider.style.top = `${(circle_slider.value - 50) / 1.66 - 1}%`;
+
+                    // debug position
+                    let debug = false;
+                    if (debug) circle_slider.style.opacity = 0.3;
+
+                    // pass each event to handler
+                    ['click', 'input', 'mousedown', 'mouseup', 'touchstart', 'touchend'].forEach((event) => {
+                        circle_slider.addEventListener(event, handler, { passive: true })
+                    });
+
+                    function handler(event) {
+
+                        // "this" refers to slider
+                        if (event.target === this) {
+
+                            // bypass button-card tap_action
+                            event.stopPropagation();
+
+                            // update circle_value
+                            circle_value.innerHTML = `${this.value}${tspan}${unit}</tspan>`;
+
+                            // update stroke
+                            circle_stroke.style.strokeDashoffset = c - this.value / 100 * c;
+                            circle_stroke.style.strokeWidth = 'var(--c-stroke-width-dragging)';
+                            
+                            // set cursor while dragging
+                            if (event.type === 'mousedown' || event.type === 'input') {
+                                this.style.cursor = 'grabbing';
+                            } else {
+                                this.style.cursor = 'grab';
+                            }
+
+                            // reset stroke width if value doesn't change
+                            if (input == this.value && (event.type === 'click' || event.type === 'touchend'))
+                                circle_stroke.style.strokeWidth = 'var(--c-stroke-width)';
+
+                            // on release
+                            if (event.type === 'mouseup' || event.type === 'touchend') {
+
+                                // display loader if brightness is 0
+                                if (circle_slider.value == 0 && elt.getElementById('loader')) {
+                                    elt.getElementById('loader').style.display = 'initial';
+                                    elt.getElementById('circle').style.display = 'none';
+                                }
+
+                                // set brightness
+                                hass.callService('light', 'turn_on', {
+                                    entity_id: entity.entity_id,
+                                    brightness_pct: this.value
+                                });
+                            }
+                        }
+                    }
+                }, 0);
+
+                return circle(state, input, unit);
+            }
+
+           /* * * * * * * * * * * * * * * * * *
+            *                                 *
+            *             PERSON              *
+            *                                 *
+            * * * * * * * * * * * * * * * * * */
+
+            else if (domain === 'person') {
+                let time = c => {
+                    let s = (c/1e3),
+                        m = (c/6e4),
+                        h = (c/36e5),
+                        d = (c/864e5);
+                    return s < 60
+                        ? parseInt(s) + 's'
+                        : m < 60 ? parseInt(m) + 'm'
+                        : h < 24 ? parseInt(h) + 'h'
+                        : parseInt(d) + 'd';
+                };
+                let input = states[variables.retain] === undefined || states[variables.retain].state === 'unavailable'
+                        ? time(Date.now() - Date.parse(entity.last_changed))
+                        : time(Date.now() - Date.parse(states[variables.retain].state)),
+                    unit = ' ';
+                return circle(state, input, unit);
+            }
+
+           /* * * * * * * * * * * * * * * * * *
+            *                                 *
+            *             CLIMATE             *
+            *                                 *
+            * * * * * * * * * * * * * * * * * */
+
+            else if (domain === 'climate') {
+                return circle(state, input, unit);
+            }
+
+           /* * * * * * * * * * * * * * * * * *
+            *                                 *
+            *              OTHER              *
+            *                                 *
+            * * * * * * * * * * * * * * * * * */
+
+            else if (variables.state_on) {
+                return circle(state, input, unit);
+            }
+        }
+      ]]]

@@ -1,0 +1,27 @@
+icon_name:
+  size: 1.4em
+  color: '#9da0a2'
+  styles:
+    grid:
+      - grid-template-areas: '"i n"'
+      - grid-column-gap: 0.3em
+    card:
+      - color: '#9da0a2'
+      - border-radius: 0.6em
+      - padding: 1em 1.4em 1em 1.2em
+      - width: max-content
+      - font-size: 1.06em
+      - font-weight: 500
+      - letter-spacing: 0.015em
+      - background: '#FFFFFF10'
+
+icon_only:
+  show_name: false
+  color: '#9da0a2'
+  styles:
+    card:
+      - color: '#9da0a2'
+      - border-radius: 0.6em
+      - width: 4em
+      - height: 3.7em
+      - background: '#FFFFFF10'

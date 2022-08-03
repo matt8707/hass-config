@@ -1,0 +1,92 @@
+base:
+  template:
+    - settings
+    - tilt
+    - extra_styles
+  variables:
+    state_on: >
+      [[[ return ['on', 'home', 'cool', 'fan_only', 'playing', 'unlocked'].indexOf(!entity || entity.state) !== -1; ]]]
+    state: >
+      [[[ return !entity || entity.state; ]]]
+    entity_id: >
+      [[[ return !entity || entity.entity_id; ]]]
+    entity_picture: >
+      [[[ return !entity || entity.attributes.entity_picture; ]]]
+    timeout: >
+      [[[ return !entity || Date.now() - Date.parse(entity.last_changed); ]]]
+  aspect_ratio: 1/1
+  show_state: true
+  show_icon: false
+  state_display: >
+    [[[ if (variables.state === true) return variables.translate_unknown; ]]]
+  tap_action:
+    ui_sound_tablet: |
+      [[[
+        let screensaver = states[variables.entity_tablet] === undefined ||
+            states[variables.entity_tablet].state;
+
+        if (variables.state === 'off' && screensaver === 'off') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/sound/on.m4a',
+                media_content_type: 'music'
+            });
+        }
+        if (variables.state_on && screensaver === 'off') {
+            hass.callService('media_player', 'play_media', {
+                entity_id: variables.entity_browser_mod,
+                media_content_id: '/local/sound/off.m4a',
+                media_content_type: 'music'
+            });
+        }
+      ]]]
+    action: toggle
+    haptic: medium
+  double_tap_action:
+    haptic: success
+  hold_action:
+    action: call-service
+    service: browser_mod.toast
+    service_data:
+      duration: 3000
+      message: >
+        Tips! Dubbelklicka för att öppna popup-meny
+    haptic: failure
+  styles:
+    grid:
+      - grid-template-areas: |
+          "icon  circle"
+          "n     n"
+          "s     s"
+      - grid-template-columns: repeat(2, 1fr)
+      - grid-template-rows: auto repeat(2, min-content)
+      - gap: 1.3%
+      - align-items: start
+    name:
+      - justify-self: start
+      - line-height: 121%
+    state:
+      - justify-self: start
+      - line-height: 115%
+    card:
+      - border-radius: var(--button-card-border-radius)
+      - -webkit-tap-highlight-color: rgba(0,0,0,0)
+      - transition: none
+      - --mdc-ripple-color: >
+          [[[
+            return variables.state_on
+                ? 'rgb(0, 0, 0)'
+                : '#97989c';
+          ]]]
+      - color: >
+          [[[
+            return variables.state_on
+                ? '#4b5254'
+                : '#97989c';
+          ]]]
+      - background-color: >
+          [[[
+            return variables.state_on
+                ? 'rgba(255, 255, 255, 0.85)'
+                : 'rgba(115, 115, 115, 0.25)';
+          ]]]

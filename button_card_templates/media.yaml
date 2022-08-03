@@ -1,0 +1,274 @@
+#################################################
+#                                               #
+#                  BASE MEDIA                   #
+#                                               #
+#################################################
+
+base_media:
+  variables:
+    media_on: >
+      [[[ return !entity || ['playing', 'paused'].indexOf(entity.state) !== -1; ]]]
+    media_off: >
+      [[[ return !entity || ['off', 'idle', 'standby', 'unknown', 'unavailable'].indexOf(entity.state) !== -1; ]]]
+  tap_action:
+    action: >
+      [[[
+        return variables.media_on
+            ? 'call-service'
+            : 'none';
+      ]]]
+    service: media_player.media_play_pause
+    service_data:
+      entity_id: >
+        [[[
+          return variables.entity_id;
+        ]]]
+  double_tap_action:
+    action: more-info
+  styles:
+    card:
+      - color: >
+          [[[
+            return variables.media_on && variables.entity_picture === undefined
+                ? 'rgba(0, 0, 0, 0.6)'
+                : variables.media_off
+                    ? '#97989c'
+                    : '#efefef';
+          ]]]
+      - text-shadow: >
+          [[[
+            return variables.media_off || variables.entity_picture === undefined
+                ? 'none'
+                : '1px 1px 5px rgba(18, 22, 23, 0.9)';
+          ]]]
+
+#################################################
+#                                               #
+#                     MEDIA                     #
+#                                               #
+#################################################
+
+media:
+  template:
+    - base
+    - base_media
+  styles:
+    custom_fields:
+      icon:
+        - width: 70%
+        - margin-left: 2%
+        - fill: '#9da0a2'
+        - display: >
+            [[[
+              return variables.media_off || variables.entity_picture === undefined
+                  ? 'initial'
+                  : 'none';
+            ]]]
+    card:
+      - background-color: none
+      - background-size: cover
+      - background-image: >
+          [[[
+            return variables.media_on && variables.entity_picture === undefined
+                ? 'linear-gradient(0deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.8) 100%)'
+                : variables.media_off
+                    ? 'linear-gradient(0deg, rgba(115, 115, 115, 0.2) 0%, rgba(115, 115, 115, 0.2) 100%)'
+                    : `linear-gradient(0deg, rgba(0,0,0,.8) 0%, rgba(0,0,0,0) 100%), url(${variables.entity_picture})`;
+          ]]]
+
+#################################################
+#                                               #
+#               CONDITIONAL MEDIA               #
+#                                               #
+#################################################
+
+conditional_media:
+  aspect_ratio: 1000/996
+  template:
+    - base
+    - base_media
+    - media_youtube
+    - icon_play_pause
+  variables:
+    i: >
+      [[[
+        if (entity) {
+            let data = entity.attributes.data;
+            return data === undefined || Math.floor(Math.random() * (data.length - 1)) + 1;
+        }
+      ]]]
+  state_display: >
+    [[[
+      if (entity) {
+          let elt = this.shadowRoot,
+              await = setTimeout(marquee, 100),
+              data = entity.attributes.data,
+              artist = entity.attributes.media_artist,
+              title = entity.attributes.media_title;
+
+            if (data !== undefined) {
+                var number = data[variables.i].number === undefined && data[variables.i].aired !== undefined
+                    ? `(${data[variables.i].aired.split("-")[0]})`
+                    : data[variables.i].number === undefined && data[variables.i].aired === undefined
+                        ? ' '
+                        : data[variables.i].number,
+                output = `${data[variables.i].title} ${number}`;
+            } else {
+                var output = artist === undefined && title !== undefined
+                    ? title
+                    : title === undefined && artist !== undefined
+                        ? artist
+                        : title !== undefined && artist !== undefined
+                            ? `${artist} - ${title}`
+                            : variables.translate_idle;
+            }
+
+          function marquee() {
+              let state = elt.getElementById("state"),
+                  container = elt.getElementById("container");
+
+              if (state && container) {
+                  state.innerHTML = output;
+                  let ro = new ResizeObserver(entries => {
+                      let spacer = "&nbsp;".repeat(3),
+                          s = entries[0],
+                          c = entries[1],
+                          r = s && s.contentRect &&
+                              c && c.contentRect &&
+                              s.contentRect.width !== 0 &&
+                              c.contentRect.width !== 0;
+
+                      if (r && s.contentRect.width < c.contentRect.width) {
+                          state.classList.remove("marquee");
+                      }
+                      else if (r && s.contentRect.width >= c.contentRect.width) {
+                          state.innerHTML = `${output} ${spacer} ${output} ${spacer}&nbsp;`;
+                          state.classList.add("marquee");
+                      }
+                  });
+                  ro.observe(state);
+                  ro.observe(container);
+              }
+          }
+          return output;
+      }
+      return variables.translate_unknown;
+    ]]]
+  tap_action:
+    action: call-service
+    service: media_player.media_play_pause
+    service_data:
+      entity_id: >
+        [[[ return variables.entity_id; ]]]
+  styles:
+    grid:
+      - gap: 0.65%
+    name:
+      - padding: 0.2vw
+      - margin: -0.2vw
+    state:
+      - padding-bottom: 5.25%
+      - max-width: unset
+      - overflow: visible
+    card:
+      - padding: 5.75% 5.25% 0 5.75%
+      - border-radius: calc(var(--button-card-border-radius) / 2)
+      - background: rgba(115, 115, 115, 0.2) center center/cover no-repeat
+      - background-image: &media_background_image >
+          [[[
+            if (entity) {
+                return entity.attributes.data !== undefined
+                    ? `url("${entity.attributes.data[variables.i].fanart}"), url("${entity.attributes.data[variables.i].poster}")`
+                    : `url("${variables.entity_picture}")`;
+            }
+          ]]]
+      - color: >
+          [[[
+            return entity === undefined
+                ? '#97989c'
+                : '#efefef';
+          ]]]
+      - text-shadow: >
+          [[[
+            return entity === undefined
+                ? 'none'
+                : '1px 1px 5px rgba(18, 22, 23, 0.9)';
+          ]]]
+    custom_fields:
+      icon:
+        - width: 30%
+        - fill: >
+            [[[
+              return entity && variables.media_on
+                  ? 'rgba(255, 255, 255, 0.8)'
+                  : '#9da0a2';
+            ]]]
+      blur_overlay:
+        - display: block
+        - position: absolute
+        - width: 103.1%
+        - height: 103.1%
+        - filter: var(--blur-intensity)
+        - clip-path: >
+            inset(74.5% 1.45% 1.45% 1.45% round 0 0 calc(var(--button-card-border-radius) / 2) calc(var(--button-card-border-radius) / 2))
+        - background: center center/cover no-repeat
+        - background-image: *media_background_image
+        - left: -1.5%
+        - bottom: -1.6%
+  custom_fields:
+    blur_overlay: >
+      [[[
+        setTimeout(() => {
+            let elt = this.shadowRoot,
+                card = elt.getElementById('card'),
+                container = elt.getElementById('container'),
+                blur_overlay = elt.getElementById('blur_overlay');
+
+            if (elt && card && container && blur_overlay) {
+                card.insertBefore(blur_overlay, container);
+            }
+          }, 0);
+        return ' ';
+      ]]]
+
+#################################################
+#                                               #
+#                 MEDIA YOUTUBE                 #
+#                                               #
+#################################################
+
+media_youtube:
+  variables:
+    token: !secret youtube_token
+  custom_fields:
+    youtube: >
+      [[[
+        try {
+            let elt = this.shadowRoot;
+            if (entity && elt && entity.attributes.app_name === 'YouTube') {
+                let api = 'https://www.googleapis.com/youtube/v3/search',
+                    artist = entity.attributes.media_artist,
+                    title = entity.attributes.media_title,
+                    options = 'type=video&part=snippet&maxResults=1',
+                    token = variables.token.split('|'),
+                    random = Math.floor(Math.random() * token.length),
+                    url = `${api}?q="${artist}%20${title}"&${options}&key=${token[random]}`;
+
+                fetch(url).then(e => e.json()).then(e => {
+                    if (e.items[0].snippet.thumbnails !== undefined) {
+                        let json = e.items[0].snippet.thumbnails,
+                            hq = json[Object.keys(json).pop()].url,
+                            card = elt.getElementById('card'),
+                            blur_overlay = elt.getElementById('blur_overlay');
+                    }
+                    if (entity.state !== 'idle' && artist !== undefined && title !== undefined) {
+                        card.style.backgroundImage = `url("${hq}")`;
+                        blur_overlay.style.backgroundImage = `url("${hq}")`;
+                        card.style.backgroundSize = '178%';
+                        blur_overlay.style.backgroundSize = '178%';
+                    }
+                });
+            }
+        }
+        catch (e) {}
+      ]]]

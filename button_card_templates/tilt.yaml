@@ -1,0 +1,49 @@
+# dashboard resource https://micku7zu.github.io/vanilla-tilt.js/
+
+tilt:
+  variables:
+    tilt_enable: >
+      [[[
+        // enable only on this
+        if (window.navigator.userAgent.match(/Macintosh; Intel Mac OS X/i)) {
+            return true;
+        }
+        return false;
+      ]]]
+    tilt_options: >
+      [[[
+        let options = {
+            max: 5,
+            scale: 1.06,
+            glare: true,
+            'max-glare': 0.15,
+            perspective: 800,
+            speed: 800,
+            parallax: '25px'
+        }
+        if (this._config.template.includes('conditional_media')) {
+            options.scale = options.scale % parseInt(options.scale) / 2 + parseInt(options.scale);
+            options.perspective = options.perspective * 2;
+            return options;
+        }
+        return options;
+      ]]]
+  custom_fields:
+    tilt: >
+      [[[
+        setTimeout(() => {
+            let elt = this.shadowRoot,
+                card = elt.getElementById('card'),
+                tilt = typeof VanillaTilt === 'function';
+
+            if (elt && card && tilt && variables.tilt_enable) {
+                VanillaTilt.init(card, variables.tilt_options);
+            } else {
+                setTimeout(() => {
+                    if (elt && card && tilt && variables.tilt_enable) {
+                        VanillaTilt.init(card, variables.tilt_options);
+                    }
+                }, 1000);
+            }
+        }, 0);
+      ]]]

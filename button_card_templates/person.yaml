@@ -1,0 +1,32 @@
+person:
+  template:
+    - base
+    - circle
+  state_display: >
+    [[[
+      if (entity) {
+          return variables.state === 'home'
+              ? variables.translate_home
+              : variables.state === 'not_home'
+                  ? variables.translate_not_home
+                  : variables.state;
+      }
+      return variables.translate_unknown;
+    ]]]
+  triggers_update: sensor.time
+  tap_action:
+    action: none
+  styles:
+    custom_fields:
+      icon:
+        - clip-path: circle()
+        - width: 82%
+        - pointer-events: none
+        - display: grid
+  custom_fields:
+    icon: >
+      [[[
+        return entity && variables.entity_picture
+            ? `<img src="${variables.entity_picture}" width="100%">`
+            : null;
+      ]]]

@@ -1,0 +1,116 @@
+loader:
+  tap_action:
+    loader: >
+      [[[
+        if (entity) {
+            let elt = this.shadowRoot,
+                loader = (id, style, timeout) => {
+                  elt.getElementById(id) && (elt.getElementById(id).style.display = style,
+                    window.setTimeout(() => {
+                      elt.getElementById('loader').style.display = 'none'
+                    }, 20000))
+                };
+            loader('circle', 'none', 'initial'),
+            loader('loader', 'initial', 'none');
+        }
+      ]]]
+  styles:
+    custom_fields:
+      loader:
+        - display: none
+        - top: >
+            [[[
+              return variables.tilt_enable
+                  ? '-6%'
+                  : '6%';
+            ]]]
+        - right: >
+            [[[
+              return variables.tilt_enable
+                  ? '-3.5%'
+                  : '6.5%';
+            ]]]
+        - width: >
+            [[[
+              return variables.tilt_enable
+                  ? '52%'
+                  : '42%';
+            ]]]
+        - position: absolute
+        - opacity: 0.5
+        - pointer-events: none
+        - filter: >
+            [[[
+              return variables.state_on
+                  ? 'none'
+                  : 'invert(1)';
+            ]]]
+  custom_fields:
+    loader: >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        <style>
+          .loader {
+            fill: #0e1315;
+          }
+        </style>
+        <g class="loader">
+          <rect x="48" y="23.5" rx=".78" width="4" height="13">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.2658227848101264s" begin="-1.160337552742616s" repeatCount="indefinite" />
+          </rect>
+        </g>
+        <g transform="rotate(30 50 50)" class="loader">
+          <rect x="48" y="23.5" rx=".78" width="4" height="13">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.2658227848101264s" begin="-1.0548523206751055s" repeatCount="indefinite" />
+          </rect>
+        </g>
+        <g transform="rotate(60 50 50)" class="loader">
+          <rect x="48" y="23.5" rx=".78" width="4" height="13">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.2658227848101264s" begin="-0.9493670886075949s" repeatCount="indefinite" />
+          </rect>
+        </g>
+        <g transform="rotate(90 50 50)" class="loader">
+          <rect x="48" y="23.5" rx=".78" width="4" height="13">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.2658227848101264s" begin="-0.8438818565400843s" repeatCount="indefinite" />
+          </rect>
+        </g>
+        <g transform="rotate(120 50 50)" class="loader">
+          <rect x="48" y="23.5" rx=".78" width="4" height="13">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.2658227848101264s" begin="-0.7383966244725738s" repeatCount="indefinite" />
+          </rect>
+        </g>
+        <g transform="rotate(150 50 50)" class="loader">
+          <rect x="48" y="23.5" rx=".78" width="4" height="13">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.2658227848101264s" begin="-0.6329113924050632s" repeatCount="indefinite" />
+          </rect>
+        </g>
+        <g transform="rotate(180 50 50)" class="loader">
+          <rect x="48" y="23.5" rx=".78" width="4" height="13">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.2658227848101264s" begin="-0.5274261603375527s" repeatCount="indefinite" />
+          </rect>
+        </g>
+        <g transform="rotate(210 50 50)" class="loader">
+          <rect x="48" y="23.5" rx=".78" width="4" height="13">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.2658227848101264s" begin="-0.42194092827004215s" repeatCount="indefinite" />
+          </rect>
+        </g>
+        <g transform="rotate(240 50 50)" class="loader">
+          <rect x="48" y="23.5" rx=".78" width="4" height="13">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.2658227848101264s" begin="-0.3164556962025316s" repeatCount="indefinite" />
+          </rect>
+        </g>
+        <g transform="rotate(270 50 50)" class="loader">
+          <rect x="48" y="23.5" rx=".78" width="4" height="13">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.2658227848101264s" begin="-0.21097046413502107s" repeatCount="indefinite" />
+          </rect>
+        </g>
+        <g transform="rotate(300 50 50)" class="loader">
+          <rect x="48" y="23.5" rx=".78" width="4" height="13">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.2658227848101264s" begin="-0.10548523206751054s" repeatCount="indefinite" />
+          </rect>
+        </g>
+        <g transform="rotate(330 50 50)" class="loader">
+          <rect x="48" y="23.5" rx=".78" width="4" height="13">
+            <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1.2658227848101264s" begin="0s" repeatCount="indefinite" />
+          </rect>
+        </g>
+      </svg>
