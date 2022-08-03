@@ -11,7 +11,7 @@ browser_mod:
           class: content
         entities:
 
-          - entity: fan.studio
+          - entity: switch.gosund_fan_switch
             secondary_info: last-changed
 
           - type: custom:slider-entity-row

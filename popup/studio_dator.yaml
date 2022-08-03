@@ -1,3 +1,14 @@
+update_entities:
+  action: >
+    [[[
+      hass.callService('homeassistant', 'update_entity', {
+          entity_id: [
+            'sensor.imac_cpu',
+            'sensor.imac_mem',
+            'binary_sensor.template_imac_vpn'
+          ]
+      });
+    ]]]
 action: fire-dom-event
 browser_mod:
   command: popup
@@ -19,7 +30,7 @@ browser_mod:
       ### ON ###
       - type: conditional
         conditions:
-          - entity: switch.computer_imac
+          - entity: switch.imac
             state: 'on'
         card:
           type: vertical-stack
@@ -30,7 +41,7 @@ browser_mod:
                 class: content
               entities:
 
-                - entity: switch.computer_imac
+                - entity: switch.imac
                   name: iMac
                   secondary_info: last-changed
 
@@ -71,7 +82,7 @@ browser_mod:
                         service_data:
                           entity_id: sensor.template_imac_macintosh_hd
 
-                - entity: automation.macos_notification_motion_hall
+                - entity: automation.imac_notification_motion_hall
                 - entity: sensor.imac_uptime
 
                 - entity: binary_sensor.template_imac_vpn
@@ -87,7 +98,7 @@ browser_mod:
                           {{ is_state(config.entity, 'Ansluten') | iif('var(--state-icon-active-color)', 'red') }};
                         }
 
-                - entity: input_boolean.computer_lock
+                - entity: input_boolean.imac_lock
 
             - type: horizontal-stack
               cards:
@@ -110,7 +121,7 @@ browser_mod:
       ### OFF ###
       - type: conditional
         conditions:
-          - entity: switch.computer_imac
+          - entity: switch.imac
             state: 'off'
         card:
           type: vertical-stack
@@ -122,11 +133,11 @@ browser_mod:
                 class: content
               entities:
 
-                - entity: switch.computer_imac
+                - entity: switch.imac
                   name: iMac
                   secondary_info: last-changed
                 - entity: automation.macos_notification_motion_hall
-                - entity: input_boolean.computer_lock
+                - entity: input_boolean.imac_lock
 
             - type: horizontal-stack
               cards:
@@ -137,5 +148,5 @@ browser_mod:
                     action: call-service
                     service: switch.turn_on
                     service_data:
-                      entity_id: switch.computer_imac
+                      entity_id: switch.imac
                   template: icon_name

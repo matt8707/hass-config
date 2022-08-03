@@ -1,0 +1,135 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Platta
+  style:
+    hui-vertical-stack-card:
+      $: |
+        hui-horizontal-stack-card {
+          padding: 0em 2em 2.3em 2em;
+        }
+      $hui-horizontal-stack-card$: |
+        #root {
+          justify-content: space-evenly;
+        }
+      $hui-entities-card$slider-entity-row$hui-generic-entity-row$: |
+        div {
+          flex: auto !important;
+        }
+  card:
+    type: vertical-stack
+    cards:
+      - type: entities
+        state_color: true
+        card_mod:
+          class: content
+        entities:
+
+          - entity: switch.galaxy_tab_a_screensaver
+            secondary_info: last-changed
+
+          - entity: light.galaxy_tab_a_screen
+
+          - type: custom:slider-entity-row
+            entity: light.galaxy_tab_a_screen
+            name: Ljusstyrka
+            icon: mdi:brightness-6
+            hide_state: false
+
+          - entity: binary_sensor.galaxy_tab_a_plugged_in
+
+          - entity: sensor.template_fullykiosk_last_app_start
+
+          - type: custom:bar-card
+            width: 55%
+            height: 2em
+            decimal: 0
+            unit_of_measurement: '%'
+            positions: &bar_card_positions
+              icon: outside
+              indicator: 'off'
+              name: outside
+            severity:
+              - color: '#6d2525'
+                from: 0
+                to: 89
+              - color: '#303435'
+                from: 90
+                to: 999
+            entity_row: true
+            entities:
+
+              - entity: sensor.galaxy_tab_a_battery_level
+                icon: mdi:battery
+                tap_action:
+                  action: call-service
+                  service: homeassistant.update_entity
+                  service_data:
+                    entity_id: sensor.galaxy_tab_a_battery_level
+
+          - type: custom:bar-card
+            width: 55%
+            height: 2em
+            decimal: 0
+            unit_of_measurement: '%'
+            positions: *bar_card_positions
+            severity:
+              - color: '#6d2525'
+                from: 90
+                to: 999
+            entity_row: true
+            entities:
+
+              - entity: sensor.template_fullykiosk_memory
+                name: Minne - 2GB
+                icon: mdi:memory
+                tap_action:
+                  action: call-service
+                  service: homeassistant.update_entity
+                  service_data:
+                    entity_id: sensor.template_fullykiosk_memory
+
+              - entity: sensor.template_fullykiosk_storage
+                name: Lagring - 32GB
+                icon: mdi:sd
+                tap_action:
+                  action: call-service
+                  service: homeassistant.update_entity
+                  service_data:
+                    entity_id: sensor.template_fullykiosk_storage
+
+      - type: horizontal-stack
+        cards:
+          - type: custom:button-card
+            name: Startsidan
+            icon: mdi:reload
+            tap_action:
+              services: |
+                [[[
+                  return `[[[
+                    hass.callService('browser_mod', 'toast', {
+                      message: 'Laddar om startsidan...'
+                    });
+                    hass.callService('button', 'press', {
+                      entity_id: 'button.galaxy_tab_a_load_start_url'
+                    });
+                  ]]]`
+                ]]]
+            template: icon_name
+
+          - type: custom:button-card
+            name: Hela appen
+            icon: mdi:reload
+            tap_action:
+              services: |
+                [[[
+                  return `[[[
+                    hass.callService('browser_mod', 'toast', {
+                      message: 'Startar om Fully Kiosk Browser...'
+                    });
+                    hass.callService('button', 'press', {
+                      entity_id: 'button.galaxy_tab_a_restart_browser'
+                    });
+                  ]]]`
+                ]]]
+            template: icon_name

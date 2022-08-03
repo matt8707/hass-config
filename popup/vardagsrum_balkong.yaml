@@ -20,7 +20,7 @@ browser_mod:
           class: content
         entities:
 
-          - entity: switch.deltaco_sh_p01
+          - entity: switch.deltaco_sh_p01_socket
             secondary_info: last-changed
 
-          - entity: automation.balcony
+          - entity: automation.balcony_lights

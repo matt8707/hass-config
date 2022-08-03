@@ -74,7 +74,7 @@ browser_mod:
         show_state: false
         entities:
 
-          - entity: device_tracker.mattias_iphone_unifi
+          - entity: device_tracker.mattias_iphone
             name: Router
             icon: mdi:wifi
             card_mod:
@@ -83,15 +83,15 @@ browser_mod:
                   color: {{ is_state(config.entity, 'home') | iif('#3182b7', '#3c3f3f') }};
                 }
 
-          - entity: device_tracker.mattias_bluetooth
+          - entity: device_tracker.mattias_iphone
             name: Bluetooth
             icon: mdi:bluetooth
             card_mod:
               style: *state
 
-          - entity: device_tracker.mattias_iphone_ios
+          - entity: device_tracker.iphone
             name: Position
-            icon: custom:iphone-modern
+            icon: cil:iphone-modern
             card_mod:
               style: *state
 
@@ -101,7 +101,7 @@ browser_mod:
         template: icon_name
         tap_action:
           action: call-service
-          service: notify.mobile_app_mattias_iphone_ios
+          service: notify.mobile_app_iphone
           service_data:
             title: Hitta min iPhone
             message: Här är jag
@@ -116,4 +116,4 @@ browser_mod:
         default_zoom: 16
         dark_mode: true
         entities:
-          - device_tracker.mattias_iphone_ios
+          - device_tracker.iphone

@@ -1,0 +1,269 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Dammsugare
+  style:
+    .: |
+      :host .content {
+        width: calc(385px + 495px);
+        max-width: 90vw;
+      }
+      /* phone */
+      @media screen and (max-width: 800px) {
+        :host .content {
+          max-width: 100vw;
+        }
+      }
+    layout-card$grid-layout:
+      $: |
+        hui-vertical-stack-card {
+          border-right: 1.5px solid rgba(0, 0, 0, 0.2);
+          border-radius: 0;
+          transition: none;
+        }
+        /* phone */
+        @media screen and (max-width: 800px) {
+          hui-vertical-stack-card {
+            border-right: none;
+            border-bottom: 1.5px solid rgba(0, 0, 0, 0.2);
+          }
+        }
+      $hui-vertical-stack-card:
+        $: |
+          hui-horizontal-stack-card {
+            padding: 0em 2em 2.3em 2em;
+          }
+        $hui-entities-card$:
+          .: |
+            .card-content {
+              padding: var(--card-content-padding);
+              letter-spacing: normal;
+              padding-bottom: 0;
+            }
+          more-info-card:
+            $ha-card:
+              .: |
+                h1, state-card-content {
+                  display: none;
+                }
+                .card-content {
+                  padding: 1.5em 0 0 0.7em;
+                }
+              more-info-vacuum$: |
+                div.flex-horizontal>div, div:nth-child(2), ha-attributes {
+                  display: none;
+                }
+                ha-select {
+                  display: contents;
+                }
+        $hui-horizontal-stack-card$: |
+          #root {
+            justify-content: space-evenly;
+            max-width: 82vw; /* iphonex */
+          }
+      $xiaomi-vacuum-map-card:
+        $: |
+          div.map-wrapper, div.controls-wrapper {
+            padding: var(--card-content-padding);
+            padding-top: 0;
+            padding-bottom: 0;
+            letter-spacing: normal;
+          }
+          div.tiles-wrapper, div.vacuum-controls, #map-zoomer-overlay {
+            display: none;
+          }
+          div.map-controls-wrapper {
+            padding-top: 22.5px;
+          }
+          paper-button {
+            --mdc-icon-size: 2em;
+            color: #9da0a2 !important;
+            padding: 0.42em;
+          }
+          ha-card {
+            --map-card-primary-color: #FFFFFF10;
+            --map-card-secondary-color: none;
+            --map-card-secondary-text-color: #9da0a2;
+            --map-card-zoomer-background: none;
+            --map-card-predefined-rectangle-fill-color: none;
+            --map-card-predefined-rectangle-line-color: none;
+            --map-card-predefined-rectangle-line-color-selected: rgba(255, 255, 255, 0.5);
+            --map-card-predefined-rectangle-fill-color-selected: rgba(42, 124, 194, 0.1);
+            --map-card-predefined-rectangle-icon-background-color-selected: rgb(42, 124, 194);
+            --map-card-internal-big-radius: 0.6em !important;
+          }
+  card:
+    type: custom:layout-card
+    layout_type: custom:grid-layout
+    layout:
+      margin: 0
+      grid-template-columns: 385px 495px
+      grid-template-rows: 1fr
+      grid-template-areas: |
+        "info map"
+      mediaquery:
+        #phone
+        "(max-width: 800px)":
+          grid-template-columns: 1fr
+          grid-template-rows: repeat(2, 1fr)
+          grid-template-areas: |
+            "info"
+            "map"
+    cards:
+
+      #################################################
+      #                                               #
+      #                 INSTÄLLNINGAR                 #
+      #                                               #
+      #################################################
+
+      - type: vertical-stack
+        view_layout:
+          grid-area: info
+        cards:
+        - type: entities
+          title: Översikt
+          card_mod:
+            class: header
+          entities:
+
+          - entity: vacuum.morty
+
+          - entity: sensor.morty_last_clean_end
+
+          - type: custom:bar-card
+            width: 55%
+            height: 2em
+            decimal: 0
+            unit_of_measurement: '%'
+            positions:
+              icon: outside
+              indicator: 'off'
+              name: outside
+            severity:
+              - color: '#303435'
+                from: 11
+                to: 999
+              - color: '#6d2525'
+                from: 0
+                to: 10
+            entity_row: true
+            entities:
+
+              - entity: vacuum.morty
+                attribute: battery_level
+                name: Batteri
+                icon: mdi:battery
+
+              - entity: sensor.template_vacuum_filter
+
+              - entity: sensor.template_vacuum_mainbrush
+
+              - entity: sensor.template_vacuum_sidebrush
+
+              - entity: sensor.template_vacuum_sensors
+
+          - type: custom:more-info-card
+            entity: vacuum.morty
+
+        - type: horizontal-stack
+          cards:
+
+            - type: custom:button-card
+              entity: vacuum.morty
+              icon: mdi:play-pause
+              tap_action:
+                action: call-service
+                service: >
+                  [[[
+                    return `[[[
+                      return entity.state === 'docked' || entity.state === 'paused'
+                        ? 'vacuum.start'
+                        : 'vacuum.pause';
+                    ]]]`
+                  ]]]
+                service_data:
+                  entity_id: >
+                    [[[
+                      return `[[[
+                        return entity.entity_id;
+                      ]]]`
+                    ]]]
+              template: icon_only
+
+            - type: custom:button-card
+              entity: vacuum.morty
+              icon: mdi:battery-charging
+              tap_action:
+                action: call-service
+                service: vacuum.return_to_base
+                service_data:
+                  entity_id: >
+                    [[[
+                      return `[[[
+                        return entity.entity_id;
+                      ]]]`
+                    ]]]
+              template: icon_only
+
+            - type: custom:button-card
+              icon: mdi:delete-empty
+              tap_action:
+                action: call-service
+                service: vacuum.send_command
+                service_data:
+                  entity_id: vacuum.morty
+                  command: app_goto_target
+                  params: [16821,23105]
+              template: icon_only
+
+      #################################################
+      #                                               #
+      #                 KARTLÄGGNING                  #
+      #                                               #
+      #################################################
+
+      - type: custom:xiaomi-vacuum-map-card
+        title: Kartläggning
+        view_layout:
+          grid-area: map
+        card_mod:
+          class: header
+        language: sv
+        entity: vacuum.morty
+        map_source:
+          camera: camera.vacuum_map
+        calibration_source:
+          camera: true
+        map_locked: true
+        map_modes:
+          - template: vacuum_clean_zone
+          - template: vacuum_clean_zone_predefined
+            predefined_selections:
+              - zones: [[14895, 20640, 18409, 24058]]
+                icon:
+                  name: mdi:silverware-fork-knife
+                  x: 16708
+                  y: 22291
+              - zones: [[15208, 17278, 20204, 20980]]
+                icon:
+                  name: mdi:bed
+                  x: 17706
+                  y: 19043
+              - zones: [[18170, 20925, 23138, 25026]]
+                icon:
+                  name: mdi:door
+                  x: 22293
+                  y: 21864
+              - zones: [[21474, 24942, 27269, 28873]]
+                icon:
+                  name: mdi:sofa
+                  x: 24401
+                  y: 26736
+              - zones: [[17687, 24885, 21487, 28816]]
+                icon:
+                  name: mdi:speaker
+                  x: 19757
+                  y: 26622
+          - template: vacuum_goto
+          - template: vacuum_follow_path

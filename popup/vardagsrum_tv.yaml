@@ -12,9 +12,23 @@ browser_mod:
         #root {
           justify-content: space-evenly;
         }
+      $hui-entities-card$more-info-card:
+        $ha-card:
+          .: |
+            h1, state-card-content {
+              display: none;
+            }
+            .card-content {
+              padding: {{ is_state('media_player.sony_bravia_tv', 'off') | iif('0', '1.2em 0 0.5em 0') }};
+            }
+          more-info-media_player$: |
+            div.volume, div.controls {
+              display: none;
+            }
   card:
     type: vertical-stack
     cards:
+
       - type: entities
         state_color: true
         show_header_toggle: false
@@ -28,7 +42,8 @@ browser_mod:
 
           - entity: automation.tv_on_lights
 
-          - entity: select.hdmi_bravia
+          - type: custom:more-info-card
+            entity: media_player.sony_bravia_tv
 
       - type: horizontal-stack
         cards:

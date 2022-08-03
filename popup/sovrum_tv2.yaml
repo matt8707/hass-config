@@ -12,6 +12,19 @@ browser_mod:
         #root {
           justify-content: space-evenly;
         }
+      $hui-entities-card$more-info-card:
+        $ha-card:
+          .: |
+            h1, state-card-content {
+              display: none;
+            }
+            .card-content {
+              padding: {{ is_state('media_player.samsung', 'off') | iif('0', '1.2em 0 0.5em 0') }};
+            }
+          more-info-media_player$: |
+            div.volume, div.controls {
+              display: none;
+            }
   card:
     type: vertical-stack
     cards:
@@ -22,7 +35,7 @@ browser_mod:
           class: content
         entities:
 
-          - entity: media_player.samsung_tv
+          - entity: media_player.samsung
             name: Samsung TV
             secondary_info: last-changed
 
@@ -30,13 +43,14 @@ browser_mod:
 
           - entity: script.bedroom_tv_night
 
-          - entity: select.hdmi_samsung
+          - type: custom:more-info-card
+            entity: media_player.samsung
 
       - type: horizontal-stack
         cards:
 
           - type: custom:button-card
-            entity: media_player.samsung_tv
+            entity: media_player.samsung
             icon: mdi:volume-mute
             tap_action:
               action: call-service
@@ -49,7 +63,7 @@ browser_mod:
             template: icon_only
 
           - type: custom:button-card
-            entity: media_player.samsung_tv
+            entity: media_player.samsung
             icon: mdi:volume-minus
             tap_action:
               action: call-service
@@ -60,7 +74,7 @@ browser_mod:
             template: icon_only
 
           - type: custom:button-card
-            entity: media_player.samsung_tv
+            entity: media_player.samsung
             icon: mdi:volume-plus
             tap_action:
               action: call-service

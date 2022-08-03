@@ -9,20 +9,51 @@ browser_mod:
           padding-top: 0.5em;
           padding-bottom: 0em;
         }
+      $more-info-card:
+        .: |
+          more-info-card {
+            padding: 1.2em 1.2em 0 1.1em;
+          }
+        $ha-card:
+          .: |
+            h1 {
+              display: none;
+            }
+          state-card-climate$: |
+            div {
+              display: none !important;
+            }
+          more-info-climate$: |
+            div.container-temperature > div > div {
+              display: none;
+            }
   card:
     type: vertical-stack
     cards:
 
-      - type: thermostat
+      - type: custom:more-info-card
         entity: climate.ac
 
       - type: entities
         card_mod:
           class: content
         entities:
-          - entity: sensor.broadlink_rm4_pro_temperature
+          - entity: automation.climate_safeguard
+            name: Endast fläkt om fönstret är stängt
+            icon: mdi:robot
+          - entity: binary_sensor.sovrum_contact_contact
+            name: Sovrumsfönster
+            icon: mdi:window-closed
+          - entity: switch.climate_timer
+            name: Timer
+          - type: custom:slider-entity-row
+            entity: input_number.climate_timer
+            hide_state: false
+          - entity: timer.climate
+
+          - entity: sensor.broadlink_temperature
             name: Rumstemperatur
-          - entity: sensor.broadlink_rm4_pro_humidity
+          - entity: sensor.broadlink_humidity
             name: Luftfuktighet
 
       - type: custom:apexcharts-card
@@ -62,7 +93,7 @@ browser_mod:
             crosshairs:
               show: false
         series:
-          - entity: sensor.broadlink_rm4_pro_temperature
+          - entity: sensor.broadlink_temperature
             name: Temp
             color: '#385581'
             type: area

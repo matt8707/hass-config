@@ -1,0 +1,13 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Playstation 5
+  card:
+    type: entities
+    state_color: true
+    card_mod:
+      class: content
+    entities:
+
+      - entity: switch.playstation_5
+        secondary_info: last-changed

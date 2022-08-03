@@ -1,0 +1,496 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  large: true
+  title: Historik
+  style:
+    hui-grid-card:
+      $: |
+        #root {
+          padding: 1.5em;
+        }
+  card:
+    type: grid
+    columns: 2
+    square: false
+    cards:
+
+      #kwh
+      - type: custom:apexcharts-card
+        graph_span: 12months
+        apex_config:
+          tooltip:
+            style:
+              fontSize: 14px
+            x:
+              show: true
+              formatter: |
+                EVAL:(timestamp) => {
+                  let date = new Date(timestamp).toLocaleString('sv-SE',{year: 'numeric', month:'long'}).toString()
+                  return date.charAt(0).toUpperCase() + date.slice(1);
+                }
+          chart:
+            height: 400px
+            fontFamily: SF Pro Text
+          fill:
+            type: gradient
+            gradient:
+              type: vertical
+              shadeIntensity: 0.2
+              opacityFrom: 1
+              opacityTo: 0.7
+              stops:
+                - 0
+                - 70
+                - 100
+          grid:
+            show: true
+            borderColor: rgba(112, 135, 164, 0.1)
+          yaxis:
+            show: true
+            decimalsInFloat: 0
+            labels:
+              style:
+                colors:
+                  - rgba(255, 255, 255, 0.5)
+                fontSize: 13px
+                fontWeight: 200
+              offsetX: -2
+          title:
+            text: ⚡ kWh
+            style:
+              color: white
+              fontSize: 38px
+              fontWeight: 700
+          xaxis:
+            tooltip:
+              enabled: false
+            crosshairs:
+              show: false
+            axisTicks:
+              show: false
+            axisBorder:
+              show: true
+              color: rgba(112, 135, 164, 0.5)
+              height: 1
+        series:
+          - entity: sensor.date
+            name: Förbrukning
+            unit: kWh
+            type: column
+            color: rgba(228,224,17,1)
+            data_generator: !secret apexcharts_tibber
+
+      #influx
+      - type: custom:apexcharts-card
+        graph_span: 12month
+        apex_config:
+          yaxis:
+            show: true
+            decimalsInFloat: 0
+            labels:
+              style:
+                colors:
+                  - rgba(255, 255, 255, 0.5)
+                fontSize: 13px
+                fontWeight: 200
+              offsetX: -2
+          grid:
+            show: true
+            borderColor: rgba(112, 135, 164, 0.1)
+          title:
+            text: kg
+            style:
+              color: white
+              fontSize: 30px
+              fontWeight: 100
+          tooltip:
+            style:
+              fontSize: 14px
+            x:
+              show: true
+              formatter: |
+                EVAL:(timestamp) => {
+                  let date = new Date(timestamp).toLocaleString('sv-SE',{day: 'numeric', year: 'numeric', month:'long'}).toString().split(' ');
+                  return `${date[0]} ${date[1].charAt(0).toUpperCase() + date[1].slice(1)} ${date[2]}`;
+                }
+          xaxis:
+            tooltip:
+              enabled: false
+            crosshairs:
+              show: false
+            axisTicks:
+              show: false
+            axisBorder:
+              show: true
+              color: rgba(112, 135, 164, 0.5)
+              height: 1
+            labels:
+              style:
+                fontSize: 15px
+                fontWeight: 500
+              offsetX: -1
+              formatter: |
+                EVAL:(timestamp) => {
+                  return new Date(timestamp).toLocaleString('sv-SE',{day: 'numeric', month:'short'});
+                }
+          chart:
+            fontFamily: SF Pro Text
+            height: 350px
+          fill:
+            type: gradient
+            gradient:
+              type: vertical
+              shadeIntensity: 0.2
+              opacityFrom: 0.7
+              opacityTo: 0.1
+              stops:
+                - 0
+                - 90
+                - 100
+          stroke:
+            curve: smooth
+            width: 3
+        all_series_config:
+          type: area
+          fill_raw: last
+        series:
+          - entity: sensor.date
+            curve: smooth
+            name: Mattias
+            color: '#9a0ca3'
+            data_generator: !secret apexcharts_influx
+
+      #github
+      - type: custom:apexcharts-card
+        graph_span: 3year
+        apex_config:
+          yaxis:
+            show: true
+            decimalsInFloat: 0
+            labels:
+              style:
+                colors:
+                  - rgba(255, 255, 255, 0.5)
+                fontSize: 13px
+                fontWeight: 200
+              offsetX: -2
+          grid:
+            show: true
+            borderColor: rgba(112, 135, 164, 0.1)
+          title:
+            text: ⭐ matt8707/hass-config
+            style:
+              color: white
+              fontSize: 30px
+              fontWeight: 100
+          tooltip:
+            style:
+              fontSize: 14px
+            x:
+              show: true
+              formatter: |
+                EVAL:(timestamp) => {
+                  let date = new Date(timestamp).toLocaleString('sv-SE',{day: 'numeric', year: 'numeric', month:'long'}).toString().split(' ');
+                  return `${date[0]} ${date[1].charAt(0).toUpperCase() + date[1].slice(1)} ${date[2]}`;
+                }
+          xaxis:
+            tooltip:
+              enabled: false
+            crosshairs:
+              show: false
+            axisTicks:
+              show: false
+            axisBorder:
+              show: true
+              color: rgba(112, 135, 164, 0.5)
+              height: 1
+            labels:
+              style:
+                fontSize: 15px
+                fontWeight: 500
+              offsetX: -1
+              formatter: |
+                EVAL:(timestamp) => {
+                  return new Date(timestamp).toLocaleString('sv-SE',{day: 'numeric', month:'short'});
+                }
+          chart:
+            fontFamily: SF Pro Text
+            height: 350px
+          fill:
+            type: gradient
+            gradient:
+              type: vertical
+              shadeIntensity: 0.2
+              opacityFrom: 0.7
+              opacityTo: 0.1
+              stops:
+                - 0
+                - 90
+                - 100
+          stroke:
+            curve: smooth
+            width: 3
+        all_series_config:
+          type: area
+          fill_raw: last
+        series:
+          - entity: sensor.date
+            curve: smooth
+            name: Mattias
+            color: '#9a0ca3'
+            data_generator: !secret apexcharts_github
+
+      #entity counter
+      - type: custom:apexcharts-card
+        chart_type: donut
+        apex_config:
+          fill:
+            type: gradient
+            gradient:
+              shade: dark
+              shadeIntensity: 0.1
+              opacityFrom: 0.9
+              opacityTo: 0.85
+              stops:
+                - 0
+                - 90
+                - 100
+          chart:
+            fontFamily: SF Pro Text
+          legend:
+            position: right
+            fontSize: 13px
+            fontWeight: 300
+            markers:
+              width: 16
+              height: 25
+              customHTML:
+                - |-
+                  EVAL:() => {
+                    return `<ha-icon icon="hass:robot" style="--mdc-icon-size: 14px;"></ha-icon>`
+                  }
+                - |-
+                  EVAL:() => {
+                    return `<ha-icon icon="hass:radiobox-blank" style="--mdc-icon-size: 14px;"></ha-icon>`
+                  }
+                - |-
+                  EVAL:() => {
+                    return `<ha-icon icon="hass:account" style="--mdc-icon-size: 14px;"></ha-icon>`
+                  }
+                - |-
+                  EVAL:() => {
+                    return `<ha-icon icon="hass:lightbulb" style="--mdc-icon-size: 14px;"></ha-icon>`
+                  }
+                - |-
+                  EVAL:() => {
+                    return `<ha-icon icon="hass:cast" style="--mdc-icon-size: 14px;"></ha-icon>`
+                  }
+                - |-
+                  EVAL:() => {
+                    return `<ha-icon icon="hass:eye" style="--mdc-icon-size: 14px;"></ha-icon>`
+                  }
+                - |-
+                  EVAL:() => {
+                    return `<ha-icon icon="hass:flash" style="--mdc-icon-size: 14px;"></ha-icon>`
+                  }
+                - |-
+                  EVAL:() => {
+                    return `<ha-icon icon="hass:home-assistant" style="--mdc-icon-size: 14px;"></ha-icon>`
+                  }
+              fillColors:
+                - none
+                - none
+                - none
+                - none
+                - none
+                - none
+                - none
+                - none
+          stroke:
+            show: true
+            width: 0.4
+          dataLabels:
+            enabled: false
+            style:
+              fontSize: 14px
+              fontWeight: 700
+            dropShadow:
+              enabled: true
+              top: 0
+              left: 0
+              blur: 3
+              color: black
+              opacity: 0.1
+          plotOptions:
+            pie:
+              startAngle: 0
+              endAngle: 360
+              expandOnClick: true
+              offsetX: 0
+              offsetY: 0
+              customScale: 1
+              dataLabels:
+                offset: 0
+                minAngleToShowLabel: 10
+              donut:
+                size: 65%
+                background: transparent
+                labels:
+                  show: true
+                  value:
+                    fontSize: 42px
+                    fontWeight: 700
+                    offsetY: 16
+                  total:
+                    show: true
+                    label: Entities
+                    fontSize: 15px
+                    fontWeight: 800
+                    color: '#ffffff50'
+        series:
+          - entity: sensor.template_domain_counter
+            attribute: automation
+            name: Automations
+          - entity: sensor.template_domain_counter
+            attribute: binary_sensor
+            name: Binary sensors
+          - entity: sensor.template_domain_counter
+            attribute: device_tracker
+            name: Device trackers
+          - entity: sensor.template_domain_counter
+            attribute: light
+            name: Lights
+          - entity: sensor.template_domain_counter
+            attribute: media_player
+            name: Media players
+          - entity: sensor.template_domain_counter
+            attribute: sensor
+            name: Sensors
+          - entity: sensor.template_domain_counter
+            attribute: switch
+            name: Switches
+          - entity: sensor.template_domain_counter
+            attribute: other
+            name: Other
+      
+      #radial
+      - type: grid
+        cards:
+          - type: custom:apexcharts-card
+            chart_type: radialBar
+            apex_config:
+              legend:
+                onItemHover:
+                  highlightDataSeries: false
+                show: false
+              chart:
+                height: 280px
+                fontFamily: SF Pro Display
+              plotOptions:
+                radialBar:
+                  startAngle: -180
+                  endAngle: 180
+                  dataLabels:
+                    name:
+                      show: true
+                      offsetY: 55
+                    value:
+                      show: true
+                      offsetY: 5
+                      fontSize: 50px
+                      fontWeight: 600
+                      color: '#379c55'
+                    total:
+                      show: true
+                      fontSize: 21px
+                      fontWeight: 300
+                      label: CPU Load
+                      color: '#a8a8a8'
+                      formatter: |
+                        EVAL:(w) => {
+                          return w.globals.seriesTotals + '٪';
+                        }
+                  hollow:
+                    size: 75%
+                    image: >-
+                      data:image/svg+xml,%3Csvg
+                      xmlns='http://www.w3.org/2000/svg' viewBox='0 0 283.5
+                      283.5'%3E%3Cpath d='M117.3
+                      109.2h48.8v4.1h12.2v8.1h-12.2v8.1h12.2v8.1h-12.2v8.1h12.2v8.1h-12.2v8.1h12.2v8.1h-12.2v4.1h-48.8V170h-12.2v-8.1h12.2V154h-12.2v-8.1h12.2v-8.1h-12.2v-8.1h12.2v-8.1h-12.2v-8.1h12.2v-4.3m20.4
+                      44.8v12.2h4.1V154h-4.1m8.1 0v12.2h4.1V154h-4.1m8.2
+                      0v12.2h4.1V154H154z' fill='%23a8a7a7'/%3E%3C/svg%3E
+                    imageWidth: 118
+                    imageHeight: 118
+                    imageOffsetY: -50
+                    imageClipped: false
+                  track:
+                    show: true
+                    background: '#222222'
+                    strokeWidth: 155%
+              stroke:
+                dashArray: 3.2
+                lineCap: butt
+            series:
+              - entity: sensor.template_udm_cpu
+                color: '#379c55'
+          - type: custom:apexcharts-card
+            chart_type: radialBar
+            apex_config:
+              legend:
+                onItemHover:
+                  highlightDataSeries: false
+                show: false
+              chart:
+                height: 280px
+                fontFamily: SF Pro Display
+              plotOptions:
+                radialBar:
+                  startAngle: -180
+                  endAngle: 180
+                  dataLabels:
+                    name:
+                      show: true
+                      offsetY: 55
+                    value:
+                      show: true
+                      offsetY: 5
+                      fontSize: 50px
+                      fontWeight: 600
+                      color: '#379c55'
+                    total:
+                      show: true
+                      fontSize: 21px
+                      fontWeight: 300
+                      label: CPU Temp
+                      color: '#a8a8a8'
+                      formatter: |
+                        EVAL:(w) => {
+                          return w.globals.seriesTotals + '°';
+                        }
+                  hollow:
+                    size: 75%
+                    image: >-
+                      data:image/svg+xml,%3Csvg
+                      xmlns='http://www.w3.org/2000/svg' viewBox='0 0 283.5
+                      283.5'%3E%3Cpath d='M152.1 145.4v-26.9a10.07 10.07 0 1
+                      0-20.2 0v26.9c-7.4 5.6-8.9 16.1-3.4 23.5 5.6 7.4 16.1 8.9
+                      23.5 3.4s8.9-16.1 3.4-23.5c-.9-1.4-2.1-2.5-3.3-3.4M142
+                      115.1a3.37 3.37 0 0 1 3.4 3.4v10.1h-6.7v-10.1c-.1-1.9
+                      1.4-3.4 3.3-3.4z' fill='%23a8a7a7'/%3E%3C/svg%3E
+                    imageWidth: 150
+                    imageHeight: 150
+                    imageOffsetY: -50
+                    imageClipped: false
+                  track:
+                    show: true
+                    background: '#222222'
+                    strokeWidth: 155%
+              stroke:
+                dashArray: 3.2
+                lineCap: butt
+            series:
+              - entity: sensor.template_udm_cpu_temp
+                color: '#379c55'
+        columns: 2
+        square: true
