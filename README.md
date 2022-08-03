@@ -4,7 +4,7 @@
 
 If you like anything here, be sure to :star2: my repo!
 
-![dashboard](www/img/dash.png)
+![dashboard](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/dash.png)
 
 ## Installation
 
@@ -41,13 +41,13 @@ No, because this is not a custom card or integration
 
 Popups that supports notifications.
 
-![animations](www/img/footer.png)
+![footer](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/footer.png)
 
 #### Popups
 
 Long press a button to show settings and information pertaining to the entity, using [browser_mod](https://github.com/thomasloven/hass-browser_mod). Light popups are automatically created using the `light` button-card template with 🍄 [Mushroom](https://github.com/piitaya/lovelace-mushroom)
 
-<img src="www/img/group.png" width="35%">
+<img src="https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/group.png" width="35%">
 
 #### Media
 
@@ -66,11 +66,11 @@ I've made a tool to help with css element selectors - [https://matt8707.github.i
 
 | nas | vacuum |
 | --- | --- |
-| ![nas](www/img/nas.png) | ![vacuum](www/img/vacuum.png) |
+| ![nas](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/nas.png) | ![vacuum](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/vacuum.png) |
 
 | misc |
 | --- |
-| ![multi](www/img/multi.png) |
+| ![multi](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/multi.png) |
 
 ## Hardware
 
