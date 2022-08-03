@@ -1,9 +1,0 @@
-substitutions:
-  name: gosund-monitors
-
-wifi:
-  manual_ip:
-    static_ip: !secret static_ip_gosund_monitors
-
-packages:
-  device_base: !include .config.gosund_sp112.yaml
