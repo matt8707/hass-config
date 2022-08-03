@@ -7,134 +7,53 @@ homeassistant:
   temperature_unit: C
   time_zone: Europe/Stockholm
   currency: SEK
-  packages: !include_dir_named include
+  packages: !include_dir_named packages
+  customize_domain:
+    automation:
+      initial_state: true
   allowlist_external_dirs:
     - /config
 
 default_config:
 
+frontend: !include themes.yaml
+template: !include sidebar.yaml
+
 lovelace:
   mode: yaml
   resources:
-    [ { url: /hacsfiles/apexcharts-card/apexcharts-card.js,                         type: module },
+    [
+      { url: /hacsfiles/apexcharts-card/apexcharts-card.js,                         type: module },
       { url: /hacsfiles/bar-card/bar-card.js,                                       type: module },
       { url: /hacsfiles/button-card/button-card.js,                                 type: module },
+      { url: /hacsfiles/custom-icons/custom-icons.js,                               type: module },
       { url: /hacsfiles/kiosk-mode/kiosk-mode.js,                                   type: module },
-      { url: /hacsfiles/light-entity-card/light-entity-card.js,                     type: module },
-      { url: /hacsfiles/light-popup-card/light-popup-card.js,                       type: module },
       { url: /hacsfiles/lovelace-layout-card/layout-card.js,                        type: module },
+      { url: /hacsfiles/lovelace-more-info-card/more-info-card.js,                  type: module },
+      { url: /hacsfiles/lovelace-mushroom/mushroom.js,                              type: module },
       { url: /hacsfiles/lovelace-slider-entity-row/slider-entity-row.js,            type: module },
       { url: /hacsfiles/lovelace-xiaomi-vacuum-map-card/xiaomi-vacuum-map-card.js,  type: module },
       { url: /hacsfiles/swipe-card/swipe-card.js,                                   type: module },
 
-      { url: '/local/calendar-card.js?v=3.109.1',                                   type: module },
-      { url: '/local/custom_icons.js?v=28082021',                                   type: module },
-      { url: '/local/marked.min.js?v=4.0.12',                                       type: module },
+      { url: '/local/marked.min.js?v=4.0.18',                                       type: module },
       { url: '/local/vanilla-tilt.min.js?v=1.7.2',                                  type: module },
-      { url: /local/font.css,                                                       type: css    } ]
+      { url: '/local/fonts.css?v=2',                                                type: css }
+    ]
+
+recorder:
+  db_url: !secret recorder_db_url
+  exclude:
+    entity_globs:
+      - sensor.browser_*
 
 logger:
   default: warning
   logs:
     homeassistant.components.websocket_api: fatal
-    homeassistant.components.camera: fatal
-    homeassistant.helpers.entity: fatal
     custom_components.monitor_docker.helpers: fatal
 
-recorder:
-  db_url: !secret recorder_db_url
-  purge_keep_days: 5
-  commit_interval: 30
-  exclude:
-    entity_globs:
-      - sensor.browser_*
-
-person:
-  - name: Matte
-    id: matte
-    device_trackers:
-      - device_tracker.mattias_iphone_unifi
-      - device_tracker.mattias_iphone_ios
-
-  - name: Sanja
-    id: sanja
-    device_trackers:
-      - device_tracker.sanjas_iphone_unifi
-      - device_tracker.sanjas_iphone_ios
-
-smartir:
-  check_updates: false
-
-climate:
-  - platform: smartir
-    name: AC
-    unique_id: EXP26U758CW
-    device_code: 1703
-    controller_data: remote.broadlink_remote
-    temperature_sensor: sensor.broadlink_rm4_pro_temperature
-    humidity_sensor: sensor.broadlink_rm4_pro_humidity
-    power_sensor: binary_sensor.gosund_ac_power_state
-    power_sensor_restore_state: true
-
-influxdb:
-  host: !secret influxdb_host
-  precision: s
-  include:
-    entities:
-      - sensor.mattias_weight
-      - sensor.sanja_weight
-
-waste_collection_schedule:
-  sources:
-    - name: ics
-      args:
-        url: !secret waste_collection_schedule_url
-
-wemo:
-  discovery: false
-  static: !secret wemo_static
-
-calendar:
-  - platform: caldav
-    username: !secret caldav_username
-    password: !secret caldav_password
-    url: https://caldav.icloud.com
-
-browser_mod:
-  prefix: browser_
-
-timer:
-  laundry:
-    duration: 01:00:00
-    icon: mdi:washing-machine
-    restore: true
-
-notify:
-  - name: ALL_DEVICES
-    platform: group
-    services:
-      - service: mobile_app_mattias_iphone_ios
-      - service: mobile_app_mattias_imac
-      - service: mobile_app_sanja_iphone
-
-monitor_docker:
-  - name: Docker
-    monitored_conditions: [allinone]
-    scan_interval: 120
-
-  - name: RPi Docker
-    url: !secret monitor_docker_rpi_url
-    monitored_conditions: [allinone]
-    scan_interval: 120
-
-lock:
-  - platform: template
-    name: Dator
-    value_template: >
-      {{ states('input_boolean.computer_lock') }}
-    lock:
-      service: input_boolean.turn_on
-      entity_id: input_boolean.computer_lock
-    unlock:
-      service: input_boolean.turn_off
-      entity_id: input_boolean.computer_lock
+sensor:
+  - platform: time_date
+    display_options:
+      - time
+      - date
