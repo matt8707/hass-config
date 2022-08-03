@@ -4,8 +4,7 @@
 
 If you like anything here, be sure to :star2: my repo!
 
-![screenshot](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/screenshot.png)
-
+![dashboard](www/img/dash.png)
 
 ## Installation
 
@@ -16,13 +15,12 @@ There's no install button. I'm sharing my full configuration
 No, because this is not a custom card or integration
 
 **Where do I even start?** <br>
-[This post explains how to get started](https://community.home-assistant.io/t/a-different-take-on-designing-a-lovelace-ui/162594/1717) :tada:
-
+[INSTALL.md explains how to get started](https://github.com/matt8707/hass-config/blob/master/www/INSTALL.md) :tada:
 
 ## Features
 
 * [Dashboard (Lovelace)](https://www.home-assistant.io/lovelace/) using custom [button-card](https://github.com/custom-cards/button-card) and [layout-card](https://github.com/thomasloven/lovelace-layout-card)
-* Portrait, landscape and mobile view - [responsive_demo.mp4](https://user-images.githubusercontent.com/36163594/120789256-ad825000-c531-11eb-97c2-18904c48efdd.mp4)
+* Portrait, landscape and mobile view - [responsive_demo.mp4](https://user-images.githubusercontent.com/36163594/120789256-ad825000-c531-11eb-97c2-18904c48efdd.mp4) [[mirror]](https://drive.google.com/file/d/1BgGHFgKF2sfI7cvdbWUeCyU_85D2R5x3/view?usp=sharing)
 * Less cluttered interface by displaying more information in a popup
 * Loading animation for slow responding entities
 * Adding tap audio feedback to the UI for wall-mounted tablet
@@ -30,37 +28,32 @@ No, because this is not a custom card or integration
 
 ![animations](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/animations.gif)
 
-
 #### Sidebar
 
 * Time and date with greeting based on time of day
 * Entities that are on, using natural language
 * Mailbox counter to show received mail
 * Temperature with emoji based on weather conditions
-* Geofenced bus departures
 * Important calendar information
 * Other conditional alerts
 
+#### Footer
 
-#### Sidebar footer
+Popups that supports notifications.
 
-* Vacuum - card to control robot vacuum, with a live map
-* Information - monitor Home Assistant, tablet and NAS
-* Updates - lists Home Assistant release notes and HACS updates
+![animations](www/img/footer.png)
 
 #### Popups
 
-Long press a button to show settings and information pertaining to the entity, using [browser_mod](https://github.com/thomasloven/hass-browser_mod). Light popups are automatically created using the `light` button-card template with [light-popup-card](https://github.com/DBuit/light-popup-card) and [light-entity-card](https://github.com/ljmerza/light-entity-card)
+Long press a button to show settings and information pertaining to the entity, using [browser_mod](https://github.com/thomasloven/hass-browser_mod). Light popups are automatically created using the `light` button-card template with 🍄 [Mushroom](https://github.com/piitaya/lovelace-mushroom)
 
-![light](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/light.gif)
-
+<img src="www/img/group.png" width="35%">
 
 #### Media
 
 Conditionally display media players based on the last active device. If nothing is active for 15 minutes, a poster of the last downloaded movie/episode is shown ([Plex](https://github.com/plexinc/pms-docker), [Radarr](https://github.com/Radarr/Radarr), [Sonarr](https://github.com/Sonarr/Sonarr)). Swipe to reveal non-active media players
 
 ![media](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/media.gif)
-
 
 ## Theme
 
@@ -69,13 +62,15 @@ I've made a tool to help with css element selectors - [https://matt8707.github.i
 
 ![media](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/cardmod_helper.png)
 
-
 ## Screenshots
 
-| [![imac_light](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/info_light_2.png)](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/info_light_2.png)<br>iMac and Light | [![information](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/info_2.png)](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/info_2.png)<br>Information | [![vacuum](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/vacuum_2.png)](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/vacuum_2.png)<br>Vacuum |
-|:---:|:---:|:---:|
-| [![misc](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/misc_2.png)](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/misc_2.png)<br>**Misc** | [![person_updates](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/tracker_updates.png)](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/tracker_updates.png)<br>**Person and Updates** | [![custom_icons](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/custom_icons.png)](https://raw.githubusercontent.com/matt8707/hass-config/master/www/img/custom_icons.png)<br>**www/custom_icons.js** |
+| nas | vacuum |
+| --- | --- |
+| ![nas](www/img/nas.png) | ![vacuum](www/img/vacuum.png) |
 
+| misc |
+| --- |
+| ![multi](www/img/multi.png) |
 
 ## Hardware
 
