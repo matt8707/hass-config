@@ -1,17 +1,16 @@
-backups
-blueprints
-tts
 .*
 !.HA_VERSION
+backups
+blueprints
+deps
 
-google_calendars.yaml
-known_devices.yaml
+secrets_template.yaml
 secrets.yaml
 
-custom_components/*
-www/community/*
-www/Plex_Recently_Added/*
-www/fonts
+custom_components/
+www/community/
+www/fonts/
+www/Plex_Recently_Added/
 
-home-assistant.code-workspace
+*.code-workspace
 home-assistant.log*
