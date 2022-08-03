@@ -1,0 +1,36 @@
+homeassistant:
+  customize:
+    switch.gosund_fan_switch:
+      friendly_name: "Fläkt\u00B2"
+      icon: cil:pedestal-fan
+
+input_number:
+  fan_timer:
+    name: Stäng efter
+    icon: mdi:timer-outline
+    initial: 12
+    min: 1
+    max: 12
+    unit_of_measurement: h
+
+automation:
+  - alias: fan_turn_off
+    id: '0568618309657'
+    trigger:
+      - platform: state
+        entity_id: switch.gosund_fan_switch
+        from: 'off'
+        to: 'on'
+        for:
+          hours: >
+            {{ states('input_number.fan_timer') | int }}
+      - platform: state
+        entity_id: switch.imac
+        from: 'on'
+        to: 'off'
+        for:
+          minutes: 15
+    action:
+      service: switch.turn_off
+      target:
+        entity_id: switch.gosund_fan_switch

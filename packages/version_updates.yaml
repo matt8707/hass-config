@@ -1,0 +1,145 @@
+rest:
+  - authentication: basic
+    username: !secret github_username
+    password: !secret github_access_token
+    resource: https://api.github.com/repos/esphome/esphome/releases/latest
+    sensor:
+      name: updates_esphome_latest
+      value_template: >
+        {{ value_json.tag_name }}
+    scan_interval: 86400
+
+  - resource: https://api.github.com/repos/dhleong/playactor/releases/latest
+    sensor:
+      name: updates_playactor_latest
+      value_template: >
+        {{ value_json.tag_name }}
+    scan_interval: 86400
+
+  - resource: https://api.github.com/repos/home-assistant/core/releases/latest
+    sensor:
+      name: hass_release_notes
+      value_template: >
+        {{ value_json.name }}
+      json_attributes:
+        - body
+    scan_interval: 21600
+
+  - resource: https://api.github.com/repos/home-assistant/core/releases?per_page=1
+    sensor:
+      name: hass_release_notes_beta
+      value_template: >
+        {{ value_json[0].name }}
+      json_attributes:
+        - body
+    scan_interval: 21600
+
+template:
+  - sensor:
+      - unique_id: hass_next_release
+        state: >
+          {% set start_time = state_attr('calendar.home_assistant_devs', 'start_time') %}
+          {{ (as_timestamp(start_time, default=0) + 60*60*20.5) | timestamp_local(default) }}
+        attributes:
+          friendly_name: >
+            {% set release = state_attr('calendar.home_assistant_devs','message') %}
+            {% if release == 'Home Assistant Core Beta Release' %}
+              Nästa beta
+            {% elif release == 'Home Assistant Core Release' %}
+              Nästa release
+            {% else %}
+              {{ release }}
+            {% endif %}
+          icon: mdi:dev-to
+          device_class: timestamp
+
+      - unique_id: updates
+        state: template
+        attributes:
+          esphome: >
+            {% macro f(e) %}
+              {{- states('sensor.gosund_' + e + '_esphome_version') -}}
+            {% endmacro %}
+            {% set group = [f('monitors'), f('ac'), f('fan')] | min %}
+            {% set installed = group.split()[0] %}
+            {% set latest = states('sensor.updates_esphome_latest') %}
+            {% set url = 'https://github.com/esphome/esphome/releases/latest' %}
+            {% if installed != latest %}
+              <b><a href="#" onclick="window.open('{{ url }}');">ESPHome</a></b> {{ installed + ' <b>&rarr;</b> ' + latest }}
+            {% endif %}
+          playactor: >
+            {% set installed = states('sensor.updates_playactor_installed') %}
+            {% set latest = states('sensor.updates_playactor_latest') %}
+            {% set url = 'https://github.com/dhleong/playactor/releases/latest' %}
+            {% if installed != latest %}
+              <b><a href="#" onclick="window.open('{{ url }}');">playactor</a></b> {{ installed + ' <b>&rarr;</b> ' + latest }}
+            {% endif %}
+          kemperprofiler: >
+            {% set installed = state_attr('sensor.updates_kemper', 'profiler_installed') %}
+            {% set latest = state_attr('sensor.updates_kemper', 'profiler_latest') %}
+            {% set url = 'https://www.kemper-amps.com/downloads' %}
+            {% if installed != latest %}
+              <b><a href="#" onclick="window.open('{{ url }}');">Kemper Profiler OS</a></b> {{ installed + ' <b>&rarr;</b> ' + latest }}
+            {% endif %}
+          rigmanager: >
+            {% set installed = state_attr('sensor.updates_kemper', 'rigmanager_installed') %}
+            {% set latest = state_attr('sensor.updates_kemper', 'rigmanager_latest') %}
+            {% set url = 'https://www.kemper-amps.com/downloads' %}
+            {% if installed != latest %}
+              <b><a href="#" onclick="window.open('{{ url }}');">Rig Manager</a></b> {{ installed + ' <b>&rarr;</b> ' + latest }}
+            {% endif %}
+          unifi: >
+            {% set installed = states('sensor.template_udm_version') %}
+            {% set url = 'https://community.ui.com/releases?q=dream+machine' %}
+            {% if is_state('binary_sensor.template_udm_upgradable', 'on') %}
+              <b><a href="#" onclick="window.open('{{ url }}');">UniFi Dream Machine ({{ installed }})</a></b> uppdatering tillgänglig
+            {% endif %}
+          synology: >
+            {% set installed = state_attr('update.nas_dsm_update', 'installed_version') %}
+            {% set latest = state_attr('update.nas_dsm_update', 'latest_version') %}
+            {% set url = 'https://www.synology.com/en-global/releaseNote/DSM' %}
+            {% if is_state('update.nas_dsm_update', 'on') %}
+              <b><a href="#" onclick="window.open('{{ url }}');">Synology DSM</a></b> {{ installed + ' <b>&rarr;</b> ' + latest }}
+            {% endif %}
+
+sensor:
+  - platform: command_line
+    name: updates_kemper
+    command: !secret updates_kemper
+    value_template: >
+      {{ value_json.profiler_installed == value_json.profiler_latest and
+      value_json.rigmanager_latest == value_json.rigmanager_installed }}
+    json_attributes:
+      - profiler_latest
+      - profiler_installed
+      - rigmanager_latest
+      - rigmanager_installed
+    scan_interval: 86400
+
+  - platform: command_line
+    name: updates_playactor_installed
+    command: !secret updates_playactor_installed
+    value_template: >
+      {{ value.split(' ')[1].split('v')[1] }}
+    scan_interval: 86400
+
+  - platform: command_line
+    name: hacs_installed
+    command: |-
+      python3 << EOF
+      import os, json
+      installed = {"repositories": []}
+      PATH = "/config/.storage/hacs.repositories"
+      with open(PATH, "r", encoding="UTF-8") as file:
+          data = json.load(file)["data"]
+          for i in data:
+              if "installed" in data[i]:
+                  installed["repositories"] += [data[i]["full_name"]]
+          file.close()
+      print(json.dumps(installed))
+      EOF
+    value_template: >
+      {{ value_json.repositories | count }}
+    json_attributes:
+      - repositories
+    scan_interval: 86400

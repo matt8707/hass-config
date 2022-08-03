@@ -1,0 +1,35 @@
+homeassistant:
+  customize:
+    switch.deltaco_sh_p01_socket:
+      icon: mdi:lightbulb-variant
+      friendly_name: Balkong
+    automation.balcony_lights:
+      friendly_name: Tänd ljusslinga med rörelsedetektor
+
+automation:
+  - alias: balcony_lights
+    id: '1522208581249'
+    mode: restart
+    trigger:
+      platform: state
+      entity_id: binary_sensor.wemo_motion
+      from:
+        - 'on'
+        - 'off'
+      to:
+        - 'on'
+        - 'off'
+    action:
+      if: >
+        {{ trigger.to_state.state == 'on' and
+        is_state('sun.sun', 'below_horizon') }}
+      then:
+        service: switch.turn_on
+        target:
+          entity_id: switch.deltaco_sh_p01_socket
+      else:
+        - delay:
+            minutes: 25
+        - service: switch.turn_off
+          target:
+            entity_id: switch.deltaco_sh_p01_socket

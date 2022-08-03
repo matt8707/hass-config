@@ -1,0 +1,73 @@
+shell_command:
+  rpi_poweroff: !secret rpi_poweroff
+  rpi_reboot: !secret rpi_reboot
+  rpi_led_off: !secret rpi_led_off
+
+monitor_docker:
+  - name: RPi Docker
+    url: !secret rpi_monitor_docker_url
+    monitored_conditions: [allinone]
+    scan_interval: 900
+
+binary_sensor:
+  - platform: ping
+    name: rpi_ping
+    host: !secret rpi_ping_host
+    scan_interval: 900
+
+sensor:
+  - platform: command_line
+    name: rpi_cpu
+    command: !secret rpi_cpu
+    unit_of_measurement: '%'
+    scan_interval: 900
+
+  - platform: command_line
+    name: rpi_mem
+    command: !secret rpi_mem
+    unit_of_measurement: '%'
+    value_template: >
+      {{ value | round(1) }}
+    scan_interval: 900
+
+  - platform: command_line
+    name: rpi_sd
+    command: !secret rpi_sd
+    unit_of_measurement: '%'
+    value_template: >
+      {{ value[:-1] }}
+    scan_interval: 900
+
+  - platform: command_line
+    name: rpi_uptime
+    command: !secret rpi_uptime
+    value_template: >
+      {{ value | replace(' ', 'T') }}
+    scan_interval: 900
+
+influxdb:
+  host: !secret nas_host
+  include:
+    entities:
+      - sensor.mattias_weight
+      - sensor.sanja_weight
+
+homeassistant:
+  customize:
+    sensor.rpi_cpu:
+      friendly_name: Processor
+      icon: mdi:chip
+    sensor.rpi_mem:
+      friendly_name: Minne
+      icon: mdi:memory
+    sensor.rpi_sd:
+      friendly_name: SD-kort
+      icon: mdi:micro-sd
+    sensor.rpi_uptime:
+      friendly_name: Senaste omstart
+      icon: mdi:update
+      device_class: timestamp
+    sensor.mattias_weight:
+      unit_of_measurement: kg
+    sensor.sanja_weight:
+      unit_of_measurement: kg

@@ -1,0 +1,128 @@
+shell_command:
+  unifi_poweroff: !secret unifi_poweroff
+  unifi_reboot: !secret unifi_reboot
+
+sensor:
+  - platform: command_line
+    name: udm_unifios
+    command: |-
+      python3 << EOF
+      import json, yaml, requests
+      from datetime import datetime
+      from urllib3 import disable_warnings
+      disable_warnings()
+
+      SECRETS_FILE = "/config/secrets.yaml"
+      def get_secret(secret):
+          try:
+              with open(SECRETS_FILE, "r", encoding="utf8") as file:
+                  secrets = yaml.full_load(file)
+                  for key, value in secrets.items():
+                      if key == secret:
+                          return value
+          except FileNotFoundError:
+              print("secrets.yaml not found")
+              exit()
+
+      IP = get_secret("unifi_ip")
+      PORT = get_secret("unifi_port")
+      USER = get_secret("unifi_user")
+      PASS = get_secret("unifi_pass")
+      URL = f"https://{IP}:{PORT}"
+
+      login = requests.request("POST", f"{URL}/api/auth/login", \
+          headers={"Content-Type": "application/json"}, \
+          data=json.dumps({"username": USER, "password": PASS}), verify=False)
+      response = requests.request("GET", f"{URL}/proxy/network/api/s/default/stat/device/", \
+          cookies=login.cookies, verify=False)
+      data = response.json()["data"][0]
+
+      print(json.dumps({
+          "cpu": data["system-stats"]["cpu"],
+          "cpu_temp": round(data["temperatures"][1]["value"], 1),
+          "mem": data["system-stats"]["mem"],
+          "disk": round(data["storage"][1]["used"] / data["storage"][1]["size"] * 100, 1),
+          "internet": data["internet"],
+          "uptime": datetime.fromtimestamp(data["startup_timestamp"]).isoformat(),
+          "version": data["displayable_version"],
+          "upgradable": data["upgradable"]
+      }))
+      EOF
+    command_timeout: 180
+    value_template: >
+      {{ value_json.internet }}
+    json_attributes:
+      - cpu
+      - cpu_temp
+      - mem
+      - disk
+      - internet
+      - uptime
+      - version
+      - upgradable
+    scan_interval: 900
+
+template:
+  - binary_sensor:
+      - unique_id: udm_internet
+        state: >
+          {{ state_attr('sensor.udm_unifios', 'internet') | default }}
+        attributes:
+          friendly_name: Internet
+          icon: mdi:wan
+          device_class: connectivity
+
+      - unique_id: udm_upgradable
+        state: >
+          {{ state_attr('sensor.udm_unifios', 'upgradable') | default }}
+        attributes:
+          friendly_name: Uppdatering
+          icon: mdi:update
+          device_class: update
+
+  - sensor:
+      - unique_id: udm_cpu
+        state: >
+          {{ state_attr('sensor.udm_unifios', 'cpu') | default }}
+        attributes:
+          friendly_name: Processor
+          icon: mdi:chip
+          unit_of_measurement: '%'
+
+      - unique_id: udm_cpu_temp
+        state: >
+          {{ state_attr('sensor.udm_unifios', 'cpu_temp') | default }}
+        attributes:
+          friendly_name: Processortemperatur
+          icon: mdi:thermometer
+          unit_of_measurement: '°C'
+
+      - unique_id: udm_mem
+        state: >
+          {{ state_attr('sensor.udm_unifios', 'mem') | default }}
+        attributes:
+          friendly_name: Minne
+          icon: mdi:memory
+          unit_of_measurement: '%'
+
+      - unique_id: udm_disk
+        state: >
+          {{ state_attr('sensor.udm_unifios', 'disk') | default }}
+        attributes:
+          friendly_name: Lagring
+          icon: mdi:harddisk
+          unit_of_measurement: '%'
+
+      - unique_id: udm_uptime
+        state: >
+          {{ state_attr('sensor.udm_unifios', 'uptime') | default }}
+        attributes:
+          friendly_name: Senaste omstart
+          device_class: timestamp
+
+      - unique_id: udm_version
+        state: >
+          {{ state_attr('sensor.udm_unifios', 'version') | default }}
+        attributes:
+          friendly_name: Version
+          icon: mdi:router-wireless

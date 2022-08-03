@@ -1,0 +1,75 @@
+timer:
+  laundry:
+    name: Tvätt
+    duration: 01:00:00
+    icon: mdi:washing-machine
+    restore: true
+
+input_boolean:
+  laundry_display:
+    name: Visa timer
+    icon: mdi:eye
+
+automation:
+  - alias: laundry_display_on
+    id: '5895522913207'
+    mode: restart
+    trigger:
+      platform: calendar
+      event: start
+      entity_id: calendar.tvatta
+      offset: -00:01:00
+    action:
+      - service: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.laundry_display
+
+  - alias: laundry_display_off
+    id: '8028880075818'
+    mode: restart
+    trigger:
+      platform: calendar
+      event: end
+      entity_id: calendar.tvatta
+    action:
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.laundry_display
+
+  - alias: laundry_alert
+    id: '3403466403120'
+    trigger:
+      platform: event
+      event_type: timer.finished
+      event_data:
+        entity_id: timer.laundry
+    action:
+      - service: media_player.play_media
+        target:
+          entity_id: media_player.browser_dd239c79_406b9d77
+        data:
+          media_content_id: /local/sound/timer.mp3
+          media_content_type: music
+      - service: notify.all_devices
+        data:
+          message: >
+            {% set message = ['Tvätten är färdig', 'Tvätten är klar', 'Dags att gå ner' ] %}
+            {{'\U0001F9FA ' + message | random }}
+
+  - alias: laundry_notify_ios_shorcuts
+    id: '2360411947125'
+    trigger:
+      platform: event
+      event_type: call_service
+      event_data:
+        domain: google
+        service: create_event
+    action:
+      service: notify.mobile_app_iphone
+      data:
+        title: Tvättid tillagd
+        message: >
+          {% set date = trigger.event.data.service_data.start_date_time | as_datetime %}
+          {% set day = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'] %}
+          {% set month = ['Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni', 'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December'] %}
+          {{ day[date.weekday()] }}, {{ date.day }} {{ month[date.month - 1] }} {{ date.strftime('%H:%M') }}

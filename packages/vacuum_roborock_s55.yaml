@@ -1,0 +1,122 @@
+homeassistant:
+  customize:
+    vacuum.morty:
+      icon: cil:roborock-vacuum
+    sensor.morty_last_clean_end:
+      friendly_name: Senast städat
+      icon: mdi:calendar-clock
+
+template:
+  - sensor:
+      - unique_id: vacuum_filter
+        state: >
+          {% set entity_id = 'sensor.morty_filter_left' %}
+          {{ (states(entity_id) | int(default=0) / 5400) | int(default=0) }}
+        attributes:
+          friendly_name: Filter
+          icon: cil:roborock-filter
+          unit_of_measurement: '%'
+
+      - unique_id: vacuum_mainbrush
+        state: >
+          {% set entity_id = 'sensor.morty_main_brush_left' %}
+          {{ (states(entity_id) | int(default=0) / 10800) | int(default=0) }}
+        attributes:
+          friendly_name: Huvudborste
+          icon: cil:roborock-mainbrush
+          unit_of_measurement: '%'
+
+      - unique_id: vacuum_sensors
+        state: >
+          {% set entity_id = 'sensor.morty_sensor_dirty_left' %}
+          {{ (states(entity_id) | int(default=0) / 1080) | int(default=0) }}
+        attributes:
+          friendly_name: Sensorer
+          icon: cil:roborock-sensor
+          unit_of_measurement: '%'
+
+      - unique_id: vacuum_sidebrush
+        state: >
+          {% set entity_id = 'sensor.morty_side_brush_left' %}
+          {{ (states(entity_id) | int(default=0) / 7200) | int(default=0) }}
+        attributes:
+          friendly_name: Sidoborste
+          icon: cil:roborock-sidebrush
+          unit_of_measurement: '%'
+
+automation:
+  - alias: vacuum_empty_bin
+    id: '5443599527378'
+    variables:
+      vacuum: vacuum.morty
+    trigger:
+      platform: state
+      entity_id: sensor.morty_total_clean_count
+    condition: >
+      {{ not is_state(vacuum, 'docked') }}
+    action:
+      - delay:
+          seconds: 2
+      - if: >
+          {{ is_state(vacuum, 'returning') }}
+        then:
+          - service: vacuum.pause
+            target:
+              entity_id: >
+                {{ vacuum }}
+          - delay:
+              seconds: 2
+          - service: xiaomi_miio.vacuum_goto
+            target:
+              entity_id: >
+                {{ vacuum }}
+            data:
+              x_coord: 16821
+              y_coord: 23105
+
+camera:
+  - platform: xiaomi_cloud_map_extractor
+    host: !secret xiaomi_vacuum_host
+    token: !secret xiaomi_vacuum_token
+    username: !secret xiaomi_cloud_username
+    password: !secret xiaomi_cloud_password
+    name: vacuum_map
+    country: de
+    colors:
+      color_robo: [224,224,224]
+      color_charger: [27,117,27]
+      color_path: [30,80,113]
+      color_goto_path: [30,80,113]
+      color_map_wall_v2: [30,30,30]
+      color_obstacle: [30,30,30]
+      color_virtual_walls: [255,0,0,60]
+      color_no_go_zones_outline: [255,0,0,60]
+      color_no_go_zones: [255,0,0,28]
+      color_scan: [0,0,0,0]
+      color_map_inside: [0,0,0,0]
+      color_map_outside: [0,0,0,0]
+      color_grey_wall: [0,0,0,0]
+      color_map_wall: [0,0,0,0]
+      color_zones_outline: [0,0,0,0]
+      color_zones: [0,0,0,0]
+    room_colors:
+      1: [42,46,48]
+      2: [42,46,48]
+      16: [42,46,48]
+      17: [42,46,48]
+      18: [42,46,48]
+    draw:
+      - all
+    map_transformation:
+      scale: 2
+      trim:
+        top: 19
+        right: 21
+        bottom: 24
+        left: 21
+    sizes:
+      charger_radius: 10
+      vacuum_radius: 10
+    attributes:
+      - calibration_points
+    scan_interval: 10

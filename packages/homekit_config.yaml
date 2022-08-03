@@ -1,0 +1,70 @@
+homekit:
+  - ip_address: !secret nas_host
+    filter:
+      include_entities:
+        - switch.deltaco_sh_p01_socket
+        - switch.imac
+        - switch.gosund_monitors_switch
+        - climate.ac
+        - switch.playstation_5
+        - switch.gosund_fan_switch
+        - person.matte
+        - person.sanja
+        - script.home_leave
+        - script.home_arrive
+        - script.samsung_tv_energy_saving
+        - vacuum.morty
+        - script.bedroom_tv_night
+    entity_config:
+      switch.deltaco_sh_p01_socket:
+        name: Balkong
+      switch.computer_imac:
+        name: Dator
+      switch.gosund_monitors_switch:
+        name: Monitorer
+      climate.ac:
+        name: Klimat
+      switch.playstation_5:
+        name: Playstation
+      switch.gosund_fan_switch:
+        name: Fläkt
+      person.matte:
+        name: Mattias
+      person.sanja:
+        name: Sanja
+      script.home_leave:
+        name: Stäng allt
+      script.home_arrive:
+        name: Hemma
+      script.samsung_tv_energy_saving:
+        name: Eko
+      vacuum.morty:
+        name: Morty
+      script.bedroom_tv_night:
+        name: Nattläge
+
+  - name: HASS Bridge Sony
+    ip_address: !secret nas_host
+    port: 51828
+    mode: accessory
+    filter:
+      include_entities:
+        - media_player.sony_bravia_tv
+    entity_config:
+      media_player.sony_bravia_tv:
+        name: Sony TV
+        feature_list:
+          - feature: on_off
+
+  - name: HASS Bridge Samsung
+    ip_address: !secret nas_host
+    port: 51829
+    mode: accessory
+    filter:
+      include_entities:
+        - media_player.samsung
+    entity_config:
+      media_player.samsung:
+        name: Samsung TV
+        feature_list:
+          - feature: on_off

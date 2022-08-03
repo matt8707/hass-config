@@ -1,0 +1,168 @@
+shell_command:
+  imac_off: !secret imac_off
+  imac_sleep: !secret imac_sleep
+  imac_restart: !secret imac_restart
+
+input_boolean:
+  imac_lock:
+    name: Avstängningslås
+    icon: cil:lock
+
+switch:
+  - platform: wake_on_lan
+    name: imac_wol
+    host: !secret imac_wol_host
+    mac: !secret imac_wol_mac
+
+  - platform: template
+    switches:
+      imac:
+        friendly_name: Dator
+        icon_template: cil:imac-alternative
+        value_template: >
+          {{ is_state('switch.imac_wol', 'on') }}
+        turn_on:
+          - service: switch.toggle
+            target:
+              entity_id: switch.switchbot_mqtt
+          - service: light.turn_on
+            target:
+              entity_id: light.studio_dator
+        turn_off:
+          if:
+            condition: state
+            entity_id: input_boolean.imac_lock
+            state: 'on'
+          then:
+            service: browser_mod.toast
+            data:
+              duration: 8000
+              message: Dator är låst från att stängas av...
+          else:
+            service: shell_command.imac_off
+
+sensor:
+  - platform: command_line
+    name: imac_cpu
+    command: !secret imac_cpu
+    unit_of_measurement: '%'
+    value_template: >
+      {{ (100 - value[:-1] | float(default=0)) | round(1) }}
+    scan_interval: 86400
+
+  - platform: command_line
+    name: imac_mem
+    command: !secret imac_mem
+    unit_of_measurement: '%'
+    scan_interval: 86400
+
+  - platform: command_line
+    name: imac_uptime
+    command: !secret imac_uptime
+    value_template: >
+      {% set timestamp = value[:-1] | int(default=0) %}
+      {% set year = 86400 * 365 %}
+      {{ timestamp | timestamp_local if (as_timestamp(now()) - timestamp) < year else None}}
+    scan_interval: 86400
+
+  - platform: command_line
+    name: imac_ip
+    command: !secret imac_ip
+    scan_interval: 86400
+
+homeassistant:
+  customize:
+    sensor.imac_cpu:
+      friendly_name: Processor
+      icon: mdi:chip
+    sensor.imac_mem:
+      friendly_name: Minne
+      icon: mdi:memory
+    automation.imac_notification_motion_hall:
+      friendly_name: Mottag notiser
+      icon: mdi:bell
+    sensor.imac_uptime:
+      friendly_name: Senaste omstart
+      icon: mdi:update
+      device_class: timestamp
+
+template:
+  - binary_sensor:
+      - unique_id: imac_vpn
+        state: >
+          {{ is_state('switch.imac', 'on') and
+          states('sensor.imac_ip') != states('sensor.myip') }}
+        attributes:
+          friendly_name: VPN
+          icon: >
+            mdi:shield-{{ iif(this.state == 'on', 'check', 'alert') }}
+          device_class: connectivity
+
+  - sensor:
+      - unique_id: imac_macintosh_hd
+        state: >
+          {{ 100 - states('sensor.mattias_imac_storage') | float }}
+        attributes:
+          friendly_name: Macintosh HD
+          icon: cil:imac-ssd
+          unit_of_measurement: '%'
+
+automation:
+  - alias: imac_on_lights
+    id: '6164870619519'
+    trigger:
+      - platform: state
+        entity_id: switch.imac
+        from: 'off'
+        to: 'on'
+      - platform: state
+        entity_id: switch.imac
+        from: 'on'
+        to: 'off'
+        for:
+          minutes: 30
+    action:
+      service: >
+        light.turn_{{ trigger.to_state.state }}
+      target:
+        entity_id: light.studio_dator
+
+  - alias: imac_notification_motion_hall
+    id: '6635187142734'
+    initial_state: false
+    trigger:
+      platform: state
+      entity_id: binary_sensor.hall_motion_motion
+      from: 'off'
+      to: 'on'
+    condition:
+      condition: state
+      entity_id: switch.imac
+      state: 'on'
+    action:
+      service: notify.mobile_app_mattias_imac
+      data:
+        message: Rörelse i hallen detekterat
+        title: Home Assistant
+
+  - alias: imac_conditional_scan_interval
+    id: '1651201800159'
+    trigger:
+      - platform: time_pattern
+        minutes: /15
+      - platform: state
+        entity_id: switch.imac
+        from: 'off'
+        to: 'on'
+    condition:
+      condition: state
+      entity_id: switch.imac
+      state: 'on'
+    action:
+      service: homeassistant.update_entity
+      target:
+        entity_id:
+          - sensor.imac_cpu
+          - sensor.imac_mem
+          - sensor.imac_uptime
+          - sensor.imac_ip

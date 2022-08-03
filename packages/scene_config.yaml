@@ -1,0 +1,46 @@
+scene:
+  #TODO
+  - name: home_below_horizon
+    entities:
+      light.studio_dator:
+        state: 'on'
+  - name: home_above_horizon
+    entities:
+      light.studio_dator:
+        state: 'on'
+
+script:
+  home_arrive:
+    alias: Hemma
+    sequence:
+      - if:
+          condition: state
+          entity_id: sun.sun
+          state: below_horizon
+        then:
+          service: scene.turn_on
+          target:
+            entity_id: scene.home_below_horizon
+        else:
+          service: scene.turn_on
+          target:
+            entity_id: scene.home_above_horizon
+      - delay:
+          seconds: 4
+
+  home_leave:
+    alias: Stäng allt
+    sequence:
+      - service: homeassistant.turn_off
+        target:
+          entity_id:
+            - light.all_group_exclude_hall
+            - climate.ac
+            - media_player.sony_bravia_tv
+            - media_player.samsung
+            - switch.gosund_fan_switch
+            - switch.gosund_monitors_switch
+            - switch.imac
+            - switch.deltaco_sh_p01_socket
+      - delay:
+          seconds: 4

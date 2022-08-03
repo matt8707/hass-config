@@ -1,0 +1,66 @@
+light:
+  - platform: group
+    name: vardagsrum_group
+    entities:
+      - light.vardagsrum_tv
+      - light.vardagsrum_golv
+
+  - platform: group
+    name: studio_group
+    entities:
+      - light.studio_spot_1
+      - light.studio_spot_2
+
+  - platform: group
+    name: sovrum_group
+    entities:
+      - light.sovrum_tv
+      - light.sovrum_mattias
+      - light.sovrum_sanja
+
+  - platform: group
+    name: badrum_group
+    entities:
+      - light.badrum_vask_1
+      - light.badrum_vask_2
+
+  - platform: group
+    name: hall_group
+    entities:
+      - light.hall_spot_1
+      - light.hall_spot_2
+      - light.hall_spot_3
+
+  - platform: group
+    name: all_group_exclude_hall
+    entities:
+      - light.vardagsrum
+      - light.studio
+      - light.sovrum
+      - light.badrum
+      - light.garderob
+
+homeassistant:
+  customize:
+    light.vardagsrum_group:
+      friendly_name: Belysning
+    light.studio_dator:
+      friendly_name: Datorlampa
+    light.studio_group:
+      friendly_name: Taklampor
+    light.sovrum_group:
+      friendly_name: Sänglampor
+    light.badrum_group:
+      friendly_name: Badrum
+    light.hall_group:
+      friendly_name: Hallampor
+    sensor.dimmer_badrum_battery_level:
+      friendly_name: Dimmer Badrum
+    sensor.dimmer_sovrum_battery_level:
+      friendly_name: Dimmer Sovrum
+    sensor.sensor_hall_battery:
+      friendly_name: Sensor Hall
+    sensor.sensor_garderob_battery:
+      friendly_name: Sensor Garderob
+    sensor.sensor_badrum_battery:
+      friendly_name: Sensor Badrum

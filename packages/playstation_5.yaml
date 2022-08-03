@@ -1,0 +1,82 @@
+switch:
+  - platform: command_line
+    scan_interval: 900
+    switches:
+      playstation_5:
+        friendly_name: Playstation
+        value_template: >
+          {{ value == 'ON' }}
+        command_on: !secret playstation_5_wake
+        command_off: !secret playstation_5_sleep
+        command_timeout: 30
+        command_state: |-
+          python3 << EOF
+          """ https://github.com/wicol/ha-config/blob/c5871e0/sensors/ps5.py """
+          import socket, yaml
+
+          SECRETS_FILE = "/config/secrets.yaml"
+
+          def get_secret(secret):
+              try:
+                  with open(SECRETS_FILE, "r", encoding="utf8") as file:
+                      secrets = yaml.full_load(file)
+                      for key, value in secrets.items():
+                          if key == secret:
+                              return value
+              except FileNotFoundError:
+                  print("secrets.yaml not found")
+                  exit()
+
+          HOST = get_secret("playstation_5_ip")
+
+          def request_state(host):
+              sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+              sock.settimeout(2)
+              msg = ("SRCH * HTTP/1.1\n"
+              "device-discovery-protocol-version:00030010")
+              try:
+                  sock.sendto(bytes(msg, "utf-8"), (host, 9302))
+              except socket.error:
+                  return None
+              try:
+                  res_msg = sock.recv(1024)
+              except socket.timeout:
+                  res_msg = ""
+              sock.close()
+              return str(res_msg)
+
+          RESPONSE = request_state(HOST) or ""
+
+          if "200 Ok" in RESPONSE:
+              STATE = "ON"
+          elif "620 Server Standby" in RESPONSE:
+              STATE = "STANDBY"
+          else:
+              STATE = "OFF"
+
+          print(STATE)
+          EOF
+
+automation:
+  - alias: update_ps5_state
+    id: '2012785424441'
+    mode: restart
+    trigger:
+      platform: event
+      event_type: call_service
+      event_data:
+        domain: switch
+        service_data:
+          entity_id: switch.playstation_5
+    action:
+      repeat:
+        while: >
+          {% set service = trigger.event.data.service %}
+          {% set state = iif(service == 'turn_on', 'on', 'off') %}
+          {{ is_state('switch.playstation_5', state) and repeat.index < 15 }}
+        sequence:
+          - service: homeassistant.update_entity
+            target:
+              entity_id: switch.playstation_5
+          - delay:
+              seconds: 1

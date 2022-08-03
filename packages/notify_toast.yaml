@@ -1,0 +1,195 @@
+notify:
+  - name: all_devices
+    platform: group
+    services:
+      - service: mobile_app_iphone
+      - service: mobile_app_mattias_imac
+      - service: mobile_app_sanja_iphone
+
+homeassistant:
+  customize:
+    binary_sensor.badrum_motion_motion:
+      friendly_name: badrummet
+    binary_sensor.garderob_motion_motion:
+      friendly_name: klädkammaren
+    binary_sensor.wemo_motion:
+      friendly_name: vardagsrummet
+
+input_datetime:
+  sleep_notify_torrent:
+    name: Pausa notiser ett dygn
+    has_date: true
+    has_time: true
+
+automation:
+  - alias: toast
+    id: '3900676590344'
+    mode: parallel
+    trigger:
+      platform: state
+      entity_id:
+        - binary_sensor.garderob_motion_motion
+        - binary_sensor.badrum_motion_motion
+        - binary_sensor.wemo_motion
+      from: 'off'
+      to: 'on'
+    action:
+      service: browser_mod.toast
+      data:
+        duration: 3000
+        message: >
+          Rörelse detekterat i {{ trigger.to_state.name }}
+
+  - alias: dismiss_lovelace_updated
+    id: '4635035739118'
+    mode: restart
+    trigger:
+      platform: event
+      event_type: lovelace_updated
+    action:
+      repeat:
+        count: 5
+        sequence:
+          - delay: 0.5
+          - service: browser_mod.toast
+            data:
+              duration: 1
+              message: ' '
+
+  - alias: waste_collection
+    id: '5611101897022'
+    mode: restart
+    trigger:
+      platform: calendar
+      event: start
+      entity_id: calendar.sophamtning
+      offset: "-09:00:00"
+    condition:
+      condition: state
+      entity_id: binary_sensor.sovrum_contact_contact
+      state: 'on'
+    action:
+      service: notify.all_devices
+      data:
+        title: >
+          {{ '\u267B' }} Sophämtning imorgon
+        message: Stäng fönstret!
+
+  - alias: ios_notify_hass_update
+    id: '7958228563778'
+    variables:
+      installed: >
+        {{ states('sensor.current_version') }}
+      latest: >
+        {{ states('sensor.docker_hub_beta') if 'b' in installed
+        else states('sensor.docker_hub') }}
+    trigger:
+      platform: state
+      entity_id:
+        - sensor.docker_hub
+        - sensor.docker_hub_beta
+    condition: >
+      {{ installed != latest if '.' in installed and '.' in latest else false }}
+    action:
+      - service: homeassistant.update_entity
+        target:
+          entity_id:
+            - sensor.hass_release_notes
+            - sensor.hass_release_notes_beta
+      - delay:
+          minutes: 20
+      - service: notify.mobile_app_iphone
+        data:
+          title: >
+            {{ latest }} tillgänglig {{ '\U0001F389' }}
+          message: Håll in för att uppdatera
+          data:
+            url: https://www.home-assistant.io/latest-release-notes/
+            actions:
+              - action: START_WATCHTOWER
+                title: Uppdatera
+
+  - alias: ios_notify_hass_update_action
+    id: '0694774018396'
+    trigger:
+      platform: event
+      event_type: mobile_app_notification_action
+      event_data:
+        action: START_WATCHTOWER
+    action:
+      service: switch.turn_on
+      target:
+        entity_id: switch.docker_watchtower
+
+  - alias: notify_completed_torrent
+    id: '5814485236724'
+    mode: parallel
+    max: 10
+    trigger:
+      platform: event
+      event_type: transmission_downloaded_torrent
+    action:
+      - service: notify.all_devices
+        data:
+          title: Torrent nedladdad
+          message: >
+            {{ trigger.event.data.name }}
+          data:
+            actions:
+              - action: SLEEP_TORRENT
+                title: Pausa notiser ett dygn...
+
+  - alias: sleep_notify_completed_torrent
+    id: '0468306222206'
+    trigger:
+      platform: event
+      event_type: mobile_app_notification_action
+      event_data:
+        action: SLEEP_TORRENT
+    action:
+      - service: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.sleep_notify_torrent
+        data:
+          datetime: >
+            {{ as_local(state_attr('automation.notify_completed_torrent',
+            'last_triggered') + timedelta(days=1)) }}
+      - service: automation.turn_off
+        target:
+          entity_id: automation.notify_completed_torrent
+
+  - alias: datetime_notify_completed_torrent
+    id: '9998894466715'
+    trigger:
+      platform: time
+      at: input_datetime.sleep_notify_torrent
+    action:
+      service: automation.turn_on
+      target:
+        entity_id: automation.notify_completed_torrent
+
+  - alias: remove_completed_torrent
+    id: '2046215097181'
+    mode: parallel
+    max: 25
+    trigger:
+      platform: event
+      event_type: transmission_downloaded_torrent
+    action:
+      - service: transmission.stop_torrent
+        data:
+          name: Transmission
+          id: >
+            {{ trigger.event.data.id }}
+      - delay:
+          minutes: 1
+      - service: homeassistant.update_entity
+        target:
+          entity_id: sensor.plex_recently_added
+      - delay:
+          minutes: 10
+      - service: transmission.remove_torrent
+        data:
+          name: Transmission
+          id: >
+            {{ trigger.event.data.id }}

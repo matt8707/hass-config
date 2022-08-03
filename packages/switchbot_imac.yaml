@@ -1,0 +1,10 @@
+mqtt:
+  switch:
+    - name: switchbot_mqtt
+      command_topic: !secret switchbot_mqtt_command
+      state_topic: !secret switchbot_mqtt_state
+  sensor:
+    - name: Switchbot
+      state_topic: !secret switchbot_mqtt_battery
+      unit_of_measurement: '%'
+      device_class: battery

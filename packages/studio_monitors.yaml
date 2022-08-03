@@ -1,0 +1,160 @@
+shell_command:
+  monitors_mute_on: !secret monitors_mute_on
+  monitors_mute_off: !secret monitors_mute_off
+  monitors_volume_slider: !secret monitors_volume_slider
+  monitors_calibrate_monitors: !secret monitors_calibrate_monitors
+  monitors_calibrate_headphones: !secret monitors_calibrate_headphones
+
+input_number:
+  monitors_volume:
+    name: Volym
+    icon: mdi:volume-high
+    initial: 20
+    min: 7
+    max: 75
+    step: 1
+    unit_of_measurement: '%'
+
+homeassistant:
+  customize:
+    switch.gosund_monitors_switch:
+      friendly_name: Monitorer
+      icon: cil:studio-monitor
+    automation.monitors_turn_off:
+      friendly_name: Stäng av när dator stängs av
+      icon: mdi:power
+    automation.monitors_calibration:
+      friendly_name: Automatisk kalibrationsprofil
+      icon: cil:eq-calibrate
+
+switch:
+  - platform: template
+    switches:
+      monitors_mute:
+        value_template: >
+          {{ is_state('binary_sensor.monitors_mute_state', 'on') }}
+        turn_on:
+          - service: shell_command.monitors_mute_on
+          - service: homeassistant.update_entity
+            target:
+              entity_id: binary_sensor.monitors_mute_state
+        turn_off:
+          - service: shell_command.monitors_mute_off
+          - service: homeassistant.update_entity
+            target:
+              entity_id: binary_sensor.monitors_mute_state
+
+sensor:
+  - platform: command_line
+    name: monitors_volume
+    command: !secret monitors_update_volume
+    unit_of_measurement: '%'
+    scan_interval: 86400
+
+binary_sensor:
+  - platform: command_line
+    name: monitors_mute_state
+    command: !secret monitors_mute_state
+    payload_on: 'true'
+    payload_off: 'false'
+    device_class: sound
+    scan_interval: 86400
+
+automation:
+  - alias: monitors_conditional_scan_interval
+    id: '9725321162273'
+    trigger:
+      - platform: time_pattern
+        minutes: /15
+      - platform: state
+        entity_id: switch.imac
+        from: 'off'
+        to: 'on'
+    condition:
+      condition: state
+      entity_id: switch.imac
+      state: 'on'
+    action:
+      service: homeassistant.update_entity
+      target:
+        entity_id:
+          - sensor.monitors_volume
+          - binary_sensor.monitors_mute_state
+
+  - alias: monitors_volume_slider
+    id: '5219419667118'
+    trigger:
+      platform: state
+      entity_id: input_number.monitors_volume
+    condition:
+      condition: state
+      entity_id: switch.imac
+      state: 'on'
+    action:
+      - service: shell_command.monitors_volume_slider
+      - service: homeassistant.update_entity
+        target:
+          entity_id:
+            - binary_sensor.monitors_mute_state
+            - sensor.monitors_volume
+
+  - alias: monitors_volume_update
+    id: '9267857456002'
+    variables:
+      min: 7
+      max: 75
+      volume: >
+        {{ states(trigger.entity_id) | round }}
+    trigger:
+      platform: state
+      entity_id: sensor.monitors_volume
+    condition:
+      condition: state
+      entity_id: switch.imac
+      state: 'on'
+    action:
+      - service: homeassistant.update_entity
+        target:
+          entity_id: binary_sensor.monitors_mute_state
+      - service: input_number.set_value
+        target:
+          entity_id: input_number.monitors_volume
+        data:
+          value: >
+            {{ max if volume > max else iif(volume < min, min, volume) }}
+
+  - alias: monitors_calibration
+    id: '7788453610415'
+    mode: queued
+    trigger:
+      platform: state
+      entity_id: switch.gosund_monitors_switch
+      from:
+        - 'on'
+        - 'off'
+      to:
+        - 'on'
+        - 'off'
+    action:
+      if:
+        condition: state
+        entity_id: switch.gosund_monitors_switch
+        state: 'on'
+      then:
+        service: shell_command.monitors_calibrate_monitors
+      else:
+        service: shell_command.monitors_calibrate_headphones
+
+  - alias: monitors_turn_off
+    id: '7513071342679'
+    trigger:
+      platform: state
+      entity_id: switch.imac
+      from: 'on'
+      to: 'off'
+      for:
+        minutes: 15
+    action:
+      service: switch.turn_off
+      target:
+        entity_id: switch.gosund_monitors_switch

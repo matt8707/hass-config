@@ -1,0 +1,132 @@
+homeassistant:
+  customize:
+    switch.galaxy_tab_a_screensaver:
+      friendly_name: Skärmsläckare
+      icon: mdi:power-sleep
+    light.galaxy_tab_a_screen:
+      friendly_name: Display
+      icon: mdi:tablet
+    binary_sensor.galaxy_tab_a_plugged_in:
+      friendly_name: Strömtillförsel
+      icon: mdi:power-plug
+    sensor.galaxy_tab_a_last_app_start:
+      friendly_name: Senast omstart
+      icon: mdi:update
+    sensor.galaxy_tab_a_battery_level:
+      friendly_name: Batteri
+    sensor.nas_volume_1_average_disk_temp:
+      friendly_name: Disktemperatur
+    sensor.processor_use_percent:
+      icon: mdi:chip
+
+# https://github.com/thomasloven/hass-browser_mod
+browser_mod:
+  devices:
+    dd239c79-406b9d77:
+      name: browser_dd239c79_406b9d77
+  disable:
+    - all
+
+template:
+  - sensor:
+      - unique_id: fullykiosk_last_app_start
+        state: >
+          {% set entity = 'sensor.galaxy_tab_a_last_app_start' %}
+          {{ as_timestamp(states(entity), default='unknown') | timestamp_local(default='unknown') }}
+        attributes:
+          friendly_name: Senast omstart
+          icon: mdi:update
+          device_class: timestamp
+
+      - unique_id: fullykiosk_storage
+        state: >
+          {% set FreeSpace = states('sensor.galaxy_tab_a_internal_storage_free_space') | float(default=0) %}
+          {% set TotalSpace = states('sensor.galaxy_tab_a_internal_storage_total_space') | float(default=0) %}
+          {% if not (FreeSpace == 0.0 or TotalSpace == 0.0) %}
+            {{ 100 - (FreeSpace / TotalSpace * 100) | int(default=0) }}
+          {% endif %}
+        attributes:
+          friendly_name: Lagring
+          icon: mdi:sd
+          unit_of_measurement: '%'
+
+      - unique_id: fullykiosk_memory
+        state: >
+          {% set FreeMemory = states('sensor.galaxy_tab_a_ram_free_memory') | float(default=0) %}
+          {% set TotalMemory = states('sensor.galaxy_tab_a_ram_total_memory') | float(default=0) %}
+          {% if not (FreeMemory == 0.0 or TotalMemory == 0.0) %}
+            {{ 100 - (FreeMemory / TotalMemory * 100) | int(default=0) }}
+          {% endif %}
+        attributes:
+          friendly_name: Minne
+          icon: mdi:memory
+          unit_of_measurement: '%'
+
+automation:
+  - alias: homeassistant_start
+    id: '7426848686945'
+    trigger:
+      platform: homeassistant
+      event: start
+    action:
+      - service: button.press
+        target:
+          entity_id: button.galaxy_tab_a_load_start_url
+      - delay:
+          minutes: 1
+      - if:
+          condition: state
+          entity_id: light.hall
+          state: 'off'
+        then:
+          service: switch.turn_on
+          target:
+            entity_id: switch.galaxy_tab_a_screensaver
+
+  - alias: ios_notify_tablet_unplugged
+    id: '3972668118831'
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.galaxy_tab_a_battery_level
+      below: 50
+    action:
+      service: notify.all_devices
+      data:
+        title: Ladda väggplattan...
+        message: >
+          Batteri {{ states(trigger.entity_id) }}%
+
+  - alias: fullykiosk_screensaver
+    id: '9452750674803'
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.hall_motion_motion
+        from: 'off'
+        to: 'on'
+      - platform: state
+        entity_id: light.hall
+        from: 'on'
+        to: 'off'
+    action:
+      if: >
+        {{ 'hall_motion_motion' in trigger.entity_id }}
+      then:
+        - service: switch.turn_off
+          target:
+            entity_id: switch.galaxy_tab_a_screensaver
+        - service: light.turn_on
+          target:
+            entity_id: light.galaxy_tab_a_screen
+          data:
+            brightness_pct: >
+              {{ iif(is_state('sun.sun', 'above_horizon'), 90, 65) }}
+      else:
+        - service: switch.turn_on
+          target:
+            entity_id: switch.galaxy_tab_a_screensaver
+        - delay:
+            minutes: 15
+        - service: browser_mod.close_popup
+          data:
+            deviceID: dd239c79-406b9d77

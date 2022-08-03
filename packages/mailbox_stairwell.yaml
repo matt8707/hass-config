@@ -1,0 +1,30 @@
+# https://www.phoscon.de/en/conbee2
+# https://www.zigbee2mqtt.io/devices/MCCGQ11LM.html
+# https://www.zigbee2mqtt.io/guide/installation/02_docker.html#docker-on-synology-dsm-7-0
+
+mqtt:
+  sensor:
+    - name: mailbox
+      state_topic: homeassistant/persistence/mailbox
+
+automation:
+  - alias: mailbox_count
+    id: '2878459556162'
+    mode: restart
+    trigger:
+      platform: state
+      entity_id:
+        - binary_sensor.mailbox_count_contact
+        - binary_sensor.mailbox_reset_contact
+      from: 'off'
+      to: 'on'
+    condition: >
+      {{ as_timestamp(now()) - as_timestamp(state_attr(this.entity_id,
+      'last_triggered')) > 7 or 'reset' in trigger.entity_id }}
+    action:
+      service: mqtt.publish
+      data:
+        topic: homeassistant/persistence/mailbox
+        payload_template: >
+          {{ iif('reset' in trigger.entity_id, 0, states('sensor.mailbox') | int + 1) }}
+        retain: true

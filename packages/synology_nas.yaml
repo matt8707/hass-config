@@ -1,0 +1,80 @@
+sensor:
+  - platform: systemmonitor
+    resources:
+      - type: disk_use_percent
+        arg: /
+      - type: memory_use_percent
+      - type: processor_use
+      - type: last_boot
+    scan_interval: 120
+
+  # https://github.com/NemesisRE/sensor.plex_recently_added
+  - platform: plex_recently_added
+    host: !secret nas_host
+    port: !secret plex_port
+    token: !secret plex_token
+    max: 1
+    img_dir: /
+    image_resolution: 800
+
+template:
+  - sensor:
+      - unique_id: nas_status
+        state: >
+          {% set entity_id = 'sensor.nas_volume_1_status' %}
+          {% if is_state(entity_id, 'normal') %}
+            Bra
+          {% elif is_state(entity_id, 'background_scrubbing') %}
+            Dataskrubbning
+          {% else %}
+            {{ states(entity_id) }}
+          {% endif %}
+        attributes:
+          friendly_name: Systemhälsa
+          icon: cil:synology-nas
+
+      - unique_id: domain_counter
+        state: >
+          {{ states | count }}
+        attributes:
+          automation: >
+            {{ states.automation | count }}
+          binary_sensor: >
+            {{ states.binary_sensor | count }}
+          device_tracker: >
+            {{ states.device_tracker | count }}
+          light: >
+            {{ states.light | count }}
+          media_player: >
+            {{ states.media_player | count }}
+          sensor: >
+            {{ states.sensor | count }}
+          switch: >
+            {{ states.switch | count }}
+          other: >
+            {% set exclude = this.attributes | list %}
+            {{ states | rejectattr('domain', 'in', exclude) | list | count }}
+
+shell_command:
+  restart_container: !secret restart_container
+  purge_log: truncate -s 0 /config/home-assistant.log
+
+# https://github.com/ualex73/monitor_docker
+monitor_docker:
+  - name: Docker
+    containers:
+      - watchtower
+      - home-assistant
+      - transmission-seed
+    monitored_conditions: allinone
+    scan_interval: 900
+
+automation:
+  - alias: purge_log_filesize
+    id: '3331821824310'
+    trigger:
+      platform: numeric_state
+      entity_id: sensor.home_assistant_log_size
+      above: 50
+    action:
+      service: shell_command.purge_log

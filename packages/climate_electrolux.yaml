@@ -1,0 +1,83 @@
+homeassistant:
+  customize:
+    sensor.gosund_ac_daily_energy:
+      friendly_name: Electrolux ChillFlex Pro Gold
+
+# https://github.com/smartHomeHub/SmartIR
+climate:
+  - platform: smartir
+    name: AC
+    unique_id: EXP26U758CW
+    device_code: 1703
+    controller_data: remote.broadlink_remote
+    temperature_sensor: sensor.broadlink_temperature
+    humidity_sensor: sensor.broadlink_humidity
+    power_sensor: binary_sensor.gosund_ac_power_state
+    power_sensor_restore_state: true
+
+smartir:
+  check_updates: false
+
+timer:
+  climate:
+    name: Nedräkning
+    icon: mdi:timer-outline
+
+input_number:
+  climate_timer:
+    name: Avstängningstid
+    icon: mdi:timer-outline
+    min: 1
+    max: 12
+    unit_of_measurement: h
+
+switch:
+  - platform: template
+    switches:
+      climate_timer:
+        friendly_name: Tillstånd
+        icon_template: mdi:timer-outline
+        value_template: >
+          {{ is_state('timer.climate', 'active') }}
+        turn_on:
+          service: timer.start
+          target:
+            entity_id: timer.climate
+          data:
+            duration: >
+              {{ states('input_number.climate_timer') | int(0) * 3600 }}
+        turn_off:
+          service: timer.cancel
+          target:
+            entity_id: timer.climate
+
+automation:
+  - alias: climate_timer
+    id: '3683394346277'
+    trigger:
+      platform: event
+      event_type: timer.finished
+      event_data:
+        entity_id: timer.climate
+    action:
+      service: climate.turn_off
+      target:
+        entity_id: climate.ac
+
+  - alias: climate_safeguard
+    initial_state: false
+    id: '0374158275864'
+    trigger:
+      platform: state
+      entity_id: climate.ac
+      to: cool
+    condition:
+      condition: state
+      entity_id: binary_sensor.sovrum_contact_contact
+      state: 'off'
+    action:
+      service: climate.set_hvac_mode
+      target:
+        entity_id: climate.ac
+      data:
+        hvac_mode: fan_only

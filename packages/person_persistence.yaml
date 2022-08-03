@@ -1,0 +1,57 @@
+homeassistant:
+  customize:
+    person.matte:
+      entity_picture: /local/mattias.png
+    device_tracker.iphone:
+      entity_picture: /local/device_tracker.svg
+    person.sanja:
+      entity_picture: /local/sanja.png
+
+person:
+  - name: Matte
+    id: matte
+    device_trackers:
+      - device_tracker.mattias_iphone #unifi
+      - device_tracker.iphone #ios
+
+  - name: Sanja
+    id: sanja
+    device_trackers:
+      - device_tracker.sanjas_iphone #unifi
+      - device_tracker.sanja_iphone #ios
+
+mqtt:
+  sensor:
+    - name: matte_last_changed
+      state_topic: homeassistant/persistence/matte
+      value_template: >
+        {{ value | replace(' ', 'T') }}
+
+    - name: sanja_last_changed
+      state_topic: homeassistant/persistence/sanja
+      value_template: >
+        {{ value | replace(' ', 'T') }}
+
+automation:
+  - alias: person_home
+    id: '8423590985012'
+    mode: parallel
+    trigger:
+      platform: state
+      entity_id:
+        - person.matte
+        - person.sanja
+      from:
+        - home
+        - not_home
+      to:
+        - home
+        - not_home
+    action:
+      service: mqtt.publish
+      data:
+        topic_template: >
+          homeassistant/persistence/{{ trigger.to_state.name | lower }}
+        payload_template: >
+          {{ now() }}
+        retain: true
