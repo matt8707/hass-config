@@ -194,7 +194,7 @@ views:
               circle_input: >
                 [[[
                   let volume = states['sensor.monitors_volume'];
-                  if (volume) return volume.state;
+                  if (volume) return parseInt(volume.state);
                 ]]]
               circle_input_unit: '%'
 
