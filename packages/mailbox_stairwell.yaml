@@ -19,8 +19,9 @@ automation:
       from: 'off'
       to: 'on'
     condition: >
-      {{ as_timestamp(now()) - as_timestamp(state_attr(this.entity_id,
-      'last_triggered')) > 7 or 'reset' in trigger.entity_id }}
+      {% set now = as_timestamp(now()) %}
+      {% set last_triggered = as_timestamp(state_attr(this.entity_id, 'last_triggered'), default=now) %}
+      {{ (now - last_triggered) > 7 or 'reset' in trigger.entity_id }}
     action:
       service: mqtt.publish
       data:
