@@ -232,8 +232,8 @@ views:
                 [[[
                   if (entity) {
                       return entity.state === 'cool'
-                          ? Math.round(entity.attributes.temperature)
-                          : Math.round(entity.attributes.current_temperature);
+                          ? Math.round(entity.attributes.temperature).toString()
+                          : Math.round(entity.attributes.current_temperature).toString();
                   }
                 ]]]
               circle_input_unit: '°C'

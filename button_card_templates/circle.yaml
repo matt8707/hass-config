@@ -45,7 +45,7 @@ circle:
                         transform: rotate(-90deg);
                         transform-origin: 50% 50%;
                         stroke-dasharray: ${c};
-                        stroke-dashoffset: ${c - input / 100 * c};
+                        stroke-dashoffset: ${typeof input === 'number' && c - input / 100 * c};
                         stroke-width: var(--c-stroke-width);
                         stroke: ${state ? 'var(--c-stroke-color-on)' : 'var(--c-stroke-color-off)'};
                         fill: ${state ? 'var(--c-fill-color-on)' : 'var(--c-fill-color-off)'};
