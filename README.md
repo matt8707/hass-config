@@ -15,7 +15,7 @@ There's no install button. I'm sharing my full configuration
 No, because this is not a custom card or integration
 
 **Where do I even start?** <br>
-[INSTALL.md explains how to get started](https://github.com/matt8707/hass-config/blob/master/www/INSTALL.md) :tada:
+[INSTALL.md explains how to get started](INSTALL.md) :tada:
 
 ## Features
 
