@@ -286,7 +286,7 @@ extra_styles:
           #name {
             font-size: var(--footer-card-font-size);
             padding: var(--footer-card-padding-v) var(--footer-card-padding-h);
-            letter-spacing: 0.012vw;
+            letter-spacing: 0.05vw;
           }
 
           ha-icon {
@@ -341,7 +341,7 @@ extra_styles:
             #name {
               font-size: calc(var(--footer-card-font-size) * var(--footer-phone));
               padding: calc(var(--footer-card-padding-v) * var(--footer-phone)) calc(var(--footer-card-padding-h) * var(--footer-phone));
-              letter-spacing: 0.12vw;
+              letter-spacing: 0.05vw;
             }
 
             ha-icon {

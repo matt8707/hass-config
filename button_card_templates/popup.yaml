@@ -12,7 +12,7 @@ icon_name:
       - width: max-content
       - font-size: 1.06em
       - font-weight: 500
-      - letter-spacing: 0.015em
+      - letter-spacing: 0.03em
       - background: '#FFFFFF10'
 
 icon_only:
