@@ -58,7 +58,8 @@ automation:
 
   - alias: waste_collection
     id: '5611101897022'
-    mode: restart
+    mode: single
+    max_exceeded: silent
     trigger:
       platform: calendar
       event: start
@@ -69,11 +70,13 @@ automation:
       entity_id: binary_sensor.sovrum_contact_contact
       state: 'on'
     action:
-      service: notify.all_devices
-      data:
-        title: >
-          {{ '\u267B' }} Sophämtning imorgon
-        message: Stäng fönstret!
+      - service: notify.all_devices
+        data:
+          title: >
+            {{ '\u267B' }} Sophämtning imorgon
+          message: Stäng fönstret!
+      - delay:
+          seconds: 5
 
   - alias: ios_notify_hass_update
     id: '7958228563778'
