@@ -19,7 +19,7 @@ browser_mod:
         #root {
           grid-gap: 0 !important;
           padding: var(--card-content-padding);
-          width: max-content;
+          width: 95%;
         }
   card:
     type: grid
