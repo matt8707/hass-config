@@ -92,6 +92,8 @@ themes:
     footer-notify-top: -0.9vw
     footer-notify-right: -1vw
 
+    button-card-light-color-temp: hsl(204, 58%, 38%)
+
   ####################################################
   #                                                  #
   #                     CARD-MOD                     #
