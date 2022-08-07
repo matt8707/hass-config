@@ -70,7 +70,7 @@ circle:
 
                   ${domain === 'light' && `
                       <input id="circle_slider" type="range" min="0" max="100" value="${input}">
-                  `};
+                  `}
                 `;
             }
 

@@ -53,7 +53,7 @@ automation:
       - service: notify.all_devices
         data:
           message: >
-            {% set message = ['Tvätten är färdig', 'Tvätten är klar', 'Dags att gå ner' ] %}
+            {% set message = ['Tvätten är färdig', 'Tvätten är klar', 'Dags att gå ner'] %}
             {{'\U0001F9FA ' + message | random }}
 
   - alias: laundry_notify_ios_shorcuts
