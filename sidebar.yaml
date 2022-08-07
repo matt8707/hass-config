@@ -59,7 +59,7 @@
 
           {% set devices = [
             states.switch.imac,
-            states.switch.playstation_5,
+            states.switch.ps5_635_power,
             states.switch.gosund_monitors_switch,
             states.switch.gosund_fan_switch,
             states.media_player.samsung,

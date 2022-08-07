@@ -94,7 +94,7 @@ I've made a tool to help with css element selectors - [https://matt8707.github.i
 | Apple | TV 4K | [apple_tv](https://www.home-assistant.io/integrations/apple_tv/) | 2x set-top-boxes that streams content from Plex |
 | Sony | Bravia KDL-55W905A | [braviatv](https://www.home-assistant.io/integrations/braviatv/) | 2013 mid-range 55" 1080p 3D TV |
 | Samsung | UE50RU6025KXXC | [custom](https://github.com/ollo69/ha-samsungtv-smart) | 2019 low-range 50" 4K HDR TV |
-| Sony | PlayStation 5 | [custom](https://github.com/dhleong/playactor) | Game console - State, sleep and wake [#ps5 thread](https://community.home-assistant.io/t/playstation-5-command-line-sensor-help-command-failed-empty-json/256275/60) |
+| Sony | PlayStation 5 | [custom](https://github.com/FunkeyFlo/ps5-mqtt) | Game console - State, sleep and wake |
 | Apple | iPhone X | [ios](https://www.home-assistant.io/integrations/ios/) | Home Assistant Companion App for iOS |
 
 *Note: I do not recommend "Belkin WeMo" or "Deltaco SH-P01"*

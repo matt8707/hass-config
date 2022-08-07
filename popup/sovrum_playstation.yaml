@@ -9,5 +9,5 @@ browser_mod:
       class: content
     entities:
 
-      - entity: switch.playstation_5
+      - entity: switch.ps5_635_power
         secondary_info: last-changed

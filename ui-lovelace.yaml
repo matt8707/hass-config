@@ -239,7 +239,7 @@ views:
               circle_input_unit: '°C'
 
           - type: custom:button-card
-            entity: switch.playstation_5
+            entity: switch.ps5_635_power
             name: Playstation
             double_tap_action:
               !include popup/sovrum_playstation.yaml

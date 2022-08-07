@@ -6,7 +6,7 @@ homekit:
         - switch.imac
         - switch.gosund_monitors_switch
         - climate.ac
-        - switch.playstation_5
+        - switch.ps5_635_power
         - switch.gosund_fan_switch
         - person.matte
         - person.sanja
@@ -24,7 +24,7 @@ homekit:
         name: Monitorer
       climate.ac:
         name: Klimat
-      switch.playstation_5:
+      switch.ps5_635_power:
         name: Playstation
       switch.gosund_fan_switch:
         name: Fläkt
