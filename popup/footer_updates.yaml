@@ -98,8 +98,6 @@ browser_mod:
               - sensor.gosund_ac_esphome_version
               - sensor.gosund_fan_esphome_version
               - sensor.updates_esphome_latest
-              - sensor.updates_playactor_installed
-              - sensor.updates_playactor_latest
               - sensor.updates_kemper
               - sensor.udm_unifios
               - update.nas_dsm_update

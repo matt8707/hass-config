@@ -103,7 +103,6 @@ browser_mod:
             name: Antal containrar
 
           - entity: switch.rpi_docker_mi_scale
-          - entity: switch.rpi_docker_playactor
           - entity: switch.rpi_docker_switchbot_mqtt
 
       - type: horizontal-stack

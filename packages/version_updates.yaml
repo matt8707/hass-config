@@ -9,13 +9,6 @@ rest:
         {{ value_json.tag_name }}
     scan_interval: 86400
 
-  - resource: https://api.github.com/repos/dhleong/playactor/releases/latest
-    sensor:
-      name: updates_playactor_latest
-      value_template: >
-        {{ value_json.tag_name }}
-    scan_interval: 86400
-
   - resource: https://api.github.com/repos/home-assistant/core/releases/latest
     sensor:
       name: hass_release_notes
@@ -67,13 +60,6 @@ template:
             {% if installed != latest %}
               <b><a href="#" onclick="window.open('{{ url }}');">ESPHome</a></b> {{ installed + ' <b>&rarr;</b> ' + latest }}
             {% endif %}
-          playactor: >
-            {% set installed = states('sensor.updates_playactor_installed') %}
-            {% set latest = states('sensor.updates_playactor_latest') %}
-            {% set url = 'https://github.com/dhleong/playactor/releases/latest' %}
-            {% if installed != latest %}
-              <b><a href="#" onclick="window.open('{{ url }}');">playactor</a></b> {{ installed + ' <b>&rarr;</b> ' + latest }}
-            {% endif %}
           kemperprofiler: >
             {% set installed = state_attr('sensor.updates_kemper', 'profiler_installed') %}
             {% set latest = state_attr('sensor.updates_kemper', 'profiler_latest') %}
@@ -114,13 +100,6 @@ sensor:
       - profiler_installed
       - rigmanager_latest
       - rigmanager_installed
-    scan_interval: 86400
-
-  - platform: command_line
-    name: updates_playactor_installed
-    command: !secret updates_playactor_installed
-    value_template: >
-      {{ value.split(' ')[1].split('v')[1] }}
     scan_interval: 86400
 
   - platform: command_line
