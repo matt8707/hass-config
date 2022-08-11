@@ -95,15 +95,12 @@ updates_hass_icon_name:
   icon: mdi:update
   styles:
     card:
-      - width: max-content
-      - filter: >
+      - opacity: >
           [[[
-            if (entity) {
-              return entity.state === states[variables.latest].state ||
-                entity.state === states[variables.latest_beta].state
-                  ? 'opacity(30%)'
-                  : 'drop-shadow(3px 3px 5px #00000050)';
-            }
+            return entity && (entity.state === states[variables.latest].state ||
+              entity.state === states[variables.latest_beta].state)
+                ? '0.3'
+                : '1';
           ]]]
       - display: >
           [[[
@@ -155,20 +152,17 @@ updates_hacs_icon_name:
   icon: mdi:open-in-new
   styles:
     card:
-      - width: max-content
-      - filter: >
+      - opacity: >
           [[[
-            if (entity) {
-              return entity.state === '0'
-                ? 'opacity(30%)'
-                : 'drop-shadow(3px 3px 5px #00000050)';
-            }
+            return entity && entity.state === '0'
+                ? '0.3'
+                : '1';
           ]]]
       - display: >
           [[[
             return entity && entity.state !== 'unknown'
-              ? 'flex'
-              : 'none';
+                ? 'flex'
+                : 'none';
           ]]]
 
 updates_other:
@@ -206,15 +200,12 @@ updates_other_icon_name:
   icon: mdi:reload
   styles:
     card:
-      - width: max-content
-      - filter: 'opacity(30%)'
+      - opacity: 0.3
       - display: >
           [[[
-            return `[[[
-              return entity
+            return entity
                 ? 'flex'
                 : 'none';
-            ]]]`
           ]]]
 
 hacs_iframe:
