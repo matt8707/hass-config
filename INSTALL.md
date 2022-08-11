@@ -35,7 +35,6 @@
 * In `secrets.yaml` add placeholders
 
   ```yaml
-  youtube_token: abc
   apexcharts_tibber: abc
   apexcharts_influx: abc
   apexcharts_github: abc

@@ -87,7 +87,6 @@ conditional_media:
   template:
     - base
     - base_media
-    - media_youtube
     - icon_play_pause
   variables:
     i: >
@@ -229,46 +228,4 @@ conditional_media:
             }
           }, 0);
         return ' ';
-      ]]]
-
-#################################################
-#                                               #
-#                 MEDIA YOUTUBE                 #
-#                                               #
-#################################################
-
-media_youtube:
-  variables:
-    token: !secret youtube_token
-  custom_fields:
-    youtube: >
-      [[[
-        try {
-            let elt = this.shadowRoot;
-            if (entity && elt && entity.attributes.app_name === 'YouTube') {
-                let api = 'https://www.googleapis.com/youtube/v3/search',
-                    artist = entity.attributes.media_artist,
-                    title = entity.attributes.media_title,
-                    options = 'type=video&part=snippet&maxResults=1',
-                    token = variables.token.split('|'),
-                    random = Math.floor(Math.random() * token.length),
-                    url = `${api}?q="${artist}%20${title}"&${options}&key=${token[random]}`;
-
-                fetch(url).then(e => e.json()).then(e => {
-                    if (e.items[0].snippet.thumbnails !== undefined) {
-                        let json = e.items[0].snippet.thumbnails,
-                            hq = json[Object.keys(json).pop()].url,
-                            card = elt.getElementById('card'),
-                            blur_overlay = elt.getElementById('blur_overlay');
-                    }
-                    if (entity.state !== 'idle' && artist !== undefined && title !== undefined) {
-                        card.style.backgroundImage = `url("${hq}")`;
-                        blur_overlay.style.backgroundImage = `url("${hq}")`;
-                        card.style.backgroundSize = '178%';
-                        blur_overlay.style.backgroundSize = '178%';
-                    }
-                });
-            }
-        }
-        catch (e) {}
       ]]]
