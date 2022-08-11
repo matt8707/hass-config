@@ -22,22 +22,14 @@
   template: !include sidebar.yaml
 
   lovelace:
-    mode: yaml #use ui-lovelace.yaml
-    resources: #hacs
+    mode: yaml
+    resources:
       - url: /hacsfiles/button-card/button-card.js
         type: module
       - url: /hacsfiles/lovelace-layout-card/layout-card.js
         type: module
       - url: /hacsfiles/swipe-card/swipe-card.js
         type: module
-  ```
-
-* In `secrets.yaml` add placeholders
-
-  ```yaml
-  apexcharts_tibber: abc
-  apexcharts_influx: abc
-  apexcharts_github: abc
   ```
 
 * [Restart](https://my.home-assistant.io/redirect/server_controls/) Home Assistant

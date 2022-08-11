@@ -79,7 +79,34 @@ browser_mod:
             unit: kWh
             type: column
             color: rgba(228,224,17,1)
-            data_generator: !secret apexcharts_tibber
+            data_generator: |-
+              let token_url = 'http://192.168.1.241:8123/local/.apex.json';
+              let api_url = 'https://api.tibber.com/v1-beta/gql';
+
+              async function request() {
+                  let response = await fetch(token_url);
+                  let token = await response.json();
+
+                  let request = await fetch(api_url, {
+                      method: 'POST',
+                      headers: {
+                        Authorization: `Bearer ${token['tibber']}`,
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({
+                        query:
+                          '{viewer{homes{consumption(resolution: MONTHLY, last: 12){nodes{from consumption}}}}}',
+                      }),
+                  });
+
+                  let json = await request.json();
+                  let array = [];
+                  for (let request of json.data.viewer.homes[0].consumption.nodes)
+                    array.push([new Date(request.from), request.consumption]);
+                  return array;
+              }
+
+              return request();
 
       #influx
       - type: custom:apexcharts-card
@@ -159,7 +186,22 @@ browser_mod:
             curve: smooth
             name: Mattias
             color: '#9a0ca3'
-            data_generator: !secret apexcharts_influx
+            data_generator: |-
+              let params = new URLSearchParams({
+                db: 'home_assistant',
+                q: "SELECT value FROM kg WHERE entity_id = 'mattias_weight'",
+              });
+
+              async function request() {
+                let array = [];
+                let response = await fetch(`http://192.168.1.241:8086/query?${params}`);
+                let data = await response.json();
+                for (let r of data.results[0].series[0].values)
+                  array.push([new Date(r[0]), r[1]]);
+                return array;
+              }
+
+              return request();
 
       #github
       - type: custom:apexcharts-card
@@ -239,7 +281,39 @@ browser_mod:
             curve: smooth
             name: Mattias
             color: '#9a0ca3'
-            data_generator: !secret apexcharts_github
+            data_generator: |-
+              let token_url = 'http://192.168.1.241:8123/local/.apex.json';
+              let api_url = 'https://api.github.com/repos/matt8707/hass-config';
+
+              let response = await fetch(token_url);
+              let token = await response.json();
+
+              let auth = {
+                headers: new Headers({
+                  accept: 'application/vnd.github.v3.star+json',
+                  Authorization: `token ${token['github']}`,
+                }),
+              };
+
+              let request = await fetch(api_url, auth);
+              let data = await request.json();
+              let stargazers_total = [];
+              stargazers_total.push(data.stargazers_count);
+
+              let array = [];
+              let stargazer_count = 0;
+              let totalPages = Math.ceil(stargazers_total[0] / 100);
+
+              for (var i = 1; i <= totalPages; i++) {
+                let data = await fetch(`${api_url}/stargazers?per_page=100&page=${i}`, auth);
+                (await data.json()).forEach((data) => {
+                  Object.entries(data).forEach(([key, value]) => {
+                    key === 'starred_at' &&
+                      (stargazer_count++, array.push([new Date(value), stargazer_count]));
+                  });
+                });
+              }
+              return array;
 
       #entity counter
       - type: custom:apexcharts-card
