@@ -92,60 +92,6 @@ template:
               {{ option }}
 
 automation:
-  # - alias: turn_on_tv_flow
-  #   id: '0703991107325'
-  #   mode: parallel
-  #   variables:
-  #     entity_id: >
-  #       {{ trigger.event.data.service_data.entity_id }}
-  #   trigger:
-  #     - platform: event
-  #       event_type: call_service
-  #       event_data:
-  #         domain: media_player
-  #         service: turn_on
-  #         service_data:
-  #           entity_id:
-  #             - media_player.sony_bravia_tv
-  #             - media_player.samsung
-  #     - platform: event
-  #       event_type: call_service
-  #       event_data:
-  #         domain: switch
-  #         service: turn_on
-  #         service_data:
-  #           entity_id: switch.playstation_5
-  #   action:
-  #     - service: media_player.turn_on
-  #       target:
-  #         entity_id: >
-  #           {% if 'sony_bravia_tv' in entity_id %}
-  #             media_player.vardagsrum
-  #           {% elif 'samsung_tv' in entity_id %}
-  #             media_player.sovrum
-  #           {% elif 'playstation_5' in entity_id %}
-  #             media_player.samsung
-  #           {% endif %}
-  #     - if: >
-  #         {{ 'playstation_5' in entity_id }}
-  #       then:
-  #         service: media_player.select_source
-  #         target:
-  #           entity_id: media_player.samsung
-  #         data:
-  #           source: PS5
-  #       else:
-  #         service: remote.send_command
-  #         target:
-  #           entity_id: >
-  #             {% if 'sony_bravia_tv' in entity_id %}
-  #               remote.vardagsrum
-  #             {% elif 'samsung_tv' in entity_id %}
-  #               remote.sovrum
-  #             {% endif %}
-  #         data:
-  #           command: wakeup
-
   - alias: tv_on_lights
     id: '6657050215613'
     trigger:
@@ -157,3 +103,72 @@ automation:
       service: light.turn_on
       target:
         entity_id: light.vardagsrum_tv
+
+  - alias: turn_on_bravia_flow
+    id: '1398295084286'
+    trigger:
+      platform: event
+      event_type: call_service
+      event_data:
+        domain: media_player
+        service: turn_on
+        service_data:
+          entity_id: media_player.sony_bravia_tv
+    action:
+      - service: media_player.turn_on
+        target:
+          entity_id: media_player.vardagsrum
+      - service: remote.send_command
+        target:
+          entity_id: remote.vardagsrum
+        data:
+          command: wakeup
+
+  - alias: turn_on_samsung_flow
+    id: '6837619598284'
+    trigger:
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: media_player
+          service: turn_on
+          service_data:
+            entity_id: media_player.samsung
+    condition:
+      not:
+        condition: state
+        entity_id: switch.ps5_635_power
+        state: 'on'
+    action:
+      - service: media_player.turn_on
+        target:
+          entity_id: media_player.sovrum
+      - service: remote.send_command
+        target:
+          entity_id: remote.sovrum
+        data:
+          command: wakeup
+
+  - alias: turn_on_ps5_flow
+    id: '7987953784547'
+    trigger:
+      - platform: event
+        event_type: call_service
+        event_data:
+          domain: switch
+          service: turn_on
+          service_data:
+            entity_id: switch.ps5_635_power
+    action:
+      - service: media_player.turn_on
+        target:
+          entity_id: media_player.samsung
+      - wait_template: >
+          {{ is_state('media_player.samsung', 'on') }}
+        timeout: 120
+        continue_on_timeout: false
+      - service: media_player.select_source
+        target:
+          entity_id: media_player.samsung
+        data:
+          source: PS5
