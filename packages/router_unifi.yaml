@@ -44,8 +44,7 @@ sensor:
           "disk": round(data["storage"][1]["used"] / data["storage"][1]["size"] * 100, 1),
           "internet": data["internet"],
           "uptime": datetime.fromtimestamp(data["startup_timestamp"]).isoformat(),
-          "version": data["displayable_version"],
-          "upgradable": data["upgradable"]
+          "version": data["displayable_version"]
       }))
       EOF
     command_timeout: 180
@@ -59,7 +58,6 @@ sensor:
       - internet
       - uptime
       - version
-      - upgradable
     scan_interval: 900
 
 template:
@@ -71,14 +69,6 @@ template:
           friendly_name: Internet
           icon: mdi:wan
           device_class: connectivity
-
-      - unique_id: udm_upgradable
-        state: >
-          {{ state_attr('sensor.udm_unifios', 'upgradable') | default }}
-        attributes:
-          friendly_name: Uppdatering
-          icon: mdi:update
-          device_class: update
 
   - sensor:
       - unique_id: udm_cpu

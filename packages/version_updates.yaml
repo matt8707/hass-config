@@ -75,15 +75,16 @@ template:
               <b><a href="#" onclick="window.open('{{ url }}');">Rig Manager</a></b> {{ installed + ' <b>&rarr;</b> ' + latest }}
             {% endif %}
           unifi: >
-            {% set installed = states('sensor.template_udm_version') %}
+            {% set installed = state_attr('update.unifi_dream_machine', 'installed_version') %}
+            {% set latest = state_attr('update.unifi_dream_machine', 'latest_version') %}
             {% set url = 'https://community.ui.com/releases?q=dream+machine' %}
-            {% if is_state('binary_sensor.template_udm_upgradable', 'on') %}
-              <b><a href="#" onclick="window.open('{{ url }}');">UniFi Dream Machine ({{ installed }})</a></b> uppdatering tillgänglig
+            {% if is_state('update.unifi_dream_machine', 'on') %}
+              <b><a href="#" onclick="window.open('{{ url }}');">UniFi Dream Machine {{ installed + ' <b>&rarr;</b> ' + latest }}
             {% endif %}
           synology: >
             {% set installed = state_attr('update.nas_dsm_update', 'installed_version') %}
             {% set latest = state_attr('update.nas_dsm_update', 'latest_version') %}
-            {% set url = 'https://www.synology.com/en-global/releaseNote/DSM' %}
+            {% set url = state_attr('update.nas_dsm_update', 'release_url') %}
             {% if is_state('update.nas_dsm_update', 'on') %}
               <b><a href="#" onclick="window.open('{{ url }}');">Synology DSM</a></b> {{ installed + ' <b>&rarr;</b> ' + latest }}
             {% endif %}
