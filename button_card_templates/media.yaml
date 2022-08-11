@@ -176,8 +176,9 @@ conditional_media:
       - background-image: &media_background_image >
           [[[
             if (entity) {
-                return entity.attributes.data !== undefined
-                    ? `url("${entity.attributes.data[variables.i].fanart}"), url("${entity.attributes.data[variables.i].poster}")`
+                let data = entity.attributes.data;
+                return data && (data[variables.i].fanart || data[variables.i].poster)
+                    ? `url("${data[variables.i].fanart}"), url("${data[variables.i].poster}")`
                     : `url("${variables.entity_picture}")`;
             }
           ]]]
