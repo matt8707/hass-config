@@ -16,9 +16,18 @@ browser_mod:
         div {
           flex: auto !important;
         }
+      $mushroom-light-card: |
+        mushroom-light-card {
+          padding: 10px 19px 0 19px;
+          margin-bottom: -10px !important;
+        }
   card:
     type: vertical-stack
     cards:
+      - type: custom:mushroom-light-card
+        entity: light.galaxy_tab_a_screen
+        show_brightness_control: true
+
       - type: entities
         state_color: true
         card_mod:
@@ -27,14 +36,6 @@ browser_mod:
 
           - entity: switch.galaxy_tab_a_screensaver
             secondary_info: last-changed
-
-          - entity: light.galaxy_tab_a_screen
-
-          - type: custom:slider-entity-row
-            entity: light.galaxy_tab_a_screen
-            name: Ljusstyrka
-            icon: mdi:brightness-6
-            hide_state: false
 
           - entity: binary_sensor.galaxy_tab_a_plugged_in
 
