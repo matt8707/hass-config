@@ -9,30 +9,34 @@ browser_mod:
           padding-top: 0.5em;
           padding-bottom: 0em;
         }
-      $more-info-card:
-        .: |
-          more-info-card {
-            padding: 1.2em 1.2em 0 1.1em;
-          }
-        $ha-card:
-          .: |
-            h1 {
-              display: none;
-            }
-          state-card-climate$: |
-            div {
-              display: none !important;
-            }
-          more-info-climate$: |
-            div.container-temperature > div > div {
-              display: none;
-            }
+      $: |
+        mushroom-climate-card {
+          padding: 10px 18px 0 18px;
+        }
+        mushroom-climate-card:nth-child(2) {
+          margin-top: -18px !important;
+        }
   card:
     type: vertical-stack
     cards:
-
-      - type: custom:more-info-card
+      - type: custom:mushroom-climate-card
         entity: climate.ac
+        name: Klimat
+        icon: mdi:home-thermometer
+        hvac_modes:
+          - 'off'
+          - cool
+          - fan_only
+        primary_info: name
+        secondary_info: state
+        show_temperature_control: false
+
+      - type: custom:mushroom-climate-card
+        entity: climate.ac
+        icon_type: none
+        secondary_info: none
+        primary_info: none
+        show_temperature_control: true
 
       - type: entities
         card_mod:
