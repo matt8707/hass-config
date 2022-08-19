@@ -56,7 +56,6 @@ browser_mod:
               - entity: sensor.template_udm_disk
 
           - entity: sensor.template_udm_uptime
-          - entity: binary_sensor.template_udm_upgradable
 
       - type: horizontal-stack
         cards:
