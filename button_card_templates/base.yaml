@@ -14,6 +14,16 @@ base:
       [[[ return !entity || entity.attributes.entity_picture; ]]]
     timeout: >
       [[[ return !entity || Date.now() - Date.parse(entity.last_changed); ]]]
+    is_youtube: >
+      [[[
+        let is_youtube = entity?.attributes?.app_id === 'com.google.ios.youtube',
+            sensor = this?._config?.triggers_update,
+            media_title = entity?.attributes?.media_title,
+            watching_title = states[sensor]?.attributes?.title;
+        if (is_youtube && media_title === watching_title) {
+            return true;
+        }
+      ]]]
   aspect_ratio: 1/1
   show_state: true
   show_icon: false

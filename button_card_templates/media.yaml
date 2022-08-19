@@ -29,17 +29,25 @@ base_media:
     card:
       - color: >
           [[[
-            return variables.media_on && variables.entity_picture === undefined
-                ? 'rgba(0, 0, 0, 0.6)'
-                : variables.media_off
-                    ? '#97989c'
-                    : '#efefef';
+            if (variables.is_youtube) {
+                return `#efefef`;
+            } else {
+                return variables.media_on && variables.entity_picture === undefined
+                    ? 'rgba(0, 0, 0, 0.6)'
+                    : variables.media_off
+                        ? '#97989c'
+                        : '#efefef';
+            }
           ]]]
       - text-shadow: >
           [[[
-            return variables.media_off || variables.entity_picture === undefined
-                ? 'none'
-                : '1px 1px 5px rgba(18, 22, 23, 0.9)';
+            if (variables.is_youtube) {
+                return `1px 1px 5px rgba(18, 22, 23, 0.9)`;
+            } else {
+                return variables.media_off || variables.entity_picture === undefined
+                    ? 'none'
+                    : '1px 1px 5px rgba(18, 22, 23, 0.9)';
+            }
           ]]]
 
 #################################################
@@ -60,20 +68,30 @@ media:
         - fill: '#9da0a2'
         - display: >
             [[[
-              return variables.media_off || variables.entity_picture === undefined
-                  ? 'initial'
-                  : 'none';
+            if (variables.is_youtube) {
+                return `none`;
+            }
+            else {
+                return variables.media_off || variables.entity_picture === undefined
+                    ? 'initial'
+                    : 'none';
+            }
             ]]]
     card:
       - background-color: none
       - background-size: cover
+      - background-position: center
       - background-image: >
           [[[
-            return variables.media_on && variables.entity_picture === undefined
-                ? 'linear-gradient(0deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.8) 100%)'
-                : variables.media_off
-                    ? 'linear-gradient(0deg, rgba(115, 115, 115, 0.2) 0%, rgba(115, 115, 115, 0.2) 100%)'
-                    : `linear-gradient(0deg, rgba(0,0,0,.8) 0%, rgba(0,0,0,0) 100%), url(${variables.entity_picture})`;
+            if (variables.is_youtube) {
+                return `linear-gradient(0deg, rgba(0,0,0,.8) 0%, rgba(0,0,0,0) 100%), url(${states[this._config?.triggers_update].state})`;
+            } else {
+                return variables.media_on && variables.entity_picture === undefined
+                    ? 'linear-gradient(0deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.8) 100%)'
+                    : variables.media_off
+                        ? 'linear-gradient(0deg, rgba(115, 115, 115, 0.2) 0%, rgba(115, 115, 115, 0.2) 100%)'
+                        : `linear-gradient(0deg, rgba(0,0,0,.8) 0%, rgba(0,0,0,0) 100%), url(${variables.entity_picture})`;
+            }
           ]]]
 
 #################################################
@@ -176,10 +194,14 @@ conditional_media:
       - background-image: &media_background_image >
           [[[
             if (entity) {
+              if (variables.is_youtube) {
+                  return `url(${states[this._config?.triggers_update].state})`;
+              } else {
                 let data = entity.attributes.data;
                 return data && (data[variables.i].fanart || data[variables.i].poster)
                     ? `url("${data[variables.i].fanart}"), url("${data[variables.i].poster}")`
                     : `url("${variables.entity_picture}")`;
+              }
             }
           ]]]
       - color: >

@@ -1,0 +1,36 @@
+rest:
+  - resource: http://192.168.1.241:5678
+    sensor:
+      name: youtube_watching
+      value_template: >
+        {% set video_id = value_json.video_id %}
+        https://img.youtube.com/vi/{{video_id}}/maxresdefault.jpg
+      json_attributes:
+        - channel
+        - title
+        - video_id
+        - duration_string
+        - thumbnail
+        - original_url
+    scan_interval: 86400
+
+automation:
+  - alias: update_youtube_watching_thumbnail
+    id: '1781428593188'
+    mode: single
+    max_exceeded: silent
+    variables:
+      ytw: sensor.youtube_watching
+    trigger:
+      platform: state
+      entity_id:
+        - media_player.vardagsrum
+        - media_player.sovrum
+      to: playing
+    condition: >
+      {{ is_state_attr(trigger.entity_id, 'app_id', 'com.google.ios.youtube') and
+      state_attr(trigger.entity_id, 'media_title') != state_attr(ytw, 'title') }}
+    action:
+      - service: homeassistant.update_entity
+        target:
+          entity_id: '{{ ytw }}'
