@@ -583,7 +583,7 @@ views:
             tap_action:
               !include popup/footer_router.yaml
             triggers_update:
-              - binary_sensor.template_udm_upgradable
+              - update.unifi_dream_machine
               - binary_sensor.template_udm_internet
             variables:
               notify: >
