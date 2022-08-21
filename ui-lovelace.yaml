@@ -62,6 +62,7 @@ views:
                       : 'initial';
                 ]]]
           name:
+            - z-index: 1
             - overflow: visible
             - color: red
             - font-weight: bolder
