@@ -102,7 +102,11 @@ automation:
             entity_id: number.galaxy_tab_a_screen_brightness
           data:
             value: >
-              {{ iif(is_state('sun.sun', 'above_horizon'), 90, 65) }}
+              {% set day_percent = 90 %}
+              {% set night_percent = 65 %}
+              {% set day_convert = ((day_percent * 255) / 100) | int %}
+              {% set night_convert = ((night_percent * 255) / 100) | int %}
+              {{ iif(is_state('sun.sun', 'above_horizon'), day_convert, night_convert) }}
       else:
         - service: switch.turn_on
           target:
