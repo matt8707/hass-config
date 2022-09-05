@@ -19,14 +19,6 @@ homeassistant:
     sensor.processor_use_percent:
       icon: mdi:chip
 
-# https://github.com/thomasloven/hass-browser_mod
-browser_mod:
-  devices:
-    dd239c79-406b9d77:
-      name: browser_dd239c79_406b9d77
-  disable:
-    - all
-
 template:
   - sensor:
       - unique_id: fullykiosk_last_app_start
