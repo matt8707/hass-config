@@ -111,4 +111,4 @@ automation:
             minutes: 15
         - service: browser_mod.close_popup
           data:
-            deviceID: dd239c79-406b9d77
+            browser_id: tablet

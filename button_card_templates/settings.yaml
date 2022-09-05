@@ -1,7 +1,7 @@
 settings:
   variables:
     entity_tablet: switch.galaxy_tab_a_screensaver
-    entity_browser_mod: media_player.browser_dd239c79_406b9d77
+    entity_browser_mod: media_player.tablet
     translate_unknown: Okänt
     translate_idle: Inaktiv
     translate_home: Ja
