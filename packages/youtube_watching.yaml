@@ -3,14 +3,12 @@ rest:
     sensor:
       name: youtube_watching
       value_template: >
-        {% set video_id = value_json.video_id %}
-        https://img.youtube.com/vi/{{video_id}}/maxresdefault.jpg
+        {{ value_json.thumbnail }}
       json_attributes:
         - channel
         - title
         - video_id
         - duration_string
-        - thumbnail
         - original_url
     scan_interval: 86400
 
