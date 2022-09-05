@@ -55,13 +55,7 @@ base:
   double_tap_action:
     haptic: success
   hold_action:
-    action: call-service
-    service: browser_mod.toast
-    service_data:
-      duration: 3000
-      message: >
-        Tips! Dubbelklicka för att öppna popup-meny
-    haptic: failure
+    action: block
   styles:
     grid:
       - grid-template-areas: |

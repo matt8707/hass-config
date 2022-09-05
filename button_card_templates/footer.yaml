@@ -66,11 +66,7 @@ footer:
         - z-index: 1
   tap_action:
     haptic: medium
-  hold_action: &toast
-    action: call-service
-    service: browser_mod.toast
-    service_data:
-      duration: 3000
-      message: "Tips! Tryck en gång för att öppna popup-meny"
+  hold_action:
+    action: block
   double_tap_action:
-    <<: *toast
+    action: block

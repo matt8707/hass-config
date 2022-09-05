@@ -32,13 +32,8 @@ switch:
           if:
             condition: state
             entity_id: input_boolean.imac_lock
-            state: 'on'
+            state: 'off'
           then:
-            service: browser_mod.toast
-            data:
-              duration: 8000
-              message: Dator är låst från att stängas av...
-          else:
             service: shell_command.imac_off
 
 sensor:
