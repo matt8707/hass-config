@@ -54,7 +54,9 @@ light:
                 brightness = child && states[child[0]].attributes.brightness
                     ? Math.round(states[child[0]].attributes.brightness / 2.54)
                     : Math.round(entity.attributes.brightness / 2.54);
-            return brightness;
+            return brightness === 0 && entity.state !== 'off'
+                ? 1
+                : brightness
         }
       ]]]
     circle_input_unit: '%'
