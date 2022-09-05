@@ -9,82 +9,70 @@ update_entities:
     ]]]
 action: fire-dom-event
 browser_mod:
-  command: popup
-  title: UniFi Dream Machine
-  style:
-    hui-vertical-stack-card:
-      $: |
-        hui-horizontal-stack-card {
-          padding: 0em 2em 2.3em 2em;
-        }
-      $hui-horizontal-stack-card$: |
-        #root {
-          justify-content: space-evenly;
-        }
-  card:
-    type: vertical-stack
-    cards:
-      - type: entities
-        state_color: true
-        card_mod:
-          class: content
-        entities:
+  service: browser_mod.popup
+  data:
+    title: UniFi Dream Machine
+    content:
+      type: vertical-stack
+      cards:
+        - type: entities
+          state_color: true
+          card_mod:
+            class: content
+          entities:
 
-          - entity: binary_sensor.template_udm_internet
-            secondary_info: last-changed
+            - entity: binary_sensor.template_udm_internet
+              secondary_info: last-changed
 
-          - entity: sensor.template_udm_cpu_temp
-            name: CPU Temperatur
+            - entity: sensor.template_udm_cpu_temp
+              name: CPU Temperatur
 
-          - type: custom:bar-card
-            width: 55%
-            height: 2em
-            decimal: 0
-            unit_of_measurement: '%'
-            positions:
-              icon: outside
-              indicator: 'off'
-              name: outside
-            severity:
-              - color: '#6d2525'
-                from: 90
-                to: 999
-            entity_row: true
-            entities:
-              - entity: sensor.template_udm_cpu
-              - entity: sensor.template_udm_mem
-              - entity: sensor.template_udm_disk
+            - type: custom:bar-card
+              width: 55%
+              height: 2em
+              decimal: 0
+              unit_of_measurement: '%'
+              positions:
+                icon: outside
+                indicator: 'off'
+                name: outside
+              severity:
+                - color: '#6d2525'
+                  from: 90
+                  to: 999
+              entity_row: true
+              entities:
+                - entity: sensor.template_udm_cpu
+                - entity: sensor.template_udm_mem
+                - entity: sensor.template_udm_disk
 
-          - entity: sensor.template_udm_uptime
+            - entity: sensor.template_udm_uptime
 
-      - type: horizontal-stack
-        cards:
-          - type: custom:button-card
-            name: Starta om
-            icon: mdi:restart-alert
-            tap_action:
-              confirm: >
-                [[[
-                  return `[[[
-                    if (window.confirm('Är du säker på att du vill starta om routern?')) {
-                      hass.callService('browser_mod', 'toast', { message: 'Startar om routern...', duration: 3000 });
-                      hass.callService('shell_command', 'unifi_reboot');
-                    }
-                  ]]]`
-                ]]]
-            template: icon_name
+        - type: custom:mod-card
+          card_mod:
+            style:
+              hui-horizontal-stack-card$: |
+                #root {
+                  justify-content: space-evenly !important;
+                  padding: var(--tablet-popup-button-padding);
+                }
+          card:
+            type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                name: Nätverksenheter
+                icon: mdi:devices
+                tap_action:
+                  action: url
+                  url_path:
+                    !secret unifi_network
+                template: icon_name
 
-          - type: custom:button-card
-            name: Stäng av...
-            icon: mdi:alert
-            tap_action:
-              confirm: >
-                [[[
-                  return `[[[
-                    if (window.confirm('Är du säker på att du vill stänga av routern?')) {
-                      hass.callService('browser_mod', 'toast', { message: 'Stänger av routern...', duration: 3000 });
-                      hass.callService('shell_command', 'unifi_poweroff');
-                    }
-                  ]]]`
-                ]]]
-            template: icon_name
+              - type: custom:button-card
+                name: System
+                icon: mdi:cog
+                tap_action:
+                  action: url
+                  url_path:
+                    !secret unifi_console
+                template: icon_name

@@ -1,119 +1,127 @@
 action: fire-dom-event
 browser_mod:
-  command: popup
-  title: Matte
-  style:
-    hui-vertical-stack-card:
-      $: |
-        button-card {
-          align-self: center;
-          padding: .2em 0 2em 0;
-        }
-        hui-history-graph-card {
-          padding: 0 1em 0 1em;
-        }
-      $hui-entities-card$: |
-        #states {
-          padding-left: 2em;
-          padding-bottom: .9em;
-        }
-      $hui-glance-card$: |
-        .entities {
-          padding: 12px 29px 4px 26px !important;
-        }
-      $hui-map-card:
-        $: |
-          #root {
-            height: 25em;
-            padding-bottom: 0 !important;
-          }
-          ha-icon-button {
-            color: var(--primary-color);
-            zoom: 140%;
-            margin-left: -0.2em;
-          }
-          ha-card {
-            border-top: 2px solid #1a1a1a;
-            border-radius: 0;
-            transition: none;
-          }
-        $ha-map$: |
-          #map {
-            background-color: #191919 !important;
-          }
-          .leaflet-control-attribution {
-            display: none;
-          }
-          .leaflet-bar a {
-            background-color: rgba(115, 123, 124, 0.2) !important;
-            color: #9da0a2 !important;
-            backdrop-filter: blur(0.25em);
-            zoom: 140%;
-          }
-          a.leaflet-control-zoom-in {
-            border-bottom: 1px solid #181818 !important;
-          }
-          .leaflet-pane.leaflet-tile-pane {
-            filter: invert(0.95) grayscale(0.95) contrast(95%);
-          }
-  card:
-    type: vertical-stack
-    cards:
-      - type: entities
-        card_mod:
-          class: content
-        entities:
-          - entity: person.matte
-            secondary_info: last-changed
+  service: browser_mod.popup
+  data:
+    title: Matte
+    style: >
+      --popup-max-width: 400px;
+    content:
+      type: vertical-stack
+      cards:
+        - type: entities
+          card_mod:
+            class: content
+          entities:
+            - entity: person.matte
+              secondary_info: last-changed
 
-      - type: history-graph
-        entities:
-          - entity: person.matte
+        - type: history-graph
+          card_mod:
+            style: |
+              ha-card > div {
+                padding: 0 2em 1em 1.6em !important;
+              }
+          entities:
+            - entity: person.matte
 
-      - type: glance
-        show_state: false
-        entities:
+        - type: glance
+          card_mod:
+            style: |
+              ha-card > div {
+                padding: 1em 1.5em 0.2em 1em !important;
+                box-sizing: content-box;
+              }
+          show_state: false
+          entities:
 
-          - entity: device_tracker.mattias_iphone
-            name: Router
-            icon: mdi:wifi
-            card_mod:
-              style: &state |
-                state-badge {
-                  color: {{ is_state(config.entity, 'home') | iif('#3182b7', '#3c3f3f') }};
+            - entity: device_tracker.mattias_iphone_x
+              name: Router
+              icon: mdi:wifi
+              card_mod:
+                style: &state |
+                  state-badge {
+                    color: {{ is_state(config.entity, 'home') | iif('#3182b7', '#3c3f3f') }};
+                  }
+
+            - entity: device_tracker.mattias_iphone_x
+              name: Bluetooth
+              icon: mdi:bluetooth
+              card_mod:
+                style: *state
+
+            - entity: device_tracker.iphone
+              name: Position
+              icon: cil:iphone-modern
+              card_mod:
+                style: *state
+
+        - type: custom:mod-card
+          card_mod:
+            style:
+              hui-horizontal-stack-card$: |
+                #root {
+                  justify-content: space-evenly !important;
+                  padding: var(--tablet-popup-button-padding);
                 }
+          card:
+            type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                name: Spela upp ljud på iPhone X
+                icon: mdi:volume-high
+                template: icon_name
+                tap_action:
+                  action: call-service
+                  service: notify.mobile_app_iphone
+                  service_data:
+                    title: Hitta min iPhone
+                    message: Här är jag
+                    data:
+                      push:
+                        sound:
+                          name: findmy.wav
+                          critical: 1
+                          volume: 1
 
-          - entity: device_tracker.mattias_iphone
-            name: Bluetooth
-            icon: mdi:bluetooth
-            card_mod:
-              style: *state
-
-          - entity: device_tracker.iphone
-            name: Position
-            icon: cil:iphone-modern
-            card_mod:
-              style: *state
-
-      - type: custom:button-card
-        name: Spela upp ljud på iPhone X
-        icon: mdi:volume-high
-        template: icon_name
-        tap_action:
-          action: call-service
-          service: notify.mobile_app_iphone
-          service_data:
-            title: Hitta min iPhone
-            message: Här är jag
-            data:
-              push:
-                sound:
-                  name: findmy.wav
-                  critical: 1
-                  volume: 1
-
-      - type: map
-        default_zoom: 16
-        dark_mode: true
-        entities:
-          - device_tracker.iphone
+        - type: map
+          default_zoom: 16
+          dark_mode: true
+          entities:
+            - device_tracker.iphone
+          card_mod:
+            style:
+              .: |
+                #root {
+                  height: 25em;
+                  padding-bottom: 0 !important;
+                }
+                ha-icon-button {
+                  color: var(--primary-color);
+                  zoom: 140%;
+                  margin-left: -0.2em;
+                }
+                ha-card {
+                  border-top: 2px solid #1a1a1a;
+                  border-radius: 0;
+                  transition: none;
+                  margin-bottom: -4px !important;
+                }
+              ha-map$: |
+                #map {
+                  background-color: #191919 !important;
+                }
+                .leaflet-control-attribution {
+                  display: none;
+                }
+                .leaflet-bar a {
+                  background-color: rgba(115, 123, 124, 0.2) !important;
+                  color: #9da0a2 !important;
+                  backdrop-filter: blur(0.25em);
+                  zoom: 140%;
+                }
+                a.leaflet-control-zoom-in {
+                  border-bottom: 1px solid #181818 !important;
+                }
+                .leaflet-pane.leaflet-tile-pane {
+                  filter: invert(0.95) grayscale(0.95) contrast(95%);
+                }

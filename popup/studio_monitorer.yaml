@@ -1,79 +1,83 @@
 action: fire-dom-event
 browser_mod:
-  command: popup
-  title: Monitorer
-  style:
-    hui-vertical-stack-card:
-      $: |
-        hui-horizontal-stack-card {
-          padding: 0em 2em 2.3em 2em;
-        }
-      $hui-horizontal-stack-card$: |
-        #root {
-          justify-content: space-evenly;
-        }
-      $hui-entities-card$slider-entity-row$hui-generic-entity-row$: |
-        div {
-          flex: auto !important;
-        }
-  card:
-    type: vertical-stack
-    cards:
-      - type: entities
-        state_color: true
-        card_mod:
-          class: content
-        entities:
+  service: browser_mod.popup
+  data:
+    title: Monitorer
+    content:
 
-          - entity: switch.gosund_monitors_switch
-            secondary_info: last-changed
+      type: vertical-stack
+      cards:
 
-          - type: custom:slider-entity-row
-            entity: input_number.monitors_volume
-            hide_state: false
-            card_mod:
-              style: >
-                :host {
-                  --paper-item-icon-color:
-                    {% if is_state('binary_sensor.monitors_mute_state', 'on') %}
-                      #FFFFFF20
-                    {% elif states(config.entity) | int == 0 %}
-                      #9da0a2
-                    {% elif states(config.entity) | int < 60 %}
-                      #3182b7
-                    {% else %}
-                      red
-                    {% endif %};
-                  }
+        - type: entities
+          state_color: true
+          card_mod:
+            class: content
+          entities:
 
-          - entity: automation.monitors_turn_off
+            - entity: switch.gosund_monitors_switch
+              secondary_info: last-changed
 
-          - entity: automation.monitors_calibration
+            - type: custom:slider-entity-row
+              card_mod:
+                style:
+                  .: |
+                    :host {
+                      --paper-item-icon-color:
+                        {% if is_state('binary_sensor.monitors_mute_state', 'on') %}
+                          #FFFFFF20
+                        {% elif states(config.entity) | int == 0 %}
+                          #9da0a2
+                        {% elif states(config.entity) | int < 60 %}
+                          #3182b7
+                        {% else %}
+                          red
+                        {% endif %};
+                      }
+                  hui-generic-entity-row$: |
+                    div {
+                      flex: auto !important;
+                    }
+              entity: input_number.monitors_volume
+              hide_state: false
 
-      - type: horizontal-stack
-        cards:
+            - entity: automation.monitors_turn_off
 
-          - type: custom:button-card
-            entity: switch.monitors_mute
-            icon: mdi:volume-mute
-            tap_action:
-              action: toggle
-            template: icon_only
+            - entity: automation.monitors_calibration
 
-          - type: custom:button-card
-            icon: mdi:volume-minus
-            tap_action:
-              action: call-service
-              service: input_number.decrement
-              service_data:
-                entity_id: input_number.monitors_volume
-            template: icon_only
+        - type: custom:mod-card
+          card_mod:
+            style:
+              hui-horizontal-stack-card$: |
+                #root {
+                  justify-content: space-evenly !important;
+                  padding: var(--tablet-popup-button-padding);
+                }
+          card:
 
-          - type: custom:button-card
-            icon: mdi:volume-plus
-            tap_action:
-              action: call-service
-              service: input_number.increment
-              service_data:
-                entity_id: input_number.monitors_volume
-            template: icon_only
+            type: horizontal-stack
+            cards:
+
+              - type: custom:button-card
+                entity: switch.monitors_mute
+                icon: mdi:volume-mute
+                tap_action:
+                  action: toggle
+                template: icon_only
+
+              - type: custom:button-card
+                icon: mdi:volume-minus
+                tap_action:
+                  action: call-service
+                  service: input_number.decrement
+                  service_data:
+                    entity_id: input_number.monitors_volume
+                template: icon_only
+
+              - type: custom:button-card
+                icon: mdi:volume-plus
+                tap_action:
+                  action: call-service
+                  service: input_number.increment
+                  service_data:
+                    entity_id: input_number.monitors_volume
+                template: icon_only

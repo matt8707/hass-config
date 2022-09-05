@@ -11,142 +11,156 @@ update_entities:
     ]]]
 action: fire-dom-event
 browser_mod:
-  command: popup
-  title: Dator
-  style:
-    hui-vertical-stack-card:
-      $hui-conditional-card>hui-vertical-stack-card$: |
-        hui-horizontal-stack-card {
-          padding: 0em 2em 2.3em 2em;
-        }
-      $hui-conditional-card>hui-vertical-stack-card$hui-horizontal-stack-card$: |
-        #root {
-          justify-content: space-evenly;
-        }
-  card:
-    type: vertical-stack
-    cards:
+  service: browser_mod.popup
+  data:
+    title: Dator
+    content:
+      type: vertical-stack
+      cards:
 
-      ### ON ###
-      - type: conditional
-        conditions:
-          - entity: switch.imac
-            state: 'on'
-        card:
-          type: vertical-stack
-          cards:
-            - type: entities
-              state_color: true
-              card_mod:
-                class: content
-              entities:
+        ### ON ###
+        - type: conditional
+          conditions:
+            - entity: switch.imac
+              state: 'on'
+          card:
+            type: vertical-stack
+            cards:
+              - type: entities
+                state_color: true
+                card_mod:
+                  class: content
+                entities:
 
-                - entity: switch.imac
-                  name: iMac
-                  secondary_info: last-changed
+                  - entity: switch.imac
+                    name: iMac
+                    secondary_info: last-changed
 
-                - type: custom:bar-card
-                  width: 55%
-                  height: 2em
-                  decimal: 0
-                  unit_of_measurement: '%'
-                  positions:
-                    icon: outside
-                    indicator: 'off'
-                    name: outside
-                  severity:
-                    - color: '#6d2525'
-                      from: 90
-                      to: 999
-                  entity_row: true
-                  entities:
+                  - type: custom:bar-card
+                    width: 55%
+                    height: 2em
+                    decimal: 0
+                    unit_of_measurement: '%'
+                    positions:
+                      icon: outside
+                      indicator: 'off'
+                      name: outside
+                    severity:
+                      - color: '#6d2525'
+                        from: 90
+                        to: 999
+                    entity_row: true
+                    entities:
 
-                    - entity: sensor.imac_cpu
+                      - entity: sensor.imac_cpu
+                        tap_action:
+                          action: call-service
+                          service: homeassistant.update_entity
+                          service_data:
+                            entity_id: sensor.imac_cpu
+
+                      - entity: sensor.imac_mem
+                        tap_action:
+                          action: call-service
+                          service: homeassistant.update_entity
+                          service_data:
+                            entity_id: sensor.imac_mem
+
+                      - entity: sensor.template_imac_macintosh_hd
+                        tap_action:
+                          action: call-service
+                          service: homeassistant.update_entity
+                          service_data:
+                            entity_id: sensor.template_imac_macintosh_hd
+
+                  - entity: automation.imac_notification_motion_hall
+                  - entity: sensor.imac_uptime
+
+                  - entity: binary_sensor.template_imac_vpn
+                    tap_action:
+                      action: call-service
+                      service: homeassistant.update_entity
+                      service_data:
+                        entity_id: sensor.imac_ip
+                    card_mod:
+                      style: |
+                        :host {
+                          --paper-item-icon-color:
+                            {{ is_state(config.entity, 'Ansluten') | iif('var(--state-icon-active-color)', 'red') }};
+                          }
+
+                  - entity: input_boolean.imac_lock
+
+              - type: custom:mod-card
+                card_mod:
+                  style:
+                    hui-horizontal-stack-card$: |
+                      #root {
+                        justify-content: space-evenly !important;
+                        padding: var(--tablet-popup-button-padding);
+                      }
+                card:
+
+                  type: horizontal-stack
+                  cards:
+
+                    - type: custom:button-card
+                      name: Försätt i vila
+                      icon: mdi:power-sleep
                       tap_action:
                         action: call-service
-                        service: homeassistant.update_entity
-                        service_data:
-                          entity_id: sensor.imac_cpu
+                        service: shell_command.imac_sleep
+                      template: icon_name
 
-                    - entity: sensor.imac_mem
+                    - type: custom:button-card
+                      name: Starta om
+                      icon: mdi:restart
                       tap_action:
                         action: call-service
-                        service: homeassistant.update_entity
-                        service_data:
-                          entity_id: sensor.imac_mem
+                        service: shell_command.imac_restart
+                      template: icon_name
 
-                    - entity: sensor.template_imac_macintosh_hd
+
+        ### OFF ###
+        - type: conditional
+          conditions:
+            - entity: switch.imac
+              state: 'off'
+          card:
+            type: vertical-stack
+            cards:
+              - type: entities
+                state_color: true
+                show_header_toggle: false
+                card_mod:
+                  class: content
+                entities:
+
+                  - entity: switch.imac
+                    name: iMac
+                    secondary_info: last-changed
+                  - entity: automation.imac_notification_motion_hall
+                  - entity: input_boolean.imac_lock
+
+              - type: custom:mod-card
+                card_mod:
+                  style:
+                    hui-horizontal-stack-card$: |
+                      #root {
+                        justify-content: space-evenly !important;
+                        padding: var(--tablet-popup-button-padding);
+                      }
+                card:
+
+                  type: horizontal-stack
+                  cards:
+
+                    - type: custom:button-card
+                      name: Starta iMac
+                      icon: mdi:power
                       tap_action:
                         action: call-service
-                        service: homeassistant.update_entity
+                        service: switch.turn_on
                         service_data:
-                          entity_id: sensor.template_imac_macintosh_hd
-
-                - entity: automation.imac_notification_motion_hall
-                - entity: sensor.imac_uptime
-
-                - entity: binary_sensor.template_imac_vpn
-                  tap_action:
-                    action: call-service
-                    service: homeassistant.update_entity
-                    service_data:
-                      entity_id: sensor.imac_ip
-                  card_mod:
-                    style: |
-                      :host {
-                        --paper-item-icon-color:
-                          {{ is_state(config.entity, 'Ansluten') | iif('var(--state-icon-active-color)', 'red') }};
-                        }
-
-                - entity: input_boolean.imac_lock
-
-            - type: horizontal-stack
-              cards:
-              - type: custom:button-card
-                name: Försätt i vila
-                icon: mdi:power-sleep
-                tap_action:
-                  action: call-service
-                  service: shell_command.imac_sleep
-                template: icon_name
-
-              - type: custom:button-card
-                name: Starta om
-                icon: mdi:restart
-                tap_action:
-                  action: call-service
-                  service: shell_command.imac_restart
-                template: icon_name
-
-      ### OFF ###
-      - type: conditional
-        conditions:
-          - entity: switch.imac
-            state: 'off'
-        card:
-          type: vertical-stack
-          cards:
-            - type: entities
-              state_color: true
-              show_header_toggle: false
-              card_mod:
-                class: content
-              entities:
-
-                - entity: switch.imac
-                  name: iMac
-                  secondary_info: last-changed
-                - entity: automation.macos_notification_motion_hall
-                - entity: input_boolean.imac_lock
-
-            - type: horizontal-stack
-              cards:
-                - type: custom:button-card
-                  name: Starta iMac
-                  icon: mdi:power
-                  tap_action:
-                    action: call-service
-                    service: switch.turn_on
-                    service_data:
-                      entity_id: switch.imac
-                  template: icon_name
+                          entity_id: switch.imac
+                      template: icon_name

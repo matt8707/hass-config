@@ -1,13 +1,15 @@
 action: fire-dom-event
 browser_mod:
-  command: popup
-  title: Playstation 5
-  card:
-    type: entities
-    state_color: true
-    card_mod:
-      class: content
-    entities:
+  service: browser_mod.popup
+  data:
+    title: Playstation
+    content:
+      type: entities
+      state_color: true
+      card_mod:
+        class: content
+      entities:
 
-      - entity: switch.ps5_635_power
-        secondary_info: last-changed
+        - entity: switch.ps5_635_power
+          name: Playstation 5
+          secondary_info: last-changed

@@ -1,104 +1,98 @@
 action: fire-dom-event
 browser_mod:
-  command: popup
-  title: Uppdateringar
-  style:
-    .: |
-      :host .content {
-        width: 100%;
-      }
-    hui-grid-card:
-      $: |
-        button-card:nth-child(2),
-        button-card:nth-child(4) {
-          margin: 0.6em 0 2.1em 0.8em;
-        }
-        button-card:nth-child(6) {
-          margin: 0.6em 0 0.5em 0.8em;
-        }
-        #root {
-          grid-gap: 0 !important;
-          padding: var(--card-content-padding);
-          width: calc(100% - 4px);
-        }
-  card:
-    type: grid
-    columns: 1
-    square: false
-    cards:
-      - type: custom:button-card
-        entity: sensor.current_version
-        template: updates_hass
-        variables:
-          latest: sensor.docker_hub
-          latest_beta: sensor.docker_hub_beta
-          release_notes: sensor.hass_release_notes
-          release_notes_beta: sensor.hass_release_notes_beta
+  service: browser_mod.popup
+  data:
+    title: Uppdateringar
+    content:
+      type: custom:mod-card
+      card_mod:
+        style:
+          .: |
+            :host .content {
+              width: 100%;
+            }
+          hui-grid-card:
+            $: |
+              button-card:nth-child(2),
+              button-card:nth-child(4) {
+                margin: 0.6em 0 2.1em 0.8em;
+              }
+              button-card:nth-child(6) {
+                margin: 0.6em 0 0.5em 0.8em;
+              }
+              #root {
+                grid-gap: 0 !important;
+                padding: var(--tablet-card-content-padding);
+                width: calc(100% - 4px);
+              }
+      card:
+        type: grid
+        columns: 1
+        square: false
+        cards:
+          - type: custom:button-card
+            entity: sensor.current_version
+            template: updates_hass
+            variables:
+              latest: sensor.docker_hub
+              latest_beta: sensor.docker_hub_beta
+              release_notes: sensor.hass_release_notes
+              release_notes_beta: sensor.hass_release_notes_beta
 
-      - type: custom:button-card
-        entity: sensor.current_version
-        name: Uppdatera HASS
-        variables:
-          latest: sensor.docker_hub
-          latest_beta: sensor.docker_hub_beta
-        tap_action:
-          services: |
-            [[[
-              return `[[[
-                hass.callService('browser_mod', 'toast', {
-                  message: 'Startar watchtower...'
-                });
-                hass.callService('switch', 'turn_on', {
-                  entity_id: 'switch.docker_watchtower'
-                });
-              ]]]`
-            ]]]
-        template: updates_hass_icon_name
+          - type: custom:button-card
+            entity: sensor.current_version
+            name: Uppdatera HASS
+            variables:
+              latest: sensor.docker_hub
+              latest_beta: sensor.docker_hub_beta
+            tap_action:
+              action: call-service
+              service: switch.turn_on
+              service_data:
+                entity_id: switch.docker_watchtower
+            template: updates_hass_icon_name
 
-      - type: custom:button-card
-        entity: sensor.hacs
-        variables:
-          installed: sensor.hacs_installed
-        template: updates_hacs
+          - type: custom:button-card
+            entity: sensor.hacs
+            variables:
+              installed: sensor.hacs_installed
+            template: updates_hacs
 
-      - type: custom:button-card
-        entity: sensor.hacs
-        name: Öppna HACS
-        template:
-          - updates_hacs_icon_name
-          - >
-            [[[
-              return window.navigator.userAgent.match(/iPhone/i)
-                ? 'hacs_navigate_ios'
-                : 'hacs_iframe';
-            ]]]
+          - type: custom:button-card
+            entity: sensor.hacs
+            name: Öppna HACS
+            template:
+              - updates_hacs_icon_name
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.javascript
+                data:
+                  code: >
+                    if (window.navigator.userAgent.match(/iPhone/i)) {
+                      window.location.href = `/${hass.panels.hacs.url_path}`;
+                    } else {
+                      // todo popup
+                      window.location.href = `/${hass.panels.hacs.url_path}`;
+                    }
 
-      - type: custom:button-card
-        entity: sensor.template_updates
-        template: updates_other
+          - type: custom:button-card
+            entity: sensor.template_updates
+            template: updates_other
 
-      - type: custom:button-card
-        entity: sensor.template_updates
-        name: Kontrollera
-        tap_action:
-          toast: >
-            [[[
-              return `[[[
-                hass.callService('browser_mod', 'toast', {
-                  message: 'Söker efter uppdateringar...',
-                  duration: 3000
-                });
-              ]]]`
-            ]]]
-          action: call-service
-          service: homeassistant.update_entity
-          service_data:
-            entity_id:
-              - sensor.gosund_monitors_esphome_version
-              - sensor.gosund_ac_esphome_version
-              - sensor.gosund_fan_esphome_version
-              - sensor.updates_esphome_latest
-              - sensor.updates_kemper
-              - sensor.udm_unifios
-              - update.nas_dsm_update
-        template: updates_other_icon_name
+          - type: custom:button-card
+            entity: sensor.template_updates
+            name: Kontrollera
+            tap_action:
+              action: call-service
+              service: homeassistant.update_entity
+              service_data:
+                entity_id:
+                  - sensor.gosund_monitors_esphome_version
+                  - sensor.gosund_ac_esphome_version
+                  - sensor.gosund_fan_esphome_version
+                  - sensor.updates_esphome_latest
+                  - sensor.updates_kemper
+                  - sensor.udm_unifios
+                  - update.nas_dsm_update
+            template: updates_other_icon_name

@@ -1,26 +1,19 @@
 action: fire-dom-event
 browser_mod:
-  command: popup
-  title: Balkong
-  style:
-    hui-grid-card:
-      $: |
-        #root {
-          grid-gap: 0 !important;
-        }
-  card:
-    type: grid
-    columns: 1
-    square: false
-    cards:
-      - type: entities
-        state_color: true
-        show_header_toggle: false
-        card_mod:
-          class: content
-        entities:
+  service: browser_mod.popup
+  data:
+    title: Balkong
+    content:
+      type: vertical-stack
+      cards:
+        - type: entities
+          state_color: true
+          show_header_toggle: false
+          card_mod:
+            class: content
+          entities:
 
-          - entity: switch.deltaco_sh_p01_socket
-            secondary_info: last-changed
+            - entity: switch.deltaco_sh_p01_socket
+              secondary_info: last-changed
 
-          - entity: automation.balcony_lights
+            - entity: automation.balcony_lights
