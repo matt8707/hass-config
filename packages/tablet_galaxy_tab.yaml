@@ -69,7 +69,7 @@ automation:
     id: '3972668118831'
     trigger:
       platform: numeric_state
-      entity_id: sensor.galaxy_tab_a_battery_level
+      entity_id: sensor.galaxy_tab_a_battery
       below: 50
     action:
       service: notify.all_devices
@@ -97,11 +97,11 @@ automation:
         - service: switch.turn_off
           target:
             entity_id: switch.galaxy_tab_a_screensaver
-        - service: light.turn_on
+        - service: number.set_value
           target:
-            entity_id: light.galaxy_tab_a_screen
+            entity_id: number.galaxy_tab_a_screen_brightness
           data:
-            brightness_pct: >
+            value: >
               {{ iif(is_state('sun.sun', 'above_horizon'), 90, 65) }}
       else:
         - service: switch.turn_on
