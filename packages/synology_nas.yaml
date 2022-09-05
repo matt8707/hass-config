@@ -1,3 +1,10 @@
+homeassistant:
+  customize:
+    sensor.nas_volume_1_average_disk_temp:
+      friendly_name: Disktemperatur
+    sensor.processor_use_percent:
+      icon: mdi:chip
+
 sensor:
   - platform: systemmonitor
     resources:
