@@ -1,7 +1,3 @@
-shell_command:
-  unifi_poweroff: !secret unifi_poweroff
-  unifi_reboot: !secret unifi_reboot
-
 sensor:
   - platform: command_line
     name: udm_unifios
