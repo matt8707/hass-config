@@ -21,7 +21,6 @@ themes:
     paper-slider-pin-color: '#626a6f'
     paper-slider-active-color: '#626a6f'
     paper-slider-container-color: '#202020'
-    mdc-dialog-scrim-color: rgba(0, 0, 0, 0.5)
     paper-toast-color: var(--primary-text-color)
     paper-toast-background-color: '#1b1b1bf2'
     vertical-stack-card-margin: 0
@@ -48,7 +47,6 @@ themes:
     sidebar-time-line-height: 4.3vw
     sidebar-font-size: 1.42vw
     sidebar-line-height: 2vw
-    card-content-padding: 1.4em 2.2em 1.6em 1.5em
     bar-card-color: '#303435'
 
     #button_card_templates
@@ -70,6 +68,14 @@ themes:
     footer-notify-right: -1vw
 
     button-card-light-color-temp: hsl(204, 58%, 38%)
+
+    #browser_mod.popup
+    dialog-backdrop-filter: blur(2em) brightness(0.75)
+    popup-background-color: rgba(34,38,39,0.9)
+    popup-border-width: 1px
+    ha-dialog-border-radius: 1em
+    tablet-card-content-padding: 1.4em 2.2em 1.6em 1.5em
+    tablet-popup-button-padding: 0.1em 2em 1.8em 2em
 
   ####################################################
   #                                                  #
@@ -237,7 +243,7 @@ themes:
       }
 
       .content .card-content {
-        padding: var(--card-content-padding);
+        padding: var(--tablet-card-content-padding);
       }
 
       /* * * * * * * * * * * * * * * * * *
