@@ -113,38 +113,44 @@ browser_mod:
                   grid:
                     - column-gap: 0
                 tap_action:
-                  confirm: >
-                    [[[
-                      return `[[[
-                        hass.callService('shell_command', 'rpi_led_off');
-                      ]]]`
-                    ]]]
+                  action: call-service
+                  service: browser_mod.sequence
+                  service_data:
+                    sequence:
+                      - service: browser_mod.notification
+                        data:
+                          message: Släcker LED-lampor...
+                      - service: shell_command.rpi_led_off
                 template: icon_name
 
               - type: custom:button-card
                 name: Starta om
                 icon: mdi:restart
+                confirmation:
+                  text: Är du säker på att du vill starta om RPi?
                 tap_action:
-                  confirm: >
-                    [[[
-                      return `[[[
-                        if (window.confirm('Är du säker på att du vill starta om RPi?')) {
-                          hass.callService('shell_command', 'rpi_reboot');
-                        }
-                      ]]]`
-                    ]]]
+                  action: call-service
+                  service: browser_mod.sequence
+                  service_data:
+                    sequence:
+                      - service: browser_mod.notification
+                        data:
+                          message: Startar om RPi...
+                      - service: shell_command.rpi_reboot
                 template: icon_name
 
               - type: custom:button-card
                 name: Stäng av...
                 icon: mdi:alert
+                confirmation:
+                  text: Är du säker på att du vill stänga av RPi?
                 tap_action:
-                  confirm: >
-                    [[[
-                      return `[[[
-                        if (window.confirm('Är du säker på att du vill stänga av RPi?')) {
-                          hass.callService('shell_command', 'rpi_poweroff');
-                        }
-                      ]]]`
-                    ]]]
+                  action: call-service
+                  service: browser_mod.sequence
+                  service_data:
+                    sequence:
+                      - service: browser_mod.notification
+                        data:
+                          message: Stänger av RPi...
+                      - service: shell_command.rpi_poweroff
                 template: icon_name

@@ -36,7 +36,7 @@ browser_mod:
               $hui-entities-card$:
                 .: |
                   .card-content {
-                    padding: var(--tablet-card-content-padding);
+                    padding: var(--tablet-popup-content-padding);
                     letter-spacing: normal;
                     padding-bottom: 0;
                   }
@@ -64,7 +64,7 @@ browser_mod:
             $xiaomi-vacuum-map-card:
               $: |
                 div.map-wrapper, div.controls-wrapper {
-                  padding: var(--tablet-card-content-padding);
+                  padding: var(--tablet-popup-content-padding);
                   padding-top: 0;
                   padding-bottom: 0;
                   letter-spacing: normal;

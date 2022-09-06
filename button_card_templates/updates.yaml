@@ -212,29 +212,23 @@ hacs_iframe:
   tap_action:
     action: fire-dom-event
     browser_mod:
-      command: popup
-      title: HACS
-      style:
-        div: |
-          .content {
-            padding: 0;
-          }
-        hui-iframe-card$: |
-          ha-card {
-            margin-left: -58px;
-          }
-      large: true
-      card:
-        type: iframe
-        url: >
-          [[[ return `/${hass.panels.hacs.url_path}` ]]]
+      service: browser_mod.popup
+      data:
+        title: HACS
+        size: fullscreen
+        content:
+          type: iframe
+          aspect_ratio: 16x9.15
+          url: >
+            [[[ return `/${hass.panels.hacs.url_path}` ]]]
   template: icon_name
 
 hacs_navigate_ios:
   tap_action:
-    close_popup: >
-      [[[ hass.callService('browser_mod', 'close_popup'); ]]]
-    action: navigate
-    navigation_path: >
-      [[[ return `/${hass.panels.hacs.url_path}` ]]]
+    action: fire-dom-event
+    browser_mod:
+      service: browser_mod.javascript
+      data:
+        code: >
+          window.location.href = `/${hass.panels.hacs.url_path}`;
   template: icon_name

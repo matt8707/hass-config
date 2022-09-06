@@ -20,7 +20,7 @@ browser_mod:
                 hui-entities-card:
                   $: |
                     .card-content {
-                      padding: var(--tablet-card-content-padding);
+                      padding: var(--tablet-popup-content-padding);
                       padding-bottom: 0.8em;
                     }
                     ha-card {
@@ -127,13 +127,22 @@ browser_mod:
                     icon: mdi:memory
 
               - type: custom:hui-horizontal-stack-card
-                cards:  
+                cards:
                   - type: custom:button-card
                     name: Serveromstart
                     icon: mdi:reload
                     tap_action:
                       action: call-service
-                      service: homeassistant.restart
+                      service: browser_mod.sequence
+                      service_data:
+                        sequence:
+                          - service: browser_mod.notification
+                            data:
+                              message: Startar om server...
+                          - service: browser_mod.delay
+                            data:
+                              time: 3000
+                          - service: homeassistant.restart
                     template: icon_name
 
                   - type: custom:button-card
@@ -141,7 +150,17 @@ browser_mod:
                     icon: mdi:reload
                     tap_action:
                       action: call-service
-                      service: shell_command.restart_container
+                      service: browser_mod.sequence
+                      service_data:
+                        sequence:
+                          - service: browser_mod.notification
+                            data:
+                              message: Startar om container...
+                          - service: homeassistant.save_persistent_states
+                          - service: browser_mod.delay
+                            data:
+                              time: 3000
+                          - service: shell_command.restart_container
                     template: icon_name
 
           #################################################
@@ -324,27 +343,35 @@ browser_mod:
                   - type: custom:button-card
                     name: Starta om
                     icon: mdi:restart-alert
+                    confirmation:
+                      text: Är du säker på att du vill starta om NAS?
                     tap_action:
-                      confirm: >
-                        [[[
-                          return `[[[
-                            if (window.confirm('Är du säker på att du vill starta om NAS?')) {
-                              hass.callService('button', 'press', { entity_id: 'button.nas_reboot' });
-                            }
-                          ]]]`
-                        ]]]
+                      action: call-service
+                      service: browser_mod.sequence
+                      service_data:
+                        sequence:
+                          - service: browser_mod.notification
+                            data:
+                              message: Startar om NAS...
+                          - service: button.press
+                            target:
+                              entity_id: button.nas_reboot
                     template: icon_name
 
                   - type: custom:button-card
                     name: Stäng av...
                     icon: mdi:alert
+                    confirmation:
+                      text: Är du säker på att du vill stänga av NAS?
                     tap_action:
-                      confirm: >
-                        [[[
-                          return `[[[
-                            if (window.confirm('Är du säker på att du vill stänga av NAS?')) {
-                              hass.callService('button', 'press', { entity_id: 'button.nas_shutdown' });
-                            }
-                          ]]]`
-                        ]]]
+                      action: call-service
+                      service: browser_mod.sequence
+                      service_data:
+                        sequence:
+                          - service: browser_mod.notification
+                            data:
+                              message: Stänger av NAS...
+                          - service: button.press
+                            target:
+                              entity_id: button.nas_shutdown
                     template: icon_name

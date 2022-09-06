@@ -104,26 +104,30 @@ browser_mod:
                 name: Startsidan
                 icon: mdi:reload
                 tap_action:
-                  services: |
-                    [[[
-                      return `[[[
-                        hass.callService('button', 'press', {
-                          entity_id: 'button.galaxy_tab_a_load_start_url'
-                        });
-                      ]]]`
-                    ]]]
+                  action: call-service
+                  service: browser_mod.sequence
+                  service_data:
+                    sequence:
+                      - service: browser_mod.notification
+                        data:
+                          message: Laddar om startsidan...
+                      - service: button.press
+                        target:
+                          entity_id: button.galaxy_tab_a_load_start_url
                 template: icon_name
 
               - type: custom:button-card
                 name: Hela appen
                 icon: mdi:reload
                 tap_action:
-                  services: |
-                    [[[
-                      return `[[[
-                        hass.callService('button', 'press', {
-                          entity_id: 'button.galaxy_tab_a_restart_browser'
-                        });
-                      ]]]`
-                    ]]]
+                  action: call-service
+                  service: browser_mod.sequence
+                  service_data:
+                    sequence:
+                      - service: browser_mod.notification
+                        data:
+                          message: Startar om Fully Kiosk Browser...
+                      - service: button.press
+                        target:
+                          entity_id: button.galaxy_tab_a_restart_browser
                 template: icon_name

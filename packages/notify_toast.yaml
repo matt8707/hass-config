@@ -22,6 +22,40 @@ input_datetime:
     has_time: true
 
 automation:
+  - alias: toast
+    id: '3161036041566'
+    mode: parallel
+    trigger:
+      platform: state
+      entity_id:
+        - binary_sensor.garderob_motion_motion
+        - binary_sensor.badrum_motion_motion
+        - binary_sensor.wemo_motion
+      from: 'off'
+      to: 'on'
+    action:
+      service: browser_mod.notification
+      data:
+        duration: 3000
+        message: >
+          Rörelse detekterat i {{ trigger.to_state.name }}
+
+  - alias: dismiss_lovelace_updated
+    id: '1309195316329'
+    mode: restart
+    trigger:
+      platform: event
+      event_type: lovelace_updated
+    action:
+      repeat:
+        count: 5
+        sequence:
+          - delay: 0.5
+          - service: browser_mod.notification
+            data:
+              duration: 1
+              message: ' '
+
   - alias: waste_collection
     initial_state: false
     id: '5611101897022'

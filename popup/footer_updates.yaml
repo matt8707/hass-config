@@ -22,7 +22,7 @@ browser_mod:
               }
               #root {
                 grid-gap: 0 !important;
-                padding: var(--tablet-card-content-padding);
+                padding: var(--tablet-popup-content-padding);
                 width: calc(100% - 4px);
               }
       card:
@@ -47,9 +47,15 @@ browser_mod:
               latest_beta: sensor.docker_hub_beta
             tap_action:
               action: call-service
-              service: switch.turn_on
+              service: browser_mod.sequence
               service_data:
-                entity_id: switch.docker_watchtower
+                sequence:
+                  - service: browser_mod.notification
+                    data:
+                      message: Startar watchtower...
+                  - service: switch.turn_on
+                    data:
+                      entity_id: switch.docker_watchtower
             template: updates_hass_icon_name
 
           - type: custom:button-card
@@ -63,18 +69,12 @@ browser_mod:
             name: Öppna HACS
             template:
               - updates_hacs_icon_name
-            tap_action:
-              action: fire-dom-event
-              browser_mod:
-                service: browser_mod.javascript
-                data:
-                  code: >
-                    if (window.navigator.userAgent.match(/iPhone/i)) {
-                      window.location.href = `/${hass.panels.hacs.url_path}`;
-                    } else {
-                      // todo popup
-                      window.location.href = `/${hass.panels.hacs.url_path}`;
-                    }
+              - >
+                [[[
+                  return window.navigator.userAgent.match(/iPhone/i)
+                    ? 'hacs_navigate_ios'
+                    : 'hacs_iframe';
+                ]]]
 
           - type: custom:button-card
             entity: sensor.template_updates
@@ -85,14 +85,20 @@ browser_mod:
             name: Kontrollera
             tap_action:
               action: call-service
-              service: homeassistant.update_entity
+              service: browser_mod.sequence
               service_data:
-                entity_id:
-                  - sensor.gosund_monitors_esphome_version
-                  - sensor.gosund_ac_esphome_version
-                  - sensor.gosund_fan_esphome_version
-                  - sensor.updates_esphome_latest
-                  - sensor.updates_kemper
-                  - sensor.udm_unifios
-                  - update.nas_dsm_update
+                sequence:
+                  - service: browser_mod.notification
+                    data:
+                      message: Söker efter uppdateringar...
+                  - service: homeassistant.update_entity
+                    target:
+                      entity_id:
+                        - sensor.gosund_monitors_esphome_version
+                        - sensor.gosund_ac_esphome_version
+                        - sensor.gosund_fan_esphome_version
+                        - sensor.updates_esphome_latest
+                        - sensor.updates_kemper
+                        - sensor.udm_unifios
+                        - update.nas_dsm_update
             template: updates_other_icon_name
