@@ -7,10 +7,6 @@ browser_mod:
       type: custom:mod-card
       card_mod:
         style:
-          .: |
-            :host .content {
-              width: 100%;
-            }
           hui-grid-card:
             $: |
               button-card:nth-child(2),
@@ -23,7 +19,6 @@ browser_mod:
               #root {
                 grid-gap: 0 !important;
                 padding: var(--tablet-popup-content-padding);
-                width: calc(100% - 4px);
               }
       card:
         type: grid
@@ -92,7 +87,7 @@ browser_mod:
                     data:
                       message: Söker efter uppdateringar...
                   - service: homeassistant.update_entity
-                    target:
+                    data:
                       entity_id:
                         - sensor.gosund_monitors_esphome_version
                         - sensor.gosund_ac_esphome_version

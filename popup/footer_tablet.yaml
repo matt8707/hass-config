@@ -22,6 +22,7 @@ browser_mod:
               hide_state: false
               card_mod:
                 style:
+                  # full width slider
                   hui-generic-entity-row$: |
                     div {
                       flex: auto !important;
@@ -112,7 +113,7 @@ browser_mod:
                         data:
                           message: Laddar om startsidan...
                       - service: button.press
-                        target:
+                        data:
                           entity_id: button.galaxy_tab_a_load_start_url
                 template: icon_name
 
@@ -128,6 +129,6 @@ browser_mod:
                         data:
                           message: Startar om Fully Kiosk Browser...
                       - service: button.press
-                        target:
+                        data:
                           entity_id: button.galaxy_tab_a_restart_browser
                 template: icon_name
