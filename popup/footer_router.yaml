@@ -64,8 +64,7 @@ browser_mod:
                 icon: mdi:devices
                 tap_action:
                   action: url
-                  url_path:
-                    !secret unifi_network
+                  url_path: https://192.168.1.1/network/default/clients
                 template: icon_name
 
               - type: custom:button-card
@@ -73,6 +72,5 @@ browser_mod:
                 icon: mdi:cog
                 tap_action:
                   action: url
-                  url_path:
-                    !secret unifi_console
+                  url_path: https://192.168.1.1/settings/system
                 template: icon_name
