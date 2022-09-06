@@ -25,17 +25,25 @@ browser_mod:
               entity: media_player.samsung
               card_mod:
                 style:
+                  # hide everything but ha-select
                   .: |
                     h1, state-card-content {
                       display: none;
                     }
                     .card-content {
-                      padding: {{ is_state('media_player.samsung', 'off') | iif('0', '1.2em 0 0.5em 0') }};
+                      padding: {{ is_state(config.entity, 'off') | iif('0', '1.2em 0 0.5em 0') }};
                     }
-                  more-info-media_player$: |
-                    div.volume, div.controls {
-                      display: none;
-                    }
+                  more-info-media_player$:
+                    .: |
+                      div.volume, div.controls {
+                        display: none;
+                      }
+                    ha-select$:
+                      # fix transparent menu background color
+                      mwc-menu$: |
+                        mwc-list {
+                          background: var(--card-background-color);
+                        }
 
         - type: custom:mod-card
           card_mod:

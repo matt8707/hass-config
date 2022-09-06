@@ -31,7 +31,7 @@ browser_mod:
               card_mod:
                 style: |
                   mushroom-card {
-                    margin: -5px -13px 0 -5px;
+                    margin: -5px -13px 0 -4px;
                   }
 
             - type: custom:mushroom-climate-card
@@ -43,7 +43,41 @@ browser_mod:
               card_mod:
                 style: |
                   mushroom-card {
-                    margin: -18px -13px -8px -5px;
+                    margin: -18px -13px -8px -4px;
+
+            - type: custom:more-info-card
+              entity: climate.ac
+              card_mod:
+                style:
+                  # hide everything but ha-select
+                  .: |
+                    h1 {
+                      display: none;
+                    }
+                    .card-content {
+                      padding: 0.3em 0 0.6em 0.6em;
+                    }
+                  state-card-climate$: |
+                    div {
+                      display: none !important;
+                    }
+                  more-info-climate$:
+                    .: |
+                      .container-temperature, .container-hvac_modes {
+                        display: none;
+                      }
+                    ha-select:
+                      $:
+                        # no icon so reduce label inset
+                        .: |
+                          .mdc-floating-label {
+                            inset-inline-start: 4px !important;
+                          }
+                        # fix transparent menu background color
+                        mwc-menu$: |
+                          mwc-list {
+                            background: var(--card-background-color);
+                          }
 
             - entity: automation.climate_safeguard
               name: Endast fläkt om fönstret är stängt
