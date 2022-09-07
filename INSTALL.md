@@ -34,6 +34,6 @@
 
 * [Restart](https://my.home-assistant.io/redirect/server_controls/) Home Assistant
 
-* **Select [tablet theme](https://my.home-assistant.io/redirect/profile/) ← DON'T SKIP THIS STEP!**
+* **Select dark mode and [tablet theme](https://my.home-assistant.io/redirect/profile/) ← DON'T SKIP THIS STEP!**
 
 Then add your entities, [browser_mod](https://github.com/thomasloven/hass-browser_mod) for popups etc...
