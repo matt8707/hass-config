@@ -34,7 +34,7 @@ lovelace:
       { url: /hacsfiles/lovelace-xiaomi-vacuum-map-card/xiaomi-vacuum-map-card.js,  type: module },
       { url: /hacsfiles/swipe-card/swipe-card.js,                                   type: module },
 
-      { url: '/local/marked.min.js?v=4.0.18',                                       type: module },
+      { url: '/local/marked.min.js?v=4.1.0',                                        type: module },
       { url: '/local/vanilla-tilt.min.js?v=1.7.2',                                  type: module },
       { url: '/local/fonts.css?v=2.1',                                              type: css }
     ]
