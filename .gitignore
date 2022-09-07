@@ -1,4 +1,5 @@
 .*
+!/.github
 !.HA_VERSION
 backups
 blueprints
