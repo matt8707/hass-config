@@ -47,7 +47,12 @@ template:
           device_class: timestamp
 
       - unique_id: updates
-        state: template
+        state: >
+          {% set ns = namespace() %}
+          {% for k, v in this.attributes | dictsort(by='value') %}
+            {% set ns.list = ns.list + [v] if v != '' else [] %}
+          {% endfor %}
+          {{ ns.list | count }}
         attributes:
           esphome: >
             {% macro f(e) %}
