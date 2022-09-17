@@ -3,7 +3,7 @@ button_card_templates:
 
 views:
   - type: custom:grid-layout
-    path: 0
+    title: Home
     layout:
       #default
       margin: 0
