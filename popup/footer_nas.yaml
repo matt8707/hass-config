@@ -304,7 +304,7 @@ browser_mod:
 
                 - entity: sensor.processor_use
                   name: Processor
-                  icon: mdi:processor
+                  icon: mdi:chip
                   tap_action:
                     action: call-service
                     service: homeassistant.update_entity
