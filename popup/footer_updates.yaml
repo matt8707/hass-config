@@ -3,6 +3,10 @@ browser_mod:
   service: browser_mod.popup
   data:
     title: Uppdateringar
+    card_mod:
+      style:
+        #popup header
+        .:
     content:
       type: custom:mod-card
       card_mod:

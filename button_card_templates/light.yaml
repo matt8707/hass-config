@@ -12,6 +12,10 @@ light:
           [[[
             return !entity || entity.attributes.friendly_name;
           ]]]
+        card_mod:
+          style:
+            #popup header
+            .:
         content:
           type: entities
           card_mod:

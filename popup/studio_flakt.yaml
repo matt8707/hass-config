@@ -3,6 +3,10 @@ browser_mod:
   service: browser_mod.popup
   data:
     title: "Fläkt\u00B2"
+    card_mod:
+      style:
+        #popup header
+        .:
     content:
       type: vertical-stack
       cards:

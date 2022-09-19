@@ -16,6 +16,10 @@ browser_mod:
   service: browser_mod.popup
   data:
     title: Raspberry Pi 3B
+    card_mod:
+      style:
+        #popup header
+        .:
     content:
       type: vertical-stack
       cards:
