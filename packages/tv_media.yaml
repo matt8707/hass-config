@@ -10,6 +10,8 @@ homeassistant:
       device_class: tv
     media_player.spotify:
       friendly_name: Spotify
+    switch.ps5_635_power:
+      friendly_name: PS5
 
 script:
   samsung_tv_energy_saving:
