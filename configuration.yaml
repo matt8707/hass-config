@@ -36,6 +36,7 @@ lovelace:
 
       { url: '/local/marked.min.js?v=4.1.0',                                        type: module },
       { url: '/local/vanilla-tilt.min.js?v=1.7.2',                                  type: module },
+      { url: '/local/browser_mod_icon.js?v=0.3',                                    type: module },
       { url: '/local/fonts.css?v=2.1',                                              type: css }
     ]
 
