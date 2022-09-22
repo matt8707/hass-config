@@ -48,7 +48,7 @@ template:
 
       - unique_id: updates
         state: >
-          {% set ns = namespace() %}
+          {% set ns = namespace(list=[]) %}
           {% for k, v in this.attributes | dictsort(by='value') %}
             {% set ns.list = ns.list + [v] if v != '' else [] %}
           {% endfor %}
