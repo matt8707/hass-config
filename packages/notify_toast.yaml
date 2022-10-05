@@ -57,7 +57,6 @@ automation:
               message: ' '
 
   - alias: waste_collection
-    initial_state: false
     id: '5611101897022'
     mode: single
     max_exceeded: silent
@@ -85,7 +84,7 @@ automation:
       installed: >
         {{ states('sensor.current_version') }}
       latest: >
-        {{ states('sensor.docker_hub_beta') if 'b' in installed
+        {{ states('sensor.docker_hub_beta') if version(installed).beta
         else states('sensor.docker_hub') }}
     trigger:
       platform: state
@@ -93,15 +92,15 @@ automation:
         - sensor.docker_hub
         - sensor.docker_hub_beta
     condition: >
-      {{ installed != latest if '.' in installed and '.' in latest else false }}
+      {{ version(latest) > version(installed) }}
     action:
       - service: homeassistant.update_entity
         target:
           entity_id:
             - sensor.hass_release_notes
             - sensor.hass_release_notes_beta
-      - delay:
-          minutes: 20
+      # - delay:
+      #     minutes: 20
       - service: notify.mobile_app_iphone
         data:
           title: >
