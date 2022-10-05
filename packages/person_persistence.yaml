@@ -11,14 +11,14 @@ person:
   - name: Matte
     id: matte
     device_trackers:
-      - device_tracker.mattias_iphone_x #unifi
+      - device_tracker.mattias_iphone_unifi
       - device_tracker.iphone #ios
 
   - name: Sanja
     id: sanja
     device_trackers:
-      - device_tracker.sanjas_iphone_xr #unifi
-      - device_tracker.sanja_iphone #ios
+      - device_tracker.sanjas_iphone_unifi
+      - device_tracker.sanjas_iphone_13 #ios
 
 mqtt:
   sensor:

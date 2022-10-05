@@ -38,7 +38,7 @@ browser_mod:
           show_state: false
           entities:
 
-            - entity: device_tracker.mattias_iphone_x
+            - entity: device_tracker.mattias_iphone_unifi
               name: Router
               icon: mdi:wifi
               card_mod:
@@ -47,7 +47,7 @@ browser_mod:
                     color: {{ is_state(config.entity, 'home') | iif('#3182b7', '#3c3f3f') }};
                   }
 
-            - entity: device_tracker.mattias_iphone_x
+            - entity: device_tracker.mattias_iphone_unifi
               name: Bluetooth
               icon: mdi:bluetooth
               card_mod:

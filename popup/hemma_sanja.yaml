@@ -37,7 +37,7 @@ browser_mod:
           show_state: false
           entities:
 
-            - entity: device_tracker.sanjas_iphone_xr
+            - entity: device_tracker.sanjas_iphone_unifi
               name: Router
               icon: mdi:wifi
               card_mod:
@@ -46,13 +46,13 @@ browser_mod:
                     color: {{ '#3182b7' if is_state(config.entity, 'home') else '#3c3f3f' }};
                   }
 
-            - entity: device_tracker.sanjas_iphone_xr
+            - entity: device_tracker.sanjas_iphone_unifi
               name: Bluetooth
               icon: mdi:bluetooth
               card_mod:
                 style: *state
 
-            - entity: device_tracker.sanja_iphone
+            - entity: device_tracker.sanjas_iphone_13
               name: Position
               icon: cil:iphone-modern
               card_mod:
