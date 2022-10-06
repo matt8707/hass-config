@@ -521,7 +521,7 @@ views:
             tap_action:
               !include popup/footer_nas.yaml
             triggers_update:
-              - binary_sensor.nas_update_available
+              - update.nas_dsm_update
               - sensor.nas_volume_1_status
               - binary_sensor.nas_security_status
               - sensor.disk_use_percent
