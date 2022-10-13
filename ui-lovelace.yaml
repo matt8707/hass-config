@@ -539,31 +539,15 @@ views:
             template: footer
 
           - type: custom:button-card
+            entity: sensor.template_updates
             name: >
               <ha-icon icon="mdi:arrow-up-bold-circle-outline"></ha-icon> Uppdatera
             tap_action:
               !include popup/footer_updates.yaml
-            triggers_update:
-              - sensor.hacs
-              - sensor.docker_hub_beta
-              - sensor.docker_hub
-              - sensor.template_updates
             variables:
               notify: >
                 [[[
-                  let id = this._config.triggers_update;
-                  if (id.every(e => states[e])) {
-                      let hacs = parseInt(states[id[0]].state),
-                          other = parseInt(states[id[3]].state),
-                          installed = hass.config.version,
-                          latest = installed.includes('b')
-                              ? states[id[1]].state
-                              : states[id[2]].state;
-
-                      if (latest.includes('.') && Number.isInteger(hacs))
-                          return hacs + other + (installed !== latest ? 1 : 0);
-                  }
-                  return 0;
+                  return parseInt(entity?.state);
                 ]]]
             template: footer
 

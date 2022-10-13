@@ -48,6 +48,19 @@ template:
 
       - unique_id: updates
         state: >
+          {{ this.attributes.values() | sum }}
+        attributes:
+          home_assistant: >
+            {% set installed = states('sensor.current_version') %}
+            {% set latest = states('sensor.docker_hub_beta') if version(installed).beta else states('sensor.docker_hub') %}
+            {{ iif(version(latest) > version(installed) and '.' in installed and '.' in latest, 1, 0) }}
+          update_entities: >
+            {{ states.update | selectattr('state','eq','on') | list | count }}
+          other_updates: >
+            {{ states('sensor.template_other_updates') | int }}
+
+      - unique_id: other_updates
+        state: >
           {% set ns = namespace(list=[]) %}
           {% for k, v in this.attributes | dictsort(by='value') %}
             {% set ns.list = ns.list + [v] if v != '' else [] %}
@@ -79,28 +92,14 @@ template:
             {% if installed != latest %}
               <b><a href="#" onclick="window.open('{{ url }}');">Rig Manager</a></b> {{ installed + ' <b>&rarr;</b> ' + latest }}
             {% endif %}
-          unifi: >
-            {% set installed = state_attr('update.unifi_dream_machine', 'installed_version') %}
-            {% set latest = state_attr('update.unifi_dream_machine', 'latest_version') %}
-            {% set url = 'https://community.ui.com/releases?q=dream+machine' %}
-            {% if is_state('update.unifi_dream_machine', 'on') %}
-              <b><a href="#" onclick="window.open('{{ url }}');">UniFi Dream Machine {{ installed + ' <b>&rarr;</b> ' + latest }}
-            {% endif %}
-          synology: >
-            {% set installed = state_attr('update.nas_dsm_update', 'installed_version') %}
-            {% set latest = state_attr('update.nas_dsm_update', 'latest_version') %}
-            {% set url = state_attr('update.nas_dsm_update', 'release_url') %}
-            {% if is_state('update.nas_dsm_update', 'on') %}
-              <b><a href="#" onclick="window.open('{{ url }}');">Synology DSM</a></b> {{ installed + ' <b>&rarr;</b> ' + latest }}
-            {% endif %}
 
 sensor:
   - platform: command_line
     name: updates_kemper
     command: !secret updates_kemper
     value_template: >
-      {{ value_json.profiler_installed == value_json.profiler_latest and
-      value_json.rigmanager_latest == value_json.rigmanager_installed }}
+      {{ 'on' if value_json.profiler_installed != value_json.profiler_latest or
+      value_json.rigmanager_latest != value_json.rigmanager_installed else 'off' }}
     json_attributes:
       - profiler_latest
       - profiler_installed

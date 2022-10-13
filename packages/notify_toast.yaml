@@ -80,31 +80,26 @@ automation:
 
   - alias: ios_notify_hass_update
     id: '7958228563778'
-    variables:
-      installed: >
-        {{ states('sensor.current_version') }}
-      latest: >
-        {{ states('sensor.docker_hub_beta') if version(installed).beta
-        else states('sensor.docker_hub') }}
     trigger:
       platform: state
       entity_id:
         - sensor.docker_hub
         - sensor.docker_hub_beta
     condition: >
-      {{ version(latest) > version(installed) }}
+      {{ state_attr('sensor.template_updates', 'home_assistant') == 1 }}
     action:
       - service: homeassistant.update_entity
         target:
           entity_id:
             - sensor.hass_release_notes
             - sensor.hass_release_notes_beta
-      # - delay:
-      #     minutes: 20
+      - delay:
+          minutes: 15
       - service: notify.mobile_app_iphone
         data:
           title: >
-            {{ latest }} tillgänglig {{ '\U0001F389' }}
+            {{ states('sensor.docker_hub_beta') if version(installed).beta
+            else states('sensor.docker_hub') }} tillgänglig {{ '\U0001F389' }}
           message: Håll in för att uppdatera
           data:
             url: https://www.home-assistant.io/latest-release-notes/
