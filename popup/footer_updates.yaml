@@ -60,7 +60,6 @@ browser_mod:
           ############################################
 
           - type: custom:button-card
-            entity: sensor.template_updates_available
             variables:
               updates: sensor.template_updates
               other_updates: sensor.template_other_updates

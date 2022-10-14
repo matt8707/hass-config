@@ -113,49 +113,47 @@ updates:
     - settings
   state_display: |
     [[[
-      if (entity) {
-          // variables
-          let output = '',
-              updates = states[variables.updates],
-              hacs_installed = states[variables.hacs_installed]?.attributes.repositories,
-              other_updates = states[variables.other_updates],
-              hacs_update = states['update.hacs_update']?.attributes.installed_version,
-              no_updates = variables.translate_no_updates,
-              update_available = variables.translate_update_available,
-              updates_available = variables.translate_updates_available;
+      // variables
+      let output = '',
+          updates = states[variables.updates],
+          hacs_installed = states[variables.hacs_installed]?.attributes.repositories,
+          other_updates = states[variables.other_updates],
+          hacs_update = states['update.hacs_update']?.attributes.installed_version,
+          no_updates = variables.translate_no_updates,
+          update_available = variables.translate_update_available,
+          updates_available = variables.translate_updates_available;
 
-          // update entities
-          Object.keys(states).forEach(key => {
-            let s = states[key], e = s.entity_id, a = s.attributes;
-            if (e.includes('update.') && s.state === 'on') {
-                let rename_hacs = `${a.release_url.split('/')[3]}/${a.release_url.split('/')[4]}`,
-                    name = hacs_installed.includes(rename_hacs)
-                      ? rename_hacs
-                      : a.friendly_name;
-                output += `<li><b><a href="#" onclick="window.open('${a.release_url}');">
-                ${name}</a></b> ${a.installed_version} <b>&rarr;</b> ${a.latest_version}</li>`
-            }
-          });
+      // update entities
+      Object.keys(states).forEach(key => {
+        let s = states[key], e = s.entity_id, a = s.attributes;
+        if (e.includes('update.') && s.state === 'on') {
+            let rename_hacs = `${a.release_url.split('/')[3]}/${a.release_url.split('/')[4]}`,
+                name = hacs_installed.includes(rename_hacs)
+                  ? rename_hacs
+                  : a.friendly_name;
+            output += `<li><b><a href="#" onclick="window.open('${a.release_url}');">
+            ${name}</a></b> ${a.installed_version} <b>&rarr;</b> ${a.latest_version}</li>`
+        }
+      });
 
-          // other updates
-          let attr = Object.fromEntries(
-              Object.entries(other_updates?.attributes).filter(([, value]) => value != false));
-          for (const [, value] of Object.entries(attr)) {
-            output += `<li>${value}</li>`;
-          }
-
-          // subtitle
-          let count = updates?.attributes.update_entities + updates?.attributes.other_updates,
-              subtitle = count === 0
-                  ? `${no_updates} <b>&larr;</b> ${hacs_update || ''}`
-                  : `${count} ${count === 1 ? update_available : updates_available} ${String.fromCodePoint('0x1f389')}`;
-
-          return `
-            <ha-icon icon="mdi:package-up"></ha-icon> <span class="title">Integrationer</span><br>
-            <p class="subtitle">${subtitle}</p>
-            <ul>${output}</ul>
-          `;
+      // other updates
+      let attr = Object.fromEntries(
+          Object.entries(other_updates?.attributes).filter(([, value]) => value != false));
+      for (const [, value] of Object.entries(attr)) {
+        output += `<li>${value}</li>`;
       }
+
+      // subtitle
+      let count = updates?.attributes.update_entities + updates?.attributes.other_updates,
+          subtitle = count === 0
+              ? `${no_updates} <b>&larr;</b> ${hacs_update || ''}`
+              : `${count} ${count === 1 ? update_available : updates_available} ${String.fromCodePoint('0x1f389')}`;
+
+      return `
+        <ha-icon icon="mdi:package-up"></ha-icon> <span class="title">Integrationer</span><br>
+        <p class="subtitle">${subtitle}</p>
+        <ul>${output}</ul>
+      `;
     ]]]
 
 updates_icon_name:
