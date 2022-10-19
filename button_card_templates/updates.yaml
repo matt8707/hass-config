@@ -123,16 +123,18 @@ updates:
           update_available = variables.translate_update_available,
           updates_available = variables.translate_updates_available;
 
+      const rename = a => {
+          return a.release_url && a.release_url.indexOf('github.com') > -1
+              ? `${a.release_url.split('/')[3]}/${a.release_url.split('/')[4]}`
+              : a?.friendly_name;
+      };
+
       // update entities
       Object.keys(states).forEach(key => {
         let s = states[key], e = s.entity_id, a = s.attributes;
         if (e.includes('update.') && s.state === 'on') {
-            let rename_hacs = `${a.release_url.split('/')[3]}/${a.release_url.split('/')[4]}`,
-                name = hacs_installed.includes(rename_hacs)
-                  ? rename_hacs
-                  : a.friendly_name;
             output += `<li><b><a href="#" onclick="window.open('${a.release_url}');">
-            ${name}</a></b> ${a.installed_version} <b>&rarr;</b> ${a.latest_version}</li>`
+            ${rename(a)}</a></b> ${a.installed_version} <b>&rarr;</b> ${a.latest_version}</li>`
         }
       });
 
