@@ -57,7 +57,7 @@ template:
           update_entities: >
             {{ states.update | selectattr('state','eq','on') | list | count }}
           other_updates: >
-            {{ states('sensor.template_other_updates') | int }}
+            {{ states('sensor.template_other_updates') | int(0) }}
 
       - unique_id: other_updates
         state: >
