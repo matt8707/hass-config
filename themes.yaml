@@ -121,6 +121,7 @@ themes:
               color: rgba(255, 255, 255, 0.8) !important;
               padding: 0.2vw 0 2vw 0 !important;
               letter-spacing: 0.07vw !important;
+              width: 100%;
             }
             /* portrait */
             @media screen and (max-width: 1200px) {
