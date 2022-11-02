@@ -6,143 +6,163 @@ browser_mod:
     card_mod:
       style:
         #popup header
-        .:
+        .: |
+          div.content {
+            margin-top: -24px !important;
+          }
     content:
-      type: vertical-stack
-      cards:
-
-        - type: entities
-          card_mod:
-            class: content
-            style: |
-              #states {
-                padding-top: 0.5em;
-                padding-bottom: 0em;
-              }
-          entities:
-
-            - type: custom:mushroom-climate-card
-              entity: climate.ac
-              name: Klimat
-              icon: mdi:home-thermometer
-              hvac_modes:
-                - 'off'
-                - cool
-                - fan_only
-              primary_info: name
-              secondary_info: state
-              show_temperature_control: false
-              card_mod:
-                style: |
-                  mushroom-card {
-                    margin: -5px -13px 0 -4px;
-                  }
-
-            - type: custom:mushroom-climate-card
-              entity: climate.ac
-              icon_type: none
-              secondary_info: none
-              primary_info: none
-              show_temperature_control: true
-              card_mod:
-                style: |
-                  mushroom-card {
-                    margin: -18px -13px -8px -4px;
-
-            - type: custom:more-info-card
-              entity: climate.ac
-              card_mod:
-                style:
-                  # hide everything but ha-select
-                  .: |
-                    h1 {
-                      display: none;
+      type: custom:tabbed-card
+      styles:
+        --mdc-theme-primary: var(--primary-text-color)
+        --mdc-tab-text-label-color-default: rgba(var(--rgb-primary-text-color), 0.8)
+        --mdc-typography-button-font-size: 14px
+      tabs:
+        - card:
+            type: vertical-stack
+            cards:
+              - type: entities
+                card_mod:
+                  class: content
+                  style: |
+                    #states {
+                      padding-top: 1.2em;
+                      padding-bottom: 0em;
                     }
-                    .card-content {
-                      padding: 0.3em 0 0.6em 0.6em;
-                    }
-                  state-card-climate$: |
-                    div {
-                      display: none !important;
-                    }
-                  more-info-climate$:
-                    .: |
-                      .container-temperature, .container-hvac_modes {
-                        display: none;
-                      }
-                    ha-select:
-                      $:
-                        # no icon so reduce label inset
+                entities:
+
+                  - type: custom:mushroom-climate-card
+                    entity: climate.ac
+                    name: Klimat
+                    icon: mdi:home-thermometer
+                    hvac_modes:
+                      - 'off'
+                      - cool
+                      - fan_only
+                    primary_info: name
+                    secondary_info: state
+                    show_temperature_control: false
+                    card_mod:
+                      style: |
+                        mushroom-card {
+                          margin: -5px -13px 0 -4px;
+                        }
+
+                  - type: custom:mushroom-climate-card
+                    entity: climate.ac
+                    icon_type: none
+                    secondary_info: none
+                    primary_info: none
+                    show_temperature_control: true
+                    card_mod:
+                      style: |
+                        mushroom-card {
+                          margin: -18px -13px -8px -4px;
+
+                  - type: custom:more-info-card
+                    entity: climate.ac
+                    card_mod:
+                      style:
+                        # hide everything but ha-select
                         .: |
-                          .mdc-floating-label {
-                            inset-inline-start: 4px !important;
+                          h1 {
+                            display: none;
                           }
-                        # fix transparent menu background color
-                        mwc-menu$: |
-                          mwc-list {
-                            background: var(--card-background-color);
+                          .card-content {
+                            padding: 0.3em 0 0.6em 0.6em;
                           }
+                        state-card-climate$: |
+                          div {
+                            display: none !important;
+                          }
+                        more-info-climate$:
+                          .: |
+                            .container-temperature, .container-hvac_modes {
+                              display: none;
+                            }
+                          ha-select:
+                            $:
+                              # no icon so reduce label inset
+                              .: |
+                                .mdc-floating-label {
+                                  inset-inline-start: 4px !important;
+                                }
+                              # fix transparent menu background color
+                              mwc-menu$: |
+                                mwc-list {
+                                  background: var(--card-background-color);
+                                }
 
-            - entity: automation.climate_safeguard
-              name: Endast fläkt om fönstret är stängt
-              icon: mdi:robot
-            - entity: binary_sensor.sovrum_contact_contact
-              name: Sovrumsfönster
-              icon: mdi:window-closed
-            - entity: switch.climate_timer
-              name: Timer
-            - type: custom:slider-entity-row
-              entity: input_number.climate_timer
-              hide_state: false
-            - entity: timer.climate
+                  - entity: sensor.broadlink_temperature
+                    name: Rumstemperatur
+                  - entity: sensor.broadlink_humidity
+                    name: Luftfuktighet
 
-            - entity: sensor.broadlink_temperature
-              name: Rumstemperatur
-            - entity: sensor.broadlink_humidity
-              name: Luftfuktighet
+              - type: custom:apexcharts-card
+                layout: minimal
+                locale: se
+                graph_span: 8h
+                show:
+                  loading: false
+                apex_config:
+                  plotOptions:
+                    area:
+                      fillTo: end
+                  grid:
+                    padding:
+                      top: -15
+                  fill:
+                    type: gradient
+                    gradient:
+                      type: vertical
+                      opacityFrom: 0.8
+                      opacityTo: 0
+                      stops:
+                        - 0
+                        - 99
+                        - 100
+                  stroke:
+                    width: 4
+                  tooltip:
+                    style:
+                      fontSize: 14px
+                    x:
+                      format: dddd HH:mm
+                  chart:
+                    height: 100px
+                    offsetY: -20px
+                  xaxis:
+                    crosshairs:
+                      show: false
+                series:
+                  - entity: sensor.broadlink_temperature
+                    name: Temp
+                    color: '#385581'
+                    type: area
+                    fill_raw: last
+                    group_by:
+                      func: avg
+                      duration: 1h
+          attributes:
+            label: AC
+        - card:
+            type: vertical-stack
+            cards:
+              - type: entities
+                card_mod:
+                  class: content
+                entities:
+                  - entity: binary_sensor.sovrum_contact_contact
+                    name: Sovrumsfönster
+                    icon: mdi:window-closed
+                  - entity: automation.climate_safeguard
+                    name: Endast fläkt om fönstret är stängt
+                    icon: mdi:robot
 
-        - type: custom:apexcharts-card
-          layout: minimal
-          locale: se
-          graph_span: 8h
-          show:
-            loading: false
-          apex_config:
-            plotOptions:
-              area:
-                fillTo: end
-            grid:
-              padding:
-                top: -15
-            fill:
-              type: gradient
-              gradient:
-                type: vertical
-                opacityFrom: 0.8
-                opacityTo: 0
-                stops:
-                  - 0
-                  - 99
-                  - 100
-            stroke:
-              width: 4
-            tooltip:
-              style:
-                fontSize: 14px
-              x:
-                format: dddd HH:mm
-            chart:
-              height: 140px
-              offsetY: -20px
-            xaxis:
-              crosshairs:
-                show: false
-          series:
-            - entity: sensor.broadlink_temperature
-              name: Temp
-              color: '#385581'
-              type: area
-              fill_raw: last
-              group_by:
-                func: avg
-                duration: 1h
+                  - entity: timer.climate
+                  - entity: switch.climate_timer
+                    name: Timer
+                  - type: custom:slider-entity-row
+                    entity: input_number.climate_timer
+                    hide_state: false
+          attributes:
+            label: Timer
