@@ -96,7 +96,7 @@ template:
   - sensor:
       - unique_id: imac_macintosh_hd
         state: >
-          {{ 100 - states('sensor.mattias_imac_storage') | float }}
+          {{ 100 - states('sensor.imac_storage') | float }}
         attributes:
           friendly_name: Macintosh HD
           icon: cil:imac-ssd
@@ -135,7 +135,7 @@ automation:
       entity_id: switch.imac
       state: 'on'
     action:
-      service: notify.mobile_app_mattias_imac
+      service: notify.mobile_app_imac
       data:
         message: Rörelse i hallen detekterat
         title: Home Assistant

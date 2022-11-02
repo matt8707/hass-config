@@ -604,16 +604,3 @@ views:
                           : states[id[1]].state === 'off';
                 ]]]
             template: footer
-
-          - type: custom:button-card
-            name: >
-              <ha-icon icon="mdi:raspberry-pi"></ha-icon> RPi
-            tap_action:
-              !include popup/footer_rpi.yaml
-            variables:
-              notify: >
-                [[[
-                  let id = states['binary_sensor.rpi_ping'];
-                  if (id) return id.state === 'off';
-                ]]]
-            template: footer
