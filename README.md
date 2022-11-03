@@ -78,11 +78,11 @@ I've made a tool to help with css element selectors - [https://matt8707.github.i
 |---|---|---|---|
 | Ubiquiti | UniFi Dream Machine | [unifi](https://www.home-assistant.io/integrations/unifi/) | Router, controller, switch and access point |
 | Synology | DiskStation DS918+ | [synology_dsm](https://www.home-assistant.io/integrations/synology_dsm/) | 4x4TB NAS - [matt8707/docker-compose-dsm](https://github.com/matt8707/docker-compose-dsm) |
-| Raspberry | Pi 3 Model B+ | [shell_command](https://www.home-assistant.io/integrations/shell_command/) | Bluetooth communication - [matt8707/docker-compose-rpi](https://github.com/matt8707/docker-compose-rpi) |
+| ~~Raspberry~~ | ~~Pi 3 Model B+~~ | ~~[shell_command](https://www.home-assistant.io/integrations/shell_command/)~~ | ~~Bluetooth communication - [matt8707/docker-compose-rpi](https://github.com/matt8707/docker-compose-rpi)~~ |
 | Samsung | Galaxy Tab A SM-T510 | [custom](https://github.com/cgarwood/homeassistant-fullykiosk) | Wall mounted tablet in hallway by the front door |
 | Philips | Hue | [hue](https://www.home-assistant.io/integrations/hue/) | Bridge, 15 bulbs, 3 motion sensors, 2 dimmer switches |
 | Apple | iMac | [shell_command](https://www.home-assistant.io/integrations/shell_command/) | All-in-one desktop computer |
-| SwitchBot | SwitchBot Bot | [custom](https://github.com/fphammerle/switchbot-mqtt) | Bluetooth device that mechanically turns on my computer |
+| ~~SwitchBot~~ | ~~SwitchBot Bot~~ | ~~[custom](https://github.com/fphammerle/switchbot-mqtt)~~ | ~~Bluetooth device that mechanically turns on my computer~~ |
 | Xiaomi | Mi Roborock S50 | [xiaomi_miio](https://www.home-assistant.io/integrations/xiaomi_miio/) | Robot vacuum with lidar -  [xiaomi-cloud-map-extractor](https://github.com/PiotrMachowski/Home-Assistant-custom-components-Xiaomi-Cloud-Map-Extractor) |
 | Broadlink | RM4 Pro, HTS2 cable | [broadlink](https://www.home-assistant.io/integrations/broadlink/) | Infrared transmitter for AC unit with temp/humidity sensor |
 | Gosund | SP112 | [esphome](https://www.home-assistant.io/integrations/esphome/) | 3x tuya wifi plugs with power monitoring, flashed with ESPHome |

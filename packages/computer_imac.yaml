@@ -22,9 +22,9 @@ switch:
         value_template: >
           {{ is_state('switch.imac_wol', 'on') }}
         turn_on:
-          - service: switch.toggle
-            target:
-              entity_id: switch.switchbot_mqtt
+          - service: browser_mod.notification
+            data:
+              message: Dator måste manuellt slås på!
           - service: light.turn_on
             target:
               entity_id: light.studio_dator
