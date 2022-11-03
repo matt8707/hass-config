@@ -95,10 +95,6 @@ browser_mod:
           card_mod:
             style:
               .: |
-                #root {
-                  height: 25em;
-                  padding-bottom: 0 !important;
-                }
                 ha-icon-button {
                   color: var(--primary-color);
                   zoom: 140%;
@@ -109,6 +105,7 @@ browser_mod:
                   border-radius: 0;
                   transition: none;
                   margin-bottom: -4px !important;
+                  height: 25em !important;
                 }
               ha-map$: |
                 #map {
