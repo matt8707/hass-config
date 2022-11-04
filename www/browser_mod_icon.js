@@ -10,3 +10,13 @@ style.textContent = `
 `;
 
 document.head.appendChild(style);
+
+// preload disabled card border in popups
+
+const popup = document.querySelector("body > browser-mod-popup");
+
+if (popup) {
+  popup.style.cssText += `
+    --ha-card-border-width: 0;
+  `;
+}

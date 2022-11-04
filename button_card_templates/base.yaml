@@ -74,6 +74,7 @@ base:
       - line-height: 115%
     card:
       - border-radius: var(--button-card-border-radius)
+      - border-width: 0
       - -webkit-tap-highlight-color: rgba(0,0,0,0)
       - transition: none
       - --mdc-ripple-color: >

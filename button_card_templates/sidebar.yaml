@@ -17,6 +17,7 @@ sidebar:
   extra_styles: >
     #card {
       padding: 0;
+      border-width: 0;
       font-family: SF Pro Display, Roboto, system-ui;
     }
     #container {

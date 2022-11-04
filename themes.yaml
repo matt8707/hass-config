@@ -9,7 +9,7 @@ themes:
     #edited default dark mode
     ha-card-box-shadow: none
     ha-card-background: none
-    ha-card-border-width: 0px
+
     grid-card-gap: 5%
     masonry-view-card-margin: 0px
     state-icon-color: '#9da0a2'
@@ -286,6 +286,10 @@ themes:
       }
 
     card-mod-more-info-yaml: |
+      .: |
+        :host {
+          --ha-card-border-width: 0;
+        }
       ha-header-bar$: |
         header {
           background: var(--tablet-popup-header-color) !important;
