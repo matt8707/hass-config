@@ -28,7 +28,17 @@ script:
         data:
           media_content_type: send_key
           media_content_id: >
-            KEY_MENU+1500+KEY_DOWN+500+KEY_DOWN+500+KEY_DOWN+500+KEY_ENTER+1000+KEY_DOWN+500+KEY_DOWN+500+KEY_DOWN+500+KEY_DOWN+500+KEY_ENTER+1000+KEY_ENTER+1000+KEY_DOWN+500+KEY_DOWN+500+KEY_ENTER+1000+KEY_HOME+500+KEY_HOME+500
+            {% set sequence = [
+              'KEY_MENU',
+              'KEY_DOWN', 'KEY_DOWN', 'KEY_DOWN', 'KEY_ENTER',
+              'KEY_DOWN', 'KEY_DOWN', 'KEY_DOWN', 'KEY_ENTER',
+              'KEY_ENTER', 'KEY_DOWN', 'KEY_DOWN', 'KEY_ENTER', 
+              'KEY_HOME', 'KEY_HOME']
+            %}
+            {% for key in sequence %}
+              {%- set time = key + '+480' if key in ['KEY_DOWN', 'KEY_HOME'] else key + '+1000' %}
+              {{- time + '+' if not loop.last else key }}
+            {%- endfor %}
 
   bedroom_tv_night:
     alias: Nattläge
