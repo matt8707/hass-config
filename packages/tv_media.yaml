@@ -29,16 +29,24 @@ script:
           media_content_type: send_key
           media_content_id: >
             {% set sequence = [
-              'KEY_MENU',
-              'KEY_DOWN', 'KEY_DOWN', 'KEY_DOWN', 'KEY_ENTER',
-              'KEY_DOWN', 'KEY_DOWN', 'KEY_DOWN', 'KEY_ENTER',
-              'KEY_ENTER', 'KEY_DOWN', 'KEY_DOWN', 'KEY_ENTER', 
-              'KEY_HOME', 'KEY_HOME']
-            %}
-            {% for key in sequence %}
-              {%- set time = key + '+480' if key in ['KEY_DOWN', 'KEY_HOME'] else key + '+1000' %}
-              {{- time + '+' if not loop.last else key }}
-            {%- endfor %}
+              'KEY_MENU', '1600',
+              'KEY_DOWN', '400',
+              'KEY_DOWN', '400',
+              'KEY_DOWN', '400',
+              'KEY_ENTER', '900',
+              'KEY_DOWN', '400',
+              'KEY_DOWN', '400',
+              'KEY_DOWN', '400',
+              'KEY_ENTER', '900',
+              'KEY_ENTER', '400',
+              'KEY_DOWN', '400',
+              'KEY_DOWN', '400',
+              'KEY_ENTER', '400',
+              'KEY_HOME', '400',
+              'KEY_HOME'
+            ] %}
+
+            {{ sequence | join('+') }}
 
   bedroom_tv_night:
     alias: Nattläge
