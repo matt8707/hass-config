@@ -85,8 +85,8 @@ template:
   - binary_sensor:
       - unique_id: imac_vpn
         state: >
-          {{ is_state('switch.imac', 'on') and
-          states('sensor.imac_ip') != states('sensor.myip') }}
+          {{ is_state('switch.imac', 'on') and states('sensor.imac_ip')
+          not in [states('sensor.myip'), 'unknown'] }}
         attributes:
           friendly_name: VPN
           icon: >
