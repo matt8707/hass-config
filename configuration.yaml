@@ -51,7 +51,8 @@ logger:
   default: warning
   logs:
     homeassistant.components.websocket_api: fatal
-    custom_components.monitor_docker.helpers: fatal
+    custom_components.monitor_docker.helpers: error
+    homeassistant.setup: error
 
 sensor:
   - platform: time_date
