@@ -54,7 +54,7 @@ themes:
     button-card-font-size: 1.35vw
     z-axis-adjustment: 0.05vw #tilt compensation
     button-card-font-weight: 500
-    button-card-letter-spacing: normal
+    button-card-letter-spacing: -0.02vw
     button-card-border-radius: 10%
 
     footer-card-font-size: 1.22vw
@@ -121,7 +121,7 @@ themes:
               font-weight: 600 !important;
               color: rgba(255, 255, 255, 0.8) !important;
               padding: 0.2vw 0 2vw 0 !important;
-              letter-spacing: 0.07vw !important;
+              letter-spacing: normal !important;
               width: 100%;
             }
             /* portrait */
