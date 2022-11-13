@@ -9,7 +9,16 @@
   * [Swipe Card](https://github.com/bramkragten/swipe-card)
 
 * Manually copy over these files from [matt8707/hass-config](https://github.com/matt8707/hass-config)
-  * `ui-lovelace.yaml`
+* _optional: if you do not copy these to your "www" folder then you should use your own alternatives_
+  * `img` folder
+  * `sound` folder
+  * `background.png`
+  * `loader.svg`
+  * `device_tracker.svg`
+  * `fonts.css`
+
+* Manually copy over these files from [matt8707/hass-config/www](https://github.com/matt8707/hass-config/www)
+  * ``
   * `button_card_templates` folder
   * `popup` folder
   * `themes.yaml`
