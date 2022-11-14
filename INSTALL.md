@@ -37,3 +37,23 @@
 * **Select dark mode and [tablet theme](https://my.home-assistant.io/redirect/profile/) ← DON'T SKIP THIS STEP!**
 
 Then add your entities, [browser_mod](https://github.com/thomasloven/hass-browser_mod) for popups etc...
+
+## FAQ
+
+**Why is the text in popups inverted?**
+You didn't select dark mode in your [user profile](https://my.home-assistant.io/redirect/profile/)
+
+**Why does a broken icon appear when I toggle a button?**
+You need to add [www/loader.svg](https://github.com/matt8707/hass-config/blob/master/www/loader.svg)
+
+**How do I add fonts?**
+Copy [www/fonts.css](https://github.com/matt8707/hass-config/blob/master/www/fonts.css) and read the comment in that file
+
+**How do I get the tilt effect?**
+Add [www/vanilla-tilt.min.js](https://github.com/matt8707/hass-config/blob/master/www/vanilla-tilt.min.js)
+
+**In the update popup I get an error saying "marked"**
+You need to add [www/marked.min.js](https://github.com/matt8707/hass-config/blob/master/www/marked.min.js) to parse hass release notes
+
+**How do I get popups to work?**
+Read the the [browser_mod](https://github.com/thomasloven/hass-browser_mod) documentation
