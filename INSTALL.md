@@ -1,6 +1,6 @@
 # Installation
 
-* Install and configure [HACS](https://hacs.xyz/)
+* nstall and configure [HACS](https://hacs.xyz/)
 
 * Within HACS Frontend add the following repositories
   * [button-card](https://github.com/custom-cards/button-card)
