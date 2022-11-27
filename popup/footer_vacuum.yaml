@@ -102,7 +102,7 @@ browser_mod:
                       display: none !important;
                     }
                   .: |
-                    state-card-content {
+                    h1, state-card-content {
                       display: none !important;
                     }
                     .card-content {
