@@ -176,7 +176,7 @@ automation:
     action:
       - service: transmission.stop_torrent
         data:
-          name: Transmission
+          entry_id: Transmission
           id: >
             {{ trigger.event.data.id }}
       - delay:
@@ -188,6 +188,6 @@ automation:
           minutes: 10
       - service: transmission.remove_torrent
         data:
-          name: Transmission
+          entry_id: Transmission
           id: >
             {{ trigger.event.data.id }}
