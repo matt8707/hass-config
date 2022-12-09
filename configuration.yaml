@@ -6,6 +6,7 @@ homeassistant:
   unit_system: metric
   temperature_unit: C
   time_zone: Europe/Stockholm
+  country: SE
   currency: SEK
   packages: !include_dir_named packages
   customize_domain:
