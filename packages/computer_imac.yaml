@@ -132,7 +132,7 @@ automation:
       to: 'on'
     condition:
       condition: state
-      entity_id: switch.imac
+      entity_id: binary_sensor.imac_active
       state: 'on'
     action:
       service: notify.mobile_app_imac

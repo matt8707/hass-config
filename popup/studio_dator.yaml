@@ -90,7 +90,7 @@ browser_mod:
                       style: |
                         :host {
                           --paper-item-icon-color:
-                            {{ is_state(config.entity, 'Ansluten') | iif('var(--state-icon-active-color)', 'red') }};
+                            {{ 'red' if not is_state(config.entity, 'Ansluten') }};
                           }
 
                   - entity: input_boolean.imac_lock

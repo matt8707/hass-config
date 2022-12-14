@@ -18,7 +18,7 @@ person:
     id: sanja
     device_trackers:
       - device_tracker.sanjas_iphone_unifi
-      - device_tracker.sanjas_iphone_13 #ios
+      - device_tracker.sanja_iphone_13 #ios
 
 mqtt:
   sensor:

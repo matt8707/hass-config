@@ -30,6 +30,10 @@ browser_mod:
               card_mod:
                 style:
                   # hide everything but ha-select
+                  $: |
+                    h1 {
+                      display: none !important;
+                    }
                   .: |
                     h1, state-card-content {
                       display: none;

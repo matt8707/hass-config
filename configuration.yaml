@@ -6,6 +6,7 @@ homeassistant:
   unit_system: metric
   temperature_unit: C
   time_zone: Europe/Stockholm
+  country: SE
   currency: SEK
   packages: !include_dir_named packages
   customize_domain:
@@ -59,3 +60,11 @@ sensor:
     display_options:
       - time
       - date
+
+calendar:
+  - platform: caldav
+    username: !secret caldav2_username
+    password: !secret caldav2_password
+    url: https://caldav.icloud.com
+    calendars:
+      - !secret caldav2_calendar

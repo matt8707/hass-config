@@ -21,24 +21,9 @@ loader:
     custom_fields:
       loader:
         - display: none
-        - top: >
-            [[[
-              return variables.tilt_enable
-                  ? '-6%'
-                  : '6%';
-            ]]]
-        - right: >
-            [[[
-              return variables.tilt_enable
-                  ? '-3.5%'
-                  : '6.5%';
-            ]]]
-        - width: >
-            [[[
-              return variables.tilt_enable
-                  ? '52%'
-                  : '42%';
-            ]]]
+        - top: -6%
+        - right: -3.5%
+        - width: 52%
         - position: absolute
         - opacity: 0.5
         - pointer-events: none
