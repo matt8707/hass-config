@@ -4,6 +4,7 @@
 backups
 blueprints
 deps
+@eaDir
 
 secrets_template.yaml
 secrets.yaml
