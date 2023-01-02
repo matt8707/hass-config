@@ -1,0 +1,56 @@
+climate_base:
+  show_icon: false
+  styles:
+    name:
+      - padding: 12px 13px
+      - font-size: 0.8em
+      - font-weight: 600
+    card:
+      - border-radius: 10px
+
+climate_fan_mode:
+  show_icon: false
+  variables:
+    fan_mode: false
+  tap_action:
+    action: call-service
+    service: climate.set_fan_mode
+    service_data:
+      entity_id: >
+        [[[
+          return !entity || entity.entity_id;
+        ]]]
+      fan_mode: >
+        [[[
+          return variables.fan_mode;
+        ]]]
+  styles:
+    card:
+      - background-color: >
+          [[[
+            return !entity || entity.attributes.fan_mode === variables.fan_mode ? "rgba(158, 158, 158, 0.2)" : "rgba(189, 189, 189, 0.05)";
+          ]]]
+  template:
+    - climate_base
+
+climate_swing_mode:
+  tap_action:
+    action: call-service
+    service: climate.set_swing_mode
+    service_data:
+      entity_id: >
+        [[[
+          return !entity || entity.entity_id;
+        ]]]
+      swing_mode: >
+        [[[
+          return !entity || entity.attributes.swing_mode === 'off' ? 'on' : 'off';
+        ]]]
+  styles:
+    card:
+      - background-color: >
+          [[[
+            return !entity || entity.attributes.swing_mode === "on" ? "rgba(158, 158, 158, 0.2)" : "rgba(189, 189, 189, 0.05)";
+          ]]]
+  template:
+    - climate_base

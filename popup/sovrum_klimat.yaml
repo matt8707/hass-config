@@ -23,11 +23,42 @@ browser_mod:
               - type: entities
                 card_mod:
                   class: content
-                  style: |
-                    #states {
-                      padding-top: 1.2em;
-                      padding-bottom: 0em;
-                    }
+                  style:
+                    .: |
+                      #states {
+                        padding-top: 1.2em;
+                        padding-bottom: 0em;
+                      }
+                    hui-horizontal-stack-card$: |
+                      h1 {
+                        font-size: 15px !important;
+                        font-weight: 600 !important;
+                        padding: 5px 0 4px 9px !important;
+                        letter-spacing: 0.01em !important;
+                      }
+
+                      :host {
+                        --climate-margin: 6.5px;
+                      }
+
+                      #root {
+                        padding: 2px 0px 10px 8px !important;
+                      }
+
+                      #root > *:nth-child(1) {
+                        margin-right: var(--climate-margin) !important;
+                      }
+
+                      #root > *:nth-child(2),
+                      #root > *:nth-child(3) {
+                        margin: 0px var(--climate-margin) !important;
+                      }
+
+                      #root > *:nth-child(4) {
+                        margin-left: var(--climate-margin) !important;
+                        margin-right: -1px !important;
+                      }
+
                 entities:
 
                   - type: custom:mushroom-climate-card
@@ -56,45 +87,42 @@ browser_mod:
                     card_mod:
                       style: |
                         mushroom-card {
-                          margin: -18px -13px -8px -4px;
+                          margin: -18px -13px -8px -4px
+                        }
 
-                  - type: custom:more-info-card
-                    entity: climate.ac
-                    card_mod:
-                      style:
-                        # hide everything but ha-select
-                        $: |
-                          h1 {
-                            display: none !important;
-                          }
-                        .: |
-                          h1 {
-                            display: none !important;
-                          }
-                          .card-content {
-                            padding: 0.3em 0 0.6em 0.6em;
-                          }
-                        state-card-climate$: |
-                          div {
-                            display: none !important;
-                          }
-                        more-info-climate$:
-                          .: |
-                            .container-temperature, .container-hvac_modes {
-                              display: none;
-                            }
-                          ha-select:
-                            $:
-                              # no icon so reduce label inset
-                              .: |
-                                .mdc-floating-label {
-                                  inset-inline-start: 4px !important;
-                                }
-                              # fix transparent menu background color
-                              mwc-menu$: |
-                                mwc-list {
-                                  background: var(--card-background-color);
-                                }
+                  - type: custom:hui-horizontal-stack-card
+                    title: Fläktläge
+                    cards:
+
+                      - type: custom:button-card
+                        entity: climate.ac
+                        name: Låg
+                        variables:
+                          fan_mode: low
+                        template:
+                          - climate_fan_mode
+
+                      - type: custom:button-card
+                        entity: climate.ac
+                        name: Med
+                        variables:
+                          fan_mode: medium
+                        template:
+                          - climate_fan_mode
+
+                      - type: custom:button-card
+                        entity: climate.ac
+                        name: Hög
+                        variables:
+                          fan_mode: high
+                        template:
+                          - climate_fan_mode
+
+                      - type: custom:button-card
+                        entity: climate.ac
+                        name: Svep
+                        template:
+                          - climate_swing_mode
 
                   - entity: sensor.broadlink_temperature
                     name: Rumstemperatur
