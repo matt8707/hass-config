@@ -121,10 +121,15 @@ themes:
     popup-background-color: rgba(34,38,39,0.9)
     popup-border-width: 1px
     popup-border-radius: 1em
+    popup-padding-x: 0px
+    popup-padding-y: 0px
+    popup-min-width: 440px
     tablet-popup-header-color: rgba(200, 218, 222, 0.05)
     tablet-popup-content-padding: 1.4em 2.2em 1.6em 1.5em
     tablet-popup-button-padding: 0.1em 2em 1.8em 2em
     tablet-popup-border-style: 1.5px solid rgba(0,0,0,0.2)
+    tablet-popup-align-dialog: center
+    tablet-popup-margin-top: 0px
 
   ####################################################
   #                                                  #
@@ -324,7 +329,7 @@ themes:
         background: none;
       }
 
-      .type-custom-bar-card bar-card-background  {
+      .type-custom-bar-card bar-card-background {
         background: radial-gradient(circle, rgba(52, 57, 58, 0.1) 0%, rgba(17, 18, 18, 0.2) 75%);
         box-shadow: inset 0 0 25px #00000045;
         border-radius: 0.3em;
@@ -336,6 +341,12 @@ themes:
         :host {
           --ha-card-border-width: 0;
         }
+
+        ha-dialog {
+            --vertical-align-dialog: var(--tablet-popup-align-dialog) !important;
+            --dialog-surface-margin-top: var(--tablet-popup-margin-top) !important;
+        }
+
       ha-header-bar$: |
         header {
           background: var(--tablet-popup-header-color) !important;
