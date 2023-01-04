@@ -1,24 +1,96 @@
-rest:
-  - resource: http://192.168.1.241:5678
-    sensor:
-      name: youtube_watching
-      value_template: >
-        {{ value_json.thumbnail }}
-      json_attributes:
-        - channel
-        - title
-        - video_id
-        - duration_string
-        - original_url
+sensor:
+  - platform: command_line
+    name: youtube_watching
+    command: |-
+      python3 << EOF
+      import sys
+      from http.cookiejar import MozillaCookieJar
+      import json
+      import re
+      import requests
+
+      COOKIES_FILE = "/config/.youtube.com_cookies.txt"
+
+      if __name__ == "__main__":
+          # COOKIES
+          cookie_jar = MozillaCookieJar(COOKIES_FILE)
+          try:
+              cookie_jar.load(ignore_discard=True, ignore_expires=True)
+          except OSError as notfound_error:
+              print(f"WARNING: {COOKIES_FILE} not found\nDEBUG: {notfound_error}")
+              sys.exit()
+
+          # SESSION
+          session = requests.Session()
+          session.headers = {
+              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)\
+                  AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36",
+              "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+              "Accept-Language": "en-us,en;q=0.5",
+              "Sec-Fetch-Mode": "navigate",
+          }
+          session.cookies = cookie_jar
+
+          # RESPONSE
+          response = session.get("https://www.youtube.com/feed/history")
+          cookie_jar.save(ignore_discard=True, ignore_expires=True)
+          html = response.text
+
+          # JSON
+          try:
+              REGEX = r"var ytInitialData = (.*);<\/script>"
+              match = re.search(REGEX, html).group(1)
+              data = json.loads(match)
+              path = data["contents"]["twoColumnBrowseResultsRenderer"]["tabs"][0]["tabRenderer"]\
+                  ["content"]["sectionListRenderer"]["contents"][0]["itemSectionRenderer"]["contents"]
+          except AttributeError as data_error:
+              print(
+                  f"WARNING: Can't find data, update cookie file\nDEBUG: {data_error}")
+              sys.exit()
+
+          # THUMBNAIL
+          def thumbnail(fid):
+              """ return max resolution """
+              url = f"https://img.youtube.com/vi/{fid}"
+              maxres = f"{url}/maxresdefault.jpg"
+              default = f"{url}/0.jpg"
+              if requests.get(maxres, timeout=3).status_code == 200:
+                  return maxres
+              return default
+
+          # OUTPUT
+          if "reelShelfRenderer" in path[0]:
+              key = path[1]["videoRenderer"]
+          else:
+              key = path[0]["videoRenderer"]
+          output = {
+              "channel": key["longBylineText"]["runs"][0]["text"],
+              "title": key["title"]["runs"][0]["text"],
+              "video_id": key["videoId"],
+              "duration_string": key["lengthText"]["simpleText"],
+              "thumbnail": thumbnail(key["videoId"]),
+              "original_url": f'https://www.youtube.com/watch?v={key["videoId"]}',
+          }
+          print(json.dumps(output, indent=4))
+      EOF
+    value_template: >
+      {{ value_json.thumbnail }}
+    json_attributes:
+      - channel
+      - title
+      - video_id
+      - duration_string
+      - original_url
     scan_interval: 86400
+
+# docker container also available
+# https://github.com/matt8707/youtube-watching
 
 automation:
   - alias: update_youtube_watching_thumbnail
     id: '1781428593188'
     mode: single
     max_exceeded: silent
-    variables:
-      ytw: sensor.youtube_watching
     trigger:
       platform: state
       entity_id:
@@ -27,8 +99,8 @@ automation:
       to: playing
     condition: >
       {{ is_state_attr(trigger.entity_id, 'app_id', 'com.google.ios.youtube') and
-      state_attr(trigger.entity_id, 'media_title') != state_attr(ytw, 'title') }}
+      state_attr(trigger.entity_id, 'media_title') != state_attr('sensor.youtube_watching', 'title') }}
     action:
       - service: homeassistant.update_entity
         target:
-          entity_id: '{{ ytw }}'
+          entity_id: sensor.youtube_watching
