@@ -116,6 +116,19 @@ conditional_media:
       ]]]
   state_display: >
     [[[
+      let horizontalStack = this.getRootNode().host,
+          swipeCard = horizontalStack.getRootNode().host,
+          gridTitle = swipeCard.getRootNode().querySelector("h1");
+
+      swipeCard.swiper.on("slideChange", () => {
+          if (swipeCard.swiper.realIndex === 0) {
+              gridTitle.textContent = "Media";
+          }
+          else if (swipeCard.swiper.realIndex === 1) {
+              gridTitle.textContent = "Spelare";
+          }
+      });
+
       if (entity) {
           let elt = this.shadowRoot,
               await = setTimeout(marquee, 100),
