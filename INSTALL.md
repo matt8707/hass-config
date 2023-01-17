@@ -12,13 +12,17 @@
   * `ui-lovelace.yaml`
   * `button_card_templates` folder
   * `popup` folder
-  * `themes.yaml`
+  * `themes` folder
   * `sidebar.yaml`
 
 * In `configuration.yaml` add lines [[docs](https://www.home-assistant.io/lovelace/dashboards/)]
 
   ```yaml
-  frontend: !include themes.yaml
+  frontend:
+    extra_module_url:
+      - /hacsfiles/lovelace-card-mod/card-mod.js
+    themes: !include_dir_merge_named themes
+
   template: !include sidebar.yaml
 
   lovelace:
