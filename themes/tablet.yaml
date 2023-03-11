@@ -1,6 +1,6 @@
 tablet:
   #enable mode
-  modes: {dark: {.: .}}
+  modes: { dark: { .: . } }
 
   #edited default dark mode
   ha-card-box-shadow: none
@@ -8,65 +8,75 @@ tablet:
 
   grid-card-gap: 5%
   masonry-view-card-margin: 0px
-  state-icon-color: '#9da0a2'
-  state-icon-active-color: '#3182b7'
-  switch-checked-color: '#7a7d7f'
-  switch-unchecked-button-color: '#3b4041'
-  switch-unchecked-track-color: '#0c0d0d'
-  paper-slider-knob-color: '#a4abb1'
-  paper-slider-knob-start-color: '#a4abb1'
-  paper-slider-pin-color: '#626a6f'
-  paper-slider-active-color: '#626a6f'
-  paper-slider-container-color: '#202020'
+  state-icon-color: "#9da0a2"
+  state-icon-active-color: "#3182b7"
+  switch-checked-color: "#7a7d7f"
+  switch-unchecked-button-color: "#3b4041"
+  switch-unchecked-track-color: "#0c0d0d"
+  paper-slider-knob-color: "#a4abb1"
+  paper-slider-knob-start-color: "#a4abb1"
+  paper-slider-pin-color: "#626a6f"
+  paper-slider-active-color: "#626a6f"
+  paper-slider-container-color: "#202020"
   paper-toast-color: var(--primary-text-color)
-  paper-toast-background-color: '#1b1b1bf2'
+  paper-toast-background-color: "#1b1b1bf2"
   vertical-stack-card-margin: 0
 
   #temporarily revert 2022.12 icon colors
+  state-active-color: "#3182b7"
   rgb-state-default-color: 49, 130, 183
-  rgb-state-alarm-armed-color: var(--rgb-state-default-color)
-  rgb-state-alarm-arming-color: var(--rgb-state-default-color)
-  rgb-state-alarm-pending-color: var(--rgb-state-default-color)
-  rgb-state-alarm-triggered-color: var(--rgb-state-default-color)
-  rgb-state-alert-color: var(--rgb-state-default-color)
-  rgb-state-automation-color: var(--rgb-state-default-color)
-  rgb-state-binary-sensor-alerting-color: var(--rgb-state-default-color)
-  rgb-state-binary-sensor-color: var(--rgb-state-default-color)
-  rgb-state-calendar-color: var(--rgb-state-default-color)
-  rgb-state-camera-color: var(--rgb-state-default-color)
-  rgb-state-climate-auto-color: var(--rgb-state-default-color)
-  rgb-state-climate-cool-color: var(--rgb-state-default-color)
-  rgb-state-climate-dry-color: var(--rgb-state-default-color)
-  rgb-state-climate-fan-only-color: var(--rgb-state-default-color)
-  rgb-state-climate-heat-color: var(--rgb-state-default-color)
-  rgb-state-climate-heat-cool-color: var(--rgb-state-default-color)
-  rgb-state-climate-idle-color: var(--rgb-state-default-color)
-  rgb-state-cover-color: var(--rgb-state-default-color)
-  rgb-state-fan-color: var(--rgb-state-default-color)
-  rgb-state-group-color: var(--rgb-state-default-color)
-  rgb-state-humidifier-color: var(--rgb-state-default-color)
-  rgb-state-input-boolean-color: var(--rgb-state-default-color)
-  rgb-state-light-color: var(--rgb-state-default-color)
-  rgb-state-lock-jammed-color: var(--rgb-state-default-color)
-  rgb-state-lock-locked-color: var(--rgb-state-default-color)
-  rgb-state-lock-pending-color: var(--rgb-state-default-color)
-  rgb-state-media-player-color: var(--rgb-state-default-color)
-  rgb-state-person-home-color: var(--rgb-state-default-color)
-  rgb-state-person-zone-color: var(--rgb-state-default-color)
-  rgb-state-remote-color: var(--rgb-state-default-color)
-  rgb-state-script-color: var(--rgb-state-default-color)
-  rgb-state-sensor-battery-high-color: var(--rgb-state-default-color)
-  rgb-state-sensor-battery-low-color: var(--rgb-state-default-color)
-  rgb-state-sensor-battery-medium-color: var(--rgb-state-default-color)
-  rgb-state-sensor-battery-unknown-color: var(--rgb-state-default-color)
-  rgb-state-siren-color: var(--rgb-state-default-color)
-  rgb-state-sun-day-color: var(--rgb-state-default-color)
-  rgb-state-sun-night-color: var(--rgb-state-default-color)
-  rgb-state-switch-color: var(--rgb-state-default-color)
-  rgb-state-timer-color: var(--rgb-state-default-color)
-  rgb-state-update-color: var(--rgb-state-default-color)
-  rgb-state-update-installing-color: var(--rgb-state-default-color)
-  rgb-state-vacuum-color: var(--rgb-state-default-color)
+  state-alarm_control_panel-armed_away-color: var(--rgb-state-default-color)
+  state-alarm_control_panel-armed_custom_bypass-color: var(--rgb-state-default-color)
+  state-alarm_control_panel-armed_home-color: var(--rgb-state-default-color)
+  state-alarm_control_panel-armed_night-color: var(--rgb-state-default-color)
+  state-alarm_control_panel-armed_vacation-color: var(--rgb-state-default-color)
+  state-alarm_control_panel-arming-color: var(--rgb-state-default-color)
+  state-alarm_control_panel-disarming-color: var(--rgb-state-default-color)
+  state-alarm_control_panel-pending-color: var(--rgb-state-default-color)
+  state-alarm_control_panel-triggered-color: var(--rgb-state-default-color)
+  state-alert-off-color: var(--rgb-state-default-color)
+  state-alert-on-color: var(--state-active-color)
+  state-binary_sensor-active-color: var(--state-active-color)
+  state-binary_sensor-battery-on-color: var(--state-active-color)
+  state-binary_sensor-carbon_monoxide-on-color: var(--state-active-color)
+  state-binary_sensor-gas-on-color: var(--state-active-color)
+  state-binary_sensor-heat-on-color: var(--state-active-color)
+  state-binary_sensor-lock-on-color: var(--state-active-color)
+  state-binary_sensor-moisture-on-color: var(--state-active-color)
+  state-binary_sensor-problem-on-color: var(--state-active-color)
+  state-binary_sensor-safety-on-color: var(--state-active-color)
+  state-binary_sensor-smoke-on-color: var(--state-active-color)
+  state-binary_sensor-sound-on-color: var(--state-active-color)
+  state-binary_sensor-tamper-on-color: var(--state-active-color)
+  state-climate-auto-color: var(--rgb-state-default-color)
+  state-climate-cool-color: var(--rgb-state-default-color)
+  state-climate-dry-color: var(--rgb-state-default-color)
+  state-climate-fan_only-color: var(--rgb-state-default-color)
+  state-climate-heat-color: var(--rgb-state-default-color)
+  state-climate-heat-cool-color: var(--rgb-state-default-color)
+  state-cover-active-color: var(--state-active-color)
+  state-device_tracker-active-color: var(--state-active-color)
+  state-device_tracker-home-color: var(--state-active-color)
+  state-fan-active-color: var(--state-active-color)
+  state-humidifier-active-color: var(--state-active-color)
+  state-light-active-color: var(--state-active-color)
+  state-lock-jammed-color: var(--rgb-state-default-color)
+  state-lock-locked-color: var(--rgb-state-default-color)
+  state-lock-pending-color: var(--rgb-state-default-color)
+  state-lock-unlocked-color: var(--rgb-state-default-color)
+  state-media_player-active-color: var(--state-active-color)
+  state-person-active-color: var(--state-active-color)
+  state-person-home-color: var(--state-active-color)
+  state-plant-active-color: var(--state-active-color)
+  state-siren-active-color: var(--state-active-color)
+  state-sun-above_horizon-color: var(--rgb-state-default-color)
+  state-sun-below_horizon-color: var(--rgb-state-default-color)
+  state-switch-active-color: var(--state-active-color)
+  state-update-active-color: var(--state-active-color)
+  state-vacuum-active-color: var(--state-active-color)
+  state-sensor-battery-high-color: var(--rgb-state-default-color)
+  state-sensor-battery-low-color: var(--rgb-state-default-color)
+  state-sensor-battery-medium-color: var(--rgb-state-default-color)
 
   #font
   primary-font-family: SF Pro Text, Roboto, system-ui
@@ -85,12 +95,12 @@ tablet:
   ha-card-background-color: rgba(34,38,39,0.9)
   ha-card-header-background-color: rgba(48,52,52,0.8)
   custom-layout-card-padding: 3.3vw
-  
+
   sidebar-time-font-size: 5.2vw
   sidebar-time-line-height: 4.3vw
   sidebar-font-size: 1.42vw
   sidebar-line-height: 2vw
-  bar-card-color: '#303435'
+  bar-card-color: "#303435"
 
   #button_card_templates
   button-card-font-size: 1.35vw
