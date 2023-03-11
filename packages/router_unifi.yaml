@@ -38,7 +38,7 @@ sensor:
           "cpu_temp": round(data["temperatures"][1]["value"], 1),
           "mem": data["system-stats"]["mem"],
           "disk": round(data["storage"][1]["used"] / data["storage"][1]["size"] * 100, 1),
-          "internet": data["internet"],
+          # "internet": data["internet"],
           "uptime": datetime.fromtimestamp(data["startup_timestamp"]).isoformat(),
           "version": data["displayable_version"]
       }))
