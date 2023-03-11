@@ -45,13 +45,13 @@ sensor:
       EOF
     command_timeout: 180
     value_template: >
-      {{ value_json.internet }}
+      {{ value_json.version }}
     json_attributes:
       - cpu
       - cpu_temp
       - mem
       - disk
-      - internet
+      # - internet
       - uptime
       - version
     scan_interval: 900

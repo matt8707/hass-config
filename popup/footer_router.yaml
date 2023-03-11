@@ -25,8 +25,8 @@ browser_mod:
             class: content
           entities:
 
-            - entity: binary_sensor.template_udm_internet
-              secondary_info: last-changed
+            # - entity: binary_sensor.template_udm_internet
+            #   secondary_info: last-changed
 
             - entity: sensor.template_udm_cpu_temp
               name: CPU Temperatur
