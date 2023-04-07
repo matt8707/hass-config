@@ -146,7 +146,7 @@ tablet:
   card-mod-theme: tablet
 
   card-mod-root: |
-    ha-app-layout {
+    #view {
       background: url('/local/background.png');
       background-size: cover;
     }
@@ -155,7 +155,6 @@ tablet:
     .: |
       hui-view {
         background: none !important;
-        min-height: 100vh;
       }
 
     #################################################
