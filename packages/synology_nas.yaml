@@ -71,7 +71,7 @@ monitor_docker:
   - name: Docker
     containers:
       - watchtower
-      - home-assistant
+      - homeassistant
       - transmission-seed
     monitored_conditions: allinone
     scan_interval: 900

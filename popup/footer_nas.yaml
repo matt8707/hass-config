@@ -89,7 +89,7 @@ browser_mod:
               icon: mdi:file-document
 
             - type: attribute
-              entity: sensor.docker_home_assistant
+              entity: sensor.docker_homeassistant
               attribute: uptime
               format: relative
               name: Senast omstart
@@ -111,12 +111,12 @@ browser_mod:
               entity_row: true
               entities:
 
-                - entity: sensor.docker_home_assistant
+                - entity: sensor.docker_homeassistant
                   attribute: cpu_percentage
                   name: Processor
                   icon: mdi:chip
 
-                - entity: sensor.docker_home_assistant
+                - entity: sensor.docker_homeassistant
                   attribute: memory_percentage
                   name: Minne
                   icon: mdi:memory
