@@ -2,6 +2,7 @@ settings:
   variables:
     entity_tablet: switch.galaxy_tab_a_screensaver
     entity_browser_mod: media_player.tablet
+
     translate_unknown: Okänt
     translate_idle: Inaktiv
     translate_home: Ja
@@ -10,3 +11,11 @@ settings:
     translate_no_updates: Inga uppdateringar
     translate_update_available: uppdatering tillgänglig
     translate_updates_available: uppdateringar tillgängliga
+
+    translate_on: På
+    translate_off: Av
+    translate_cool: Kyla
+    translate_fan_only: Endast fläkt
+    translate_playing: Spelar
+    translate_paused: Pausad
+    translate_standby: Viloläge

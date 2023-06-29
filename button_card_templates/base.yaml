@@ -28,7 +28,16 @@ base:
   show_state: true
   show_icon: false
   state_display: >
-    [[[ if (variables.state === true) return variables.translate_unknown; ]]]
+    [[[
+      const stateDict = {
+        'on': variables.translate_on,
+        'off': variables.translate_off,
+        'cool': variables.translate_cool,
+        'fan_only': variables.translate_fan_only,
+      };
+      if (variables.state === true) return variables.translate_unknown;
+      return stateDict[variables.state];
+    ]]]
   tap_action:
     ui_sound_tablet: |
       [[[

@@ -1,7 +1,15 @@
 laundry:
+  template:
+    - settings
   show_icon: false
   show_name: false
   show_state: true
+  state_display: >
+    [[[
+      if (entity.state === 'idle') {
+        return variables.translate_idle;
+      }
+    ]]]
   tap_action:
     restart: >
       [[[

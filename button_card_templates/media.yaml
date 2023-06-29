@@ -5,6 +5,21 @@
 #################################################
 
 base_media:
+  template:
+    - settings
+  state_display: >
+    [[[
+      const stateDict = {
+        'on': variables.translate_on,
+        'off': variables.translate_off,
+        'playing': variables.translate_playing,
+        'paused': variables.translate_paused,
+        'standby': variables.translate_standby,
+        'idle': variables.translate_idle
+      };
+      if (variables.state === true) return variables.translate_unknown;
+      return stateDict[variables.state];
+    ]]]
   variables:
     media_on: >
       [[[ return !entity || ['playing', 'paused'].indexOf(entity.state) !== -1; ]]]
