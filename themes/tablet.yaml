@@ -350,10 +350,10 @@ tablet:
       ha-dialog {
           --vertical-align-dialog: var(--tablet-popup-align-dialog) !important;
           --dialog-surface-margin-top: var(--tablet-popup-margin-top) !important;
-      }
+      } 
 
-    ha-header-bar$: |
-      header {
-        background: var(--tablet-popup-header-color) !important;
-        border-bottom: var(--tablet-popup-border-style);
+      ha-dialog>div.heading>ha-dialog-header {
+          font-family: var(--primary-font-family);
+          background-color: var(--tablet-popup-header-color);
+          border-bottom: var(--tablet-popup-border-style);
       }
