@@ -4,10 +4,15 @@ tilt:
   variables:
     tilt_enable: >
       [[[
-        // enable only on this
-        if (window.navigator.userAgent.match(/Macintosh; Intel Mac OS X/i)) {
+        // disable on macos app, text appears over popup
+        if (window.navigator.userAgent.includes("Home Assistant")) {
+            return false
+        }
+        // enable on macos browsers
+        else if (window.navigator.userAgent.match(/Macintosh; Intel Mac OS X/i)) {
             return true;
         }
+        // default - phones, tablets etc
         return false;
       ]]]
     tilt_options: >
