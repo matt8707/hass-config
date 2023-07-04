@@ -98,6 +98,7 @@ automation:
       - service: notify.mobile_app_iphone
         data:
           title: >
+            {% set installed = states('sensor.current_version') %}
             {{ states('sensor.docker_hub_beta') if version(installed).beta
             else states('sensor.docker_hub') }} tillgänglig {{ '\U0001F389' }}
           message: Håll in för att uppdatera
