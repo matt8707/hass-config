@@ -348,12 +348,25 @@ tablet:
       }
 
       ha-dialog {
-          --vertical-align-dialog: var(--tablet-popup-align-dialog) !important;
-          --dialog-surface-margin-top: var(--tablet-popup-margin-top) !important;
-      } 
+        --vertical-align-dialog: var(--tablet-popup-align-dialog) !important;
+        --dialog-surface-margin-top: var(--tablet-popup-margin-top) !important;
+      }
 
-      ha-dialog>div.heading>ha-dialog-header {
-          font-family: var(--primary-font-family);
-          background-color: var(--tablet-popup-header-color);
-          border-bottom: var(--tablet-popup-border-style);
+      ha-dialog > div:focus {
+        outline: none;
+      }
+
+      ha-dialog > div.content > div.container {
+        padding: 0 !important;
+      }
+
+      ha-dialog-header {
+        font-family: var(--primary-font-family);
+        background-color: var(--tablet-popup-header-color);
+        border-bottom: var(--tablet-popup-border-style);
+      }
+
+    ha-dialog$: |
+      div.mdc-dialog__surface {
+        background-color: var(--popup-background-color) !important;
       }
