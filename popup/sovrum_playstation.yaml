@@ -3,10 +3,6 @@ browser_mod:
   service: browser_mod.popup
   data:
     title: Playstation
-    card_mod:
-      style:
-        #popup header
-        .:
     content:
       type: entities
       state_color: true

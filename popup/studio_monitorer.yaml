@@ -3,10 +3,6 @@ browser_mod:
   service: browser_mod.popup
   data:
     title: Monitorer
-    card_mod:
-      style:
-        #popup header
-        .:
     content:
 
       type: vertical-stack

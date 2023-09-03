@@ -12,10 +12,6 @@ browser_mod:
   service: browser_mod.popup
   data:
     title: UniFi Dream Machine
-    card_mod:
-      style:
-        #popup header
-        .:
     content:
       type: vertical-stack
       cards:

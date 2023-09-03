@@ -4,10 +4,6 @@ browser_mod:
   data:
     title: Historik
     size: fullscreen
-    card_mod:
-      style:
-        #popup header
-        .:
     content:
       type: grid
       columns: 2

@@ -14,10 +14,6 @@ browser_mod:
   service: browser_mod.popup
   data:
     title: Dator
-    card_mod:
-      style:
-        #popup header
-        .:
     content:
       type: vertical-stack
       cards:

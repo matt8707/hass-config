@@ -3,13 +3,6 @@ browser_mod:
   service: browser_mod.popup
   data:
     title: Klimat
-    card_mod:
-      style:
-        #popup header
-        .: |
-          div.content {
-            margin-top: -24px !important;
-          }
     content:
       type: custom:tabbed-card
       styles:

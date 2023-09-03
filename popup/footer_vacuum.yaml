@@ -11,9 +11,6 @@ browser_mod:
       style:
         # card divider border
         layout-card$grid-layout$: |
-          #root {
-            margin: -24px 0 !important;
-          }
           hui-vertical-stack-card {
             border-right: 1.5px solid rgba(0, 0, 0, 0.2);
             border-radius: 0;
