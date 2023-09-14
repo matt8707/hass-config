@@ -261,6 +261,7 @@ conditional_media:
         - clip-path: >
             inset(74.5% 1.45% 1.45% 1.45% round 0 0 calc(var(--button-card-border-radius) / 2) calc(var(--button-card-border-radius) / 2))
         - backdrop-filter: var(--blur-intensity)
+        - -webkit-backdrop-filter: var(--blur-intensity)
         - left: -1.5%
         - bottom: -1.6%
   custom_fields:
