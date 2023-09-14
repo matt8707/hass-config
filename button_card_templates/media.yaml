@@ -219,7 +219,7 @@ conditional_media:
       - padding: 5.75% 5.25% 0 5.75%
       - border-radius: calc(var(--button-card-border-radius) / 2)
       - background: rgba(115, 115, 115, 0.2) center center/cover no-repeat
-      - background-image: &media_background_image >
+      - background-image: >
           [[[
             if (entity) {
               if (variables.is_youtube) {
@@ -258,11 +258,9 @@ conditional_media:
         - position: absolute
         - width: 103.1%
         - height: 103.1%
-        - filter: var(--blur-intensity)
         - clip-path: >
             inset(74.5% 1.45% 1.45% 1.45% round 0 0 calc(var(--button-card-border-radius) / 2) calc(var(--button-card-border-radius) / 2))
-        - background: center center/cover no-repeat
-        - background-image: *media_background_image
+        - backdrop-filter: var(--blur-intensity)
         - left: -1.5%
         - bottom: -1.6%
   custom_fields:
