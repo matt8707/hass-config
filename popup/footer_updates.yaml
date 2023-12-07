@@ -84,5 +84,4 @@ browser_mod:
                   - service: homeassistant.update_entity
                     data:
                       entity_id:
-                        - sensor.updates_esphome_latest
                         - sensor.updates_kemper
