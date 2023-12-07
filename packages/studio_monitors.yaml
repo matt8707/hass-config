@@ -44,21 +44,20 @@ switch:
             target:
               entity_id: binary_sensor.monitors_mute_state
 
-sensor:
-  - platform: command_line
-    name: monitors_volume
-    command: !secret monitors_update_volume
-    unit_of_measurement: '%'
-    scan_interval: 86400
+command_line:
+  - sensor:
+      name: monitors_volume
+      command: !secret monitors_update_volume
+      unit_of_measurement: '%'
+      scan_interval: 86400
 
-binary_sensor:
-  - platform: command_line
-    name: monitors_mute_state
-    command: !secret monitors_mute_state
-    payload_on: 'true'
-    payload_off: 'false'
-    device_class: sound
-    scan_interval: 86400
+  - binary_sensor:
+      name: monitors_mute_state
+      command: !secret monitors_mute_state
+      payload_on: 'true'
+      payload_off: 'false'
+      device_class: sound
+      scan_interval: 86400
 
 automation:
   - alias: monitors_conditional_scan_interval

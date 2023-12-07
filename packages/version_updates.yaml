@@ -75,37 +75,37 @@ template:
               <b><a href="#" onclick="window.open('{{ url }}');">Rig Manager</a></b> {{ installed + ' <b>&rarr;</b> ' + latest }}
             {% endif %}
 
-sensor:
-  - platform: command_line
-    name: updates_kemper
-    command: !secret updates_kemper
-    value_template: >
-      {{ 'on' if value_json.profiler_installed != value_json.profiler_latest or
-      value_json.rigmanager_latest != value_json.rigmanager_installed else 'off' }}
-    json_attributes:
-      - profiler_latest
-      - profiler_installed
-      - rigmanager_latest
-      - rigmanager_installed
-    scan_interval: 86400
+command_line:
+  - sensor:
+      name: updates_kemper
+      command: !secret updates_kemper
+      value_template: >
+        {{ 'on' if value_json.profiler_installed != value_json.profiler_latest or
+        value_json.rigmanager_latest != value_json.rigmanager_installed else 'off' }}
+      json_attributes:
+        - profiler_latest
+        - profiler_installed
+        - rigmanager_latest
+        - rigmanager_installed
+      scan_interval: 86400
 
-  - platform: command_line
-    name: hacs_installed
-    command: |-
-      python3 << EOF
-      import os, json
-      installed = {"repositories": []}
-      PATH = "/config/.storage/hacs.repositories"
-      with open(PATH, "r", encoding="UTF-8") as file:
-          data = json.load(file)["data"]
-          for i in data:
-              if "installed" in data[i]:
-                  installed["repositories"] += [data[i]["full_name"]]
-          file.close()
-      print(json.dumps(installed))
-      EOF
-    value_template: >
-      {{ value_json.repositories | count }}
-    json_attributes:
-      - repositories
-    scan_interval: 86400
+  - sensor:
+      name: hacs_installed
+      command: |-
+        python3 << EOF
+        import os, json
+        installed = {"repositories": []}
+        PATH = "/config/.storage/hacs.repositories"
+        with open(PATH, "r", encoding="UTF-8") as file:
+            data = json.load(file)["data"]
+            for i in data:
+                if "installed" in data[i]:
+                    installed["repositories"] += [data[i]["full_name"]]
+            file.close()
+        print(json.dumps(installed))
+        EOF
+      value_template: >
+        {{ value_json.repositories | count }}
+      json_attributes:
+        - repositories
+      scan_interval: 86400

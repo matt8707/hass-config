@@ -36,8 +36,8 @@ switch:
           then:
             service: shell_command.imac_off
 
-sensor:
-  - platform: command_line
+command_line:
+  - sensor:
     name: imac_cpu
     command: !secret imac_cpu
     unit_of_measurement: '%'
@@ -45,13 +45,13 @@ sensor:
       {{ (100 - value[:-1] | float(default=0)) | round(1) }}
     scan_interval: 86400
 
-  - platform: command_line
+  - sensor:
     name: imac_mem
     command: !secret imac_mem
     unit_of_measurement: '%'
     scan_interval: 86400
 
-  - platform: command_line
+  - sensor:
     name: imac_uptime
     command: !secret imac_uptime
     value_template: >
@@ -60,7 +60,7 @@ sensor:
       {{ timestamp | timestamp_local if (as_timestamp(now()) - timestamp) < year else None}}
     scan_interval: 86400
 
-  - platform: command_line
+  - sensor:
     name: imac_ip
     command: !secret imac_ip
     scan_interval: 86400
