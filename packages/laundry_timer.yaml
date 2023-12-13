@@ -1,3 +1,80 @@
+command_line:
+  - sensor:
+      name: laundry_data
+      command: |-
+        python3 << EOF
+        import json, requests, re, yaml
+
+        def get_secret(secret):
+            try:
+                with open(SECRETS_FILE, "r", encoding="utf8") as file:
+                    secrets = yaml.full_load(file)
+                    for key, value in secrets.items():
+                        if key == secret:
+                            return value
+            except FileNotFoundError:
+                print("secrets.yaml not found")
+                exit()
+
+        SECRETS_FILE = "/config/secrets.yaml"
+        USER = get_secret("laundry_user")
+        PASS = get_secret("laundry_pass")
+        URL = get_secret("laundry_url")
+
+        # login
+        session = requests.Session()
+        response = session.post(
+            f"{URL}/wp-login.php",
+            data={"log": USER, "pwd": PASS},
+        )
+
+        # remote login
+        widgets_url = f"{URL}/widgets/?callback=&widgets[]=aptuslogin"
+        response = session.get(widgets_url)
+        transform_data = json.loads(response.text[1:-2])
+        parsed_url = transform_data["data"]["aptuslogin"]["objekt"][0]["aptusUrl"]
+
+        # data
+        final_response = session.get(parsed_url)
+        data = final_response.text
+        session.close()
+
+        # scrape
+        date = None
+        pattern_date_time = r"Avboka Tvätt (.*?)\""
+        match_date_time = re.search(pattern_date_time, data)
+        if match_date_time:
+            date = match_date_time.group(1)
+
+        time = None
+        pattern_time_slot = r"<b>(.*?)</b>"
+        match_time_slot = re.search(pattern_time_slot, data)
+        if match_time_slot:
+            time = match_time_slot.group(1)
+
+        number = None
+        pattern_machine = r"Tv&#228;ttstuga (\d)"
+        match_machine = re.search(pattern_machine, data)
+        if match_machine:
+            number = match_machine.group(1)
+
+        # output
+        output = {
+            "date": date,
+            "time": time,
+            "number": number,
+        }
+        print(json.dumps(output))
+        EOF
+      command_timeout: 180
+      value_template: >
+        {{ value_json.date }}
+      json_attributes:
+        - date
+        - time
+        - number
+      scan_interval: 21600
+
 timer:
   laundry:
     name: Tvätt

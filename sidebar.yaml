@@ -121,7 +121,10 @@
             Kan inte läsa in väder...
           {% endif %}
         laundry: >
-          {% set start_time = state_attr('calendar.tvatta', 'start_time') %}
+          {% set date_data = state_attr('sensor.laundry_data', 'date') | as_datetime %}
+          {% set time_data = state_attr('sensor.laundry_data', 'time') %}
+          {% set number_data = state_attr('sensor.laundry_data', 'number') %}
+          {% set start_time = date_data.strftime('%Y-%m-%d %H:%M:%S') %}
           {% if start_time != None %}
             {% set time = as_timestamp(start_time) | timestamp_custom('%H:%M') %}
             {% set hours = as_timestamp(start_time) | timestamp_custom('%H') | int(default=0) / 24 %}
@@ -135,7 +138,7 @@
             | replace('Saturday', 'Lördag')
             | replace('Sunday', 'Söndag') %}
             {% if count <= 0.0 %}
-              {{'\U0001F4A6'}} Tvätt idag {{ time }}
+              {{'\U0001F4A6'}} Tvätt idag {{ time_data }}, Tvättstuga {{ number_data }}
             {% elif count <= 1.0 %}
               Tvätt imorgon klockan {{ time }}
             {% elif count <= 2.0 %}
