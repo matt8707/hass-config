@@ -1,5 +1,15 @@
 # Home Assistant Configuration
 
+## ⚠️ **Important**
+
+As of 2024, this repository is **no longer maintained**. While I will not be updating this project, pull requests addressing future breaking changes are welcome. I want to thank everyone for their contributions and support on this project. Seeing it rise as the community's top topic of all time has been truly overwhelming.
+
+I am now shifting my focus to a new project called **[ha-fusion](https://github.com/matt8707/ha-fusion)**. It aims to be a modern, easy-to-use, and performant custom dashboard built from scratch. I hope you'll check it out!
+
+<https://github.com/matt8707/ha-fusion>
+
+---
+
 [Home Assistant Container](https://www.home-assistant.io/installation/#compare-installation-methods) on a Synology DiskStation DS918+ NAS. [Wall mounted](https://www.durable.eu/en_DE/tablet-holder-wall/893323) tablet ([Galaxy Tab A 10.1](https://www.samsung.com/us/mobile/tablets/galaxy-tab-a/galaxy-tab-a-10-1-2019-32gb-black-wi-fi-sm-t510nzkaxar/)) using [Fully Kiosk Browser](https://www.fully-kiosk.com/#get-kiosk-apps). My configuration is exposed to HomeKit with Apple TV acting as a hub for remote connection.
 
 If you like anything here, be sure to :star2: my repo!
