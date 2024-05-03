@@ -147,8 +147,8 @@ tablet:
 
   card-mod-root: |
     #view {
-      background: url('/local/background.png');
-      background-size: cover;
+      background: url('/local/background.png') !important;
+      background-size: cover !important;
     }
 
   card-mod-view-yaml: |
