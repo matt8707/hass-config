@@ -50,8 +50,8 @@ automation:
     action:
       service: mqtt.publish
       data:
-        topic_template: >
+        topic: >
           homeassistant/persistence/{{ trigger.to_state.name | lower }}
-        payload_template: >
+        payload: >
           {{ now() }}
         retain: true
