@@ -6,12 +6,17 @@ sidebar:
   name: >
     [[[
       if (entity) {
-          let attr = [];
-          for (let [k, value] of Object.entries(entity.attributes))
-              window.navigator.userAgent.match(/iPhone/i)
-                  ? k !== 'time' && k !== 'date' && value !== false && (attr += `<p>${k === 'greet' ? `<span class="iphone">${value}</span>` : `${value}`}</p>`)
-                  : value !== false && (attr += `<p>${value}</p>`);
-          return attr;
+        let attr = '';
+        for (const [k, value] of Object.entries(entity.attributes)) {
+          if (k === 'friendly_name') continue;   // skip friendly_name always
+          if (window.navigator.userAgent.match(/iPhone/i)) {
+            if (k === 'time' || k === 'date') continue;             // skip time/date on iPhone
+            attr += `<p>${k === 'greet' ? `<span class="iphone">${value}</span>` : `${value}`}</p>`;
+          } else {
+            attr += `<p>${value}</p>`;
+          }
+        }
+        return attr;
       }
     ]]]
   extra_styles: >
